@@ -9,3 +9,4 @@ lint:
 
 migrate:
 	$(CMD) python3 manage.py migrate
+	$(CMD) python3 manage.py sqlmigrate cshr 0002

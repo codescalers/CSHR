@@ -10,6 +10,7 @@ from server.cshr.models.skills import Skills
 
 class TEAM(models.TextChoices):
     """enum class for team options"""
+
     # Dev-QA-Ops-Marketing-Management-Accounting
 
     DEV = "Development"
@@ -22,6 +23,7 @@ class TEAM(models.TextChoices):
 
 class USER_TYPE(models.TextChoices):
     """types of users"""
+
     # User-Admin-supervisor
     ADMIN = "Admin", "admin"
     USER = "User", "user"
@@ -30,29 +32,23 @@ class USER_TYPE(models.TextChoices):
 
 class User(AbstractBaseUser, TimeStamp):
     """main user model"""
+
     USERNAME_FIELD = "Email"
     FirstName = models.CharField(max_length=45, null=False)
-    LastName = models.CharField(max_length=45, null=False)
-    Email = models.EmailField(max_length=45, null=False)
-    MobileNumber = models.CharField(max_length=15, null=True, blank=True)
-    TelegramLink = models.CharField(max_length=100, null=True, blank=True)
-    Birthday = models.DateField(null=False)
+    LastName = models.CharField(max_length=45, null=False, blank=False)
+    Email = models.EmailField(max_length=45, null=False, blank=False)
+    MobileNumber = models.CharField(max_length=15, null=False, blank=False)
+    TelegramLink = models.CharField(max_length=100, null=False, blank=False)
+    Birthday = models.DateField(null=False, blank=False)
     Team = models.CharField(
-        max_length=20, null=False,
-        choices=TEAM.choices
+        max_length=20, choices=TEAM.choices, null=False, blank=False
     )
-    Salary = models.JSONField(default=list, null=False)
-    Location_id = models.ForeignKey(
-        Office,
-        on_delete=models.CASCADE
-    )
+    Salary = models.JSONField(default=list, null=False, blank=False)
+    Location_id = models.ForeignKey(Office, on_delete=models.CASCADE)
     Skills_ids = models.ManyToManyField(
         Skills,
         related_name="skills",
-        null=False
     )
     User_type = models.CharField(
-        max_length=20,
-        null=False,
-        choices=USER_TYPE.choices
+        max_length=20, choices=USER_TYPE.choices, null=False, blank=False
     )
