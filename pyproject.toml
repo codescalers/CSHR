@@ -8,6 +8,9 @@ authors = ["Mahmoud-Emad <mahmmoud.hassanein@gmail.com>"]
 python = "^3.8"
 Django = "^4.1"
 python-decouple = "^3.6"
+drf-yasg = "^1.21.3"
+djangorestframework = "^3.13.1"
+django-debug-toolbar = "^3.5.0"
 
 [tool.poetry.dev-dependencies]
 
