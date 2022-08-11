@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     #third parties
+    'rest_framework',
     'drf_yasg',
+
 ]
 
 MIDDLEWARE = [
@@ -103,6 +105,24 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',   
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
+
+    'DEFAULT_PAGINATION_CLASS': 'server.test_tracker.api.pagination.CustomPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {

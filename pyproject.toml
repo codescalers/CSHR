@@ -9,6 +9,9 @@ python = "^3.8"
 Django = "^4.1"
 drf-yasg = "^1.21.3"
 django-debug-toolbar = "^3.5.0"
+djangorestframework = "^3.13.1"
+Markdown = "^3.4.1"
+django-filter = "^22.1"
 
 [tool.poetry.dev-dependencies]
 
