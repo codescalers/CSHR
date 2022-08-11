@@ -3,11 +3,9 @@ name: Test
 on:
   push:
     branches: 
-    - main
-    - development
-
+    - '**' 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
     strategy:
