@@ -11,8 +11,9 @@ from server.cshr.models.compensations import Compensation
 
 class TYPE_CHOICES(models.TextChoices):
     """
-    it is a list of choices for the request type        
+    it is a list of choices for the request type
     """
+
     HR_LETTERS = "hr_letters", "HR Letters"
     COMPENSATION = "compensation", "Compensation"
     VACATIONS = "vacations", "Vacations"
