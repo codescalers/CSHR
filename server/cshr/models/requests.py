@@ -20,26 +20,40 @@ class TYPE_CHOICES(models.TextChoices):
 
 class STATUS_CHOICES(models.TextChoices):
     """
-    it is a list of choices for the request status        
+    it is a list of choices for the request status
     """
+
     REJECTED = "rejected", "Rejected"
     PENDING = "pending", "Pending"
     APPROVED = "approved", "Approved"
 
 
 class Requests(TimeStampedModel):
-    """Class Requests model for adding a new Rwquest automatically  to the database"""
+    """Class Requests model for adding a new
+    Rwquest automatically  to the database"""
+
     # to use it User.user_requests.all()
     user_id = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="user_requests")
+        User, on_delete=models.CASCADE, related_name="user_requests"
+    )
     # to use it User.user_vaccations.all()
     Vacations = models.ForeignKey(
-        Vacations, on_delete=models.CASCADE, related_name="user_vacations")
+        Vacations, on_delete=models.CASCADE, related_name="user_vacations"
+    )
     Compensation = models.ForeignKey(
-        Compensation, on_delete=models.CASCADE, related_name="user_compensation")
+        Compensation, on_delete=models.CASCADE,
+        related_name="user_compensation"
+    )
     HR_LETTERS = models.ForeignKey(
-        Hr_letters, on_delete=models.CASCADE, related_name="user_hr_letters")
+        Hr_letters, on_delete=models.CASCADE, related_name="user_hr_letters"
+    )
     type = models.CharField(
-        max_length=20, choices=TYPE_CHOICES.choices, default=TYPE_CHOICES.VACATION)
+        max_length=20,
+        choices=TYPE_CHOICES.choices,
+        default=TYPE_CHOICES.VACATION
+    )
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES.choices, default=STATUS_CHOICES.PENDING)
+        max_length=20,
+        choices=STATUS_CHOICES.choices,
+        default=STATUS_CHOICES.PENDING
+    )

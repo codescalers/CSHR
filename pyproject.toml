@@ -8,6 +8,7 @@ authors = ["Mahmoud-Emad <mahmmoud.hassanein@gmail.com>"]
 python = "^3.8"
 Django = "^4.1"
 python-decouple = "^3.6"
+black = "^22.6.0"
 
 [tool.poetry.dev-dependencies]
 
