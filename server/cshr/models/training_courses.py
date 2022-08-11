@@ -3,7 +3,7 @@ from django.db import models
 
 from server.cshr.models.abstracts import TimeStamp
 
-from server.cshr.models.user import User
+from server.cshr.models.users import User
 
 
 class Training_Courses(TimeStamp):

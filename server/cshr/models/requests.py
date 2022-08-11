@@ -3,7 +3,7 @@ from django.db import models
 from server.cshr.models.abstracts import TimeStamp
 
 
-from server.cshr.models.user import User
+from server.cshr.models.users import User
 
 
 class TYPE_CHOICES(models.TextChoices):
@@ -39,7 +39,7 @@ class Requests(TimeStamp):
         User, on_delete=models.CASCADE, related_name="approve_user"
     )
     type = models.CharField(
-        max_length=20, choices=TYPE_CHOICES.choices, default=TYPE_CHOICES.VACATION
+        max_length=20, choices=TYPE_CHOICES.choices, default=TYPE_CHOICES.VACATIONS
     )
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES.choices, default=STATUS_CHOICES.PENDING
