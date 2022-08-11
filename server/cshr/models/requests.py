@@ -1,12 +1,9 @@
 from django.db import models
 
-from server.cshr.models.abstracts import TimeStampedModel
+from server.cshr.models.abstracts import TimeStamp
 
 
-from server.cshr.models.users import User
-from server.cshr.models.vacations import Vacations
-from server.cshr.models.hr_letters import Hr_letters
-from server.cshr.models.compensations import Compensation
+from server.cshr.models.user import User
 
 
 class TYPE_CHOICES(models.TextChoices):
@@ -29,32 +26,21 @@ class STATUS_CHOICES(models.TextChoices):
     APPROVED = "approved", "Approved"
 
 
-class Requests(TimeStampedModel):
+class Requests(TimeStamp):
     """Class Requests model for adding a new
-    Rwquest automatically  to the database"""
+    Request automatically  to the database"""
 
     # to use it User.user_requests.all()
-    user_id = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="user_requests"
+
+    applying_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="apply_user"
     )
-    # to use it User.user_vaccations.all()
-    Vacations = models.ForeignKey(
-        Vacations, on_delete=models.CASCADE, related_name="user_vacations"
-    )
-    Compensation = models.ForeignKey(
-        Compensation, on_delete=models.CASCADE,
-        related_name="user_compensation"
-    )
-    HR_LETTERS = models.ForeignKey(
-        Hr_letters, on_delete=models.CASCADE, related_name="user_hr_letters"
+    approval_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="approve_user"
     )
     type = models.CharField(
-        max_length=20,
-        choices=TYPE_CHOICES.choices,
-        default=TYPE_CHOICES.VACATION
+        max_length=20, choices=TYPE_CHOICES.choices, default=TYPE_CHOICES.VACATION
     )
     status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES.choices,
-        default=STATUS_CHOICES.PENDING
+        max_length=20, choices=STATUS_CHOICES.choices, default=STATUS_CHOICES.PENDING
     )
