@@ -48,7 +48,10 @@ class User(AbstractBaseUser, TimeStamp):
     Skills_ids = models.ManyToManyField(
         Skills,
         related_name="skills",
+
     )
     User_type = models.CharField(
-        max_length=20, choices=USER_TYPE.choices, null=False, blank=False
+        max_length=20,
+        null=False,
+        choices=USER_TYPE.choices
     )

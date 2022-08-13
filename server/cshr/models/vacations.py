@@ -15,7 +15,10 @@ class REASON_CHOICES(models.TextChoices):
 
 
 class Vacation(Requests):
-    """Class vacation model for adding a new vacation request to the database"""
+    """
+    Class vacation model for adding
+    a new vacation request to the database
+    """
 
     reason = models.CharField(
         max_length=20,
