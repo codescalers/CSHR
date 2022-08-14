@@ -10,5 +10,5 @@ class Compensation(Requests):
     """
 
     reason = models.CharField(max_length=250, blank=True)
-    from_date = models.DateField(null=False, blank=False)
-    end_date = models.DateField(null=False, blank=False)
+    from_date = models.DateField()
+    end_date = models.DateField()

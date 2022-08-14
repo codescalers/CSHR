@@ -25,8 +25,8 @@ class Vacation(Requests):
         choices=REASON_CHOICES.choices,
         default=REASON_CHOICES.ANNUAL_LEAVES,
     )
-    from_date = models.DateField(null=False, blank=False)
-    end_date = models.DateField(null=False, blank=False)
+    from_date = models.DateField()
+    end_date = models.DateField()
     change_log = models.JSONField(default=list)
 
     def ___str__(self):

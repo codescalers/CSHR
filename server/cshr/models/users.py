@@ -34,16 +34,16 @@ class User(AbstractBaseUser, TimeStamp):
     """main user model"""
 
     USERNAME_FIELD = "Email"
-    FirstName = models.CharField(max_length=45, null=False)
-    LastName = models.CharField(max_length=45, null=False, blank=False)
-    Email = models.EmailField(max_length=45, null=False, blank=False)
-    MobileNumber = models.CharField(max_length=15, null=False, blank=False)
-    TelegramLink = models.CharField(max_length=100, null=False, blank=False)
-    Birthday = models.DateField(null=False, blank=False)
+    FirstName = models.CharField(max_length=45)
+    LastName = models.CharField(max_length=45)
+    Email = models.EmailField(max_length=45)
+    MobileNumber = models.CharField(max_length=15)
+    TelegramLink = models.CharField(max_length=100)
+    Birthday = models.DateField()
     Team = models.CharField(
-        max_length=20, choices=TEAM.choices, null=False, blank=False
+        max_length=20, choices=TEAM.choices
     )
-    Salary = models.JSONField(default=list, null=False, blank=False)
+    Salary = models.JSONField(default=dict)
     Location_id = models.ForeignKey(Office, on_delete=models.CASCADE)
     Skills_ids = models.ManyToManyField(
         Skills,
@@ -52,6 +52,5 @@ class User(AbstractBaseUser, TimeStamp):
     )
     User_type = models.CharField(
         max_length=20,
-        null=False,
         choices=USER_TYPE.choices
     )

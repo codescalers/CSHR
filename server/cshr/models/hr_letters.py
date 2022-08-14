@@ -10,4 +10,4 @@ class HR_LETTERS(Requests):
     a new HR_letter request to the database
     """
 
-    addresses = models.CharField(max_length=45, null=False)
+    addresses = models.CharField(max_length=45)
