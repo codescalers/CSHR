@@ -12,4 +12,5 @@ class TimeStamp(models.Model):
         abstract = True
 
     def __str__(self) -> str:
-        return f"created at : {self.created_at} , modified at : {self.modified_at}"
+        return f"""created at : {self.created_at} ,
+            modified at : {self.modified_at}"""

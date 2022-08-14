@@ -52,4 +52,6 @@ class Requests(TimeStamp):
     )
 
     def __str__(self) -> str:
-        return f"applying user id : {self.applying_user} , request type : {self.type} to approval user id :{self.approval_user}"
+        return f"""applying user id : {self.applying_user} ,
+            request type : {self.type}
+            to approval user id :{self.approval_user}"""
