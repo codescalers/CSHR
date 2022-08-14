@@ -50,3 +50,6 @@ class Requests(TimeStamp):
         choices=STATUS_CHOICES.choices,
         default=STATUS_CHOICES.PENDING
     )
+
+    def __str__(self) -> str:
+        return f"applying user id : {self.applying_user} , request type : {self.type} to approval user id :{self.approval_user}"

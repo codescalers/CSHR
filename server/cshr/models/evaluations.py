@@ -9,3 +9,6 @@ class Evaluations(TimeStamp):
 
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     link = models.CharField(max_length=150)
+
+    def __str__(self) -> str:
+        return f"user id :{self.user} {self.link}"

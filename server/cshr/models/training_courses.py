@@ -13,3 +13,6 @@ class Training_Courses(TimeStamp):
     )
     name = models.CharField(max_length=45)
     certificate_link = models.CharField(max_length=150)
+
+    def __str__(self) -> str:
+        return self.name

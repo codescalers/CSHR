@@ -47,3 +47,6 @@ class User(AbstractBaseUser, TimeStamp):
         related_name="skills",
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
+
+    def __str__(self) -> str:
+        return f"{self.first_name} {self.last_name}"
