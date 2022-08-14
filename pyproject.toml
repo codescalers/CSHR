@@ -4,6 +4,8 @@ version = "0.1.0"
 description = ""
 authors = ["Mahmoud-Emad <mahmmoud.hassanein@gmail.com>"]
 
+
+
 [tool.poetry.dependencies]
 python = "^3.8"
 Django = "^4.1"
@@ -13,7 +15,11 @@ djangorestframework = "^3.13.1"
 django-debug-toolbar = "^3.5.0"
 
 [tool.poetry.dev-dependencies]
+black = "^22.6.0"
+flake8 = "^5.0.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
