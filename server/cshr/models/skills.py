@@ -3,4 +3,4 @@ from django.db import models
 
 
 class Skills(models.Model):
-    Name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)

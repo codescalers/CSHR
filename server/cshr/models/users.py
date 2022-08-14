@@ -32,25 +32,23 @@ class USER_TYPE(models.TextChoices):
 
 class User(AbstractBaseUser, TimeStamp):
     """main user model"""
-
-    USERNAME_FIELD = "Email"
-    FirstName = models.CharField(max_length=45)
-    LastName = models.CharField(max_length=45)
-    Email = models.EmailField(max_length=45)
-    MobileNumber = models.CharField(max_length=15)
-    TelegramLink = models.CharField(max_length=100)
-    Birthday = models.DateField()
-    Team = models.CharField(
+    first_name = models.CharField(max_length=45)
+    last_name = models.CharField(max_length=45)
+    email = models.EmailField(max_length=45)
+    mobile_number = models.CharField(max_length=15)
+    telegram_link = models.CharField(max_length=100)
+    birthday = models.DateField()
+    team = models.CharField(
         max_length=20, choices=TEAM.choices
     )
-    Salary = models.JSONField(default=dict)
-    Location_id = models.ForeignKey(Office, on_delete=models.CASCADE)
-    Skills_ids = models.ManyToManyField(
+    salary = models.JSONField(default=dict)
+    location = models.ForeignKey(Office, on_delete=models.CASCADE)
+    skills = models.ManyToManyField(
         Skills,
         related_name="skills",
 
     )
-    User_type = models.CharField(
+    user_type = models.CharField(
         max_length=20,
         choices=USER_TYPE.choices
     )
