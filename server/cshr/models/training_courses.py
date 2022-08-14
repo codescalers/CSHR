@@ -1,4 +1,3 @@
-
 from django.db import models
 
 from server.cshr.models.abstracts import TimeStamp

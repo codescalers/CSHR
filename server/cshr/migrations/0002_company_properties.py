@@ -24,11 +24,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=45)),
-                ("image_of", models.CharField(
-                    blank=True,
-                    max_length=140,
-                    null=True
-                    )),
+                ("image_of", models.CharField(blank=True,
+                                              max_length=140,
+                                              null=True)),
                 (
                     "user_id",
                     models.ForeignKey(
