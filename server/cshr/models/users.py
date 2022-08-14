@@ -48,11 +48,10 @@ class User(AbstractBaseUser, TimeStamp):
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
 
-    def __str__(self) -> str:
-        return f"{self.first_name} {self.last_name}"
-
-    @property 
-    def full_name(self):
+    @property
+    def full_name(self) -> str:
         "return the user's full name"
         return '%s %s' % (self.first_name, self.last_name)
 
+    def __str__(self) -> str:
+        return f"{self.email}"
