@@ -50,3 +50,9 @@ class User(AbstractBaseUser, TimeStamp):
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
+
+    @property 
+    def full_name(self):
+        "return the user's full name"
+        return '%s %s' % (self.first_name, self.last_name)
+
