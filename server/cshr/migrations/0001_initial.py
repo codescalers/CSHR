@@ -61,14 +61,11 @@ class Migration(migrations.Migration):
                 ),
                 ("password", models.CharField(
                     max_length=128,
-                    verbose_name="password"
-                    )),
+                    verbose_name="password")),
                 (
                     "last_login",
                     models.DateTimeField(
-                        blank=True, null=True, verbose_name="last login"
-                    ),
-                ),
+                        blank=True, null=True, verbose_name="last login"),),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("modified_at", models.DateTimeField(db_index=True)),
                 ("FirstName", models.CharField(max_length=45)),
@@ -119,9 +116,7 @@ class Migration(migrations.Migration):
                 (
                     "Skills_ids",
                     models.ManyToManyField(
-                        related_name="skills",
-                        to="cshr.skills"
-                        ),
+                        related_name="skills", to="cshr.skills"),
                 ),
             ],
             options={

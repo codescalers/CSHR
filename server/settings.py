@@ -19,8 +19,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "server.cshr",
     # Third party
-    'drf_yasg',
-    'rest_framework',
+    "drf_yasg",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -89,6 +89,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+ 
 REST_FRAMEWORK = {
  
     'DEFAULT_AUTHENTICATION_CLASSES':  (
@@ -96,18 +97,15 @@ REST_FRAMEWORK = {
     )
   
 }
+ 
 
 SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'Bearer': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header'
-      }
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
     },
-    'REFETCH_SCHEMA_WITH_AUTH': True,
-    'REFETCH_SCHEMA_ON_LOGOUT' : True,
-    'USE_SESSION_AUTH' : False,
+    "REFETCH_SCHEMA_WITH_AUTH": True,
+    "REFETCH_SCHEMA_ON_LOGOUT": True,
+    "USE_SESSION_AUTH": False,
 }
 
 # Internationalization
