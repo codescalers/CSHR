@@ -2,7 +2,6 @@
 CMD:=poetry run
 
 install:
-	poetry update
 	poetry install
 	poetry check
 
