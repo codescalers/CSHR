@@ -11,3 +11,6 @@ class HR_LETTERS(Requests):
     """
 
     addresses = models.CharField(max_length=45)
+
+    def __str__(self) -> str:
+        return self.addresses

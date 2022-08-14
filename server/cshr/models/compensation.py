@@ -12,3 +12,6 @@ class Compensation(Requests):
     reason = models.CharField(max_length=250, blank=True)
     from_date = models.DateField()
     end_date = models.DateField()
+
+    def __str__(self) -> str:
+        return self.reason
