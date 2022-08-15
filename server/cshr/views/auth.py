@@ -2,10 +2,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView
-    )
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from server.cshr.serializers.auth import (
     RegisterSerializer,

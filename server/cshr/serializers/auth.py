@@ -10,10 +10,7 @@ from rest_framework import exceptions
 from django.contrib.auth.hashers import check_password
 from typing import Dict, Any
 from server.cshr.models.users import User
-from server.cshr.services.users import (
-    get_user_by_email_for_login,
-    get_user_by_id
-    )
+from server.cshr.services.users import get_user_by_email_for_login, get_user_by_id
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
