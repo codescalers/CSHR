@@ -78,7 +78,7 @@ class User(AbstractBaseUser, TimeStamp):
     birthday = models.DateField()
     team = models.CharField(max_length=20, choices=TEAM.choices)
     salary = models.JSONField(default=dict)
-    location = models.ForeignKey(Office, on_delete=models.CASCADE)
+    location = models.ForeignKey(Office,default= 1, on_delete=models.CASCADE)
     skills = models.ManyToManyField(
         Skills,
         related_name="skills",
