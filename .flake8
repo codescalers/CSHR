@@ -1,0 +1,3 @@
+[flake8]
+exclude = ./server/cshr/models/__init__.py
+max-line-length = 150
