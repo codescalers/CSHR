@@ -71,7 +71,7 @@ class User(AbstractBaseUser, TimeStamp):
 
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
-    image = models.ImageField()
+    image = models.ImageField(default='DEFAULT VALUE')
     email = models.EmailField(max_length=45, unique = True)
     mobile_number = models.CharField(max_length=15)
     telegram_link = models.CharField(max_length=100)
