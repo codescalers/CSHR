@@ -14,6 +14,8 @@ from server.cshr.serializers.auth import (
     MyTokenRefreshSerializer,
 )
 from server.cshr.services.users import get_user_by_id
+from server.cshr.api.response import CustomResponse
+from server.cshr.api.permission import UserIsAuthenticated
 
 
 class RegisterAPIView(GenericAPIView):
@@ -26,15 +28,15 @@ class RegisterAPIView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            # return CustomResponse.success(
-            #     data = serializer.data,
-            #     message = "User created successfully",
-            #     status_code=201
-            # )
-        # return CustomResponse.bad_request(
-        #     error = serializer.errors,
-        #     message = "User creation failed"
-        # )
+            return CustomResponse.success(
+                data = serializer.data,
+                message = "User created successfully",
+                status_code=201
+            )
+        return CustomResponse.bad_request(
+            error = serializer.errors,
+            message = "User creation failed"
+        )
 
 
 class LoginByTokenAPIView(TokenObtainPairView):
@@ -55,7 +57,7 @@ class UpdateUserSettingsAPIView(GenericAPIView):
     """This class to update profile info"""
 
     serializer_class = UpdateUserSettingsSerializer
-    # permission_classes = (UserIsAuthenticated,)
+    permission_classes = (UserIsAuthenticated,)
 
     def put(self, request: Request) -> Response:
         """Update user settings"""
@@ -69,13 +71,13 @@ class UpdateUserSettingsAPIView(GenericAPIView):
         print(request.data)
         if serializer.is_valid():
             serializer.save()
-            # return CustomResponse.success(
-            #     data=serializer.data,
-            #     message="Profile updated successfully.",
-            #     status_code=201
-            # )
-        # return CustomResponse.bad_request(
-        #     error=serializer.errors,
-        #     message="Profile update failed.",
+            return CustomResponse.success(
+                data=serializer.data,
+                message="Profile updated successfully.",
+                status_code=201
+            )
+        return CustomResponse.bad_request(
+            error=serializer.errors,
+            message="Profile update failed.",
 
-    # )
+    )
