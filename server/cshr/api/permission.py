@@ -10,7 +10,7 @@ class UserIsAuthenticated(permissions.BasePermission):
     logged in permission
     """
 
-    def has_permission(self, request: Request,view: APIView) -> bool:
+    def has_permission(self, request: Request, view: APIView) -> bool:
         if request.user.is_authenticated:
             return True
         raise PermissionDenied
@@ -21,7 +21,7 @@ class IsAdmin(permissions.BasePermission):
     admin permission
     """
 
-    def has_permission(self, request: Request,view: APIView) -> bool:
+    def has_permission(self, request: Request, view: APIView) -> bool:
         if request.user.is_authenticated:
             userType = get_user_type_by_id(request.user.id)
             if userType == "Admin":
@@ -35,7 +35,7 @@ class IsSupervisor(permissions.BasePermission):
     supervisor permission
     """
 
-    def has_permission(self, request: Request,view: APIView) -> bool:
+    def has_permission(self, request: Request, view: APIView) -> bool:
         if request.user.is_authenticated:
             userType = get_user_type_by_id(request.user.id)
             if userType == "Supervisor":
@@ -49,7 +49,7 @@ class IsUser(permissions.BasePermission):
     normal user permission
     """
 
-    def has_permission(self, request: Request,view: APIView) -> bool:
+    def has_permission(self, request: Request, view: APIView) -> bool:
         if request.user.is_authenticated:
             userType = get_user_type_by_id(request.user.id)
             if userType == "Supervisor":

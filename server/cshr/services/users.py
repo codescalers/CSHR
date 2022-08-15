@@ -7,7 +7,7 @@ def get_user_by_id(id: str) -> User:
     """Return user who have the same id"""
     try:
         return User.objects.get(id=int(id))
-    except: 
+    except User.DoesNotExist:
         return None
 
 
@@ -15,7 +15,7 @@ def get_user_by_email_for_login(email: str) -> User:
     """Return user who have the same email"""
     try:
         return User.objects.get(email=email)
-    except:
+    except User.DoesNotExist:
         return None
 
 
@@ -29,12 +29,10 @@ def success_login_user(email, password) -> User:
     return None
 
 
-
-
 def get_user_type_by_id(id: str) -> User:
     """Return user type by id"""
     try:
         user = User.objects.get(id=int(id))
         return user.user_type
-    except:
+    except User.DoesNotExist:
         return None

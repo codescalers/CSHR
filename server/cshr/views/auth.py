@@ -2,10 +2,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView
-    )
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from server.cshr.serializers.auth import (
     RegisterSerializer,
@@ -29,13 +26,12 @@ class RegisterAPIView(GenericAPIView):
         if serializer.is_valid():
             serializer.save()
             return CustomResponse.success(
-                data = serializer.data,
-                message = "User created successfully",
-                status_code=201
+                data=serializer.data,
+                message="User created successfully",
+                status_code=201,
             )
         return CustomResponse.bad_request(
-            error = serializer.errors,
-            message = "User creation failed"
+            error=serializer.errors, message="User creation failed"
         )
 
 
@@ -74,10 +70,9 @@ class UpdateUserSettingsAPIView(GenericAPIView):
             return CustomResponse.success(
                 data=serializer.data,
                 message="Profile updated successfully.",
-                status_code=201
+                status_code=201,
             )
         return CustomResponse.bad_request(
             error=serializer.errors,
             message="Profile update failed.",
-
-    )
+        )

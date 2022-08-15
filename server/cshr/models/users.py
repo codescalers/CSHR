@@ -1,15 +1,11 @@
 """ database user model """
 
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser
 
 from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.office import Office
 from server.cshr.models.skills import Skills
-
-
- 
-     
 
 
 class TEAM(models.TextChoices):
