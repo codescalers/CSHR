@@ -1,0 +1,2 @@
+[flake8]
+exclude = ./server/cshr/models/__init__.py

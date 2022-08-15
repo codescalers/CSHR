@@ -35,7 +35,7 @@ class IsSupervisor(permissions.BasePermission):
     """
 
     def has_permission(self, request: Request) -> bool:
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             userType = get_user_type_by_id(request.user.id)
             if userType == "Supervisor":
                 return True

@@ -1,11 +1,11 @@
-# from .abstracts import *
-# from .office import *
-# from .skills import *
-# from .users import *
-# from .compensation import *
-# from .training_courses import *
-# from .vacations import *
-# from .hr_letters import *
-# from .company_properties import *
-# from .evaluations import *
-# from .requests import *
+from .abstracts import *
+from .office import *
+from .skills import *
+from .users import *
+from .compensation import *
+from .training_courses import *
+from .vacations import *
+from .hr_letters import *
+from .company_properties import *
+from .evaluations import *
+from .requests import *
