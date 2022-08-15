@@ -1,11 +1,47 @@
 """ database user model """
 
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.office import Office
 from server.cshr.models.skills import Skills
+
+class TestTrackerBaseUserManger(BaseUserManager):
+    """This is the main class for user manger"""
+    def create_user(self, email: str, password: str) -> 'User':
+        """DMC method to create user"""
+        if not email:
+            raise ValueError('Users must have an email address')
+        user = self.model(
+            email=self.normalize_email(email),
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+    
+    def create_admin(self, email: str, password: str):
+        """ Create super user [admin] """
+        user = self.create_user(
+            email = self.normalize_email(email),
+            password = password,
+        )
+        user.user_type = USER_TYPE.ADMIN
+        user.save(using=self._db)
+        return user
+    def create_supervisor(self, email: str, password: str):
+        """ Create super user [admin] """
+        user = self.create_user(
+            email = self.normalize_email(email),
+            password = password,
+        )
+        user.user_type = USER_TYPE.SUPERVISOR
+        user.save(using=self._db)
+        return user
+
+
+
+
 
 
 class TEAM(models.TextChoices):
@@ -48,8 +84,9 @@ class User(AbstractBaseUser, TimeStamp):
         related_name="skills",
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
+    objects = TestTrackerBaseUserManger()
     USERNAME_FIELD= 'email'
-    REQUIRED_FIELDS = {'first_name','last_name','telegram_link','email','birthday', 'mobile_number'}  
+    REQUIRED_FIELDS = ['first_name','last_name','telegram_link','birthday', 'mobile_number'] 
     @property
     def full_name(self) -> str:
         "return the user's full name"
