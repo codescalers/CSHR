@@ -7,13 +7,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0008_alter_evaluations_modified_at_and_more'),
+        ("cshr", "0008_alter_evaluations_modified_at_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='location',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='cshr.office'),
+            model_name="user",
+            name="location",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="cshr.office"
+            ),
         ),
     ]
