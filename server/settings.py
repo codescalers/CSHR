@@ -19,8 +19,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "server.cshr",
     # Third party
-    'drf_yasg',
-    'rest_framework',
+    "drf_yasg",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -89,22 +89,23 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+ 
 REST_FRAMEWORK = {
-
+ 
+    'DEFAULT_AUTHENTICATION_CLASSES':  (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
   
 }
+ 
 
 SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'Bearer': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header'
-      }
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
     },
-    'REFETCH_SCHEMA_WITH_AUTH': True,
-    'REFETCH_SCHEMA_ON_LOGOUT' : True,
-    'USE_SESSION_AUTH' : False,
+    "REFETCH_SCHEMA_WITH_AUTH": True,
+    "REFETCH_SCHEMA_ON_LOGOUT": True,
+    "USE_SESSION_AUTH": False,
 }
 
 # Internationalization
@@ -128,3 +129,4 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+AUTH_USER_MODEL = 'cshr.User'
