@@ -67,9 +67,9 @@ class RegisterationTests(APITestCase):
 class LoginTests(APITestCase):
     def setUp(self):
         Office.objects.create(name="testOffice", country="testCountry")
-        self.createUser()
+        self.create_user()
 
-    def createUser(self) -> User:
+    def create_user(self) -> User:
         url = "/api/auth/signup/"
         data = {
             "first_name": "fname1",
@@ -81,7 +81,8 @@ class LoginTests(APITestCase):
             "password": "password",
             "location": 1,
         }
-        self.client.post(url, data, format="json")
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_login_success(self):
         """
@@ -99,7 +100,7 @@ class LoginTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "user2@example.com", "password": "password"}
         response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_login_fail_pass(self):
         """
@@ -108,4 +109,4 @@ class LoginTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "user1@example.com", "password": "password2"}
         response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
