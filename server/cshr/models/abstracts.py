@@ -5,7 +5,6 @@ from django.db import models
 class TimeStamp(models.Model):
     """Database model for created and updated timestamps"""
 
- 
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     modified_at = models.DateTimeField(auto_now=True)
 
