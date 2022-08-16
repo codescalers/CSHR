@@ -1,3 +1,4 @@
+# Test if working
 name: Build and push a docker image and a flist.
 
 on:
