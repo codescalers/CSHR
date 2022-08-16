@@ -7,6 +7,6 @@ RUN poetry export -f requirements.txt -o requirements.txt
 FROM python:3.8-slim-buster
 WORKDIR /app
 COPY --from=poetry /app/requirements.txt .
-RUN pip install -r requirements.txt
+RUN poetry run pip install -r requirements.txt
 COPY . .
 CMD ["./manage.py", "runserver", "0.0.0.0:8000"]
