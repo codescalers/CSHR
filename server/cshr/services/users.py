@@ -1,3 +1,4 @@
+from logging import exception
 from server.cshr.models.users import User
 
 from django.contrib.auth.hashers import check_password
@@ -11,7 +12,7 @@ def get_user_by_id(id: str) -> User:
         return None
 
 
-def get_user_by_email_for_login(email: str) -> User:
+def get_user_by_email(email: str) -> User:
     """Return user who have the same email"""
     try:
         return User.objects.get(email=email)
@@ -22,10 +23,11 @@ def get_user_by_email_for_login(email: str) -> User:
 def success_login_user(email, password) -> User:
     """Return user who have the same email and password"""
 
-    user = User.objects.get(email=email)
-
-    if check_password(password, user.password):
+    user = get_user_by_email(email=email)
+    if user!= None:
+     if check_password(password, user.password):
         return user
+     return None
     return None
 
 

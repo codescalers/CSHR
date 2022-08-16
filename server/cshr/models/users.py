@@ -35,27 +35,20 @@ class User(AbstractBaseUser, TimeStamp):
 
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
-    image = models.ImageField(default="DEFAULT VALUE")
+    image = models.ImageField()
     email = models.EmailField(max_length=45, unique=True)
     mobile_number = models.CharField(max_length=15)
     telegram_link = models.CharField(max_length=100)
     birthday = models.DateField()
     team = models.CharField(max_length=20, choices=TEAM.choices)
     salary = models.JSONField(default=dict)
-    location = models.ForeignKey(Office, default=1, on_delete=models.CASCADE)
+    location = models.ForeignKey(Office, on_delete=models.CASCADE)
     skills = models.ManyToManyField(
         Skills,
         related_name="skills",
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = [
-        "first_name",
-        "last_name",
-        "telegram_link",
-        "birthday",
-        "mobile_number",
-    ]
 
     @property
     def full_name(self) -> str:

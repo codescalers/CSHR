@@ -10,7 +10,7 @@ from rest_framework import exceptions
 from django.contrib.auth.hashers import check_password
 from typing import Dict, Any
 from server.cshr.models.users import User
-from server.cshr.services.users import get_user_by_email_for_login, get_user_by_id
+from server.cshr.services.users import get_user_by_email, get_user_by_id
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -28,7 +28,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = {}
         attrs["email"] = attrs.get("email").lower()
 
-        self.user = get_user_by_email_for_login(attrs["email"])
+        self.user = get_user_by_email(attrs["email"])
         if self.user is None:
             raise exceptions.AuthenticationFailed(
                 self.error_messages["no_active_account"],
@@ -92,6 +92,7 @@ class RegisterSerializer(ModelSerializer):
             "birthday",
             "mobile_number",
             "password",
+            "location",
         )
 
     def create(self, validated_data):
@@ -101,24 +102,3 @@ class RegisterSerializer(ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
-
-
-class UpdateUserSettingsSerializer(ModelSerializer):
-    """Update user profile settings"""
-
-    class Meta:
-        model = User
-        fields = [
-            "first_name",
-            "last_name",
-            "telegram_link",
-            "email",
-            "birthday",
-            "mobile_number",
-            "password",
-            "image",
-            "team",
-            "salary",
-            "location",
-            "skills",
-        ]
