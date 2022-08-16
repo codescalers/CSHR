@@ -2,7 +2,7 @@ from rest_framework import permissions
 from django.core.exceptions import PermissionDenied
 from rest_framework.request import Request
 from server.cshr.services.users import get_user_type_by_id
-
+from server.cshr.models.users import USER_TYPE
 from rest_framework.views import APIView
 
 
@@ -25,7 +25,7 @@ class IsAdmin(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
         if request.user.is_authenticated:
             userType = get_user_type_by_id(request.user.id)
-            if userType == "Admin":
+            if userType == USER_TYPE.ADMIN:
                 return True
             raise PermissionDenied
         raise PermissionDenied
@@ -39,7 +39,7 @@ class IsSupervisor(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
         if request.user.is_authenticated:
             userType = get_user_type_by_id(request.user.id)
-            if userType == "Supervisor":
+            if userType == USER_TYPE.SUPERVISOR:
                 return True
             raise PermissionDenied
         raise PermissionDenied
@@ -53,7 +53,7 @@ class IsUser(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
         if request.user.is_authenticated:
             userType = get_user_type_by_id(request.user.id)
-            if userType == "Supervisor":
+            if userType == USER_TYPE.USER:
                 return True
             raise PermissionDenied
         raise PermissionDenied
