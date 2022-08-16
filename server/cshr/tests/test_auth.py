@@ -1,9 +1,8 @@
-from venv import create
 from rest_framework import status
-from rest_framework.test import APITestCase 
+from rest_framework.test import APITestCase
 from server.cshr.models.users import User
 from server.cshr.models.office import Office
- 
+
 
 class RegisterationTests(APITestCase):
     def setUp(self):
@@ -22,7 +21,7 @@ class RegisterationTests(APITestCase):
             "birthday": "2022-08-16",
             "mobile_number": "01234567890",
             "password": "password",
-            "location": 1
+            "location": 1,
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -40,8 +39,7 @@ class RegisterationTests(APITestCase):
             "birthday": "2022-08-25",
             "mobile_number": "01928389476",
             "password": "password2",
-            "location": 2
-
+            "location": 2,
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -60,19 +58,18 @@ class RegisterationTests(APITestCase):
             "birthday": "2022-08-25",
             "mobile_number": "01928389476",
             "password": "password2",
-            "location": 1
-
+            "location": 1,
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class LoginTests(APITestCase):
-     def setUp(self):
-        office=  Office.objects.create(name="testOffice", country="testCountry")
+    def setUp(self):
+        Office.objects.create(name="testOffice", country="testCountry")
         self.createUser()
 
-     def createUser(self) -> User:
+    def createUser(self) -> User:
         url = "/api/auth/signup/"
         data = {
             "first_name": "fname1",
@@ -82,45 +79,33 @@ class LoginTests(APITestCase):
             "birthday": "2022-08-16",
             "mobile_number": "01234567890",
             "password": "password",
-            "location": 1
+            "location": 1,
         }
-        client.post(url, data, format='json')
-         
+        self.client.post(url, data, format="json")
 
-     def test_login_success(self):
+    def test_login_success(self):
         """
         Ensure we can login as auser.
         """
-        url = '/api/auth/login/'
-        data = {
-            'email': "user1@example.com" ,
-            'password': "password"
-        }
-        response = client.post(url, data, format='json')
+        url = "/api/auth/login/"
+        data = {"email": "user1@example.com", "password": "password"}
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-     def test_login_fail_email(self):
+    def test_login_fail_email(self):
         """
         a wrong email not able to login.
         """
-        url = '/api/auth/login/'
-        data = {
-            'email': "user2@example.com" ,
-            'password': "password"
-        }
-        response = self.client.post(url, data, format='json')
+        url = "/api/auth/login/"
+        data = {"email": "user2@example.com", "password": "password"}
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-     def test_login_fail_pass(self):
+
+    def test_login_fail_pass(self):
         """
         a wrong pass not able to login.
         """
-        url = '/api/auth/login/'
-        data = {
-            'email': "user1@example.com" ,
-            'password': "password2"
-        }
-        response = self.client.post(url, data, format='json')
+        url = "/api/auth/login/"
+        data = {"email": "user1@example.com", "password": "password2"}
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-      
-
-    
