@@ -26,4 +26,4 @@ jobs:
 
       - name: build and push flist
         run: | 
-          curl -f -X POST  -H "Authorization: bearer ${{secrets.FLIST_TOKEN}}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/CSHR:latest'
+          curl -f -X POST  -H "Authorization: bearer ${{secrets.FLIST_TOKEN}}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/cshr:latest'
