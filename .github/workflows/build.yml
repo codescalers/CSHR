@@ -21,7 +21,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/CSHR:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/cshr:latest
 
 
       - name: build and push flist
