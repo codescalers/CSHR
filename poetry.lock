@@ -467,7 +467,7 @@ djangorestframework = [
     {file = "djangorestframework-3.13.1.tar.gz", hash = "sha256:0c33407ce23acc68eca2a6e46424b008c9c02eceb8cf18581921d0092bc1f2ee"},
 ]
 drf-yasg = [
-    {hash = "hash=sha256:85899b8b173cac7d39af3fea205bdc1a599aed8de3389a3bcccc29b37b9b983e"}
+    {hash = "sha256:85899b8b173cac7d39af3fea205bdc1a599aed8de3389a3bcccc29b37b9b983e"}
 ]
 flake8 = []
 idna = [
