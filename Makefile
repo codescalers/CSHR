@@ -1,12 +1,18 @@
 
 CMD:=poetry run
 
+install:
+	poetry install
+	poetry check
+
+
+
 
 lint:
-	$(CMD) black .
-	$(CMD) flake8 .
+	$(CMD) flake8 .  --exclude=__init__.py
 
 
 migrate:
+	$(CMD) python3 manage.py makemigrations
 	$(CMD) python3 manage.py migrate
-	$(CMD) python3 manage.py sqlmigrate cshr 0002
+	$(CMD) python3 manage.py sqlmigrate cshr 0006
