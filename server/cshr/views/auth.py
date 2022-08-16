@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import make_password
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -9,7 +8,6 @@ from server.cshr.serializers.auth import (
     MyTokenObtainPairSerializer,
     MyTokenRefreshSerializer,
 )
-from server.cshr.services.users import get_user_by_id
 from server.cshr.api.response import CustomResponse
 
 
