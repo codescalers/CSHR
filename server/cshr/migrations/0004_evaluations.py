@@ -29,8 +29,7 @@ class Migration(migrations.Migration):
                 (
                     "user",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.DO_NOTHING,
-                        to="cshr.user"
+                        on_delete=django.db.models.deletion.DO_NOTHING, to="cshr.user"
                     ),
                 ),
             ],

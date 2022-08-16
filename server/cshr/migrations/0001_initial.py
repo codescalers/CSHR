@@ -59,13 +59,13 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("password", models.CharField(
-                    max_length=128,
-                    verbose_name="password")),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
                 (
                     "last_login",
                     models.DateTimeField(
-                        blank=True, null=True, verbose_name="last login"),),
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("modified_at", models.DateTimeField(db_index=True)),
                 ("FirstName", models.CharField(max_length=45)),
@@ -109,14 +109,12 @@ class Migration(migrations.Migration):
                 (
                     "Location_id",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="cshr.office"
+                        on_delete=django.db.models.deletion.CASCADE, to="cshr.office"
                     ),
                 ),
                 (
                     "Skills_ids",
-                    models.ManyToManyField(
-                        related_name="skills", to="cshr.skills"),
+                    models.ManyToManyField(related_name="skills", to="cshr.skills"),
                 ),
             ],
             options={

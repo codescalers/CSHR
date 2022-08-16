@@ -33,23 +33,13 @@ class Requests(TimeStamp):
     # to use it User.user_requests.all()
 
     applying_user = models.ForeignKey(
-        User, on_delete=models.CASCADE,
-        related_name="apply_user"
+        User, on_delete=models.CASCADE, related_name="apply_user"
     )
     approval_user = models.ForeignKey(
-        User, on_delete=models.CASCADE,
-        related_name="approve_user"
+        User, on_delete=models.CASCADE, related_name="approve_user"
     )
-    type = models.CharField(
-        max_length=20,
-        choices=TYPE_CHOICES.choices,
-        default=TYPE_CHOICES.VACATIONS
-    )
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES.choices,
-        default=STATUS_CHOICES.PENDING
-    )
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES.choices)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES.choices)
 
     def __str__(self) -> str:
         return f"""applying user id : {self.applying_user} ,

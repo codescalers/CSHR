@@ -35,7 +35,8 @@ class User(AbstractBaseUser, TimeStamp):
 
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
-    email = models.EmailField(max_length=45)
+    image = models.ImageField()
+    email = models.EmailField(max_length=45, unique=True)
     mobile_number = models.CharField(max_length=15)
     telegram_link = models.CharField(max_length=100)
     birthday = models.DateField()
@@ -47,11 +48,12 @@ class User(AbstractBaseUser, TimeStamp):
         related_name="skills",
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
+    USERNAME_FIELD = "email"
 
     @property
     def full_name(self) -> str:
         "return the user's full name"
-        return '%s %s' % (self.first_name, self.last_name)
+        return "%s %s" % (self.first_name.title(), self.last_name.title())
 
     def __str__(self) -> str:
         return f"{self.email}"
