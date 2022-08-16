@@ -20,7 +20,7 @@ class CustomResponse:
         status_code: Optional[int] = None,
     ) -> Response:
         """success response method"""
-        """ include GET, and PUT request"""
+        """ include GET, POST, and PUT request"""
 
         if not message:
             message = "Success"
@@ -36,32 +36,11 @@ class CustomResponse:
         )
 
     @staticmethod
-    def created(
-        data: Union[List[Any], None] = None,
-        message: Optional[str] = None,
-        status_code: Optional[int] = None,
-    ) -> Response:
-        """created response method for POST request"""
-        if not message:
-            message = "Created successfully"
-        if not status_code:
-            status_code = HTTP_201_CREATED
-
-        return Response(
-            {
-                "message": message,
-                "data": data,
-            },
-            status=status_code,
-        )
-
-    @staticmethod
     def deleted(
         message: Optional[str] = None, status_code: Optional[int] = HTTP_204_NO_CONTENT
     ) -> Response:
-        """success response method"""
-        """ include GET, UPDATE"""
-
+        """delete response method"""
+        
         if not message:
             message = "Deleted successfully"
 
