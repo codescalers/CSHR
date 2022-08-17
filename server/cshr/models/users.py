@@ -35,7 +35,7 @@ class User(AbstractBaseUser, TimeStamp):
 
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
-    image = models.ImageField()
+    image = models.ImageField(upload_to="profile_image",)
     email = models.EmailField(max_length=45, unique=True)
     mobile_number = models.CharField(max_length=15)
     telegram_link = models.CharField(max_length=100)
@@ -57,3 +57,9 @@ class User(AbstractBaseUser, TimeStamp):
 
     def __str__(self) -> str:
         return f"{self.email}"
+
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "Users"
+        ordering = ['-first_name', '-last_name']
+        get_latest_by = 'created_at'

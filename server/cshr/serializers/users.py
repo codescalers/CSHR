@@ -1,5 +1,8 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from server.cshr.models.users import User
+import base64
+from django.conf import settings
+import os
 
 
 class UserSerializer(ModelSerializer):
@@ -25,6 +28,6 @@ class UserSerializer(ModelSerializer):
         skills = obj.skills
         return skills.all()
 
-    def get_user_requests(self, obj):
-        requests = obj.requests.all()
-        return requests
+    def encode_profile_image(self, user):
+        with open(os.path.join(settings.MEDIA_ROOT, user.image.name), "rb") as image_file:
+            return base64.b64encode(image_file.read())
