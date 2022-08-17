@@ -6,7 +6,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.state import token_backend
 from rest_framework_simplejwt.settings import api_settings
-from django.http import Http404
+from rest_framework import exceptions
 from django.contrib.auth.hashers import check_password
 from typing import Dict, Any
 from server.cshr.models.users import User
@@ -30,7 +30,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         self.user = get_user_by_email(attrs["email"])
         if self.user is None:
-            raise Http404(
+            raise exceptions.AuthenticationFailed(
                 self.error_messages["no_active_account"],
                 "no_active_account",
             )
@@ -45,11 +45,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                 self.user = user
                 return self.custom_token(data)
             except User.DoesNotExist:
-                raise Http404(
+                raise exceptions.AuthenticationFailed(
                     self.error_messages["no_active_account"],
                     "no_active_account",
                 )
-        raise Http404(
+        raise exceptions.AuthenticationFailed(
             self.error_messages["no_active_account"],
             "no_active_account",
         )

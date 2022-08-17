@@ -100,7 +100,7 @@ class LoginTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "user2@example.com", "password": "password"}
         response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_login_fail_pass(self):
         """
@@ -109,4 +109,4 @@ class LoginTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "user1@example.com", "password": "password2"}
         response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
