@@ -19,6 +19,14 @@ def get_user_by_email(email: str) -> User:
         return None
 
 
+def get_user_by_full_name(first_name: str, last_name: str) -> User:
+    """Return user who have the same email"""
+    try:
+        return User.objects.get(first_name=first_name, last_name=last_name)
+    except User.DoesNotExist:
+        return None
+
+
 def success_login_user(email, password) -> User:
     """Return user who have the same email and password"""
 
