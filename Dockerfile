@@ -1,4 +1,6 @@
 FROM python:3.8-slim-buster AS poetry
+ENV PYTHONUNBUFFERED=1
+RUN pip install --upgrade pip
 RUN pip install poetry
 WORKDIR /app
 COPY pyproject.toml poetry.lock ./
