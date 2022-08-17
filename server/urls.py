@@ -24,9 +24,10 @@ urlpatterns = [
         include(
             [
                 path("auth/", include("server.cshr.routs.auth")),
+                path("", include("server.cshr.routs.user")),
             ]
         ),
-    ),
+    )
 ]
 
 
