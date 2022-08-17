@@ -4,8 +4,8 @@ from rest_framework.response import Response
 
 from server.cshr.api.response import CustomResponse
 from server.cshr.models import User
-from server.cshr.api.serializers.user import UserSerializer
-from server.cshr.api.services.users import get_user_by_email
+from server.cshr.serializers.users import UserSerializer
+from server.cshr.services.users import get_user_by_email
 
 
 class UserAPIView(GenericAPIView):
@@ -18,6 +18,7 @@ class UserAPIView(GenericAPIView):
     queryset = User.objects.all()
 
     def get(self, request: Request, email: str) -> Response:
+        '''To get a user by email'''
         user = get_user_by_email(email)
         if user is not None:
             return CustomResponse.success(
