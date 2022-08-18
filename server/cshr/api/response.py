@@ -36,7 +36,8 @@ class CustomResponse:
 
     @staticmethod
     def deleted(
-        message: Optional[str] = None, status_code: Optional[int] = HTTP_204_NO_CONTENT
+        message: Optional[str] = None,
+        status_code: Optional[int] = HTTP_204_NO_CONTENT
     ) -> Response:
         """delete response method"""
 

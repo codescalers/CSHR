@@ -6,6 +6,16 @@ from server.cshr.views.users import (
 
 
 urlpatterns = [
-    path("user/", UserAPIView.as_view(), name="user"),
-    path("users/", UsersAPIView.as_view(), name="users")
+    path("user/<str:id>", UserAPIView.as_view({
+        'get': 'get_one',
+        'delete': 'delete',
+        'put': 'put'
+    }), name="user"),
+    path("user/", UsersAPIView.as_view({
+        'post': 'post',
+
+    }), name="users"),
+    path("users/", UsersAPIView.as_view({
+        'get': 'get_all'
+    }), name="users")
 ]
