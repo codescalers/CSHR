@@ -8,21 +8,28 @@ from ..api.response import CustomResponse
 
 
 class OfficeAPIView(ViewSet, GenericAPIView):
-    serializer_class = OfficeSerializer
-    queryset = Office.objects.all()
+    """method to get all Offices"""
 
     def get_all(self, request: Request) -> Response:
-        offices = self.get_queryset()
+        try:
+            offices = Office.objects.all()
+            """if there are no instances """
+        except Office.DoesNotExist:
+            return CustomResponse.not_found(message="Office not found", status_code=404)
+
         serializer = OfficeSerializer(offices, many=True)
-        if offices is not None:
-            return CustomResponse.success(
-                data=serializer.data, message="Offices found", status_code=200
-            )
-        return CustomResponse.not_found(message="Office not found", status_code=404)
+        return CustomResponse.success(
+            data=serializer.data, message="Offices found", status_code=200
+        )
 
-    def get_one(self, request: Request, id: str, format=None) -> Response:
+    """method to get a single Office by id"""
 
-        office = Office.objects.get(id=id)
+    def get(self, request: Request, id: str, format=None) -> Response:
+        try:
+            office = Office.objects.get(id=id)
+        except Office.DoesNotExist:
+            print("hi")
+            return CustomResponse.not_found()
 
         serializer = OfficeSerializer(office)
         if office is not None:
@@ -31,31 +38,36 @@ class OfficeAPIView(ViewSet, GenericAPIView):
             )
         return CustomResponse.not_found(message="Office not found", status_code=404)
 
+    """method to update an office by id"""
+
     def put(self, request: Request, id: str, format=None) -> Response:
-        """To update an office"""
-        office = Office.objects.get(id=id)
+
+        try:
+            office = Office.objects.get(id=id)
+        except Office.DoesNotExist:
+            return CustomResponse.not_found(message="Office not found")
         serializer = self.get_serializer(office, data=request.data)
-        if office is not None:
-            if serializer.is_valid():
-                serializer.save()
-                return CustomResponse.success(
-                    data=serializer.data, status_code=200, message="Office updated"
-                )
-            return CustomResponse.bad_request(
-                data=serializer.errors, message="Office failed to update"
+        if serializer.is_valid():
+            serializer.save()
+            return CustomResponse.success(
+                data=serializer.data, status_code=200, message="Office updated"
             )
-        return CustomResponse.not_found(
-            data=serializer.errors, message="Office not found to update"
+        return CustomResponse.bad_request(
+            data=serializer.errors, message="Office failed to update"
         )
 
     def delete(self, request: Request, id, format=None) -> Response:
-        """To delete an office"""
-        office = Office.objects.get(id=id)
-
+        """method to delete an office by id"""
+        try:
+            office = Office.objects.get(id=id)
+        except Office.DoesNotExist:
+            return CustomResponse.not_found(message="Office not found")
         if office is not None:
             office.delete()
             return CustomResponse.deleted(message="User deleted")
         return CustomResponse.not_found(message="Office not found to update")
+
+    """method to create a new office"""
 
     def post(self, request: Request) -> Response:
         serializer = self.get_serializer(data=request.data)
