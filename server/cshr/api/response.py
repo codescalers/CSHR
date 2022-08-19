@@ -43,7 +43,7 @@ class CustomResponse:
         if not message:
             message = "Deleted successfully"
 
-        return Response(message=message, status=status_code)
+        return Response(status=status_code)
 
     @staticmethod
     def not_found(
