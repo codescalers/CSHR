@@ -1,14 +1,15 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 
 from server.cshr.api.response import CustomResponse
 from server.cshr.models import User
 from server.cshr.serializers.users import UserSerializer
-from server.cshr.services.users import get_user_by_id
+from server.cshr.services.users import get_user_by_id, get_users_filter
 
 
-class UserAPIView(GenericAPIView):
+class UserAPIView(ViewSet, GenericAPIView):
     """
     * Usage
     Class UserAPIView has all the functionality based of the User
@@ -76,7 +77,7 @@ class UserAPIView(GenericAPIView):
 
     def delete(self, request: Request, pk, format=None):
         ''' To delete a user'''
-        user = self.get_object(pk)
+        user = get_user_by_id(pk)
         if user is not None:
             user.delete()
             return CustomResponse.deleted(
@@ -85,3 +86,16 @@ class UserAPIView(GenericAPIView):
         return CustomResponse.not_found(
             status_code=404,
             message="User not found")
+
+    def search(self, request: Request, search_input: str) -> Response:
+        """To search for a user by [first_name,last_name,email]"""
+        users = get_users_filter(search_input)
+        if users is not None:
+            return CustomResponse.success(
+                message="Success",
+                data=self.get_serializer(users, many=True).data
+            )
+        return CustomResponse.not_found(
+            status_code=404,
+            message="User not found"
+        )
