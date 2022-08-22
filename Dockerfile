@@ -1,43 +1,42 @@
-FROM python:3.8-slim-buster AS build
+FROM python:3.8-slim-buster AS development_build
 
-ENV PYTHONUNBUFFERED=1
+ARG DJANGO_ENV
 
-WORKDIR /app
+ENV DJANGO_ENV=${DJANGO_ENV} \
+  # python:
+  PYTHONFAULTHANDLER=1 \
+  PYTHONUNBUFFERED=1 \
+  PYTHONHASHSEED=random \
+  # pip:
+  PIP_NO_CACHE_DIR=off \
+  PIP_DISABLE_PIP_VERSION_CHECK=on \
+  PIP_DEFAULT_TIMEOUT=100 \
+  # poetry:
+  POETRY_VERSION=1.0.5 \
+  POETRY_VIRTUALENVS_CREATE=false \
+  POETRY_CACHE_DIR='/var/cache/pypoetry'
 
-RUN groupadd -g 1001 appuser \
-    && useradd -r -u 1001 -g appuser appuser \
-    && mkdir /home/appuser/ \
-    && chown -R appuser:appuser /home/appuser/\
-    && chown -R appuser:appuser /app
+# System deps:
+RUN apt-get update \
+  && apt-get install --no-install-recommends -y \
+    bash \
+    build-essential \
+    curl \
+    gettext \
+    git \
+    libpq-dev \
+    wget \
+  # Cleaning cache:
+  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* \
+  && pip install "poetry==$POETRY_VERSION" && poetry --version
 
-USER appuser:appuser
+# set work directory
+WORKDIR /code
+COPY pyproject.toml poetry.lock /code/
 
-RUN python3 -m pip install --upgrade pip
-
-RUN pip install poetry
-
-COPY pyproject.toml poetry.lock ./
-
-RUN /home/appuser/.local/bin/poetry export -f requirements.txt -o requirements.txt
-
-
-
-FROM python:3.8-slim-buster
-
-WORKDIR /app
-
-RUN groupadd -g 1001 appuser \
-    && useradd -r -u 1001 -g appuser appuser \
-    && mkdir /home/appuser/ \
-    && chown -R appuser:appuser /home/appuser/\
-    && chown -R appuser:appuser /app
-
-COPY --from=build /app/requirements.txt .
-
-USER appuser
-
-RUN pip install -r requirements.txt
-
+# Install dependencies:
+RUN poetry install
+# copy project
 COPY . .
 
 EXPOSE 8000
