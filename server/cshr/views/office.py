@@ -56,7 +56,7 @@ class OfficeAPIView(ViewSet, GenericAPIView):
             office = Office.objects.get(id=id)
         except Office.DoesNotExist:
             return CustomResponse.not_found(message="Office not found to update")
-        return CustomResponse.success(message="User deleted",status_code=204)
+        return CustomResponse.success(message="Office deleted",status_code=204)
         
 
     def post(self, request: Request) -> Response:

@@ -26,6 +26,7 @@ urlpatterns = [
             [
                 path("auth/", include("server.cshr.routs.auth")),
                 path("office/", include("server.cshr.routs.office")),
+                path('evaluation/', include("server.cshr.routs.evaluation")),
             ]
         ),
     ),
