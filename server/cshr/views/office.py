@@ -8,44 +8,38 @@ from ..api.response import CustomResponse
 
 
 class OfficeAPIView(ViewSet, GenericAPIView):
-    """method to get all Offices"""
+    serializer_class = OfficeSerializer
+    queryset = Office.objects.all()
 
     def get_all(self, request: Request) -> Response:
-        try:
-            offices = Office.objects.all()
-            """if there are no instances """
-        except Office.DoesNotExist:
-            return CustomResponse.not_found(message="Office not found", status_code=404)
-
+        offices = self.get_queryset()
         serializer = OfficeSerializer(offices, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="Offices found", status_code=200
-        )
-
-    """method to get a single Office by id"""
-
-    def get(self, request: Request, id: str, format=None) -> Response:
-        try:
-            office = Office.objects.get(id=id)
-        except Office.DoesNotExist:
-            print("hi")
-            return CustomResponse.not_found()
-
-        serializer = OfficeSerializer(office)
-        if office is not None:
+        if len(offices) != 0:
             return CustomResponse.success(
                 data=serializer.data, message="Offices found", status_code=200
             )
         return CustomResponse.not_found(message="Office not found", status_code=404)
 
-    """method to update an office by id"""
-
-    def put(self, request: Request, id: str, format=None) -> Response:
-
+    def get(self, request: Request, id: str, format=None) -> Response:
         try:
             office = Office.objects.get(id=id)
         except Office.DoesNotExist:
-            return CustomResponse.not_found(message="Office not found")
+            return CustomResponse.not_found(message="Office not found", status_code=404)
+        serializer = OfficeSerializer(office)
+ 
+        return CustomResponse.success(
+                data=serializer.data, message="Offices found", status_code=200
+            )
+        
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        """To update an office"""
+        try:
+            office = Office.objects.get(id=id)
+        except Office.DoesNotExist:
+             return CustomResponse.not_found(
+                data=serializer.errors, message="Office not found to update"
+        )
         serializer = self.get_serializer(office, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -55,19 +49,15 @@ class OfficeAPIView(ViewSet, GenericAPIView):
         return CustomResponse.bad_request(
             data=serializer.errors, message="Office failed to update"
         )
-
+       
     def delete(self, request: Request, id, format=None) -> Response:
-        """method to delete an office by id"""
-        try:
+        """To delete an office"""
+        try:       
             office = Office.objects.get(id=id)
         except Office.DoesNotExist:
-            return CustomResponse.not_found(message="Office not found")
-        if office is not None:
-            office.delete()
-            return CustomResponse.success(message="office deleted", status_code=204)
-        return CustomResponse.not_found(message="Office not found to update")
-
-    """method to create a new office"""
+            return CustomResponse.not_found(message="Office not found to update")
+        return CustomResponse.success(message="User deleted",status_code=204)
+        
 
     def post(self, request: Request) -> Response:
         serializer = self.get_serializer(data=request.data)
