@@ -34,8 +34,7 @@ class CustomResponse:
         )
 
     @staticmethod
-=======
->>>>>>> b7438972fe3c5270b7976395cc0a02e844dd17f5
+
     def not_found(
         message: Optional[str] = None, status_code: int = HTTP_404_NOT_FOUND
     ) -> Response:
