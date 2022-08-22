@@ -64,7 +64,7 @@ class OfficeAPIView(ViewSet, GenericAPIView):
             return CustomResponse.not_found(message="Office not found")
         if office is not None:
             office.delete()
-            return CustomResponse.deleted(message="User deleted")
+            return CustomResponse.success(message="office deleted", status_code=204)
         return CustomResponse.not_found(message="Office not found to update")
 
     """method to create a new office"""
