@@ -1,7 +1,7 @@
 
 CMD:=poetry run
 up:
-	 docker-compose up --build -d
+	docker-compose up --build -d
 install:
 	poetry install
 	poetry check
