@@ -5,7 +5,8 @@ __pycache__/
 
 # C extensions
 *.so
-
+yarn*
+.env
 # Distribution / packaging
 .Python
 build/

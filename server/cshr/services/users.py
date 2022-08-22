@@ -1,5 +1,4 @@
 from server.cshr.models.users import User
-
 from django.contrib.auth.hashers import check_password
 
 
