@@ -72,3 +72,4 @@ class CustomResponse:
             message = "You are not authorized to access this resource."
 
         return Response({"message": message}, status=status_code)
+ 
