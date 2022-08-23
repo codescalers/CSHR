@@ -22,7 +22,6 @@
 </script>
 
 <div class="fluid-container all" bind:this={rootElement}>
-  
   <Routes />
   <Footer />
 </div>

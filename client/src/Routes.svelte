@@ -11,6 +11,7 @@
   import { onMount } from "svelte";
   import Error from "./pages/Error.svelte";
   import axios from "axios";
+import Sidebar from "./components/sidebar/sidebar.svelte";
   let user: UserInterface;
   const mode = localStorage.getItem("mode") as "light" | "dark" | null;
 
