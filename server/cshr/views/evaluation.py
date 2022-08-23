@@ -18,46 +18,52 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
             return CustomResponse.success(
                 data=serializer.data, message="evaluations found", status_code=200
             )
-        return CustomResponse.not_found(message="Evaluations not found", status_code=404)
+        return CustomResponse.not_found(
+            message="Evaluations not found", status_code=404
+        )
 
     def get(self, request: Request, id: str, format=None) -> Response:
         try:
             evaluation = Evaluations.objects.get(id=id)
         except Evaluations.DoesNotExist:
-            return CustomResponse.not_found(message="Evaluations not found", status_code=404)
-        serializer = EvaluationSerializer(evaluation)
- 
-        return CustomResponse.success(
-                data=serializer.data, message="evaluation found", status_code=200
+            return CustomResponse.not_found(
+                message="Evaluations not found", status_code=404
             )
-        
+        serializer = EvaluationSerializer(evaluation)
 
-    def put(self, request: Request, id: str, format=None) -> Response:
+        return CustomResponse.success(
+            data=serializer.data, message="evaluation found", status_code=200
+        )
+
+    def patch(self, request: Request, id: str, format=None) -> Response:
         """To update an evaluation"""
         try:
             evaluation = Evaluations.objects.get(id=id)
         except Evaluations.DoesNotExist:
-             return CustomResponse.not_found(
-                data=serializer.errors, message="Evaluation not found to update"
-        )
-        serializer = self.get_serializer(evaluation, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return CustomResponse.success(
-                data=serializer.data, status_code=200, message="Evaluation updated"
-            )
-        return CustomResponse.bad_request(
-            data=serializer.errors, message="Evaluation failed to update"
-        )
-       
+            return CustomResponse.not_found(message="Evaluation not found to update")
+        serializer = EvaluationSerializer(evaluation, data=request.data, partial=True)
+
+        if (
+            "user" in request.data
+            and request.data["user"] is not None
+            or "link" in request.data
+            and request.data["link"] is not None
+        ):
+            if serializer.is_valid():
+                serializer.save()
+                return CustomResponse.success(
+                    data=serializer.data, status_code=202, message="Evaluation updated"
+                )
+        return CustomResponse.bad_request(message="Evaluation failed to update")
+
     def delete(self, request: Request, id, format=None) -> Response:
         """To delete an evaluation"""
-        try:       
+        try:
             evaluation = Evaluations.objects.get(id=id)
         except Evaluations.DoesNotExist:
             return CustomResponse.not_found(message="Evaluation not found to update")
-        return CustomResponse.success(message="Evaluation deleted",status_code=204)
-        
+        evaluation.delete()
+        return CustomResponse.success(message="Evaluation deleted", status_code=204)
 
     def post(self, request: Request) -> Response:
         serializer = self.get_serializer(data=request.data)
