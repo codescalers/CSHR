@@ -10,3 +10,13 @@ class OfficeSerializer(ModelSerializer):
     class Meta:
         model = Office
         fields = ["id", "name", "country"]
+
+
+class OfficeUpdateSerializer(ModelSerializer):
+    class Meta:
+        model = Office
+        fields = ["name", "country"]  # and whatever other fields you want to expose
+        extra_kwargs = {
+            "name": {"required": False, "allow_null": True},
+            "country": {"required": False, "allow_null": True},
+        }
