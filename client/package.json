@@ -1,23 +1,41 @@
 {
-  "name": "svelte-app",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "start": "sirv public --no-clear"
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^11.0.0",
-    "rollup": "^2.3.4",
-    "rollup-plugin-css-only": "^3.1.0",
-    "rollup-plugin-livereload": "^2.0.0",
-    "rollup-plugin-svelte": "^7.0.0",
-    "rollup-plugin-terser": "^7.0.0",
-    "svelte": "^3.0.0"
-  },
-  "dependencies": {
-    "sirv-cli": "^2.0.0"
-  }
+    "name": "CSHR",
+    "version": "1.0.0",
+    "private": false,
+    "type": "module",
+    "scripts": {
+        "build": "rollup -c",
+        "dev": "rollup -c -w ",
+        "env:dev": "env-cmd npm run dev",
+        "start": "sirv public --no-clear --port 8080",
+        "check": "svelte-check --tsconfig ./tsconfig.json"
+    },
+    "devDependencies": {
+        "@rollup/plugin-commonjs": "^17.0.0",
+        "@rollup/plugin-node-resolve": "^11.0.0",
+        "@rollup/plugin-replace": "^4.0.0",
+        "@rollup/plugin-typescript": "^8.0.0",
+        "@tsconfig/svelte": "^2.0.1",
+        "@types/uuid": "^8.3.4",
+        "dotenv": "^16.0.1",
+        "rollup": "^2.3.4",
+        "rollup-plugin-css-only": "^3.1.0",
+        "rollup-plugin-livereload": "^2.0.0",
+        "rollup-plugin-svelte": "^7.0.0",
+        "rollup-plugin-terser": "^7.0.0",
+        "svelte": "^3.0.0",
+        "svelte-check": "^2.8.0",
+        "svelte-preprocess": "^4.10.7",
+        "svelte-promisable-stores": "^0.1.3",
+        "tslib": "^2.0.0",
+        "typescript": "^4.7.4"
+    },
+    "dependencies": {
+        "axios": "^0.27.2",
+        "sirv-cli": "^2.0.0",
+        "svelte-date-range-select": "^1.0.4",
+        "svelte-dialogs": "^1.2.2",
+        "svelte-environment-variables": "^1.0.4",
+        "uuid": "^8.3.2"
+    }
 }
