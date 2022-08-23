@@ -1,5 +1,5 @@
 import http from "./http-common";
-import type { TodoType } from "../types";
+import type { TodoType } from "../../types";
 class UserDataService {
 
     public async getAll(): Promise<{ data: TodoType[] }> {

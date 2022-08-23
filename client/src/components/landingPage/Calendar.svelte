@@ -1,7 +1,7 @@
 <script>
   import Calendar from "./CalendarLayout.svelte";
   import { createEventDispatcher, onMount } from "svelte";
-
+  export let user;
   var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   let monthNames = [
     "January",
