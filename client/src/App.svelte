@@ -1,11 +1,9 @@
 <script lang="ts">
   import Footer from "./components/footer/Footer.svelte";
-  import Settings from "./components/settings/Settings.svelte";
   import SettingsApi from "./components/settings/SettingsApi";
-  import Calender from "./components/landingPage/Calendar.svelte";
   import { onMount } from "svelte";
   import { SettingsStore } from "./stores";
-
+  import Routes from "./Routes.svelte";
   onMount(async function () {
     $SettingsStore = await SettingsApi.getSettings();
   });
@@ -24,7 +22,9 @@
 </script>
 
 <div class="fluid-container all" bind:this={rootElement}>
-  <Calender />
+  
+  <Routes />
+  <Footer />
 </div>
 
 <style>

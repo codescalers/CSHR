@@ -41,10 +41,18 @@ a {
     --text-primary-10: #1da1f296;
     --text-primary-5: #1da1f242;
     --calender-today: rgb(255 169 0 / 10%);
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
 }
 
 .light {
     background: var(--bg-color);
     color: var(--text-color);
-    transition: 0.3s
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
 }
