@@ -1,5 +1,5 @@
 from rest_framework.test import APITestCase
-from django.urls import reverse, resolve
+from django.urls import reverse
 from ..models.office import Office
 from rest_framework import status
 
@@ -75,7 +75,6 @@ class OfficeTests(APITestCase):
 
     def test_update_office_error(self):
         """test update request error: not found"""
-        data = {"name": "testCase", "country": "testCase"}
         createTmp(self)
         """create a new record"""
 
@@ -106,6 +105,6 @@ class OfficeTests(APITestCase):
 
     def test_delete_office_error(self):
         """test delete record not found response"""
-        delete_url = f"/api/office/9/"
+        delete_url = "/api/office/9/"
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
