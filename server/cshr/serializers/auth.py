@@ -93,6 +93,10 @@ class RegisterSerializer(ModelSerializer):
             "mobile_number",
             "password",
             "location",
+            "team",
+            "salary",
+            "user_type",
+            "reporting_to"
         )
 
     def create(self, validated_data):

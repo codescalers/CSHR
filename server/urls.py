@@ -24,7 +24,7 @@ urlpatterns = [
         include(
             [
                 path("auth/", include("server.cshr.routs.auth")),
-                path("", include("server.cshr.routs.users")),
+                path("users/", include("server.cshr.routs.users")),
             ]
         ),
     )

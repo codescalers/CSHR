@@ -1,20 +1,17 @@
 from django.urls import path
-from server.cshr.views.users import UserAPIView
+from server.cshr.views.users import  GeneralUserAPIView
 
 
 urlpatterns = [
-    path("user/<str:id>", UserAPIView.as_view({
-        'get': 'get_one',
-        'delete': 'delete',
-        'put': 'put'
-    }), name="user"),
-    path("user/", UserAPIView.as_view({
-        'post': 'post',
-    }), name="users_post"),
-    path("user/search/<str:search_input>", UserAPIView.as_view({
-        'get': 'search_input',
-    }), name="users_search"),
-    path("users/", UserAPIView.as_view({
-        'get': 'get_all'
-    }), name="users_get")
+    # path("<str:id>/", UserAPIView.as_view({
+    #     'get': 'get_one',
+    #     'delete': 'delete',
+    #     'patch': 'patch',
+    #     'put':'put'
+    # }), name="user"),
+    path("", GeneralUserAPIView.as_view({'get':'get_all'})),
+    path("<str:id>/",GeneralUserAPIView.as_view({'get':'get_one'}))
+    # path("admin/", UserAPIView_Admin.as_view({'get':'get_all'}))
+     
+    
 ]

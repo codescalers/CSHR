@@ -22,14 +22,11 @@ INSTALLED_APPS = [
     # Third party
     "drf_yasg",
     "rest_framework",
-    "corsheaders",
-
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -38,20 +35,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "server.urls"
-
-CORS_URLS_REGEX = r"^/api/.*$"
-CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE"]
-# SECURITY WARNING: keep the ORIGINS used in production secret!
-SECRET_KEY = config("DJANGO_SECRET_KEY")
-CORS_ALLOWED_ORIGINS = [
-    config("DJANGO_CORS_ALLOW_ORIGIN_PRODUCTION"),
-    config("DJANGO_CORS_ALLOW_ORIGIN_PRODUCTION_2"),
-]
-
-if DEBUG:
-    CORS_ALLOWED_ORIGINS += [
-        config("DJANGO_CORS_ALLOW_ORIGIN_DEVELOPMENT"),
-    ]
 
 TEMPLATES = [
     {
@@ -106,7 +89,6 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 15,
 }

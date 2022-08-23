@@ -32,7 +32,8 @@ class USER_TYPE(models.TextChoices):
 
 class User(AbstractBaseUser, TimeStamp):
     """main user model"""
-
+    reporting_to= models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    social_insurance_number = models.CharField(max_length=45)
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
     image = models.ImageField(upload_to="profile_image",)
