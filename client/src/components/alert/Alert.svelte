@@ -1,6 +1,6 @@
 <script lang="ts">
-  type type = "success" | "info" | "warning" | "danger";
-  export let title: string, type: type, message: string;
+  import type { alertType } from "../../types";
+  export let title: string, type: alertType, message: string;
 </script>
 
 <div class={`alert alert-${type} alert-dismissible fade show`} role="alert">

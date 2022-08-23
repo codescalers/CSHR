@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { RequestInterface } from "../../types";
   import Request from "./Request.svelte";
-  export let requests: RequestInterface[];
+  let requests: RequestInterface[];
 </script>
 
 <div class="table-responsive">
@@ -15,7 +15,7 @@
       </tr>
     </thead>
     <tbody>
-      {#each requests as request, index (request.id)}
+      {#each requests as request (request.id)}
         <Request {request} />
       {/each}
     </tbody>

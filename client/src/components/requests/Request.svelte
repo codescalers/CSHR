@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { RequestInterface } from "../../types";
   import { fade, scale } from "svelte/transition";
+  
   export let request: RequestInterface;
 </script>
 
 <tr in:scale out:fade={{ duration: 500 }}>
-  <td>{{ request.description}}</td>
+  <td>{{ request.from_name}}</td>
   <td>{{ request }}</td>
   <td>{{ message }}</td>
   <td>

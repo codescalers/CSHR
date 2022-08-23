@@ -1,23 +1,25 @@
 export type buttonType = "success" | "warning" | "error" | "info";
 export type alertType = "success" | "warning" | "error" | "info";
-export type requestStatus = "pending" | "approved" | "rejected";
-export type requestTypeLabel = "Vacationa" | "HR Letter" | "Compensation" | "Danger";
+export type requestStatusType = "pending" | "approved" | "rejected";
+export type requestLabelType = "Vacationa" | "HR Letter" | "Compensation" | "Danger";
 
-export interface UserType {
+export interface UserInterface {
     id: number;
     first_name: string;
     last_name: string;
-    email: boolean;
+    email: string;
+    phone_number: string;
+    password?: string;
+    role: string;
     CreatedAt?: string;
     UpdatedAt?: string;
     DeletedAt?: string;
-
 }
 
-
-export interface SettingsType {
+export interface SettingsInterface {
     name: string;
     email: string;
+    password: string;
     "primary-color": string;
     "secondary-color": string;
 }
@@ -29,8 +31,8 @@ export interface RequestInterface {
     from_name: string;
     title: string;
     description: string;
-    type: requestTypeLabel;
-    status: requestStatus;
+    type: requestLabelType;
+    status: requestStatusType;
     created_at: string;
 }
 
