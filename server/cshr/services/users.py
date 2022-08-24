@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import check_password
 
 from django.db.models import Q
 
+
 def get_user_by_id(id: str) -> User:
     """Return user who have the same id"""
     try:
@@ -47,15 +48,22 @@ def get_user_type_by_id(id: str) -> User:
         return None
 
 
-def get_users_filter(search_input: str,) -> User:
+def get_users_filter(
+    search_input: str,
+) -> User:
     """Return users by filters"""
 
     try:
         users = User.objects.filter(
-            Q(email__icontains=search_input) |
-            Q(first_name__icontains=search_input) |
-            Q(last_name__icontains=search_input)
+            Q(email__icontains=search_input)
+            | Q(first_name__icontains=search_input)
+            | Q(last_name__icontains=search_input)
         )
         return users
     except User.DoesNotExist:
         return None
+
+
+def get_all_of_users() -> User:
+    """Return all users"""
+    return User.objects.all()

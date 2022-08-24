@@ -16,7 +16,8 @@ class RegisterAPIView(GenericAPIView):
     """Class RegisterAPIView to register a new user into database"""
 
     serializer_class = RegisterSerializer
-    permission_classes= [IsAdmin]
+    permission_classes = [IsAdmin]
+
     def post(self, request: Request) -> Response:
         """Method to register a new user"""
         serializer = self.get_serializer(data=request.data)

@@ -29,7 +29,7 @@ urlpatterns = [
                 path("myinfo/", include("server.cshr.routs.myinfo")),
             ]
         ),
-    )
+    ),
 ]
 
 

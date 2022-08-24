@@ -81,7 +81,11 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
 
 class RegisterSerializer(ModelSerializer):
     """class RegisterSerializer to serialize the user obj"""
-    image =  ImageField(default= "profile_image/default.png", initial="profile_image/default.png")
+
+    image = ImageField(
+        default="profile_image/default.png", initial="profile_image/default.png"
+    )
+
     class Meta:
         model = User
         fields = (
@@ -97,7 +101,7 @@ class RegisterSerializer(ModelSerializer):
             "salary",
             "user_type",
             "reporting_to",
-            "image"
+            "image",
         )
 
     def create(self, validated_data):
