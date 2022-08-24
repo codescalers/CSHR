@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from ..models.training_courses import Training_Courses
+from server.cshr.models.training_courses import Training_Courses
 
 
 class TrainingCoursesSerializer(ModelSerializer):
