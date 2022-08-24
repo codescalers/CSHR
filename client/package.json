@@ -17,6 +17,7 @@
         "@rollup/plugin-typescript": "^8.0.0",
         "@tsconfig/svelte": "^2.0.1",
         "@types/uuid": "^8.3.4",
+        "date-picker-svelte": "^2.1.1",
         "dotenv": "^16.0.1",
         "rollup": "^2.3.4",
         "rollup-plugin-css-only": "^3.1.0",
