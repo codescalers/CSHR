@@ -24,6 +24,14 @@ urlpatterns = [
         include(
             [
                 path("auth/", include("server.cshr.routs.auth")),
+                path("compensation/", include("server.cshr.routs.compensation")),
+                path(
+                    "company_properties/",
+                    include("server.cshr.routs.company_properties"),
+                ),
+                path(
+                    "training_courses/", include("server.cshr.routs.training_courses")
+                ),
             ]
         ),
     ),
@@ -37,11 +45,7 @@ if settings.DEBUG:
     from drf_yasg import openapi
 
     schema_view = get_schema_view(
-        openapi.Info(
-            title="Api Documentation",
-            default_version="v1",
-        ),
-        public=False,
+        openapi.Info(title="Api Documentation", default_version="v1",), public=False,
     )
 
     urlpatterns = (
