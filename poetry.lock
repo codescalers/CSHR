@@ -544,7 +544,9 @@ django = [
     {file = "Django-4.1-py3-none-any.whl", hash = "sha256:031ccb717782f6af83a0063a1957686e87cb4581ea61b47b3e9addf60687989a"},
     {file = "Django-4.1.tar.gz", hash = "sha256:032f8a6fc7cf05ccd1214e4a2e21dfcd6a23b9d575c6573cacc8c67828dbe642"},
 ]
-django-cors-headers = []
+django-cors-headers = [
+    {hash="sha256:37e42883b5f1f2295df6b4bba96eb2417a14a03270cb24b2a07f021cd4487cf4"}
+]
 django-debug-toolbar = []
 djangorestframework = []
 djangorestframework-simplejwt = []
