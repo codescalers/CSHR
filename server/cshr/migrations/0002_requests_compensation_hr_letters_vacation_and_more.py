@@ -66,7 +66,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"abstract": False, },
+            options={"abstract": False,},
         ),
         migrations.CreateModel(
             name="Compensation",
@@ -86,7 +86,7 @@ class Migration(migrations.Migration):
                 ("from_date", models.DateField()),
                 ("end_date", models.DateField()),
             ],
-            options={"abstract": False, },
+            options={"abstract": False,},
             bases=("cshr.requests",),
         ),
         migrations.CreateModel(
@@ -105,7 +105,7 @@ class Migration(migrations.Migration):
                 ),
                 ("addresses", models.CharField(max_length=45)),
             ],
-            options={"abstract": False, },
+            options={"abstract": False,},
             bases=("cshr.requests",),
         ),
         migrations.CreateModel(
@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
                 ("end_date", models.DateField()),
                 ("change_log", models.JSONField(default=list)),
             ],
-            options={"abstract": False, },
+            options={"abstract": False,},
             bases=("cshr.requests",),
         ),
         migrations.CreateModel(
@@ -167,6 +167,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"abstract": False, },
+            options={"abstract": False,},
         ),
     ]

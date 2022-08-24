@@ -26,9 +26,6 @@ class TrainingCoursesTests(APITestCase):
         data = {"email": "user1@example.com", "password": "string"}
 
         response = client.post(url, data, format="json")
-        print("123456677")
-        print(response)
-        print(response.data)
         return response.data["access_token"]
 
     def create_user(self) -> User:
