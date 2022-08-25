@@ -35,7 +35,41 @@
       grid-row: {item.startRow};  
       align-self: {item.isBottom ? 'end' : 'center'};"
     >
-      {item.title}
+      <div class="container">
+        <button
+          type="button"
+          class="modal-btn"
+          data-bs-toggle="modal"
+          data-bs-target={`#modal`}
+        >
+          {item.title}
+        </button>
+        <div
+          class="modal fade modal-lg"
+          id={`modal`}
+          aria-labelledby="exampleModalCenterTitle"
+          aria-hidden="true"
+        >
+          <div
+            class="modal-dialog model-dialog-centered model-dialog-scrollable "
+            role="document"
+          >
+            <div class="modal-content">
+              <div class="modal-header">
+                Header
+                <button
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  data-bs-target="#modal"
+                  aria-label="Close"
+                />
+              </div>
+              <div class="modal-body">Description</div>
+              <div class="modal-footer">Footer</div>
+            </div>
+          </div>
+        </div>
+      </div>
       {#if item.detailHeader}
         <div class="task-detail">
           <h2>{item.detailHeader}</h2>
@@ -47,23 +81,30 @@
 </div>
 
 <style>
+  .modal-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
+
   .calendar {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(7, minmax(120px, 1fr));
     grid-template-rows: 50px;
-    grid-auto-rows: 120px;
+    grid-auto-rows: 140px;
     overflow: auto;
   }
   .day {
     border-bottom: 1px solid rgba(166, 168, 179, 0.12);
-    border-right: 1px solid rgba(166, 168, 179, 0.12);
-    text-align: right;
-    padding: 14px 20px;
+    border-right: 2px solid rgba(166, 168, 179, 0.12);
+    text-align: left;
+    padding: 14px 1.4rem;
     letter-spacing: 1px;
-    font-size: 14px;
+    font-size: 1rem;
     box-sizing: border-box;
-    color: #98a0a6;
+    color: #707172;
     position: relative;
     z-index: 1;
   }
@@ -112,7 +153,7 @@
   .day-name {
     font-size: 12px;
     text-transform: uppercase;
-    color: #e9a1a7;
+    color: #777;
     text-align: center;
     border-bottom: 1px solid rgba(166, 168, 179, 0.12);
     line-height: 50px;
@@ -136,6 +177,15 @@
     z-index: 2;
     border-radius: 15px;
   }
+  .task:hover {
+    filter: brightness(95%);
+  }
+  .task--danger,
+  .task--info,
+  .task--primary,
+  .task--warning {
+    font-weight: 500;
+  }
   .task--warning {
     border-left-color: #fdb44d;
     background: #fef0db;
@@ -151,18 +201,16 @@
     color: #f8254e;
   }
   .task--info {
-    border-left-color: #4786ff;
     margin-top: 15px;
-    background: rgba(218, 231, 255, 0.7);
-    color: #0a5eff;
+    background: rgba(192, 191, 191, 0.7);
+    color: #444;
   }
   .task--primary {
-    background: #4786ff;
-    border: 0;
-    border-radius: 14px;
-    color: #f00;
-    box-shadow: 0 10px 14px rgba(71, 134, 255, 0.4);
+    background: #c0d6ff;
+    margin-top: 15px;
+    color: #0a5eff;
   }
+
   .task-detail {
     position: absolute;
     left: 0;
@@ -209,4 +257,5 @@
     font-weight: 500;
     color: rgba(81, 86, 93, 0.7);
   }
+
 </style>

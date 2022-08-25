@@ -186,14 +186,13 @@
 <div class="calendar-container">
   <div class="calendar-header">
     <h1>
-      <button on:click={() => year--}>&Lt;</button>
-      <button on:click={() => prev()}>&lt;</button>
+      <button class="icon-btn mr-5" on:click={() => prev()}>&lt;</button>
       {monthNames[month]}
       {year}
-      <button on:click={() => next()}>&gt;</button>
-      <button on:click={() => year++}>&Gt;</button>
+      <button class="icon-btn" on:click={() => next()}>&gt;</button>
     </h1>
-    {eventText}
+    <!--     {eventText}
+ -->
   </div>
 
   <Calendar
@@ -219,19 +218,35 @@
   .calendar-header {
     text-align: center;
     padding: 20px 0;
-    background: #eef;
+    background: #fff;
     border-bottom: 1px solid rgba(166, 168, 179, 0.12);
   }
   .calendar-header h1 {
     margin: 0;
     font-size: 18px;
   }
-  .calendar-header button {
-    background: #eef;
-    border: 1px;
-    padding: 6;
-    color: rgba(81, 86, 93, 0.7);
+  .calendar-header .icon-btn {
+    color: #d7e3f1;
+    font-size: 1rem;
     cursor: pointer;
-    outline: 0;
+    background-color: #fff;
+    font-weight: 600;
+    margin-right: 1.5rem;
+    margin-left: 1.5rem;
+    border: #d7e3f1 1px solid;
+    padding: 0.4rem 0.7rem;
+    border-radius: 5px;
+  }
+  .calendar-header .icon-btn:hover,.calendar-header .icon-btn:checked {
+    background-color: #2b515f;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 600;
+    margin-right: 1.5rem;
+    margin-left: 1.5rem;
+    border: #d7e3f1 1px solid;
+    padding: 0.4rem 0.7rem;
+    border-radius: 5px;
   }
 </style>

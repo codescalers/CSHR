@@ -23,10 +23,10 @@
 </script>
 
 <div class="fluid-container all" bind:this={rootElement}>
-   <Routes />
+  <!--  <Routes /> -->
  
-<!--  <Calendar/>
- --> <Footer />
+  <Calendar/>
+ <Footer />
 </div>
 
 <style>
