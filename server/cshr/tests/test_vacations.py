@@ -176,3 +176,39 @@ class VacationsTests(APITestCase):
         url = "/api/vacations/"
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class VacationsUpdateTests(APITestCase):
+    def setUp(self):
+        """make office and user object"""
+        office = Office.objects.create(name="testOffice", country="testCountry")
+        self.office = office
+        user = self.create_user()
+        self.user = user
+        self.access_token = self.get_token()
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token
+        )
+
+    def get_token(self):
+        """Get token for logged in user."""
+        url = f'{"/api/auth/login/"}'
+        data = {"email": "user1@example.com", "password": "password"}
+        response = client.post(url, data, format="json")
+        return response.data["data"]["access_token"]
+
+    def create_user(self) -> User:
+        url = "/api/auth/signup/"
+        data = {
+            "first_name": "fname1",
+            "last_name": "lname2",
+            "telegram_link": "string",
+            "email": "user1@example.com",
+            "birthday": "2022-08-16",
+            "mobile_number": "01234567890",
+            "password": "password",
+            "location": 1,
+            "user_type": "admin",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

@@ -3,9 +3,7 @@ from server.cshr.serializers.hr_letters import hr_letter_update_serializer
 from server.cshr.models.hr_letters import HR_LETTERS
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import (
-    UserIsAuthenticated,
-)
+from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.services.users import get_user_by_id
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
