@@ -156,7 +156,7 @@ class VacationsTests(APITestCase):
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_vacation_request_invalid_user_id(self) -> Vacation:
-        """add vacation _request"""
+        """add vacation request"""
         url = "/api/vacations/"
         data = {
             "reason": "annual_leaves",
