@@ -73,22 +73,4 @@ class AdminViewUserProfileTests(APITestCase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_update_all_fields_of_a_user(self):
-        "an admin can edit all user fields including location, team, reporting to and salary"
-        url = "/api/users/adminView/1/"
-        data={
-            "location":2,
-            "team": "Marketing",
-            "reporting_to":3,
-            "salary":{"gross":9000}
-            
-        }
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.access_token_admin)
-        response = self.client.put(url,data, format="json")
-        getresponse = self.client.get(url,format="json")
-        print(getresponse.data)
-        self.assertEqual(getresponse.data["data"]["salary"], {"gross":9000})
-        self.assertEqual(getresponse.data["data"]["reporting_to"],3)
-        self.assertEqual(getresponse.data["data"]["team"],"Marketing")
-        self.assertEqual(getresponse.data["data"]["user_location"],2)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+    
