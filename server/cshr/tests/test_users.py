@@ -73,6 +73,7 @@ class AdminViewUserProfileTests(APITestCase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_update_all_fields_of_a_user(self):
         "an admin can edit all user fields including location, team, reporting to and salary"
         url = "/api/users/adminView/1/"
         data={
