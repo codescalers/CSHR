@@ -119,3 +119,9 @@ class HrLetterTests(APITestCase):
         data = {"applying_user": -1}
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_get_all_hr_letters(self) -> HR_LETTERS:
+        """test to get all hr letters"""
+        url = "/api/hrletter/"
+        response = client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

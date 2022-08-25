@@ -170,3 +170,9 @@ class VacationsTests(APITestCase):
         data = {"applying_user": -1}
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_get_all_vacation_requests(self) -> Vacation:
+        """test to get all vacation requests"""
+        url = "/api/vacations/"
+        response = client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

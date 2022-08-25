@@ -42,14 +42,7 @@ class HR_Letter_APIView(ViewSet, GenericAPIView):
         )
 
     def get_all(self, request: Request) -> Response:
-        try:
-            hr_letters = HR_LETTERS.objects.all()
-            """if there are no instances """
-        except HR_LETTERS.DoesNotExist:
-            return CustomResponse.not_found(
-                message="Hr letters not found", status_code=404
-            )
-
+        hr_letters = HR_LETTERS.objects.all()
         serializer = hr_letter_serializer(hr_letters, many=True)
         return CustomResponse.success(
             data=serializer.data, message="Hr letters found", status_code=200
