@@ -7,7 +7,7 @@
         "build": "rollup -c",
         "dev": "rollup -c -w ",
         "env:dev": "env-cmd npm run dev",
-        "start": "sirv public --no-clear --port 8080",
+        "start": "sirv public --single",
         "check": "svelte-check --tsconfig ./tsconfig.json"
     },
     "devDependencies": {
