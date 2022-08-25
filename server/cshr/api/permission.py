@@ -40,6 +40,7 @@ class IsSupervisor(permissions.BasePermission):
         if request.user.is_authenticated:
             userType = get_user_type_by_id(request.user.id)
             if userType == USER_TYPE.SUPERVISOR:
+                
                 return True
             raise PermissionDenied
         raise PermissionDenied

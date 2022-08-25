@@ -123,7 +123,7 @@ class AdminUserAPIView(ViewSet, GenericAPIView):
             if serializer.is_valid():
                 serializer.save()
                 return CustomResponse.success(
-                    data=serializer.data, status_code=200, message="User updated"
+                    data=serializer.data, status_code=204, message="User updated"
                 )
             return CustomResponse.bad_request(
                 data=serializer.errors, status_code=400, message="User not updated"
@@ -177,7 +177,7 @@ class SelfUserAPIView(ViewSet, GenericAPIView):
             if serializer.is_valid():
                 serializer.save()
                 return CustomResponse.success(
-                    data=serializer.data, status_code=200, message="User updated"
+                    data=serializer.data, status_code=204, message="User updated"
                 )
             return CustomResponse.bad_request(
                 data=serializer.errors, status_code=400, message="User not updated"

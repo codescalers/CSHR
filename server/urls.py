@@ -26,7 +26,8 @@ urlpatterns = [
                 path("auth/", include("server.cshr.routs.auth")),
                 path("users/", include("server.cshr.routs.users")),
                 path("trainingcourses/", include("server.cshr.routs.training_courses")),
-                path("myinfo/", include("server.cshr.routs.myinfo")),
+                path("myprofile/", include("server.cshr.routs.myinfo")),
+               
             ]
         ),
     ),
