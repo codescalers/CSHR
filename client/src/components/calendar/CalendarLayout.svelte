@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher, onMount } from "svelte";
-
+  import Modal from "../modal/Modal.svelte";
   export var headers = [];
   export let days = [];
   export let items = [];
@@ -44,32 +44,8 @@
         >
           {item.title}
         </button>
-        <div
-          class="modal fade modal-lg"
-          id={`modal`}
-          aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="true"
-        >
-          <div
-            class="modal-dialog model-dialog-centered model-dialog-scrollable "
-            role="document"
-          >
-            <div class="modal-content">
-              <div class="modal-header">
-                Header
-                <button
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  data-bs-target="#modal"
-                  aria-label="Close"
-                />
-              </div>
-              <div class="modal-body">Description</div>
-              <div class="modal-footer">Footer</div>
-            </div>
-          </div>
-        </div>
       </div>
+
       {#if item.detailHeader}
         <div class="task-detail">
           <h2>{item.detailHeader}</h2>
@@ -77,6 +53,8 @@
         </div>
       {/if}
     </section>
+
+    <Modal bind:title={item.title} body={"description"} footer={"footer"} />
   {/each}
 </div>
 
@@ -94,7 +72,6 @@
     grid-template-columns: repeat(7, minmax(120px, 1fr));
     grid-template-rows: 50px;
     grid-auto-rows: 140px;
-    overflow: auto;
   }
   .day {
     border-bottom: 1px solid rgba(166, 168, 179, 0.12);
@@ -257,5 +234,4 @@
     font-weight: 500;
     color: rgba(81, 86, 93, 0.7);
   }
-
 </style>
