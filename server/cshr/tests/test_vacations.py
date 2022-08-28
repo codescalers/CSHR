@@ -225,6 +225,25 @@ class VacationsTests(APITestCase):
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_update_vacation_request_not_authorized(self) -> Vacation:
+        """add vacation _request"""
+        url = "/api/vacations/"
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+            "change_log": 123,
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/vacations/edit/1/"
+        data = {"applying_user": 1}
+        response = client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+
     def test_update_vacation_request_invalid_user_id(self) -> Vacation:
         """add vacation request"""
         url = "/api/vacations/"

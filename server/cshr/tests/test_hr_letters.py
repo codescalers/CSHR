@@ -173,6 +173,20 @@ class HrLetterTests(APITestCase):
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_update_hr_letter_non_authorized(self) -> HR_LETTERS:
+        """update hr letter"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/hrletter/edit/1/"
+        data = {"applying_user": 1}
+        response = client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+
     def test_update_hr_letter_invalid_user_id(self) -> HR_LETTERS:
         """update hr letter"""
         url = "/api/hrletter/"
