@@ -3,8 +3,7 @@ from rest_framework.serializers import (
     SerializerMethodField,
     CharField,
     DateTimeField,
-    JSONField
-    
+    JSONField,
 )
 from server.cshr.models.company_properties import Company_properties
 from server.cshr.models.users import User

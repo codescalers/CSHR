@@ -1,6 +1,6 @@
 from server.cshr.serializers.vacations import vacations_serializer
 from server.cshr.serializers.vacations import vacations_update_serializer
-from server.cshr.api.permission import UserIsAuthenticated
+from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.models.vacations import Vacation
@@ -77,7 +77,7 @@ class Vacations_APIView(ViewSet, GenericAPIView):
 
 class Vacations_Update_APIView(ViewSet, GenericAPIView):
     serializer_class = vacations_update_serializer
-    permission_classes = [UserIsAuthenticated]
+    permission_classes = [IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         try:

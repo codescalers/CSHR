@@ -10,47 +10,87 @@ client = APIClient()
 
 class HrLetterTests(APITestCase):
     def setUp(self):
-        """make office and user object"""
         office = Office.objects.create(name="testOffice", country="testCountry")
-        self.office = office
-        user = self.create_user()
-        self.user = user
-        self.access_token = self.get_token()
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token
+
+        User.objects.create(
+            first_name="string",
+            last_name="string",
+            telegram_link="string",
+            email="user1@example.com",
+            birthday="2022-08-24",
+            mobile_number="string",
+            password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
+            location=office,
+            team="Development",
+            user_type="Admin",
         )
 
-    def get_token(self):
-        """Get token for logged in user."""
+        User.objects.create(
+            first_name="string",
+            last_name="string",
+            telegram_link="string",
+            email="user2@example.com",
+            birthday="2022-08-24",
+            mobile_number="string",
+            password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
+            location=office,
+            team="Development",
+            user_type="User",
+        )
+
+        User.objects.create(
+            first_name="string",
+            last_name="string",
+            telegram_link="string",
+            email="user3@example.com",
+            birthday="2022-08-24",
+            mobile_number="string",
+            password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
+            location=office,
+            team="Development",
+            user_type="Supervisor",
+        )
+
+        self.access_token_admin = self.get_token_admin()
+        self.access_token_user = self.get_token_user()
+        self.access_token_supervisor = self.get_token_supervisor()
+
+    def get_token_admin(self):
+        """Get token for admin user."""
         url = f'{"/api/auth/login/"}'
-        data = {"email": "user1@example.com", "password": "password"}
-        response = client.post(url, data, format="json")
+        data = {"email": "user1@example.com", "password": "string"}
+        response = self.client.post(url, data, format="json")
         return response.data["data"]["access_token"]
 
-    def create_user(self) -> User:
-        url = "/api/auth/signup/"
-        data = {
-            "first_name": "fname1",
-            "last_name": "lname2",
-            "telegram_link": "string",
-            "email": "user1@example.com",
-            "birthday": "2022-08-16",
-            "mobile_number": "01234567890",
-            "password": "password",
-            "location": 1,
-        }
+    def get_token_user(self):
+        """Get token for normal user."""
+        url = f'{"/api/auth/login/"}'
+        data = {"email": "user2@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        return response.data["data"]["access_token"]
+
+    def get_token_supervisor(self):
+        """Get token for a supervisor user."""
+        url = f'{"/api/auth/login/"}'
+        data = {"email": "user3@example.com", "password": "string"}
+        response = self.client.post(url, data, format="json")
+        return response.data["data"]["access_token"]
 
     def test_create_hr_letter(self) -> HR_LETTERS:
         url = "/api/hrletter/"
         data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_hr_letter_no_address(self) -> HR_LETTERS:
         url = "/api/hrletter/"
         data = {}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -59,6 +99,9 @@ class HrLetterTests(APITestCase):
         """add hr letter"""
         url = "/api/hrletter/"
         data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/hrletter/1/"
@@ -70,6 +113,9 @@ class HrLetterTests(APITestCase):
         """add hr letter"""
         url = "/api/hrletter/"
         data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/hrletter/10/"
@@ -81,6 +127,9 @@ class HrLetterTests(APITestCase):
         """add hr letter"""
         url = "/api/hrletter/"
         data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/hrletter/1/"
@@ -92,6 +141,9 @@ class HrLetterTests(APITestCase):
         """add hr letter"""
         url = "/api/hrletter/"
         data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/hrletter/10/"
@@ -101,49 +153,19 @@ class HrLetterTests(APITestCase):
     def test_get_all_hr_letters(self) -> HR_LETTERS:
         """test to get all hr letters"""
         url = "/api/hrletter/"
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
-class HrLetterUpdateTests(APITestCase):
-    def setUp(self):
-        """make office and user object"""
-        office = Office.objects.create(name="testOffice", country="testCountry")
-        self.office = office
-        user = self.create_user()
-        self.user = user
-        self.access_token = self.get_token()
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token
-        )
-
-    def get_token(self):
-        """Get token for logged in user."""
-        url = f'{"/api/auth/login/"}'
-        data = {"email": "user1@example.com", "password": "password"}
-        response = client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
-
-    def create_user(self) -> User:
-        url = "/api/auth/signup/"
-        data = {
-            "first_name": "fname1",
-            "last_name": "lname2",
-            "telegram_link": "string",
-            "email": "user1@example.com",
-            "birthday": "2022-08-16",
-            "mobile_number": "01234567890",
-            "password": "password",
-            "location": 1,
-            "user_type": "admin",
-        }
-        response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_update_hr_letter(self) -> HR_LETTERS:
         """update hr letter"""
         url = "/api/hrletter/"
         data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/hrletter/edit/1/"
@@ -156,6 +178,9 @@ class HrLetterUpdateTests(APITestCase):
         url = "/api/hrletter/"
         data = {"addresses": "testing addr"}
         response = client.post(url, data, format="json")
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/hrletter/edit/1/"
         data = {"applying_user": -1}
