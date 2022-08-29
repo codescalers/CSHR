@@ -1,4 +1,5 @@
 from django.urls import path
+
 from server.cshr.views.training_courses import TrainingCoursesAPIView
 
 urlpatterns = [

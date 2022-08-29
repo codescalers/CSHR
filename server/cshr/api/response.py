@@ -27,6 +27,7 @@ class CustomResponse:
 
         return Response({"message": message, "data": data,}, status=status_code,)
 
+
     @staticmethod
     def not_found(
         message: Optional[str] = None, status_code: int = HTTP_404_NOT_FOUND

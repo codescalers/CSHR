@@ -2,7 +2,7 @@ from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
     TokenRefreshSerializer,
 )
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ImageField
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.state import token_backend
 from rest_framework_simplejwt.settings import api_settings
@@ -82,6 +82,10 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
 class RegisterSerializer(ModelSerializer):
     """class RegisterSerializer to serialize the user obj"""
 
+    image = ImageField(
+        default="profile_image/default.png", initial="profile_image/default.png"
+    )
+
     class Meta:
         model = User
         fields = (
@@ -93,6 +97,11 @@ class RegisterSerializer(ModelSerializer):
             "mobile_number",
             "password",
             "location",
+            "team",
+            "salary",
+            "user_type",
+            "reporting_to",
+            "image",
         )
 
     def create(self, validated_data):
