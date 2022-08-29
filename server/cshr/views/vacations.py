@@ -89,7 +89,7 @@ class Vacations_Update_APIView(ViewSet, GenericAPIView):
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
             return CustomResponse.success(
-                data=serializer.data, status_code=200, message="vacation updated"
+                data=serializer.data, status_code=202, message="vacation updated"
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="vacation failed to update"

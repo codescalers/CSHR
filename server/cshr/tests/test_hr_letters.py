@@ -171,7 +171,7 @@ class HrLetterTests(APITestCase):
         url = "/api/hrletter/edit/1/"
         data = {"applying_user": 1}
         response = client.put(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, 202)
 
     def test_update_hr_letter_non_authorized(self) -> HR_LETTERS:
         """update hr letter"""

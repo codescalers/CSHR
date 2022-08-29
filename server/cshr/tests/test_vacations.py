@@ -223,7 +223,7 @@ class VacationsTests(APITestCase):
         url = "/api/vacations/edit/1/"
         data = {"applying_user": 1}
         response = client.put(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, 202)
 
     def test_update_vacation_request_not_authorized(self) -> Vacation:
         """add vacation _request"""
