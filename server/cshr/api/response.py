@@ -61,7 +61,7 @@ class CustomResponse:
                 "error": error,
             },
             status=status_code,
-         )
+        )
 
     @staticmethod
     def unauthorized(

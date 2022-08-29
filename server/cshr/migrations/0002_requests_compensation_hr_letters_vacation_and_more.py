@@ -109,7 +109,9 @@ class Migration(migrations.Migration):
                 ),
                 ("addresses", models.CharField(max_length=45)),
             ],
-            options={"abstract": False, },
+            options={
+                "abstract": False,
+            },
             bases=("cshr.requests",),
         ),
         migrations.CreateModel(

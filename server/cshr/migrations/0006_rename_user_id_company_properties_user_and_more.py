@@ -79,4 +79,4 @@ class Migration(migrations.Migration):
             name="salary",
             field=models.JSONField(default=dict),
         ),
-     ]
+    ]
