@@ -183,7 +183,7 @@
   }
 </script>
 
-<div class="calendar-container">
+<div class="calendar-container mx-3">
   <div class="calendar-header">
     <h1>
       <button class="icon-btn mr-5" on:click={() => prev()}>&lt;</button>
@@ -224,6 +224,9 @@
   .calendar-header h1 {
     margin: 0;
     font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
   }
   .calendar-header .icon-btn {
     color: #d7e3f1;
@@ -231,13 +234,12 @@
     cursor: pointer;
     background-color: #fff;
     font-weight: 600;
-    margin-right: 1.5rem;
-    margin-left: 1.5rem;
     border: #d7e3f1 1px solid;
     padding: 0.4rem 0.7rem;
     border-radius: 5px;
   }
-  .calendar-header .icon-btn:hover,.calendar-header .icon-btn:checked {
+  .calendar-header .icon-btn:hover,
+  .calendar-header .icon-btn:checked {
     background-color: #2b515f;
     font-size: 1rem;
     cursor: pointer;

@@ -4,7 +4,6 @@
   import { onMount } from "svelte";
   import { SettingsStore } from "./stores";
   import Routes from "./Routes.svelte";
-  import Calendar from "./pages/Calendar.svelte";
   onMount(async function () {
     $SettingsStore = await SettingsApi.getSettings();
   });
@@ -23,7 +22,7 @@
 </script>
 
 <div class="fluid-container all" bind:this={rootElement}>
-  ,,  <Routes />
+  <Routes />
 
   <Footer />
 </div>
