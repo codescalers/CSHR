@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.apps import apps
 
 # Register your models here.
-
+from server.cshr import models
 
 def autoregister(*app_list: str) -> None:
     """
@@ -19,4 +19,5 @@ def autoregister(*app_list: str) -> None:
 
 admin.site.site_header = "CSHR Administration Settings"
 admin.site.site_title = "CSHR Administration Settings"
+
 autoregister("cshr")
