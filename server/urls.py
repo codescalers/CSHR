@@ -24,7 +24,6 @@ urlpatterns = [
         include(
             [
                 path("auth/", include("server.cshr.routs.auth")),
-
                 path("compensation/", include("server.cshr.routs.compensation")),
                 path(
                     "company_properties/",
@@ -33,11 +32,8 @@ urlpatterns = [
                 path(
                     "training_courses/", include("server.cshr.routs.training_courses")
                 ),
-
                 path("users/", include("server.cshr.routs.users")),
                 path("myprofile/", include("server.cshr.routs.myinfo")),
-               
-
             ]
         ),
     ),

@@ -31,8 +31,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         self.user = get_user_by_email(attrs["email"])
         if self.user is None:
             raise exceptions.AuthenticationFailed(
-                self.error_messages["no_active_account"],
-                "no_active_account",
+                self.error_messages["no_active_account"], "no_active_account",
             )
 
         if check_password(attrs.get("password"), self.user.password):
@@ -46,12 +45,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                 return self.custom_token(data)
             except User.DoesNotExist:
                 raise exceptions.AuthenticationFailed(
-                    self.error_messages["no_active_account"],
-                    "no_active_account",
+                    self.error_messages["no_active_account"], "no_active_account",
                 )
         raise exceptions.AuthenticationFailed(
-            self.error_messages["no_active_account"],
-            "no_active_account",
+            self.error_messages["no_active_account"], "no_active_account",
         )
 
     def custom_token(self, data: Dict):

@@ -25,8 +25,7 @@ class CustomResponse:
         if not status_code:
             status_code = HTTP_200_OK
 
-        return Response({"message": message, "data": data,}, status=status_code,)
-
+        return Response({"message": message, "data": data, }, status=status_code,)
 
     @staticmethod
     def not_found(
@@ -50,7 +49,7 @@ class CustomResponse:
         if not message:
             message = "Make sure you entered a valid data."
         return Response(
-            {"data": data, "message": message, "error": error,}, status=status_code,
+            {"data": data, "message": message, "error": error, }, status=status_code,
         )
 
     @staticmethod

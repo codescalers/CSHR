@@ -3,8 +3,7 @@ from rest_framework.serializers import (
     SerializerMethodField,
     CharField,
     DateTimeField,
-    JSONField
-    
+    JSONField,
 )
 from server.cshr.models.company_properties import Company_properties
 from server.cshr.models.users import User
@@ -162,7 +161,7 @@ class SelfUserSerializer(ModelSerializer):
     This class will be used to get all info about a user to themselves
     """
 
-    user_location = ForeignKey(read_only=True)
+    user_location = SerializerMethodField()
     user_skills = SerializerMethodField()
     user_certificates = SerializerMethodField()
     user_company_properties = SerializerMethodField(read_only=True)
@@ -192,7 +191,9 @@ class SelfUserSerializer(ModelSerializer):
             "salary",
         ]
 
-    
+    def get_user_location(self, obj):
+        return obj.location.id if obj.location else None
+
     def get_user_skills(self, obj):
         skills = obj.skills
         return SkillsSerializer(skills, many=True).data

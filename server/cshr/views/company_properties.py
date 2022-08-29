@@ -87,7 +87,7 @@ class CompanyPropertiesAPIView(ViewSet, GenericAPIView):
     """method to create a new Company properties"""
 
     def post(self, request: Request) -> Response:
-        """Method to create a new Compensation"""
+        """Method to create a new Company properties"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             current_user: User = get_user_by_id(request.user.id)

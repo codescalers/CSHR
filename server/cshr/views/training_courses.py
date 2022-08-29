@@ -18,7 +18,6 @@ class TrainingCoursesAPIView(ViewSet, GenericAPIView):
 
     permission_class = UserIsAuthenticated
 
-
     def get_all(self, request: Request) -> Response:
         try:
             trainingcourses = Training_Courses.objects.all()
@@ -27,7 +26,6 @@ class TrainingCoursesAPIView(ViewSet, GenericAPIView):
             return CustomResponse.not_found(
                 message="Training courses not found", status_code=404
             )
-
 
         serializer = TrainingCoursesSerializer(trainingcourses, many=True)
         return CustomResponse.success(
