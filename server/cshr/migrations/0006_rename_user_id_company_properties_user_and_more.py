@@ -11,37 +11,72 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField(
-            model_name="company_properties", old_name="user_id", new_name="user",
-        ),
-        migrations.RenameField(model_name="skills", old_name="Name", new_name="name",),
-        migrations.RenameField(
-            model_name="user", old_name="Birthday", new_name="birthday",
-        ),
-        migrations.RenameField(model_name="user", old_name="Email", new_name="email",),
-        migrations.RenameField(
-            model_name="user", old_name="FirstName", new_name="first_name",
+            model_name="company_properties",
+            old_name="user_id",
+            new_name="user",
         ),
         migrations.RenameField(
-            model_name="user", old_name="LastName", new_name="last_name",
+            model_name="skills",
+            old_name="Name",
+            new_name="name",
         ),
         migrations.RenameField(
-            model_name="user", old_name="Location_id", new_name="location",
+            model_name="user",
+            old_name="Birthday",
+            new_name="birthday",
         ),
         migrations.RenameField(
-            model_name="user", old_name="MobileNumber", new_name="mobile_number",
+            model_name="user",
+            old_name="Email",
+            new_name="email",
         ),
         migrations.RenameField(
-            model_name="user", old_name="Skills_ids", new_name="skills",
-        ),
-        migrations.RenameField(model_name="user", old_name="Team", new_name="team",),
-        migrations.RenameField(
-            model_name="user", old_name="TelegramLink", new_name="telegram_link",
+            model_name="user",
+            old_name="FirstName",
+            new_name="first_name",
         ),
         migrations.RenameField(
-            model_name="user", old_name="User_type", new_name="user_type",
+            model_name="user",
+            old_name="LastName",
+            new_name="last_name",
         ),
-        migrations.RemoveField(model_name="user", name="Salary",),
+        migrations.RenameField(
+            model_name="user",
+            old_name="Location_id",
+            new_name="location",
+        ),
+        migrations.RenameField(
+            model_name="user",
+            old_name="MobileNumber",
+            new_name="mobile_number",
+        ),
+        migrations.RenameField(
+            model_name="user",
+            old_name="Skills_ids",
+            new_name="skills",
+        ),
+        migrations.RenameField(
+            model_name="user",
+            old_name="Team",
+            new_name="team",
+        ),
+        migrations.RenameField(
+            model_name="user",
+            old_name="TelegramLink",
+            new_name="telegram_link",
+        ),
+        migrations.RenameField(
+            model_name="user",
+            old_name="User_type",
+            new_name="user_type",
+        ),
+        migrations.RemoveField(
+            model_name="user",
+            name="Salary",
+        ),
         migrations.AddField(
-            model_name="user", name="salary", field=models.JSONField(default=dict),
+            model_name="user",
+            name="salary",
+            field=models.JSONField(default=dict),
         ),
-    ]
+     ]

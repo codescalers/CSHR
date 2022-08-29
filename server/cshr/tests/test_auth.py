@@ -144,7 +144,7 @@ class RegisterationTests(APITestCase):
 
     def test_register_user_by_normal_user(self) -> User:
         """
-         a normal user cannot register another user
+        a normal user cannot register another user
         """
         url = "/api/auth/signup/"
         data = {
@@ -167,7 +167,7 @@ class RegisterationTests(APITestCase):
 
     def test_register_user_by_supervisor(self) -> User:
         """
-         a supervisor user cannot register another user
+        a supervisor user cannot register another user
         """
         url = "/api/auth/signup/"
         data = {

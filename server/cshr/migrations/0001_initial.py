@@ -28,7 +28,9 @@ class Migration(migrations.Migration):
                 ("name", models.CharField(max_length=45)),
                 ("country", models.CharField(max_length=45)),
             ],
-            options={"abstract": False, },
+            options={
+                "abstract": False,
+            },
         ),
         migrations.CreateModel(
             name="Skills",
@@ -115,6 +117,8 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(related_name="skills", to="cshr.skills"),
                 ),
             ],
-            options={"abstract": False, },
+            options={
+                "abstract": False,
+            },
         ),
     ]

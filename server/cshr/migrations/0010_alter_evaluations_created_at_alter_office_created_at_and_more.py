@@ -61,7 +61,9 @@ class Migration(migrations.Migration):
             field=models.DateTimeField(auto_now_add=True, db_index=True),
         ),
         migrations.AlterField(
-            model_name="user", name="image", field=models.ImageField(upload_to=""),
+            model_name="user",
+            name="image",
+            field=models.ImageField(upload_to=""),
         ),
         migrations.AlterField(
             model_name="user",

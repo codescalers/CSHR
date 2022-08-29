@@ -48,7 +48,9 @@ def get_user_type_by_id(id: str) -> User:
         return None
 
 
-def get_users_filter(search_input: str,) -> User:
+def get_users_filter(
+    search_input: str,
+) -> User:
     """Return users by filters"""
 
     try:
