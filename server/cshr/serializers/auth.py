@@ -50,9 +50,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                     "no_active_account",
                 )
         raise exceptions.AuthenticationFailed(
-                    self.error_messages["no_active_account"],
-                    "no_active_account",
-        )
+            self.error_messages["no_active_account"],
+            "no_active_account",
+         )
 
     def custom_token(self, data: Dict):
         refresh = self.get_token(self.user)
