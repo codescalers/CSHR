@@ -3,21 +3,29 @@
   import CalendarMeetingForm from "./CalenderMeetingForm.svelte";
   import CalendarEventForm from "./CalendarEventForm.svelte";
   import CalendarDatePicker from "./CalendarDatePicker.svelte";
-</script>
+  let formToggle:number = 0;
+  
+  </script>
 
 <div class="container">
   <CalendarDatePicker />
   <div class="options">
-    <button value="leave" class="active">Leave</button>
+    <button class:active={formToggle === 0} on:click={() => {formToggle = 0}}>Leave</button>
     <div class="separator" />
-    <button value="meeting">Meeting</button>
+    <button class:active={formToggle === 1} on:click={ () => {formToggle = 1}}>Meeting</button>
     <div class="separator" />
-    <button value="event">Event</button>
+    <button class:active={formToggle === 2} on:click={ () => {formToggle = 2}}>Event</button>
   </div>
 
-  <CalendarMeetingForm />
-  <CalendarLeaveForm />
-  <CalendarEventForm />
+  {#if formToggle === 0}
+  <CalendarLeaveForm/>
+  {:else}
+	{#if formToggle === 1}
+  <CalendarMeetingForm/>
+	{:else}
+  <CalendarEventForm/>
+  {/if}
+  {/if}
 </div>
 
 <style>
