@@ -1,11 +1,10 @@
-from server.cshr.serializers.vacations import vacations_serializer
-from server.cshr.serializers.vacations import vacations_update_serializer
+from server.cshr.serializers.vacations import VacationsSerializer
+from server.cshr.serializers.vacations import VacationsUpdateSerializer
 from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
-from server.cshr.models.vacations import Vacation
 from server.cshr.services.users import get_user_by_id
-
+from server.cshr.services.vacations import get_vacation_by_id, get_all_vacations
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
@@ -14,21 +13,21 @@ from rest_framework.response import Response
 from server.cshr.api.response import CustomResponse
 
 
-class Vacations_APIView(ViewSet, GenericAPIView):
+class VacationsApiView(ViewSet, GenericAPIView):
     """Class Vacations_APIView to create a new vacation into database"""
 
-    serializer_class = vacations_serializer
+    serializer_class = VacationsSerializer
     permission_classes = [UserIsAuthenticated]
 
     def post(self, request: Request) -> Response:
         """Method to create a new vacation request"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            current_user: User = get_user_by_id(request.user.id)
+            currentUser: User = get_user_by_id(request.user.id)
             serializer.save(
                 type=TYPE_CHOICES.HR_LETTERS,
                 status=STATUS_CHOICES.PENDING,
-                applying_user=current_user,
+                applying_user=currentUser,
             )
             return CustomResponse.success(
                 data=serializer.data,
@@ -40,8 +39,8 @@ class Vacations_APIView(ViewSet, GenericAPIView):
         )
 
     def get_all(self, request: Request) -> Response:
-        vacations = Vacation.objects.all()
-        serializer = vacations_serializer(vacations, many=True)
+        vacations = get_all_vacations()
+        serializer = VacationsSerializer(vacations, many=True)
         return CustomResponse.success(
             data=serializer.data, message="vacation requests found", status_code=200
         )
@@ -49,12 +48,14 @@ class Vacations_APIView(ViewSet, GenericAPIView):
         """method to get a single HR Letter by id"""
 
     def get_one(self, request: Request, id: str, format=None) -> Response:
-        try:
-            vacation = Vacation.objects.get(id=id)
-        except Vacation.DoesNotExist:
-            return CustomResponse.not_found()
 
-        serializer = vacations_serializer(vacation)
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
+            return CustomResponse.not_found(
+                message="vacation is not found", status_code=404
+            )
+
+        serializer = VacationsSerializer(vacation)
         if vacation is not None:
             return CustomResponse.success(
                 data=serializer.data, message="vacation request found", status_code=200
@@ -65,29 +66,25 @@ class Vacations_APIView(ViewSet, GenericAPIView):
 
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete a vacation request by id"""
-        try:
-            vacation = Vacation.objects.get(id=id)
-        except Vacation.DoesNotExist:
-            return CustomResponse.not_found(message="hr letter not found")
+        vacation = get_vacation_by_id(id=id)
         if vacation is not None:
             vacation.delete()
             return CustomResponse.success(message="Hr Letter deleted", status_code=204)
-        return CustomResponse.not_found(message="Hr Letter not found")
+        return CustomResponse.not_found(message="Hr Letter not found", status_code=404)
 
 
-class Vacations_Update_APIView(ViewSet, GenericAPIView):
-    serializer_class = vacations_update_serializer
+class VacationsUpdateApiView(ViewSet, GenericAPIView):
+    serializer_class = VacationsUpdateSerializer
     permission_classes = [IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
-        try:
-            vacation = Vacation.objects.get(id=id)
-        except Vacation.DoesNotExist:
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
             return CustomResponse.not_found(message="Hr Letter not found")
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
-        current_user: User = get_user_by_id(request.user.id)
+        currentUser: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
-            serializer.save(approval_user=current_user)
+            serializer.save(approval_user=currentUser)
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="vacation updated"
             )
