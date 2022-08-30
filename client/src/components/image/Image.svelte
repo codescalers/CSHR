@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  export let src:string;
+  export let src:string,alt:string;
 
   let loaded = false;
   let failed = false;
@@ -23,7 +23,7 @@
 </script>
 
 {#if loaded}
-  <img class="logo" {src} alt="Document" />
+  <img {src} alt="Document" />
 {:else if failed}
   <img
     src="https://icon-library.com/images/not-found-icon/not-found-icon-20.jpg"
@@ -37,11 +37,7 @@
 {/if}
 
 <style>
-    .logo {
-        width: 200px;
-        height: 200px;
-        text-align: center;
-    }
+
     .loader{
         width: 25px;
         height: 25px;

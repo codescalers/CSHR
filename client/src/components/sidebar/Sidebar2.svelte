@@ -2,6 +2,7 @@
   import { Router, Link } from "svelte-navigator";
   import type { UserInterface } from "../../types";
   import Image from "../image/Image.svelte";
+  import Footer from "../footer/Footer.svelte";
   export let user: UserInterface;
 
   document.addEventListener("DOMContentLoaded", function (_event) {
@@ -55,7 +56,8 @@
       <slot name="page-name" />
     </div>
     <div class="header_img">
-      <img src="https://i.imgur.com/hczKIze.jpg" alt="personal-image" />
+
+      <Image src="https://i.imgur.com/hczKIze.jpg" alt="personal-image" />
     </div>
   </header>
   <div class="l-navbar" id="nav-bar">
@@ -127,14 +129,15 @@
             </ul>
           </div>
         </div>
-        <a href="#" class="nav_link">
+        <Link to="/signout" class="nav_link">
           <i class="bx bx-log-out nav_icon" />
           <span class="nav_name">SignOut</span>
-        </a>
+        </Link>
       </Router>
     </nav>
   </div>
   <div class="height-100 bg-light">
     <slot name="content" />
+    <Footer />
   </div>
 </div>

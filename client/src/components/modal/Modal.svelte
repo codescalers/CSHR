@@ -1,5 +1,20 @@
 <script lang="ts">
-  export let title: string, description: string, footer: string;
+  export let title: string,
+    id: number,
+    body: string,
+    isDelete: boolean,
+    deleteText: string,
+    isDone: boolean,
+    doneText: string;
+
+  import { createEventDispatcher } from "svelte";
+  let dispatch = createEventDispatcher();
+  function onDelete() {
+    dispatch("onDelete", { id: id });
+  }
+  function onDone() {
+    dispatch("onDone", { id: id });
+  }
 </script>
 
 <div
@@ -22,8 +37,39 @@
           aria-label="Close"
         />
       </div>
-      <div class="modal-body">{description}</div>
-      <div class="modal-footer">{footer}</div>
+      <div class="modal-body">{body}</div>
+      <div class="modal-footer">
+        {#if isDelete}
+          <button
+            class="btn  btn-danger"
+            data-bs-dismiss="modal"
+            data-bs-target="#modal"
+            aria-label="Close"
+            on:click={onDelete}
+            >{deleteText}
+            <i class="fa-solid fa-trash-can" />
+          </button>
+        {/if}
+        {#if isDone}
+          <button
+            class="btn  btn-success"
+            data-bs-dismiss="modal"
+            data-bs-target="#modal"
+            aria-label="Close"
+            on:click={onDone}
+            >{doneText}
+            <i class="fa-solid fa-check" />
+          </button>
+        {/if}
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          data-bs-target="#modal"
+        >
+          Ok
+        </button>
+      </div>
     </div>
   </div>
 </div>

@@ -11,8 +11,8 @@
   <span slot="page-name">Calendar</span>
   <section class="fluid-container mt-5" slot="content">
     <div>
-      <div class="d-flex gap-4">
-        <div class="mx-5">
+      <div class="d-flex flex-column flex-sm-column align-items-sm-center flex-xl-row gap-sm-5 gap-xl-2">
+        <div class="mx-5 mb-5 mb-xl-0">
           <CalendarDetails />
           <CalendarEventForm />
         </div>

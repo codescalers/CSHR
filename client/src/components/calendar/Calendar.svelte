@@ -42,38 +42,63 @@
     let d1 = new Date(y, m, randInt(7) + 7);
     items = [
       {
+        id: 1,
         title: "11:00 Task Early in month",
         className: "task--primary",
+        description: "go to hossam office and discuss plan",
         date: new Date(y, m, randInt(6)),
         len: randInt(4) + 1,
+        status:"expired",
       },
       {
+        id: 2,
         title: "7:30 Wk 2 tasks",
         className: "task--warning",
+        description: "go to hossam office and discuss plan",
         date: d1,
         len: randInt(4) + 2,
+        status:"done",
       },
       {
+        id: 3,
         title: "Overlapping Stuff (isBottom:true)",
         date: d1,
         className: "task--info",
+        description: "go to hossam office and discuss plan",
         len: 4,
         isBottom: true,
+        status:"undone",
       },
       {
+        id: 4,
         title: "10:00 More Stuff to do",
         date: new Date(y, m, randInt(7) + 14),
         className: "task--info",
         len: randInt(4) + 1,
+        description: "go to hossam office and discuss plan",
         detailHeader: "Difficult",
         detailContent: "But not especially so",
+        status:"undone",
       },
       {
+        id: 5,
         title: "All day task",
         date: new Date(y, m, randInt(7) + 21),
+        description: "go to hossam office and discuss plan",
         className: "task--danger",
         len: 1,
         vlen: 2,
+        status:"undone",
+      },
+      {
+        id: 6,
+        title: "Omars birthday",
+        date: new Date(y, m, randInt(7) + 21),
+        description: "Omars telegram link is: https://t.me/omar_al_sayed",
+        className: "icon",
+        isBottom: true,
+        len: 1,
+        status:"undone",
       },
     ];
 
@@ -198,7 +223,22 @@
   <Calendar
     {headers}
     {days}
-    {items}
+    bind:items
+    on:onDelete={(event) => {
+      items = items.filter((i) => i.id !== event.detail.id);
+      // todo delete from server
+    }}
+    on:onDone={(event) => {
+      // todo update server
+      items = items.reduce((acc, i) => {
+        if (i.id === event.detail.id) {
+          i.done = true;
+        }
+        acc.push(i);
+        return acc;
+      } , []);
+    }
+    }
     on:dayClick={(e) => dayClick(e.detail)}
     on:itemClick={(e) => itemClick(e.detail)}
     on:headerClick={(e) => headerClick(e.detail)}

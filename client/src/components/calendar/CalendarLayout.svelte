@@ -6,6 +6,17 @@
   export let items = [];
 
   let dispatch = createEventDispatcher();
+  function onDelete(event) {
+    const flag = confirm("Are you sure you want to delete this item?");
+    if (flag) {
+      dispatch("onDelete", { id: event.detail.id });
+    }
+  }
+  function onDone(event) {
+    if (flag) {
+      dispatch("onDone", { id: event.detail.id });
+    }
+  }
 </script>
 
 <div class="calendar">
@@ -42,6 +53,9 @@
           data-bs-toggle="modal"
           data-bs-target={`#modal`}
         >
+          {#if item.className === "birthday"}
+            <i class="fa-solid fa-cake-candles" />
+          {/if}
           {item.title}
         </button>
       </div>
@@ -54,7 +68,18 @@
       {/if}
     </section>
 
-    <Modal bind:title={item.title} body={"description"} footer={"footer"} />
+    <Modal
+      bind:title={item.title}
+      bind:body={item.description}
+      bind:id={item.id}
+      isDelete={true}
+      isDone={true}
+      doneText={"Done"}
+      on:onDelete={onDelete}
+      on:onDone={onDone}
+      deleteText={"Delete"}
+      footer={"footer"}
+    />
   {/each}
 </div>
 

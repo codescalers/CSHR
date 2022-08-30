@@ -34,6 +34,7 @@
         "typescript": "^4.7.4"
     },
     "dependencies": {
+        "@beyonk/svelte-datepicker": "^5.0.4",
         "@date-io/date-fns": "^2.15.0",
         "axios": "^0.27.2",
         "date-fns": "^2.29.2",
