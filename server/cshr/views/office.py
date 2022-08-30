@@ -5,11 +5,39 @@ from server.cshr.models.office import Office
 from rest_framework.viewsets import ViewSet
 from ..serializers.office import OfficeSerializer
 from ..api.response import CustomResponse
+from server.cshr.api.permission import (
+    IsAdmin,
+    IsUser,
+    IsSupervisor,
+    UserIsAuthenticated,
+    CustomPermissions,
+)
+from server.cshr.services.office import get_office_by_id
 
 
 class OfficeAPIView(ViewSet, GenericAPIView):
-    serializer_class = OfficeSerializer
     queryset = Office.objects.all()
+    permission_classes = [UserIsAuthenticated | IsUser | IsAdmin | IsSupervisor]
+    serializer_class = OfficeSerializer
+
+    def patch(self, request: Request, id: str, format=None) -> Response:
+        """To update an office"""
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
+        if not has_permission:
+            return CustomResponse.unauthorized()
+        office = get_office_by_id(id)
+
+        if office is not None:
+            serializer = OfficeSerializer(office, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return CustomResponse.success(
+                    data=serializer.data, status_code=201, message="Office updated"
+                )
+            return CustomResponse.bad_request(
+                error=serializer.errors, message="Office failed to update"
+            )
+        return CustomResponse.not_found(message="Office not found to update")
 
     def get_all(self, request: Request) -> Response:
         offices = self.get_queryset()
@@ -31,38 +59,21 @@ class OfficeAPIView(ViewSet, GenericAPIView):
             data=serializer.data, message="Offices found", status_code=200
         )
 
-    def patch(self, request: Request, id: str, format=None) -> Response:
-        """To update an office"""
-        try:
-            office = Office.objects.get(id=id)
-        except Office.DoesNotExist:
-            return CustomResponse.not_found(message="Office not found to update")
-        serializer = OfficeSerializer(office, data=request.data, partial=True)
-
-        if (
-            "name" in request.data
-            and request.data["name"] is not None
-            or "country" in request.data
-            and request.data["country"] is not None
-        ):
-
-            if serializer.is_valid():
-                serializer.save()
-                return CustomResponse.success(
-                    data=serializer.data, status_code=202, message="Office updated"
-                )
-        return CustomResponse.bad_request(message="Office failed to update")
-
     def delete(self, request: Request, id, format=None) -> Response:
         """To delete an office"""
-        try:
-            office = Office.objects.get(id=id)
-        except Office.DoesNotExist:
-            return CustomResponse.not_found(message="Office not found to update")
-        office.delete()
-        return CustomResponse.success(message="Office deleted", status_code=204)
+        has_permission = CustomPermissions.admin(request.user)
+        if not has_permission:
+            return CustomResponse.unauthorized()
+        office = get_office_by_id(id)
+        if office is not None:
+            office.delete()
+            return CustomResponse.success(message="Office deleted", status_code=204)
+        return CustomResponse.not_found(message="Office not found to delete")
 
     def post(self, request: Request) -> Response:
+        has_permission = CustomPermissions.admin(request.user)
+        if not has_permission:
+            return CustomResponse.unauthorized()
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
