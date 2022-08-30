@@ -1,4 +1,4 @@
-<script>
+<script context="module">
   export function iso(date) {
     const pad = (n) => (n < 10 ? "0" + n : n);
     return (
@@ -9,8 +9,12 @@
       pad(date.getDate())
     );
   }
+</script>
 
+<script>
   export let value = iso(new Date());
+  export let startDate = iso(new Date());
+  export let endDate = iso(new Date());
   export let days = "Su|Mo|Tu|We|Th|Fr|Sa".split("|");
   export let months = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec".split(
     "|"
@@ -35,6 +39,16 @@
   }
 
   function selectDate(newValue) {
+    let m = "dad";
+    if (newValue >= endDate) {
+      m = "end";
+      endDate = newValue;
+    }
+    if (newValue <= startDate) {
+      m = "start";
+      startDate = newValue;
+    }
+    alert(m);
     date = newValue;
     value = newValue;
     offset = 0;
@@ -114,7 +128,7 @@
   {#each weeks as week}
     <tr>
       {#each week as day}
-        <td class="day {day.class}" on:click={() => selectDate(day.value)}
+        <td class="day {day.class} py-sm-3 px-sm-0" on:click={() => selectDate(day.value)}
           >{day.date}</td
         >
       {/each}
@@ -146,33 +160,30 @@
     text-align: center;
     border-radius: 20%;
     font-weight: 600;
-    width: 90%;
+    width: 100%;
     margin: 0.3rem;
     font-size: 1rem;
+    padding: 0.5rem 0rem;
   }
   .go-btn:hover {
     background-color: #2b515f;
-    cursor: pointer;
     color: #fff;
-    font-weight: 600;
     border: #d7e3f1 1px solid;
-    padding: 0.3rem 0.5rem;
   }
   .day {
     cursor: pointer;
     text-align: center;
-    padding: 0.5rem 0rem;
+
   }
+
   .day.selected {
     background-color: #2b515f;
     color: #fff;
-    border-radius: 100%;
-    padding: 0.5rem 0rem;
-    aspect-ratio: 1;
+    border-radius: 50%;
   }
 
   .day:hover {
-    background: gray;
+    background: rgb(172, 171, 171);
     color: white;
   }
   td.selected {
