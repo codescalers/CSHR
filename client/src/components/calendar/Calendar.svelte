@@ -211,7 +211,7 @@
 <div class="calendar-container mx-3">
   <div class="calendar-header">
     <h1>
-      <button class="icon-btn mr-5" on:click={() => prev()}>&lt;</button>
+      <button class="icon-btn" on:click={() => prev()}>&lt;</button>
       {monthNames[month]}
       {year}
       <button class="icon-btn" on:click={() => next()}>&gt;</button>
@@ -285,8 +285,6 @@
     cursor: pointer;
     color: #fff;
     font-weight: 600;
-    margin-right: 1.5rem;
-    margin-left: 1.5rem;
     border: #d7e3f1 1px solid;
     padding: 0.4rem 0.7rem;
     border-radius: 5px;
