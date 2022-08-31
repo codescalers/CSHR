@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.serializers import SerializerMethodField
 
-from server.cshr.models.company_properties import Company_properties
+from server.cshr.models.company_properties import CompanyProperties
 
 
 class CompanyPropertiesSerializer(ModelSerializer):
@@ -10,7 +10,7 @@ class CompanyPropertiesSerializer(ModelSerializer):
     user = SerializerMethodField(read_only=True)
 
     class Meta:
-        model = Company_properties
+        model = CompanyProperties
         fields = ["name", "image_of", "user"]
 
     def get_user(self, obj):

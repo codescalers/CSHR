@@ -1,31 +1,27 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.models.company_properties import Company_properties
 from rest_framework.viewsets import ViewSet
 from ..serializers.company_properties import CompanyPropertiesSerializer
 from ..api.response import CustomResponse
 from server.cshr.models.users import User
 from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.services.users import get_user_by_id
+from server.cshr.services.company_properties import (
+    get_all_comopany_properties,
+    get_company_properties_by_id,
+)
 
 
-class CompanyPropertiesAPIView(ViewSet, GenericAPIView):
+class CompanyPropertiesApiView(ViewSet, GenericAPIView):
     """method to get all Company properties"""
 
     serializer_class = CompanyPropertiesSerializer
     permission_class = UserIsAuthenticated
 
     def get_all(self, request: Request) -> Response:
-        try:
-            companyproperties = Company_properties.objects.all()
-            """if there are no instances """
-        except Company_properties.DoesNotExist:
-            return CustomResponse.not_found(
-                message="Company propertiess not found", status_code=404
-            )
-
-        serializer = CompanyPropertiesSerializer(companyproperties, many=True)
+        company_properties = get_all_comopany_properties()
+        serializer = CompanyPropertiesSerializer(company_properties, many=True)
         return CustomResponse.success(
             data=serializer.data, message="Company properties found", status_code=200
         )
@@ -33,32 +29,28 @@ class CompanyPropertiesAPIView(ViewSet, GenericAPIView):
     """method to get Company properties by id"""
 
     def get(self, request: Request, id: str, format=None) -> Response:
-        try:
-            companyproperties = Company_properties.objects.get(id=id)
-        except Company_properties.DoesNotExist:
-            return CustomResponse.not_found()
-
-        serializer = CompanyPropertiesSerializer(companyproperties)
-        if companyproperties is not None:
-            return CustomResponse.success(
-                data=serializer.data,
-                message="Company properties found",
-                status_code=200,
+        company_property = get_company_properties_by_id(id=id)
+        if company_property is None:
+            return CustomResponse.not_found(
+                message="Company properties not found", status_code=404
             )
-        return CustomResponse.not_found(
-            message="Company properties not found", status_code=404
+
+        serializer = CompanyPropertiesSerializer(company_property)
+        return CustomResponse.success(
+            data=serializer.data,
+            message="Company properties found",
+            status_code=200,
         )
 
     """method to update a Company properties by id"""
 
     def put(self, request: Request, id: str, format=None) -> Response:
 
-        try:
-            companyproperties = Company_properties.objects.get(id=id)
-        except Company_properties.DoesNotExist:
+        company_properties = get_company_properties_by_id(id=id)
+        if company_properties is None:
             return CustomResponse.not_found(message="Company properties not found")
         serializer = self.get_serializer(
-            companyproperties, data=request.data, partial=True
+            company_properties, data=request.data, partial=True
         )
         if serializer.is_valid():
             serializer.save()
@@ -73,16 +65,11 @@ class CompanyPropertiesAPIView(ViewSet, GenericAPIView):
 
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete Company properties by id"""
-        try:
-            companyproperties = Company_properties.objects.get(id=id)
-        except Company_properties.DoesNotExist:
+        company_properties = get_company_properties_by_id(id=id)
+        if company_properties is None:
             return CustomResponse.not_found(message="Company properties not found")
-        if companyproperties is not None:
-            companyproperties.delete()
-            return CustomResponse.success(message="User deleted", status_code=204)
-        return CustomResponse.not_found(
-            message="Company properties not found to update"
-        )
+        company_properties.delete()
+        return CustomResponse.success(message="User deleted", status_code=204)
 
     """method to create a new Company properties"""
 

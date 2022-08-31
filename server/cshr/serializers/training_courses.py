@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from server.cshr.models.training_courses import Training_Courses
+from server.cshr.models.training_courses import TrainingCourses
 
 
 class TrainingCoursesSerializer(ModelSerializer):
@@ -11,7 +11,7 @@ class TrainingCoursesSerializer(ModelSerializer):
     user = SerializerMethodField(read_only=True)
 
     class Meta:
-        model = Training_Courses
+        model = TrainingCourses
         fields = "__all__"
 
     def get_user(self, obj):
