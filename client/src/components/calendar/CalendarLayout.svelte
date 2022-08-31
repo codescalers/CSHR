@@ -20,13 +20,13 @@
 </script>
 
 <div class="calendar">
-  {#each headers as header}
+  {#each headers as header (header)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
     >
   {/each}
 
-  {#each days as day}
+  {#each days as day }
     {#if day.enabled}
       <span class="day" on:click={() => dispatch("dayClick", day)}
         >{day.name}</span
@@ -38,7 +38,7 @@
     {/if}
   {/each}
 
-  {#each items as item}
+  {#each items as item (item.id)}
     <section
       on:click={() => dispatch("itemClick", item)}
       class="task {item.className}"

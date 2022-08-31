@@ -133,7 +133,7 @@
       {/each}
     </tr>
   </thead>
-  {#each weeks as week}
+  {#each weeks as week (week)}
     <tr>
       {#each week as day}
         <td
