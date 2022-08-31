@@ -13,9 +13,9 @@
                 <thead class="bg-light">
                   <tr>
                     <th>Name</th>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Position</th>
+                    <th>Role</th>
+                    <th>Date</th>
+                    <th>Type</th>
                   </tr>
                 </thead>
                 <tbody>
