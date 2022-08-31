@@ -25,7 +25,7 @@
   <slot name="toggler" />
   <div>
     <div class="form-group row">
-      <label for="colFormLabel" class="col-sm-3 col-form-label py-3"
+      <label for="colFormLabel" class="col-sm-4 col-form-label py-3"
         >{!onlyStart ? "Start " : ""}Date</label
       >
       <div class="col-sm-6">
@@ -40,7 +40,7 @@
 
     {#if !onlyStart}
       <div class="form-group row">
-        <label for="colFormLabel" class="col-sm-3 col-form-label py-3"
+        <label for="colFormLabel" class="col-sm-4 col-form-label py-3"
           >End Date</label
         >
         <div class="col-sm-6">

@@ -14,7 +14,7 @@
     </div>
   </div>
   <div class="form-group row">
-    <label for="colFormLabel" class="col-sm-3 col-form-label py-3"
+    <label for="colFormLabel" class="col-sm-4  col-form-label py-3"
       >Location</label
     >
     <div class="col-sm-6">
