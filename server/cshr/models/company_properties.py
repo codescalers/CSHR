@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from django.db import models
 from server.cshr.models.users import User
 
@@ -9,3 +10,7 @@ class CompanyProperties(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    class Meta:
+        verbose_name = "Company Property"
+        verbose_name_plural = "Company Properties"    

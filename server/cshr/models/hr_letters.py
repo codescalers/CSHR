@@ -15,3 +15,7 @@ class HrLetters(Requests):
 
     def __str__(self) -> str:
         return self.addresses
+
+    class Meta:
+        verbose_name = "Hr Letter"
+        verbose_name_plural = "Hr letters"

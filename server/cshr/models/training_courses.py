@@ -16,3 +16,7 @@ class TrauningCourses(TimeStamp):
 
     def __str__(self) -> str:
         return self.name
+    
+    class Meta:
+        verbose_name = "Training course"
+        verbose_name_plural = "Training courses"

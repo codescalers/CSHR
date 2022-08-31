@@ -12,3 +12,7 @@ class Evaluations(TimeStamp):
 
     def __str__(self) -> str:
         return f"user id :{self.user} {self.link}"
+
+    class Meta:
+        verbose_name = "Evaluation"
+        verbose_name_plural = "Evaluations"
