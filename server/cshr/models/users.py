@@ -39,11 +39,13 @@ class CshrBaseUserManger(BaseUserManager):
         """DMC method to create user"""
         if not email:
             raise ValueError("Users must have an email address")
-        office,created= Office.objects.get_or_create(name="Codescalers",country="Egypt")
+        office, created = Office.objects.get_or_create(
+            name="Codescalers", country="Egypt"
+        )
         user = self.model(
-            email=self.normalize_email(email), birthday=datetime.datetime.now(),
-            location=office
-
+            email=self.normalize_email(email),
+            birthday=datetime.datetime.now(),
+            location=office,
         )
         user.set_password(password)
         user.save(using=self._db)

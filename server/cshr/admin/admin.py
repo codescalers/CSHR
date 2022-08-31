@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.apps import apps
 
 # Register your models here.
-from server.cshr import models
+
 
 def autoregister(*app_list: str) -> None:
     """
