@@ -1,6 +1,6 @@
 <script>
   import DatePicker from "./Datepicker.svelte";
-  let onlyStart = false;
+  export let onlyStart = false;
   let startDate = "2022-03-01";
   let endDate = "2022-03-03";
 
@@ -22,10 +22,11 @@
 
 <div class="container table-primary table-responsive">
   <DatePicker bind:startDate bind:endDate bind:onlyStart {...locale[culture]} />
-  <form>
+  <slot name="toggler" />
+  <div>
     <div class="form-group row">
       <label for="colFormLabel" class="col-sm-3 col-form-label py-3"
-        >Start Date</label
+        >{!onlyStart ? "Start " : ""}Date</label
       >
       <div class="col-sm-6">
         <input
@@ -36,6 +37,7 @@
         />
       </div>
     </div>
+
     {#if !onlyStart}
       <div class="form-group row">
         <label for="colFormLabel" class="col-sm-3 col-form-label py-3"
@@ -52,21 +54,15 @@
         </div>
       </div>
     {/if}
-
-    <button class="btn btn-primary">Submit</button>
-  </form>
+    <slot name="form" />
+  </div>
 </div>
 
 <style>
   input[type="text"] {
-    margin-top: 0.3cm;
-    background-color: #edf2f9;
+    margin-top: 0.4cm;
+    background-color: #EDF2F9;
+    
   }
-  button {
-    margin-top: 0.5cm;
-    font-size: 16px;
-    color: #2b515f;
-    background-color: #eff6ff;
-    width: 10cm;
-  }
+
 </style>

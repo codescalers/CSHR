@@ -44,8 +44,8 @@
   function selectDate(newValue) {
     if (onlyStart) {
       startDate = newValue;
-    } else {
       endDate = newValue;
+    } else {
 
       if (newValue >= startDate) {
         endDate = newValue;
@@ -106,7 +106,6 @@
             : "",
 
           mm == M ? "" : (mm > M ? yy >= Y : yy > Y) ? "future" : "past",
-          
         ].join(" "),
       });
 
@@ -140,7 +139,8 @@
       {#each week as day}
         <td
           class="day {day.class} py-sm-3 px-sm-0"
-          on:click={() => selectDate(day.value)}>{day.date}</td
+          on:click={() => selectDate(day.value)}
+          >{(day.date + "").length === 1 ? day.date + " " : day.date}</td
         >
       {/each}
     </tr>
@@ -153,7 +153,7 @@
     border-radius: 1px;
   }
   .table-header {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     text-align: center;
     color: #273142;
   }
@@ -161,13 +161,13 @@
     color: #9cb2cd;
     padding: 0;
     margin: 0;
+    width:90%;
   }
 
   td.past,
   td.future {
     opacity: 0.3;
-    
-    
+    cursor: not-allowed;
   }
   .go-btn {
     cursor: pointer;
@@ -192,11 +192,12 @@
     text-align: center;
   }
 
-  .day.selected {
+  .day.selected,
+  .day.selected:hover {
     background-color: #2b515f;
     color: #fff;
     border-radius: 50%;
-    padding: 5px;
+    padding: 5% 0;
   }
 
   .day:hover {
