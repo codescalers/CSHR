@@ -28,7 +28,6 @@ class IsAdmin(permissions.BasePermission):
             userType = get_user_type_by_id(request.user.id)
 
             if userType == USER_TYPE.ADMIN:
-                print(userType)
                 return True
             return False
         return False
@@ -44,7 +43,6 @@ class IsSupervisor(permissions.BasePermission):
             userType = get_user_type_by_id(request.user.id)
 
             if userType == USER_TYPE.SUPERVISOR:
-                print(userType)
                 return True
             return False
         return False
@@ -60,20 +58,8 @@ class IsUser(permissions.BasePermission):
             userType = get_user_type_by_id(request.user.id)
             if userType == USER_TYPE.USER:
                 return True
-            raise PermissionDenied
-        raise PermissionDenied
-
-
-class IsAdminOrSuperUser(permissions.BasePermission):
-    def has_permission(self, request: Request, view: APIView) -> bool:
-        if request.user.is_authenticated:
-
-            userType = get_user_type_by_id(request.user.id)
-
-            if userType == USER_TYPE.ADMIN or userType == USER_TYPE.SUPERVISOR:
-                return True
-            raise PermissionDenied
-        raise PermissionDenied
+            return False
+        return False
 
 
 class CustomPermissions:
