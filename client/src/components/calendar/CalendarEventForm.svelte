@@ -31,7 +31,7 @@
 <style>
   input[type="text"] {
     margin-top: 0.3cm;
-    background-color: #eff6ff;
+    background-color: #EDF2F9;
     
   }
   button {

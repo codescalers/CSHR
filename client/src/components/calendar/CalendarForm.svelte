@@ -1,5 +1,4 @@
 <script lang="ts">
-  import CalendarLeaveForm from "./CalendarLeaveForm.svelte";
   import CalendarMeetingForm from "./CalenderMeetingForm.svelte";
   import CalendarEventForm from "./CalendarEventForm.svelte";
   import CalendarDatePicker from "./CalendarDatePicker.svelte";
@@ -33,11 +32,11 @@
       </div>
     </div>
     <div slot="form">
-      {#if formToggle === 0}
-        <CalendarLeaveForm />
-      {:else if formToggle === 1}
+      {#if formToggle === 1}
         <CalendarMeetingForm />
-      {:else}
+      {/if}
+
+      {#if formToggle === 2}
         <CalendarEventForm />
       {/if}
       <button type="button" class="btn submit">Submit</button>
@@ -78,9 +77,9 @@
     color: #2b515f;
     background-color: #eff6ff;
     width: 100%;
-    border:none;
+    border: none;
   }
-  .submit:hover{
+  .submit:hover {
     background-color: #2b515f;
     color: #eee;
   }
