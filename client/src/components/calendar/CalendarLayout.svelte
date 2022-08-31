@@ -20,13 +20,13 @@
 </script>
 
 <div class="calendar">
-  {#each headers as header (header)}
+  {#each headers as header,i (i)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
     >
   {/each}
 
-  {#each days as day }
+  {#each days as day,i (i) }
     {#if day.enabled}
       <span class="day" on:click={() => dispatch("dayClick", day)}
         >{day.name}</span
@@ -51,7 +51,7 @@
           type="button"
           class="modal-btn"
           data-bs-toggle="modal"
-          data-bs-target={`#modal`}
+          data-bs-target={`#modal${item.id}`}
         >
           {#if item.className === "birthday"}
             <i class="fa-solid fa-cake-candles" />

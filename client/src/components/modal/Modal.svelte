@@ -19,7 +19,7 @@
 
 <div
   class="modal fade modal-lg"
-  id={`modal`}
+  id={`modal${id}`}
   aria-labelledby="exampleModalCenterTitle"
   aria-hidden="true"
 >
@@ -33,7 +33,7 @@
         <button
           class="btn-close"
           data-bs-dismiss="modal"
-          data-bs-target="#modal"
+          data-bs-target={`#modal${id}`}
           aria-label="Close"
         />
       </div>
