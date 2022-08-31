@@ -2,7 +2,7 @@
 
 <form>
   <div class="form-group row">
-    <label for="colFormLabel" class="col-sm-3 col-form-label py-3">People</label
+    <label for="colFormLabel" class="col-sm-4 col-form-label py-3">People</label
     >
     <div class="col-sm-6">
       <input
@@ -34,11 +34,5 @@
     background-color: #EDF2F9;
     
   }
-  button {
-    margin-top: 0.5cm;
-    font-size: 16px;
-    color: #2b515f;
-    background-color: #edf2f9;
-    width: 10cm;
-  }
+
 </style>

@@ -52,6 +52,7 @@
 
     border-radius: 0.5rem;
     padding: 0.1rem;
+    width: fit-content;
   }
   .options button {
     padding: 0.7rem 2rem;

@@ -23,8 +23,8 @@
 <div class="container table-primary table-responsive">
   <DatePicker bind:startDate bind:endDate bind:onlyStart {...locale[culture]} />
   <slot name="toggler" />
-  <div>
-    <div class="form-group row">
+  <div class="my-4 px-3">
+    <div class="form-group row pl-5">
       <label for="colFormLabel" class="col-sm-4 col-form-label py-3"
         >{!onlyStart ? "Start " : ""}Date</label
       >
@@ -61,8 +61,6 @@
 <style>
   input[type="text"] {
     margin-top: 0.4cm;
-    background-color: #EDF2F9;
-    
+    background-color: #edf2f9;
   }
-
 </style>
