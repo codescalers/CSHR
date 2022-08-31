@@ -5,7 +5,7 @@ from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.users import User
 
 
-class Training_Courses(TimeStamp):
+class TrauningCourses(TimeStamp):
     """Class training_courses model for adding a new"""
 
     user = models.ForeignKey(

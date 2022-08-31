@@ -24,11 +24,11 @@ class HrLetterApiView(ViewSet, GenericAPIView):
         """Method to create a new hr letter"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            currentUser: User = get_user_by_id(request.user.id)
+            current_user: User = get_user_by_id(request.user.id)
             serializer.save(
                 type=TYPE_CHOICES.HR_LETTERS,
                 status=STATUS_CHOICES.PENDING,
-                applying_user=currentUser,
+                applying_user=current_user,
             )
             return CustomResponse.success(
                 data=serializer.data,
@@ -50,13 +50,13 @@ class HrLetterApiView(ViewSet, GenericAPIView):
 
     def get_one(self, request: Request, id: str, format=None) -> Response:
 
-        hrLetter = get_hrLetter_by_id(id=id)
-        if hrLetter is None:
+        hr_letter = get_hrLetter_by_id(id=id)
+        if hr_letter is None:
             return CustomResponse.not_found(
                 message="hr_letter not found", status_code=404
             )
-        serializer = HrLetterSerializer(hrLetter)
-        if hrLetter is not None:
+        serializer = HrLetterSerializer(hr_letter)
+        if hr_letter is not None:
             return CustomResponse.success(
                 data=serializer.data, message="hr_letter found", status_code=200
             )
@@ -64,9 +64,9 @@ class HrLetterApiView(ViewSet, GenericAPIView):
 
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete an Hr Letter by id"""
-        hrLetter = get_hrLetter_by_id(id=id)
-        if hrLetter is not None:
-            hrLetter.delete()
+        hr_letter = get_hrLetter_by_id(id=id)
+        if hr_letter is not None:
+            hr_letter.delete()
             return CustomResponse.success(message="Hr Letter deleted", status_code=204)
         return CustomResponse.not_found(message="Hr Letter not found", status_code=404)
 
@@ -76,10 +76,10 @@ class HrLetterUpdateApiView(ViewSet, GenericAPIView):
     permission_classes = [IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
-        hrLetter = get_hrLetter_by_id(id=id)
-        if hrLetter is None:
+        hr_letter = get_hrLetter_by_id(id=id)
+        if hr_letter is None:
             return CustomResponse.not_found(message="Hr Letter not found")
-        serializer = self.get_serializer(hrLetter, data=request.data, partial=True)
+        serializer = self.get_serializer(hr_letter, data=request.data, partial=True)
         currentUser: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
             serializer.save(approval_user=currentUser)

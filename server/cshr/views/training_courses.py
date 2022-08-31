@@ -1,7 +1,7 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.models.training_courses import Training_Courses
+from server.cshr.models.training_courses import TrauningCourses
 from rest_framework.viewsets import ViewSet
 from ..serializers.training_courses import TrainingCoursesSerializer
 from ..api.response import CustomResponse
@@ -14,9 +14,9 @@ class TrainingCoursesAPIView(ViewSet, GenericAPIView):
 
     def get_all(self, request: Request) -> Response:
         try:
-            trainingcourses = Training_Courses.objects.all()
+            trainingcourses = TrauningCourses.objects.all()
             """if there are no instances """
-        except Training_Courses.DoesNotExist:
+        except TrauningCourses.DoesNotExist:
             return CustomResponse.not_found(
                 message="Training courses not found", status_code=404
             )
@@ -30,8 +30,8 @@ class TrainingCoursesAPIView(ViewSet, GenericAPIView):
 
     def get_one(self, request: Request, id: str, format=None) -> Response:
         try:
-            trainingcourses = Training_Courses.objects.get(id=id)
-        except Training_Courses.DoesNotExist:
+            trainingcourses = TrauningCourses.objects.get(id=id)
+        except TrauningCourses.DoesNotExist:
             return CustomResponse.not_found()
 
         serializer = self.get_serializer(trainingcourses)
@@ -48,8 +48,8 @@ class TrainingCoursesAPIView(ViewSet, GenericAPIView):
     def put(self, request: Request, id: str, format=None) -> Response:
 
         try:
-            trainingcourses = Training_Courses.objects.get(id=id)
-        except Training_Courses.DoesNotExist:
+            trainingcourses = TrauningCourses.objects.get(id=id)
+        except TrauningCourses.DoesNotExist:
             return CustomResponse.not_found(message="Training course not found")
         serializer = self.get_serializer(trainingcourses, data=request.data)
         if serializer.is_valid():
@@ -66,8 +66,8 @@ class TrainingCoursesAPIView(ViewSet, GenericAPIView):
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete a Training course by id"""
         try:
-            trainingcourses = Training_Courses.objects.get(id=id)
-        except Training_Courses.DoesNotExist:
+            trainingcourses = TrauningCourses.objects.get(id=id)
+        except TrauningCourses.DoesNotExist:
             return CustomResponse.not_found(message="Training course not found")
         if trainingcourses is not None:
             trainingcourses.delete()

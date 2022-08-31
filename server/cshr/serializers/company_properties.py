@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 
-from ..models.company_properties import Company_properties
+from ..models.company_properties import CompanyProperties
 
 
 class CompanyPropertiesSerializer(ModelSerializer):
@@ -12,5 +12,5 @@ class CompanyPropertiesSerializer(ModelSerializer):
     user = SerializerMethodField(read_only=True)
 
     class Meta:
-        model = Company_properties
+        model = CompanyProperties
         fields = "__all__"

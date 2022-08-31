@@ -5,9 +5,9 @@ from rest_framework.serializers import (
     DateTimeField,
     JSONField,
 )
-from server.cshr.models.company_properties import Company_properties
+from server.cshr.models.company_properties import CompanyProperties
 from server.cshr.models.users import User
-from ..models.training_courses import Training_Courses
+from ..models.training_courses import TrauningCourses
 from ..models.evaluations import Evaluations
 from ..serializers.skills import SkillsSerializer
 from ..serializers.training_courses import TrainingCoursesSerializer
@@ -48,7 +48,7 @@ class GeneralUserSerializer(ModelSerializer):
         return SkillsSerializer(skills, many=True).data
 
     def get_user_certificates(self, obj):
-        training_courses = Training_Courses.objects.filter(user=obj.id)
+        training_courses = TrauningCourses.objects.filter(user=obj.id)
 
         return TrainingCoursesSerializer(training_courses, many=True).data
 
@@ -91,12 +91,12 @@ class SupervisorUserSerializer(ModelSerializer):
         return SkillsSerializer(skills, many=True).data
 
     def get_user_certificates(self, obj):
-        training_courses = Training_Courses.objects.filter(user=obj.id)
+        training_courses = TrauningCourses.objects.filter(user=obj.id)
 
         return TrainingCoursesSerializer(training_courses, many=True).data
 
     def get_user_company_properties(self, obj):
-        company_properties = Company_properties.objects.filter(user=obj.id)
+        company_properties = CompanyProperties.objects.filter(user=obj.id)
         return CompanyPropertiesSerializer(company_properties, many=True).data
 
     def get_user_evaluation(self, obj):
@@ -143,12 +143,12 @@ class AdminUserSerializer(ModelSerializer):
         return SkillsSerializer(skills, many=True).data
 
     def get_user_certificates(self, obj):
-        training_courses = Training_Courses.objects.filter(user=obj.id)
+        training_courses = TrauningCourses.objects.filter(user=obj.id)
 
         return TrainingCoursesSerializer(training_courses, many=True).data
 
     def get_user_company_properties(self, obj):
-        company_properties = Company_properties.objects.filter(user=obj.id)
+        company_properties = CompanyProperties.objects.filter(user=obj.id)
         return CompanyPropertiesSerializer(company_properties, many=True).data
 
     def get_user_evaluation(self, obj):
@@ -200,12 +200,12 @@ class SelfUserSerializer(ModelSerializer):
         return SkillsSerializer(skills, many=True).data
 
     def get_user_certificates(self, obj):
-        training_courses = Training_Courses.objects.filter(user=obj.id)
+        training_courses = TrauningCourses.objects.filter(user=obj.id)
 
         return TrainingCoursesSerializer(training_courses, many=True).data
 
     def get_user_company_properties(self, obj):
-        company_properties = Company_properties.objects.filter(user=obj.id)
+        company_properties = CompanyProperties.objects.filter(user=obj.id)
         return CompanyPropertiesSerializer(company_properties, many=True).data
 
     def get_user_evaluation(self, obj):

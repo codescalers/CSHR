@@ -23,11 +23,11 @@ class VacationsApiView(ViewSet, GenericAPIView):
         """Method to create a new vacation request"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            currentUser: User = get_user_by_id(request.user.id)
+            current_user: User = get_user_by_id(request.user.id)
             serializer.save(
                 type=TYPE_CHOICES.HR_LETTERS,
                 status=STATUS_CHOICES.PENDING,
-                applying_user=currentUser,
+                applying_user=current_user,
             )
             return CustomResponse.success(
                 data=serializer.data,
@@ -82,9 +82,9 @@ class VacationsUpdateApiView(ViewSet, GenericAPIView):
         if vacation is None:
             return CustomResponse.not_found(message="Hr Letter not found")
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
-        currentUser: User = get_user_by_id(request.user.id)
+        current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
-            serializer.save(approval_user=currentUser)
+            serializer.save(approval_user=current_user)
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="vacation updated"
             )
