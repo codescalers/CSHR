@@ -16,6 +16,7 @@
   export let months = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec".split(
     "|"
   );
+  export let onlyStart;
   export let start = 0; // first day of the week (0 = Sunday, 1 = Monday)
   export let offset = 0; // offset in months from currently selected date
 
@@ -41,12 +42,17 @@
   }
 
   function selectDate(newValue) {
-    
-    if (newValue >= startDate) {
-      endDate = newValue;
-    }
-    if (newValue <= startDate) {
+    if (onlyStart) {
       startDate = newValue;
+    } else {
+      endDate = newValue;
+
+      if (newValue >= startDate) {
+        endDate = newValue;
+      }
+      if (newValue <= startDate) {
+        startDate = newValue;
+      }
     }
 
     offset = 0;
@@ -58,7 +64,7 @@
 
   $: year = viewDate.getFullYear();
 
-  $: weeks = weeksFrom(viewDate, startDate,endDate, start);
+  $: weeks = weeksFrom(viewDate, startDate, endDate, start);
 
   function viewDateFrom(date, offset) {
     var viewDate = new Date(date);
@@ -66,7 +72,7 @@
     return viewDate;
   }
 
-  function weeksFrom(viewDate, startDay,endDay, start) {
+  function weeksFrom(viewDate, startDay, endDay, start) {
     var first = new Date(viewDate.getTime());
     first.setDate(1);
     first.setDate(first.getDate() + ((start - first.getDay() - 7) % 7));
@@ -88,15 +94,19 @@
         yy = d.getFullYear(),
         value = iso(d);
 
-   
       week.push({
         date: dd,
         value,
         class: [
-          startDay === value  || endDay === value? "selected" : "",
-          startDay <value  && endDay > value? "rangeSelected" : "",
+          startDay === value || (endDay === value && !onlyStart)
+            ? "selected"
+            : "",
+          startDay < value && endDay > value && !onlyStart
+            ? "rangeSelected"
+            : "",
 
           mm == M ? "" : (mm > M ? yy >= Y : yy > Y) ? "future" : "past",
+          
         ].join(" "),
       });
 
@@ -138,10 +148,9 @@
 </table>
 
 <style>
-  .rangeSelected{
-    background-color: #EFF6FF;
+  .rangeSelected {
+    background-color: #eff6ff;
     border-radius: 1px;
-
   }
   .table-header {
     font-size: 1.4rem;
@@ -156,7 +165,9 @@
 
   td.past,
   td.future {
-    opacity: 0.5;
+    opacity: 0.3;
+    
+    
   }
   .go-btn {
     cursor: pointer;
