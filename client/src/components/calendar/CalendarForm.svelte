@@ -39,7 +39,7 @@
       {#if formToggle === 2}
         <CalendarEventForm />
       {/if}
-      <button type="button" class="btn submit">Submit</button>
+      <button type="button" class="btn submit my-5" >Submit</button>
     </div>
   </CalendarDatePicker>
 </div>

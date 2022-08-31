@@ -135,7 +135,7 @@
   </thead>
   {#each weeks as week (week)}
     <tr>
-      {#each week as day}
+      {#each week as day,i (i)}
         <td
           class="day {day.class} py-sm-3 py-xlg-0 px-sm-0 px-xlg-5"
           on:click={() => selectDate(day.value)}
