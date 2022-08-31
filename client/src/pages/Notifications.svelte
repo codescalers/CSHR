@@ -36,13 +36,16 @@
                     </td>
                     <td>
                       <p class="fw-bold mb-1">Software engineer</p>
-                      <p class="text-muted mb-0">IT department</p>
+                      <p class="text-muted mb-0">28 May, 2020</p>
                     </td>
                     <td>
+                        <p class="fw-bold mb-1">28 May, 2020</p>
+                        <p class="text-muted mb-0">6.30</p>
+                      </td>
+                      
+                   <td>
                       <span class="badge badge-success rounded-pill">Active</span>
                     </td>
-                    <td>Senior</td>
-                   
                   </tr>
                 </tbody>
               </table>
