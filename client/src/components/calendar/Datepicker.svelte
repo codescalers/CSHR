@@ -12,6 +12,22 @@
 </script>
 
 <script>
+  import { onMount } from "svelte";
+
+  /*   onMount(() => {
+    let items = document.querySelectorAll("td");
+    items.forEach((item) => {
+      item.addEventListener("mousedown", function (e) {
+        selectDate(item.getAttribute("data-date"),true);
+      
+      });
+
+      item.addEventListener("mouseup", function (e) {
+        selectDate(item.getAttribute("data-date"),false);
+      });
+    });
+  }); */
+
   export let days = "Su|Mo|Tu|We|Th|Fr|Sa".split("|");
   export let months = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec".split(
     "|"
@@ -41,16 +57,15 @@
     offset = offset + direction;
   }
 
-  function selectDate(newValue) {
+  function selectDate(newValue, flag) {
     if (onlyStart) {
       startDate = newValue;
       endDate = newValue;
     } else {
-      if (newValue >= startDate) {
-        endDate = newValue;
-      }
-      if (newValue <= startDate) {
+      if (flag) {
         startDate = newValue;
+      } else {
+        endDate = newValue;
       }
     }
 
@@ -135,11 +150,16 @@
   </thead>
   {#each weeks as week (week)}
     <tr>
-      {#each week as day,i (i)}
+      {#each week as day, i (i)}
         <td
           class="day {day.class} py-sm-3 py-xlg-0 px-sm-0 px-xlg-5"
-          on:click={() => selectDate(day.value)}
-          >{(day.date + "").length === 1 ? day.date + " " : day.date}</td
+          data-date={day.value}
+          on:mousedown={function (e) {
+            selectDate(this.getAttribute("data-date"), true);
+          }}
+          on:mouseup={function (e) {
+            selectDate(this.getAttribute("data-date"), false);
+          }}>{(day.date + "").length === 1 ? day.date + " " : day.date}</td
         >
       {/each}
     </tr>
