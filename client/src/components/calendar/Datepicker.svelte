@@ -12,9 +12,6 @@
 </script>
 
 <script>
-  export let value = iso(new Date());
-  export let startDate = iso(new Date());
-  export let endDate = iso(new Date());
   export let days = "Su|Mo|Tu|We|Th|Fr|Sa".split("|");
   export let months = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec".split(
     "|"
@@ -22,15 +19,20 @@
   export let start = 0; // first day of the week (0 = Sunday, 1 = Monday)
   export let offset = 0; // offset in months from currently selected date
 
-  let date = iso(new Date());
+  export let startDate = iso(new Date());
+  export let endDate = iso(new Date());
 
-  $: acceptDate(value);
+  $: acceptDate(startDate, endDate);
 
-  function acceptDate(value) {
+  function acceptDate(value, value2) {
     const newDate = new Date(value);
+    const newDate2 = new Date(value2);
 
     if (!isNaN(newDate)) {
-      date = iso(newDate);
+      startDate = iso(newDate);
+    }
+    if (!isNaN(newDate2)) {
+      endDate = iso(newDate2);
     }
   }
 
@@ -39,28 +41,24 @@
   }
 
   function selectDate(newValue) {
-    let m = "dad";
-    if (newValue >= endDate) {
-      m = "end";
+    
+    if (newValue >= startDate) {
       endDate = newValue;
     }
     if (newValue <= startDate) {
-      m = "start";
       startDate = newValue;
     }
-    alert(m);
-    date = newValue;
-    value = newValue;
+
     offset = 0;
   }
 
-  $: viewDate = viewDateFrom(date, offset);
+  $: viewDate = viewDateFrom(startDate, offset);
 
   $: month = months[viewDate.getMonth()];
 
   $: year = viewDate.getFullYear();
 
-  $: weeks = weeksFrom(viewDate, date, start);
+  $: weeks = weeksFrom(viewDate, startDate,endDate, start);
 
   function viewDateFrom(date, offset) {
     var viewDate = new Date(date);
@@ -68,7 +66,7 @@
     return viewDate;
   }
 
-  function weeksFrom(viewDate, date, start) {
+  function weeksFrom(viewDate, startDay,endDay, start) {
     var first = new Date(viewDate.getTime());
     first.setDate(1);
     first.setDate(first.getDate() + ((start - first.getDay() - 7) % 7));
@@ -84,18 +82,20 @@
       Y = viewDate.getFullYear(),
       week = [],
       weeks = [week];
-
     while (d.getTime() <= last.getTime()) {
       var dd = d.getDate(),
         mm = d.getMonth(),
         yy = d.getFullYear(),
         value = iso(d);
 
+   
       week.push({
         date: dd,
         value,
         class: [
-          date === value ? "selected" : "",
+          startDay === value  || endDay === value? "selected" : "",
+          startDay <value  && endDay > value? "rangeSelected" : "",
+
           mm == M ? "" : (mm > M ? yy >= Y : yy > Y) ? "future" : "past",
         ].join(" "),
       });
@@ -128,8 +128,9 @@
   {#each weeks as week}
     <tr>
       {#each week as day}
-        <td class="day {day.class} py-sm-3 px-sm-0" on:click={() => selectDate(day.value)}
-          >{day.date}</td
+        <td
+          class="day {day.class} py-sm-3 px-sm-0"
+          on:click={() => selectDate(day.value)}>{day.date}</td
         >
       {/each}
     </tr>
@@ -137,6 +138,11 @@
 </table>
 
 <style>
+  .rangeSelected{
+    background-color: #EFF6FF;
+    border-radius: 1px;
+
+  }
   .table-header {
     font-size: 1.4rem;
     text-align: center;
@@ -173,18 +179,19 @@
   .day {
     cursor: pointer;
     text-align: center;
-
   }
 
   .day.selected {
     background-color: #2b515f;
     color: #fff;
     border-radius: 50%;
+    padding: 5px;
   }
 
   .day:hover {
     background: rgb(172, 171, 171);
     color: white;
+    border-radius: 10%;
   }
   td.selected {
     color: #ffffff;

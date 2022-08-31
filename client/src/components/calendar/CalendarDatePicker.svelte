@@ -23,7 +23,7 @@
 <div class="container table-primary table-responsive">
   <input type="text" bind:value={startDate} />
   <input type="text" bind:value={endDate} />
-  <DatePicker bind:value={startDate} bind:startDate={startDate} bind:endDate={endDate} {...locale[culture]} />
+  <DatePicker bind:startDate={startDate} bind:endDate={endDate} {...locale[culture]} />
 
 
 </div>
