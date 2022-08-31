@@ -32,14 +32,14 @@
   .options {
     display: flex;
     justify-content: center;
-    background-color: #d7e3f1;
-
-    border-radius: 1%;
-    padding: 0.2rem;
+    background-color: #EFF6FF;
+    
+    border-radius: 17px;
+    padding: 0.1rem;
   }
   .options button {
     padding: 0.7rem 2rem;
-    background-color: #d7e3f1;
+    background-color: #EFF6FF;
     border: transparent;
     color: #7a7585;
   }
