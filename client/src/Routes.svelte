@@ -44,7 +44,7 @@
     <Route path="/settings" primary={false}><Settings {user} /></Route>
 
     <Route path="auth/login/" primary={false}><Login /></Route>
-    <Route path="auth/notifications/" primary={false}><Notifications/></Route>
+    <Route path="notifications/" primary={false}><Notifications {user}/></Route>
     <Route path="auth/register/" primary={false}><Register /></Route>
     <Route path="auth/logout/" primary={false}><Logout /></Route>
 
