@@ -78,7 +78,7 @@ class User(AbstractBaseUser, TimeStamp):
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
     USERNAME_FIELD = "email"
-    reporting_to = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
+    reporting_to = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
