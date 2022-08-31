@@ -46,7 +46,6 @@
       startDate = newValue;
       endDate = newValue;
     } else {
-
       if (newValue >= startDate) {
         endDate = newValue;
       }
@@ -129,7 +128,7 @@
   </tr>
   <thead>
     <tr>
-      {#each days as day}
+      {#each days as day (day)}
         <th scope="col">{day}</th>
       {/each}
     </tr>
@@ -138,7 +137,7 @@
     <tr>
       {#each week as day}
         <td
-          class="day {day.class} py-sm-3 px-sm-0"
+          class="day {day.class} py-sm-3 py-xlg-0 px-sm-0 px-xlg-5"
           on:click={() => selectDate(day.value)}
           >{(day.date + "").length === 1 ? day.date + " " : day.date}</td
         >
@@ -150,7 +149,7 @@
 <style>
   .rangeSelected {
     background-color: #eff6ff;
-    border-radius: 1px;
+    border-radius: 10%;
   }
   .table-header {
     font-size: 1.2rem;
@@ -161,7 +160,7 @@
     color: #9cb2cd;
     padding: 0;
     margin: 0;
-    width:90%;
+    width: 90%;
   }
 
   td.past,
@@ -190,20 +189,24 @@
   .day {
     cursor: pointer;
     text-align: center;
+    width: 60px;
   }
 
   .day.selected,
   .day.selected:hover {
+    width: 60px;
+    text-align: center;
     background-color: #2b515f;
-    color: #fff;
     border-radius: 50%;
-    padding: 5% 0;
+    color: #fff;
   }
 
   .day:hover {
-    background: rgb(172, 171, 171);
-    color: white;
-    border-radius: 10%;
+    width: 60px;
+    text-align: center;
+    background: #6ea3b6;
+    color: #fff;
+    border-radius: 50%;
   }
   td.selected {
     color: #ffffff;
