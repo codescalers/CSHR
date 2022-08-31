@@ -56,11 +56,10 @@ class HrLetterApiView(ViewSet, GenericAPIView):
                 message="hr_letter not found", status_code=404
             )
         serializer = HrLetterSerializer(hr_letter)
-        if hr_letter is not None:
-            return CustomResponse.success(
-                data=serializer.data, message="hr_letter found", status_code=200
-            )
-        return CustomResponse.not_found(message="hr_letter not found", status_code=404)
+
+        return CustomResponse.success(
+            data=serializer.data, message="hr_letter found", status_code=200
+        )
 
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete an Hr Letter by id"""
