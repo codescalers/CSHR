@@ -8,7 +8,7 @@ from server.cshr.api.permission import (
     IsUser,
     UserIsAuthenticated,
 )
-
+from server.cshr.utils.validations import Validator
 from server.cshr.api.response import CustomResponse
 from server.cshr.models import User
 from server.cshr.serializers.users import (
@@ -16,12 +16,14 @@ from server.cshr.serializers.users import (
     SupervisorUserSerializer,
     AdminUserSerializer,
     SelfUserSerializer,
+    UserSkillsSerializer,
 )
-from server.cshr.services.users import get_user_by_id
+from server.cshr.services.users import get_or_create_skill_by_name, get_user_by_id
+from server.cshr.models.users import UserSkills
 
 
 class GeneralUserAPIView(ViewSet, GenericAPIView):
-    permission_classes = [IsUser]
+    permission_classes = [UserIsAuthenticated]
     serializer_class = GeneralUserSerializer
 
     def get_all(self, request: Request) -> Response:
@@ -183,3 +185,34 @@ class SelfUserAPIView(ViewSet, GenericAPIView):
                 data=serializer.errors, status_code=400, message="User not updated"
             )
         return CustomResponse.not_found(status_code=404, message="User not found")
+
+class UserSkillsAPIView(GenericAPIView):
+    permission_classes= (UserIsAuthenticated,)
+    serializer_class = UserSkillsSerializer
+
+    def post(self, request :Request):
+        '''to add a skill to a user'''
+        user= request.user
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            skill_name = serializer.validated_data.get("name")
+            if Validator.validate_string(skill_name):
+                skill , created = get_or_create_skill_by_name(skill_name)
+                response={"status_code": 201,"message":"skill added successfully"}
+                if skill in user.skills.all():
+                    user.skills.remove(skill)
+                    response["status_code"]= 204
+                else:
+                    user.skills.add(skill)
+
+                return CustomResponse.success(
+                    data=serializer.data,
+                    status_code=response["status_code"],
+                    message=response["message"]
+                )
+            return CustomResponse.bad_request(message = " there cannot be special characters in the skill name")
+        return CustomResponse.bad_request(message = " data provided is corrupted", error = serializer.errors)
+        
+
+
+

@@ -6,7 +6,10 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Anonym
 
 from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.office import Office
-from server.cshr.models.skills import Skills
+ 
+
+
+
 
 
 class TEAM(models.TextChoices):
@@ -58,6 +61,12 @@ class ChsrBaseUserManger(BaseUserManager):
         user.save(using=self._db)
         return user
 
+class UserSkills(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.name
+
 
 class User(AbstractBaseUser, TimeStamp):
     """main user model"""
@@ -75,7 +84,7 @@ class User(AbstractBaseUser, TimeStamp):
     salary = models.JSONField(default=dict)
     location = models.ForeignKey(Office, on_delete=models.CASCADE, null=True)
     skills = models.ManyToManyField(
-        Skills,
+        UserSkills,
         related_name="skills",
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
