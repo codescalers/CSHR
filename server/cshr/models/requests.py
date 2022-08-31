@@ -49,7 +49,7 @@ class Requests(TimeStamp):
         return f"""applying user id : {self.applying_user} ,
             request type : {self.type}
             to approval user id :{self.approval_user}"""
-            
+
     class Meta:
         verbose_name = "Request"
-        verbose_name_plural = "Requests"        
+        verbose_name_plural = "Requests"
