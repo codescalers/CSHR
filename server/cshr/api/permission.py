@@ -28,7 +28,6 @@ class IsAdmin(permissions.BasePermission):
             userType = get_user_type_by_id(request.user.id)
 
             if userType == USER_TYPE.ADMIN:
-                print(userType)
                 return True
             return False
         return False
@@ -44,7 +43,6 @@ class IsSupervisor(permissions.BasePermission):
             userType = get_user_type_by_id(request.user.id)
 
             if userType == USER_TYPE.SUPERVISOR:
-                print(userType)
                 return True
             return False
         return False
