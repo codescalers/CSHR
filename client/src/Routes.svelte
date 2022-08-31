@@ -4,6 +4,7 @@
   import Login from "./pages/Login.svelte";
   import type { UserInterface } from "./types";
   import Calendar from "./pages/Calendar.svelte";
+  import Notifications from "./pages/Notifications.svelte";
   import Logout from "./pages/Logout.svelte";
   import Settings from "./pages/Settings.svelte";
   import { setTheme } from "./services/utils/theme";
@@ -43,6 +44,7 @@
     <Route path="/settings" primary={false}><Settings {user} /></Route>
 
     <Route path="auth/login/" primary={false}><Login /></Route>
+    <Route path="auth/notifications/" primary={false}><Notifications/></Route>
     <Route path="auth/register/" primary={false}><Register /></Route>
     <Route path="auth/logout/" primary={false}><Logout /></Route>
 
