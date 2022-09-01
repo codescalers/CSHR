@@ -30,19 +30,17 @@ class OfficeAPIView(ViewSet, GenericAPIView):
         if office is not None:
             serializer = OfficeSerializer(office, data=request.data, partial=True)
             if (
-            "name" in request.data
-            and request.data["name"] is not None
-            or "country" in request.data
-            and request.data["country"] is not None
+                "name" in request.data
+                and request.data["name"] is not None
+                or "country" in request.data
+                and request.data["country"] is not None
             ):
                 if serializer.is_valid():
                     serializer.save()
                     return CustomResponse.success(
                         data=serializer.data, status_code=202, message="Office updated"
                     )
-            return CustomResponse.bad_request(
-                 message="Office failed to update"
-            )
+            return CustomResponse.bad_request(message="Office failed to update")
         return CustomResponse.not_found(message="Office not found to update")
 
     def get_all(self, request: Request) -> Response:
