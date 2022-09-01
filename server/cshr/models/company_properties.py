@@ -9,9 +9,7 @@ class Company_properties(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     
-    class Meta :
-        verbose_name= "Companyproperty"
-        verbose_name_plural= "Companyproperties"
+     
 
     def __str__(self) -> str:
         return self.name
