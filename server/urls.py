@@ -30,6 +30,7 @@ urlpatterns = [
                     "evaluation/",
                     include("server.cshr.routs.evaluation"),
                 ),
+                path("meeting/", include("server.cshr.routs.meetings")),
             ]
         ),
     ),
