@@ -26,8 +26,17 @@
     <section class=" fluid-container mt-5" slot="content">
 
       <div>
-         <h4 class="mx-5">All Notifications</h4>   
-           <table class="table align-middle mb-0 bg-white mx-5">
+          <h4 class="child mx-5">All Notifications</h4>
+          <div class="sort">
+            <box-icon name='sort-up'></box-icon>
+            <label class="text-muted mb-0">Sort</label>
+            
+            <box-icon name='filter-alt' type='solid' ></box-icon>
+            <label class="text-muted mb-0 filter">Filter</label>
+            
+        </div>
+          
+         <table class="table align-middle mb-0 mx-5">
                 <thead >
                   <tr>
                     <th>Name</th>
@@ -68,6 +77,23 @@
                   {/each}
                 </tbody>
               </table>
+              <div class="pagination">
+               <div class="pagination-labels"><label class="text-muted mb-0 ">Rows per page:</label></div>
+               <div class="pagination-labels">
+                <select >
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+              <div class="pagination-labels"> <label class="text-muted mb-0">1-8 of 1240</label> </div>
+              <div class="d-flex flex-column">
+                <i class="fa fa-angle-up" style="font-size:30px"></i>
+              <i class="fa fa-angle-down" style="font-size:30px"></i>
+              </div>
+              </div>
+             
+              
           </div>        
     </section>
 </Sidebar2>
@@ -81,7 +107,30 @@
   top: 128px;
 }
 
+.child {
+  display: inline-block;
+  left: 10cm;
+}
 
+.pagination {
+  margin-top: 1cm;
+  padding-left: 39cm;
+}
+.pagination-labels {
+  margin: 0.1cm;
+}
+.sort {
+  display: inline-block;
+  padding-left: 35cm;
+}
+label {
+  font-weight: 300;
+  font-size: larger;
+  padding-right: 0.5cm;
+}
 
+.icon {
+  padding-right: 0.2cm;
+}
 
 </style>

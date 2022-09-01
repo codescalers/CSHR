@@ -46,6 +46,7 @@
         "svelte-gestalt-icons": "^62.0.6",
         "svelte-inclusive-datepicker": "^1.0.0-alpha.1",
         "svelte-navigator": "^3.1.6",
+        "svelte-paginate": "^0.0.1",
         "uuid": "^8.3.2"
     }
 }
