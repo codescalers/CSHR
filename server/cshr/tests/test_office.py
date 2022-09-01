@@ -5,12 +5,11 @@ from rest_framework import status
 from server.cshr.models.users import User
 
 
-def createTmp(self):
+def createTmp():
 
     """function to create tmp record"""
-    data = {"name": "testOffice", "country": "testCountry"}
-    post_url = reverse("office")
-    self.client.post(post_url, data, format="json")
+
+    Office.objects.create(name="testOffice", country="testCountry")
 
 
 class OfficeTests(APITestCase):
@@ -121,7 +120,7 @@ class OfficeTests(APITestCase):
 
     def test_get_all_office_by_admin(self):
         """test list offices by admin"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         url = reverse("office")
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
@@ -131,7 +130,7 @@ class OfficeTests(APITestCase):
 
     def test_get_all_office_by_supervisor(self):
         """test list offices by supervisor"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         url = reverse("office")
         self.client.credentials(
@@ -143,7 +142,7 @@ class OfficeTests(APITestCase):
 
     def test_get_all_office_by_user(self):
         """test list offices by user"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         url = reverse("office")
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
@@ -153,7 +152,7 @@ class OfficeTests(APITestCase):
 
     def test_get_all_office_by_unauthenticated_user(self):
         """test list offices by unauthenticated user"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         url = reverse("office")
         response = self.client.get(url, format="json")
@@ -168,7 +167,7 @@ class OfficeTests(APITestCase):
 
     def test_admin_get_office_by_id(self):
         """test get by id with admin credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
@@ -177,7 +176,7 @@ class OfficeTests(APITestCase):
 
     def test_supervisor_get_office_by_id(self):
         """test get by id with supervisor credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(
@@ -188,7 +187,7 @@ class OfficeTests(APITestCase):
 
     def test_user_get_office_by_id(self):
         """test get by id with user credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
@@ -197,7 +196,7 @@ class OfficeTests(APITestCase):
 
     def test_unauthenticated_get_office_by_id(self):
         """test get by id with no credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         url = f"/api/office/{Office.objects.last().id}/"
         response = self.client.get(url)
@@ -207,7 +206,7 @@ class OfficeTests(APITestCase):
 
     def test_admin_update_office(self):
         """test ability to update record with admin credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         update_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
@@ -220,7 +219,7 @@ class OfficeTests(APITestCase):
 
     def test_supervisor_update_office(self):
         """test ability to update record with supervisor credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         update_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(
@@ -237,7 +236,7 @@ class OfficeTests(APITestCase):
 
     def test_user_update_office(self):
         """test unauthorized  update record with user credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         update_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
@@ -248,7 +247,7 @@ class OfficeTests(APITestCase):
 
     def test_unauthenticated_update_office(self):
         """test unauthorized  update record with no credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
         update_url = f"/api/office/{Office.objects.last().id}/"
         response = self.client.patch(
@@ -260,7 +259,7 @@ class OfficeTests(APITestCase):
 
     def test_update_office_partially(self):
         """update office record partially with admin credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
 
         update_url = f"/api/office/{Office.objects.last().id}/"
@@ -270,12 +269,12 @@ class OfficeTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertEqual(Office.objects.get().name, "updatedPartially")
-        self.assertEqual(Office.objects.get().country, "testCountry")
+        self.assertEqual(Office.objects.last().name, "updatedPartially")
+        self.assertEqual(Office.objects.last().country, "testCountry")
 
     def test_admin_update_not_exists_office(self):
         """test update request error: not found -- with admin credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
 
         update_url = f"/api/office/{65}/"
@@ -287,7 +286,7 @@ class OfficeTests(APITestCase):
 
     def test_supervisor_update_not_exists_office(self):
         """test update request error: not found -- with supervisor credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
 
         update_url = f"/api/office/{65}/"
@@ -301,7 +300,7 @@ class OfficeTests(APITestCase):
 
     def test_user_update_not_exists_office(self):
         """test user update request error: unauthorized -- with user credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
 
         update_url = f"/api/office/{65}/"
@@ -313,7 +312,7 @@ class OfficeTests(APITestCase):
 
     def test_unauthenticated_update_not_exists_office(self):
         """test user update request error: forbidden -- with no credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
 
         update_url = f"/api/office/{65}/"
@@ -324,54 +323,54 @@ class OfficeTests(APITestCase):
 
     # def test_authorized_update_office_bad_request(self):
     #    """test update request with empty body"""
-    #    createTmp(self)
+    #    createTmp()
     #    """create a new record"""
-    #    update_url = f"/api/office/{Office.objects.get().id}/"
+    #    update_url = f"/api/office/{Office.objects.last().id}/"
     #    self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.access_token_admin)
     #    response = self.client.patch(update_url, {}, format="json")
     #    self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_admin_delete_office(self):
         # '''test delete record by id with admin credentials'''
-        createTmp(self)
+        createTmp()
         """create a new record"""
-
+        count = Office.objects.count()
         delete_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Office.objects.count(), 0)
+        self.assertEqual(Office.objects.count(), count - 1)
 
     def test_supervisor_delete_office(self):
         """test unauthorized delete record by id with supervisor credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
-
+        count = Office.objects.count()
         delete_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(Office.objects.count(), 1)
+        self.assertEqual(Office.objects.count(), count)
 
     def test_user_delete_office(self):
         """test unauthorized delete record by id with supervisor credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
-
+        count = Office.objects.count()
         delete_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(Office.objects.count(), 1)
+        self.assertEqual(Office.objects.count(), count)
 
     def test_unauthenticated_delete_office(self):
         """test delete record by id with no credentials"""
-        createTmp(self)
+        createTmp()
         """create a new record"""
-
+        count = Office.objects.count()
         delete_url = f"/api/office/{Office.objects.last().id}/"
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Office.objects.count(), 1)
+        self.assertEqual(Office.objects.count(), count)
