@@ -29,13 +29,19 @@ class OfficeAPIView(ViewSet, GenericAPIView):
 
         if office is not None:
             serializer = OfficeSerializer(office, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return CustomResponse.success(
-                    data=serializer.data, status_code=202, message="Office updated"
-                )
+            if (
+            "name" in request.data
+            and request.data["name"] is not None
+            or "country" in request.data
+            and request.data["country"] is not None
+            ):
+                if serializer.is_valid():
+                    serializer.save()
+                    return CustomResponse.success(
+                        data=serializer.data, status_code=202, message="Office updated"
+                    )
             return CustomResponse.bad_request(
-                error=serializer.errors, message="Office failed to update"
+                 message="Office failed to update"
             )
         return CustomResponse.not_found(message="Office not found to update")
 
@@ -47,9 +53,8 @@ class OfficeAPIView(ViewSet, GenericAPIView):
         )
 
     def get(self, request: Request, id: str, format=None) -> Response:
-        try:
-            office = Office.objects.get(id=id)
-        except Office.DoesNotExist:
+        office = get_office_by_id(id)
+        if office is None:
             return CustomResponse.not_found(message="Office not found", status_code=404)
         serializer = OfficeSerializer(office)
 
