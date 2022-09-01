@@ -321,17 +321,17 @@ class OfficeTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    # def test_authorized_update_office_bad_request(self):
-    #    """test update request with empty body"""
-    #    createTmp()
-    #    """create a new record"""
-    #    update_url = f"/api/office/{Office.objects.last().id}/"
-    #    self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.access_token_admin)
-    #    response = self.client.patch(update_url, {}, format="json")
-    #    self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    def test_authorized_update_office_bad_request(self):
+       """test update request with empty body"""
+       createTmp()
+       """create a new record"""
+       update_url = f"/api/office/{Office.objects.last().id}/"
+       self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.access_token_admin)
+       response = self.client.patch(update_url, {}, format="json")
+       self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_admin_delete_office(self):
-        # '''test delete record by id with admin credentials'''
+        '''test delete record by id with admin credentials'''
         createTmp()
         """create a new record"""
         count = Office.objects.count()
