@@ -47,15 +47,17 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
                 evaluation, data=request.data, partial=True
             )
             if (
-            "user" in request.data
-            and request.data["user"] is not None
-            or "link" in request.data
-            and request.data["link"] is not None
+                "user" in request.data
+                and request.data["user"] is not None
+                or "link" in request.data
+                and request.data["link"] is not None
             ):
                 if serializer.is_valid():
                     serializer.save()
                     return CustomResponse.success(
-                        data=serializer.data, status_code=202, message="Evaluation updated"
+                        data=serializer.data,
+                        status_code=202,
+                        message="Evaluation updated",
                     )
             return CustomResponse.bad_request(message="Evaluation failed to update")
         return CustomResponse.not_found(message="Evaluation not found to update")

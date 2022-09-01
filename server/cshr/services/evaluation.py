@@ -7,6 +7,8 @@ def get_evaluation_by_id(id: str) -> Evaluations:
         return Evaluations.objects.get(id=int(id))
     except Evaluations.DoesNotExist:
         return None
+
+
 def all_evaluations():
     try:
         return Evaluations.objects.all()
