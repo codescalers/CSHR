@@ -3,18 +3,19 @@ from rest_framework.serializers import (
     SerializerMethodField,
     CharField,
     DateTimeField,
-    JSONField
-    
+    JSONField,
 )
 from server.cshr.models.company_properties import Company_properties
 from server.cshr.models.users import User, UserSkills
 from server.cshr.models.training_courses import Training_Courses
-from server.cshr.models.evaluations import Evaluations
-from server.cshr.models.office import Office
+
+# from server.cshr.models.evaluations import Evaluations
+# from server.cshr.models.office import Office
 from server.cshr.serializers.training_courses import TrainingCoursesSerializer
 from server.cshr.serializers.company_properties import CompanyPropertiesSerializer
-from server.cshr.serializers.evaluations import EvaluationSerializer
-from server.cshr.serializers.office import OfficeSerializer
+
+# from server.cshr.serializers.evaluations import EvaluationSerializer
+# from server.cshr.serializers.office import OfficeSerializer
 
 
 class UserSkillsSerializer(ModelSerializer):
@@ -24,23 +25,33 @@ class UserSkillsSerializer(ModelSerializer):
 
     class Meta:
         model = UserSkills
-        fields = ["name",]
-
+        fields = [
+            "name",
+        ]
 
 
 class GeneralUserSerializer(ModelSerializer):
     """
     This class will be used to get all info about a user
     """
+
     user_certificates = SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
-            "email", "full_name", "image", "telegram_link", "birthday", "location", "skills",
-            "user_certificates", "reporting_to", "created_at",
+            "email",
+            "full_name",
+            "image",
+            "telegram_link",
+            "birthday",
+            "location",
+            "skills",
+            "user_certificates",
+            "reporting_to",
+            "created_at",
         ]
- 
+
     def get_user_certificates(self, obj):
         training_courses = Training_Courses.objects.filter(user=obj.id)
 
@@ -52,8 +63,6 @@ class SupervisorUserSerializer(ModelSerializer):
     This class will be used to get all info about a user to a supervisor
     """
 
-    
-    
     user_certificates = SerializerMethodField()
     user_company_properties = SerializerMethodField()
     # user_evaluation = SerializerMethodField()
@@ -61,12 +70,22 @@ class SupervisorUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email","full_name","image","telegram_link","birthday","location","skills",
-            "user_certificates", "reporting_to", "created_at", "social_insurance_number", "team",
-            "user_company_properties", "mobile_number",
-             # "user_evaluation",
+            "email",
+            "full_name",
+            "image",
+            "telegram_link",
+            "birthday",
+            "location",
+            "skills",
+            "user_certificates",
+            "reporting_to",
+            "created_at",
+            "social_insurance_number",
+            "team",
+            "user_company_properties",
+            "mobile_number",
+            # "user_evaluation",
         ]
-
 
     def get_user_certificates(self, obj):
         training_courses = Training_Courses.objects.filter(user=obj.id)
@@ -86,23 +105,35 @@ class AdminUserSerializer(ModelSerializer):
     """
     This class will be used to get all info about a user to an admin
     """
+
     user_certificates = SerializerMethodField()
     user_company_properties = SerializerMethodField()
     # user_evaluation = SerializerMethodField()
-    
 
     class Meta:
         model = User
         fields = [
-            "email","full_name","image","telegram_link","birthday","location","skills", "user_certificates",
-            "reporting_to", "created_at", "social_insurance_number", "team",
-            "user_company_properties","salary","mobile_number"
-             # "user_evaluation",
+            "email",
+            "full_name",
+            "image",
+            "telegram_link",
+            "birthday",
+            "location",
+            "skills",
+            "user_certificates",
+            "reporting_to",
+            "created_at",
+            "social_insurance_number",
+            "team",
+            "user_company_properties",
+            "salary",
+            "mobile_number"
+            # "user_evaluation",
         ]
 
-    def get_user_skills(self, obj):
-        skills = obj.skills
-        return UserSkillsSerializer(skills, many=True).data
+    # def get_user_skills(self, obj):
+    #     skills = obj.skills
+    #     return UserSkillsSerializer(skills, many=True).data
 
     def get_user_certificates(self, obj):
         training_courses = Training_Courses.objects.filter(user=obj.id)
@@ -110,7 +141,7 @@ class AdminUserSerializer(ModelSerializer):
         return TrainingCoursesSerializer(training_courses, many=True).data
 
     def get_user_company_properties(self, obj):
-        company_properties = Company_properties.objects.filter(user = obj.id)
+        company_properties = Company_properties.objects.filter(user=obj.id)
         return CompanyPropertiesSerializer(company_properties, many=True).data
 
     # def get_user_evaluation(self, obj):
@@ -123,7 +154,6 @@ class SelfUserSerializer(ModelSerializer):
     This class will be used to get all info about a user to themselves
     """
 
-
     user_certificates = SerializerMethodField()
     user_company_properties = SerializerMethodField(read_only=True)
     # user_evaluation = SerializerMethodField(read_only=True)
@@ -135,13 +165,24 @@ class SelfUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email", "full_name", "image", "telegram_link", "birthday", "location", "skills",
-            "user_certificates", "reporting_to", "created_at", "social_insurance_number", "team",
-            "user_company_properties","salary", 'mobile_number'
+            "email",
+            "full_name",
+            "image",
+            "telegram_link",
+            "birthday",
+            "location",
+            "skills",
+            "user_certificates",
+            "reporting_to",
+            "created_at",
+            "social_insurance_number",
+            "team",
+            "user_company_properties",
+            "salary",
+            "mobile_number"
             # "user_evaluation",
         ]
 
-    
     def get_user_certificates(self, obj):
         training_courses = Training_Courses.objects.filter(user=obj.id)
 

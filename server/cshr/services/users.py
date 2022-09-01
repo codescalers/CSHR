@@ -68,7 +68,7 @@ def get_all_of_users() -> User:
     """Return all users"""
     return User.objects.all()
 
+
 def get_or_create_skill_by_name(name: str) -> UserSkills or bool:
-    '''Return a skill by name'''
+    """Return a skill by name"""
     return UserSkills.objects.get_or_create(name=name.lower())
-    

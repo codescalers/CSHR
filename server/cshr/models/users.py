@@ -7,7 +7,6 @@ from typing import Any, Union
 
 from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.office import Office
-from server.cshr.models.skills import Skills
 
 
 class TEAM(models.TextChoices):
@@ -61,6 +60,13 @@ class CshrBaseUserManger(BaseUserManager):
         return user
 
 
+class UserSkills(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class User(AbstractBaseUser, TimeStamp):
     """main user model"""
 
@@ -75,10 +81,11 @@ class User(AbstractBaseUser, TimeStamp):
     salary = models.JSONField(default=dict)
     location = models.ForeignKey(Office, on_delete=models.CASCADE)
     skills = models.ManyToManyField(
-        Skills,
+        UserSkills,
         related_name="skills",
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
+    social_insurance_number = models.CharField(max_length=45)
     USERNAME_FIELD = "email"
     reporting_to = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
     is_admin = models.BooleanField(default=False)
