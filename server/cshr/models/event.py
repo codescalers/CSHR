@@ -14,7 +14,4 @@ class Event(TimeStamp):
     location = models.TextField(max_length=300)
 
     def __str__(self) -> str:
-        return f"""event name : {self.name},
-        event description : {self.description},
-        people in the event : {self.people},
-        location of the event :{self.location}"""
+        return self.name
