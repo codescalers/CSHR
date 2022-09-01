@@ -32,7 +32,7 @@ class OfficeAPIView(ViewSet, GenericAPIView):
             if serializer.is_valid():
                 serializer.save()
                 return CustomResponse.success(
-                    data=serializer.data, status_code=201, message="Office updated"
+                    data=serializer.data, status_code=202, message="Office updated"
                 )
             return CustomResponse.bad_request(
                 error=serializer.errors, message="Office failed to update"
@@ -42,11 +42,9 @@ class OfficeAPIView(ViewSet, GenericAPIView):
     def get_all(self, request: Request) -> Response:
         offices = self.get_queryset()
         serializer = OfficeSerializer(offices, many=True)
-        if len(offices) != 0:
-            return CustomResponse.success(
-                data=serializer.data, message="Offices found", status_code=200
-            )
-        return CustomResponse.not_found(message="Office not found", status_code=404)
+        return CustomResponse.success(
+            data=serializer.data, message="Offices found", status_code=200
+        )
 
     def get(self, request: Request, id: str, format=None) -> Response:
         try:
