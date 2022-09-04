@@ -38,8 +38,16 @@ class GeneralUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email", "full_name", "image", "telegram_link", "birthday", "location", "skills", "user_certificates",
-            "reporting_to", "created_at",
+            "email",
+            "full_name",
+            "image",
+            "telegram_link",
+            "birthday",
+            "location",
+            "skills",
+            "user_certificates",
+            "reporting_to",
+            "created_at",
         ]
 
     def get_user_certificates(self, obj):
@@ -59,8 +67,20 @@ class SupervisorUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email", "full_name", "image", "telegram_link", "birthday", "location", "skills", "user_certificates",
-            "reporting_to", "created_at", "social_insurance_number", "team", "user_company_properties", "mobile_number",
+            "email",
+            "full_name",
+            "image",
+            "telegram_link",
+            "birthday",
+            "location",
+            "skills",
+            "user_certificates",
+            "reporting_to",
+            "created_at",
+            "social_insurance_number",
+            "team",
+            "user_company_properties",
+            "mobile_number",
             "user_evaluation",
         ]
 
@@ -89,9 +109,22 @@ class AdminUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email", "full_name", "image", "telegram_link", "birthday", "location", "skills", "user_certificates",
-            "reporting_to", "created_at", "social_insurance_number", "team", "user_company_properties", "salary",
-            "mobile_number", "user_evaluation",
+            "email",
+            "full_name",
+            "image",
+            "telegram_link",
+            "birthday",
+            "location",
+            "skills",
+            "user_certificates",
+            "reporting_to",
+            "created_at",
+            "social_insurance_number",
+            "team",
+            "user_company_properties",
+            "salary",
+            "mobile_number",
+            "user_evaluation",
         ]
 
     def get_user_certificates(self, obj):
@@ -123,9 +156,22 @@ class SelfUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email", "full_name", "image", "telegram_link", "birthday", "location", "skills", "user_certificates",
-            "reporting_to", "created_at", "social_insurance_number", "team", "user_company_properties", "salary",
-            "mobile_number", "user_evaluation",
+            "email",
+            "full_name",
+            "image",
+            "telegram_link",
+            "birthday",
+            "location",
+            "skills",
+            "user_certificates",
+            "reporting_to",
+            "created_at",
+            "social_insurance_number",
+            "team",
+            "user_company_properties",
+            "salary",
+            "mobile_number",
+            "user_evaluation",
         ]
 
     def get_user_certificates(self, obj):
