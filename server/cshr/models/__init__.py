@@ -9,3 +9,5 @@ from .hr_letters import *
 from .company_properties import *
 from .evaluations import *
 from .requests import *
+from .meetings import *
+from .event import *

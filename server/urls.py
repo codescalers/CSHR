@@ -28,7 +28,10 @@ urlpatterns = [
                 path("vacations/", include("server.cshr.routs.vacations")),
                 path("users/", include("server.cshr.routs.users")),
                 path("trainingcourses/", include("server.cshr.routs.training_courses")),
-                path("myprofile/", include("server.cshr.routs.myinfo")),
+                path("myprofile/", include("server.cshr.routs.myinfo")),    
+                path("meeting/", include("server.cshr.routs.meetings")),
+                path("event/", include("server.cshr.routs.event")),
+
             ]
         ),
     ),

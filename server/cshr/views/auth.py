@@ -12,7 +12,7 @@ from server.cshr.serializers.auth import (
 from server.cshr.api.response import CustomResponse
 
 
-class RegisterAPIView(GenericAPIView):
+class RegisterApiView(GenericAPIView):
     """Class RegisterAPIView to register a new user into database"""
 
     serializer_class = RegisterSerializer
@@ -33,7 +33,7 @@ class RegisterAPIView(GenericAPIView):
         )
 
 
-class LoginByTokenAPIView(TokenObtainPairView):
+class LoginByTokenApiView(TokenObtainPairView):
     """Class LoginByTokenAPIView to login a user by jwt token"""
 
     serializer_class = MyTokenObtainPairSerializer

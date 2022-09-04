@@ -6,7 +6,7 @@ from server.cshr.models.requests import Requests
 
 class HrLetters(Requests):
     """
-    Class vacation model for adding
+    Class hr letters model for adding
     a new HR_letter request to the database
     """
 
