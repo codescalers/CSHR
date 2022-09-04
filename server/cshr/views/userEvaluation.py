@@ -2,7 +2,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from server.cshr.serializers.evaluation import EvaluationSerializer
+from server.cshr.serializers.userEvaluation import userEvaluationSerializer
 from server.cshr.api.response import CustomResponse
 from server.cshr.api.permission import (
     IsAdmin,
@@ -14,12 +14,12 @@ from server.cshr.services.evaluation import get_evaluation_by_id, all_evaluation
 
 
 class EvaluationsAPIView(ViewSet, GenericAPIView):
-    serializer_class = EvaluationSerializer
+    serializer_class = userEvaluationSerializer
     permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
-
+    
     def get_all(self, request: Request) -> Response:
         evaluations = all_evaluations()
-        serializer = EvaluationSerializer(evaluations, many=True)
+        serializer = userEvaluationSerializer(evaluations, many=True)
         return CustomResponse.success(
             data=serializer.data, message="evaluations found", status_code=200
         )
@@ -28,7 +28,7 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
 
         evaluation = get_evaluation_by_id(id)
         if evaluation is not None:
-            serializer = EvaluationSerializer(evaluation)
+            serializer = userEvaluationSerializer(evaluation)
             return CustomResponse.success(
                 data=serializer.data, message="evaluation found", status_code=200
             )
@@ -43,22 +43,22 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
             return CustomResponse.unauthorized()
         evaluation = get_evaluation_by_id(id)
         if evaluation is not None:
-            serializer = EvaluationSerializer(
+            serializer = userEvaluationSerializer(
                 evaluation, data=request.data, partial=True
             )
-            if (
-                "user" in request.data
-                and request.data["user"] is not None
-                or "link" in request.data
-                and request.data["link"] is not None
-            ):
-                if serializer.is_valid():
-                    serializer.save()
-                    return CustomResponse.success(
-                        data=serializer.data,
-                        status_code=202,
-                        message="Evaluation updated",
-                    )
+            # if (
+            #     "user" in request.data
+            #     and request.data["user"] is not None
+            #     or "link" in request.data
+            #     and request.data["link"] is not None
+            # ):
+            if serializer.is_valid():
+                serializer.save()
+                return CustomResponse.success(
+                    data=serializer.data,
+                    status_code=202,
+                    message="Evaluation updated",
+                )
             return CustomResponse.bad_request(message="Evaluation failed to update")
         return CustomResponse.not_found(message="Evaluation not found to update")
 

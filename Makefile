@@ -17,3 +17,6 @@ migrate:
 	$(CMD) python3 manage.py makemigrations
 	$(CMD) python3 manage.py migrate
 	$(CMD) python3 manage.py sqlmigrate cshr 0006
+	
+run:
+	$(CMD) python3 manage.py runserver
