@@ -123,8 +123,8 @@
                 
               <div class="pagination-labels"> 
                 <label class="text-muted mb-0">{pageCount+1} of {totalNotifications / pageSize}</label>
-                <button on:click={decrement}><i class="icon fa-solid fa-chevron-left"></i></button>
-                <button on:click={increment}><i class="icon fa-solid fa-chevron-right"></i></button>
+                <button class="paginatin-button" on:click={decrement}><i class="icon fa-solid fa-chevron-left"></i></button>
+                <button class="paginatin-button" on:click={increment}><i class="icon fa-solid fa-chevron-right"></i></button>
               </div>
               </div>
               
@@ -167,6 +167,12 @@ section {
 }
 .icon {
   padding-right: 0.3cm;
+}
+.paginatin-button {
+  background: unset !important;
+border: unset !important;
+outline: unset !important
+
 }
 
 </style>
