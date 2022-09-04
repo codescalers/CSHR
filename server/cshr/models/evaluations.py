@@ -25,7 +25,7 @@ class Evaluations(TimeStamp):
 
     def __str__(self) -> str:
         return f"({self.quarter}) - {self.created_at.year}"
-    
+
     class Meta:
         verbose_name = "Evaluation"
         verbose_name_plural = "Evaluations"
@@ -41,7 +41,7 @@ class UserEvaluations(TimeStamp):
 
     def __str__(self) -> str:
         return self.user.full_name
-    
+
     class Meta:
         verbose_name = "User Evaluation"
         verbose_name_plural = "User Evaluations"
