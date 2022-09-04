@@ -10,7 +10,7 @@ def get_evaluation_by_id(id: str) -> UserEvaluations:
 
 
 def all_evaluations():
-    try:
-        return UserEvaluations.objects.all()
-    except UserEvaluations.DoesNotExist:
-        return None
+    
+    return UserEvaluations.objects.all()
+   
+      
