@@ -1,3 +1,4 @@
+
 from rest_framework.test import APITestCase
 from django.urls import reverse
 from server.cshr.models.evaluations import UserEvaluations,EVALUATION_FORM_TYPE
@@ -6,10 +7,10 @@ from server.cshr.models.office import Office
 from rest_framework import status
 
 
-def createTmp():
+def createTmp(id=1):
     """function to create tmp record"""
 
-    UserEvaluations.objects.create(user=User.objects.get(id=1), link="testCase", quarter =EVALUATION_FORM_TYPE.PEER_2_PEER_FORM, score=50)
+    UserEvaluations.objects.create(user=User.objects.get(id=id), link="testCase", quarter =EVALUATION_FORM_TYPE.PEER_2_PEER_FORM, score=50)
 
 
 class EvaluationTests(APITestCase):
@@ -33,19 +34,6 @@ class EvaluationTests(APITestCase):
             first_name="string",
             last_name="string",
             telegram_link="string",
-            email="user2@example.com",
-            birthday="2022-08-24",
-            mobile_number="string",
-            password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
-            location=office,
-            team="Development",
-            user_type="User",
-        )
-
-        User.objects.create(
-            first_name="string",
-            last_name="string",
-            telegram_link="string",
             email="user3@example.com",
             birthday="2022-08-24",
             mobile_number="string",
@@ -53,6 +41,19 @@ class EvaluationTests(APITestCase):
             location=office,
             team="Development",
             user_type="Supervisor",
+        )
+
+        User.objects.create(
+            first_name="string",
+            last_name="string",
+            telegram_link="string",
+            email="user2@example.com",
+            birthday="2022-08-24",
+            mobile_number="string",
+            password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
+            location=office,
+            team="Development",
+            user_type="User",
         )
 
         self.access_token_admin = self.get_token_admin()
@@ -149,8 +150,7 @@ class EvaluationTests(APITestCase):
         url = reverse("evaluation")
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "evaluations found")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_all_evaluation_by_unauthenticated_user(self):
         """test list evaluations by unauthenticated user"""
@@ -161,12 +161,13 @@ class EvaluationTests(APITestCase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_get_all_evaluation_empty_list(self):
+    def test_user_get_all_evaluation_empty_list(self):
         """test ability to return empty list if database is empty"""
         url = reverse("evaluation")
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED
+        )
 
     def test_admin_get_evaluation_by_id(self):
         """test get by id with admin credentials"""
@@ -192,15 +193,25 @@ class EvaluationTests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_user_get_evaluation_by_id(self):
+    def test_user_get_own_evaluation_by_id(self):
         """test get by id with user credentials"""
 
-        createTmp()
+        createTmp(3)
         """create a new record"""
         url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_user_get_unauthorized_evaluation_by_id(self):
+        """test get by id of another user with user credentials"""
+
+        createTmp(2)
+        """create a new record"""
+        url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_unauthenticated_get_evaluation_by_id(self):
         """test get by id with no credentials"""

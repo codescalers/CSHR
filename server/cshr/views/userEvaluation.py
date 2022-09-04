@@ -16,8 +16,11 @@ from server.cshr.services.evaluation import get_evaluation_by_id, all_evaluation
 class EvaluationsAPIView(ViewSet, GenericAPIView):
     serializer_class = userEvaluationSerializer
     permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
-    
+
     def get_all(self, request: Request) -> Response:
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
+        if not has_permission :
+            return CustomResponse.unauthorized()
         evaluations = all_evaluations()
         serializer = userEvaluationSerializer(evaluations, many=True)
         return CustomResponse.success(
@@ -27,7 +30,12 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
     def get(self, request: Request, id: str, format=None) -> Response:
 
         evaluation = get_evaluation_by_id(id)
+
+            
         if evaluation is not None:
+            has_permission = CustomPermissions.admin_or_supervisor(request.user)
+            if not has_permission and request.user.id != evaluation.user_id:
+                return CustomResponse.unauthorized()
             serializer = userEvaluationSerializer(evaluation)
             return CustomResponse.success(
                 data=serializer.data, message="evaluation found", status_code=200
