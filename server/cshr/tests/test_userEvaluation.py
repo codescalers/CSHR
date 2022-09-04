@@ -17,7 +17,7 @@ def createTmp(id=1):
     )
 
 
-class EvaluationTests(APITestCase):
+class UserEvaluationTests(APITestCase):
     def setUp(self):
         office = Office.objects.create(name="testOffice", country="testCountry")
 

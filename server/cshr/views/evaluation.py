@@ -10,10 +10,13 @@ from server.cshr.api.permission import (
     UserIsAuthenticated,
     CustomPermissions,
 )
-from server.cshr.services.evaluation import get_evaluation_by_id, all_evaluations
+from server.cshr.services.evaluation import (
+    get_user_evaluation_by_id,
+    all_user_evaluations,
+)
 
 
-class EvaluationsAPIView(ViewSet, GenericAPIView):
+class UserEvaluationsAPIView(ViewSet, GenericAPIView):
     serializer_class = UserEvaluationSerializer
     permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
 
@@ -21,7 +24,7 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
         has_permission = CustomPermissions.admin_or_supervisor(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
-        evaluations = all_evaluations()
+        evaluations = all_user_evaluations()
         serializer = UserEvaluationSerializer(evaluations, many=True)
         return CustomResponse.success(
             data=serializer.data, message="evaluations found", status_code=200
@@ -29,7 +32,7 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
 
     def get(self, request: Request, id: str, format=None) -> Response:
 
-        evaluation = get_evaluation_by_id(id)
+        evaluation = get_user_evaluation_by_id(id)
 
         if evaluation is not None:
             has_permission = CustomPermissions.admin_or_supervisor(request.user)
@@ -48,7 +51,7 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
         has_permission = CustomPermissions.admin_or_supervisor(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
-        evaluation = get_evaluation_by_id(id)
+        evaluation = get_user_evaluation_by_id(id)
         if evaluation is not None:
             serializer = UserEvaluationSerializer(evaluation, data=request.data)
             if serializer.is_valid():
@@ -84,7 +87,7 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
         has_permission = CustomPermissions.admin(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
-        evaluation = get_evaluation_by_id(id)
+        evaluation = get_user_evaluation_by_id(id)
         if evaluation is not None:
             evaluation.delete()
             return CustomResponse.success(message="Evaluation deleted", status_code=204)

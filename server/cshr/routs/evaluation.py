@@ -1,17 +1,17 @@
 from django.urls import path
 
 
-from server.cshr.views.userEvaluation import EvaluationsAPIView
+from server.cshr.views.evaluation import UserEvaluationsAPIView
 
 urlpatterns = [
     path(
         "user/",
-        EvaluationsAPIView.as_view({"get": "get_all", "post": "post"}),
+        UserEvaluationsAPIView.as_view({"get": "get_all", "post": "post"}),
         name="evaluation",
     ),
     path(
         "user/<str:id>/",
-        EvaluationsAPIView.as_view(
+        UserEvaluationsAPIView.as_view(
             {"get": "get", "put": "put", "delete": "delete"}, name="evaluation-byId"
         ),
     ),
