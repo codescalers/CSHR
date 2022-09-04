@@ -1,5 +1,5 @@
 """methods that will serve evaluation endpoints"""
-from server.cshr.models.evaluations import Evaluations,UserEvaluations
+from server.cshr.models.evaluations import UserEvaluations
 
 
 def get_evaluation_by_id(id: str) -> UserEvaluations:
@@ -10,7 +10,5 @@ def get_evaluation_by_id(id: str) -> UserEvaluations:
 
 
 def all_evaluations():
-    
+
     return UserEvaluations.objects.all()
-   
-      

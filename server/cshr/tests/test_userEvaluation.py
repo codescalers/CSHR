@@ -1,7 +1,6 @@
-
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from server.cshr.models.evaluations import UserEvaluations,EVALUATION_FORM_TYPE
+from server.cshr.models.evaluations import UserEvaluations, EVALUATION_FORM_TYPE
 from server.cshr.models.users import User
 from server.cshr.models.office import Office
 from rest_framework import status
@@ -10,7 +9,12 @@ from rest_framework import status
 def createTmp(id=1):
     """function to create tmp record"""
 
-    UserEvaluations.objects.create(user=User.objects.get(id=id), link="testCase", quarter =EVALUATION_FORM_TYPE.PEER_2_PEER_FORM, score=50)
+    UserEvaluations.objects.create(
+        user=User.objects.get(id=id),
+        link="testCase",
+        quarter=EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+        score=50,
+    )
 
 
 class EvaluationTests(APITestCase):
@@ -86,7 +90,12 @@ class EvaluationTests(APITestCase):
     def test_create_evaluation_by_admin(self):
         """test ability of creating a new evaluation by admin"""
         url = reverse("evaluation")
-        data = {"link": "testCase", "user": 1, "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM, "score":40}
+        data = {
+            "link": "testCase",
+            "user": 1,
+            "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+            "score": 40,
+        }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -95,7 +104,12 @@ class EvaluationTests(APITestCase):
     def test_create_evaluation_by_supervisor(self):
         """test unauthorized  evaluation creation by supervisor"""
         url = reverse("evaluation")
-        data = {"link": "testCase", "user": 1, "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM, "score":40}
+        data = {
+            "link": "testCase",
+            "user": 1,
+            "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+            "score": 40,
+        }
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -105,7 +119,12 @@ class EvaluationTests(APITestCase):
     def test_create_evaluation_by_user(self):
         """test unauthorized  evaluation creation by user"""
         url = reverse("evaluation")
-        data = {"link": "testCase", "user": 1, "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM, "score":40}
+        data = {
+            "link": "testCase",
+            "user": 1,
+            "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+            "score": 40,
+        }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -113,7 +132,12 @@ class EvaluationTests(APITestCase):
     def test_create_evaluation_by_unauthenticated_user(self):
         """test unauthorized  evaluation creation by unauthenticated user"""
         url = reverse("evaluation")
-        data = {"link": "testCase", "user": 1, "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM, "score":40}
+        data = {
+            "link": "testCase",
+            "user": 1,
+            "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+            "score": 40,
+        }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -201,7 +225,7 @@ class EvaluationTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
+
     def test_user_get_unauthorized_evaluation_by_id(self):
         """test get by id of another user with user credentials"""
 

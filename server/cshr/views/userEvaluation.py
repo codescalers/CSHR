@@ -19,7 +19,7 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
 
     def get_all(self, request: Request) -> Response:
         has_permission = CustomPermissions.admin_or_supervisor(request.user)
-        if not has_permission :
+        if not has_permission:
             return CustomResponse.unauthorized()
         evaluations = all_evaluations()
         serializer = userEvaluationSerializer(evaluations, many=True)
@@ -31,7 +31,6 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
 
         evaluation = get_evaluation_by_id(id)
 
-            
         if evaluation is not None:
             has_permission = CustomPermissions.admin_or_supervisor(request.user)
             if not has_permission and request.user.id != evaluation.user_id:
