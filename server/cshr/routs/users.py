@@ -11,13 +11,13 @@ from server.cshr.views.users import (
 
 urlpatterns = [
     path("skills/", UserSkillsAPIView.as_view()),
-    path("superView/<str:id>/", SupervisorUserAPIView.as_view({"get": "get_one"})),
-    path("superView/", SupervisorUserAPIView.as_view({"get": "get_all"})),
+    path("supervisor/<str:id>/", SupervisorUserAPIView.as_view({"get": "get_one"})),
+    path("supervisor/", SupervisorUserAPIView.as_view({"get": "get_all"})),
     path(
-        "adminView/<str:id>/",
+        "admin/<str:id>/",
         AdminUserAPIView.as_view({"put": "put", "get": "get_one", "delete": "delete"}),
     ),
-    path("adminView/", AdminUserAPIView.as_view({"get": "get_all"})),
+    path("admin/", AdminUserAPIView.as_view({"get": "get_all"})),
     path("", GeneralUserAPIView.as_view({"get": "get_all"})),
     path("<str:id>/", GeneralUserAPIView.as_view({"get": "get_one"})),
 ]

@@ -23,7 +23,7 @@ class Evaluations(TimeStamp):
     quarter = models.CharField(max_length=150, choices=EVALUATION_FORM_TYPE.choices)
     link = models.CharField(max_length=150)
 
-    def str(self) -> str:
+    def __str__(self) -> str:
         return f"({self.quarter}) - {self.created_at.year}"
 
 
@@ -35,5 +35,5 @@ class UserEvaluations(TimeStamp):
     link = models.CharField(max_length=150)
     score = models.IntegerField(default=0)
 
-    def str(self) -> str:
+    def __str__(self) -> str:
         return self.user.full_name

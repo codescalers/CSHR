@@ -5,17 +5,15 @@ from rest_framework.serializers import (
     DateTimeField,
     JSONField,
 )
-from server.cshr.models.company_properties import Company_properties
 from server.cshr.models.users import User, UserSkills
-from server.cshr.models.training_courses import Training_Courses
-
-# from server.cshr.models.evaluations import Evaluations
-# from server.cshr.models.office import Office
 from server.cshr.serializers.training_courses import TrainingCoursesSerializer
 from server.cshr.serializers.company_properties import CompanyPropertiesSerializer
-
-# from server.cshr.serializers.evaluations import EvaluationSerializer
-# from server.cshr.serializers.office import OfficeSerializer
+from server.cshr.services.training_courses import get_training_courses_for_a_user
+from server.cshr.services.company_properties import (
+    get_all_company_properties_for_a_user,
+)
+from server.cshr.services.evaluations import get_evaluations_for_a_user
+from server.cshr.serializers.userEvaluation import UserEvaluationSerializer
 
 
 class UserSkillsSerializer(ModelSerializer):
@@ -40,21 +38,12 @@ class GeneralUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email",
-            "full_name",
-            "image",
-            "telegram_link",
-            "birthday",
-            "location",
-            "skills",
-            "user_certificates",
-            "reporting_to",
-            "created_at",
+            "email", "full_name", "image", "telegram_link", "birthday", "location", "skills", "user_certificates",
+            "reporting_to", "created_at",
         ]
 
     def get_user_certificates(self, obj):
-        training_courses = Training_Courses.objects.filter(user=obj.id)
-
+        training_courses = get_training_courses_for_a_user(obj.id)
         return TrainingCoursesSerializer(training_courses, many=True).data
 
 
@@ -65,40 +54,27 @@ class SupervisorUserSerializer(ModelSerializer):
 
     user_certificates = SerializerMethodField()
     user_company_properties = SerializerMethodField()
-    # user_evaluation = SerializerMethodField()
+    user_evaluation = SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
-            "email",
-            "full_name",
-            "image",
-            "telegram_link",
-            "birthday",
-            "location",
-            "skills",
-            "user_certificates",
-            "reporting_to",
-            "created_at",
-            "social_insurance_number",
-            "team",
-            "user_company_properties",
-            "mobile_number",
-            # "user_evaluation",
+            "email", "full_name", "image", "telegram_link", "birthday", "location", "skills", "user_certificates",
+            "reporting_to", "created_at", "social_insurance_number", "team", "user_company_properties", "mobile_number",
+            "user_evaluation",
         ]
 
     def get_user_certificates(self, obj):
-        training_courses = Training_Courses.objects.filter(user=obj.id)
-
+        training_courses = get_training_courses_for_a_user(obj.id)
         return TrainingCoursesSerializer(training_courses, many=True).data
 
     def get_user_company_properties(self, obj):
-        company_properties = Company_properties.objects.filter(user=obj.id)
+        company_properties = get_all_company_properties_for_a_user(obj.id)
         return CompanyPropertiesSerializer(company_properties, many=True).data
 
-    # def get_user_evaluation(self, obj):
-    #     evaluations = Evaluations.objects.filter(user=obj.id)
-    #     return EvaluationSerializer(evaluations, many=True).data
+    def get_user_evaluation(self, obj):
+        evaluations = get_evaluations_for_a_user(obj.id)
+        return UserEvaluationSerializer(evaluations, many=True).data
 
 
 class AdminUserSerializer(ModelSerializer):
@@ -108,45 +84,27 @@ class AdminUserSerializer(ModelSerializer):
 
     user_certificates = SerializerMethodField()
     user_company_properties = SerializerMethodField()
-    # user_evaluation = SerializerMethodField()
+    user_evaluation = SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
-            "email",
-            "full_name",
-            "image",
-            "telegram_link",
-            "birthday",
-            "location",
-            "skills",
-            "user_certificates",
-            "reporting_to",
-            "created_at",
-            "social_insurance_number",
-            "team",
-            "user_company_properties",
-            "salary",
-            "mobile_number"
-            # "user_evaluation",
+            "email", "full_name", "image", "telegram_link", "birthday", "location", "skills", "user_certificates",
+            "reporting_to", "created_at", "social_insurance_number", "team", "user_company_properties", "salary",
+            "mobile_number", "user_evaluation",
         ]
 
-    # def get_user_skills(self, obj):
-    #     skills = obj.skills
-    #     return UserSkillsSerializer(skills, many=True).data
-
     def get_user_certificates(self, obj):
-        training_courses = Training_Courses.objects.filter(user=obj.id)
-
+        training_courses = get_training_courses_for_a_user(obj.id)
         return TrainingCoursesSerializer(training_courses, many=True).data
 
     def get_user_company_properties(self, obj):
-        company_properties = Company_properties.objects.filter(user=obj.id)
+        company_properties = get_all_company_properties_for_a_user(obj.id)
         return CompanyPropertiesSerializer(company_properties, many=True).data
 
-    # def get_user_evaluation(self, obj):
-    #     evaluations = Evaluations.objects.filter(user=obj.id)
-    #     return EvaluationSerializer(evaluations, many=True).data
+    def get_user_evaluation(self, obj):
+        evaluations = get_evaluations_for_a_user(obj.id)
+        return UserEvaluationSerializer(evaluations, many=True).data
 
 
 class SelfUserSerializer(ModelSerializer):
@@ -156,7 +114,7 @@ class SelfUserSerializer(ModelSerializer):
 
     user_certificates = SerializerMethodField()
     user_company_properties = SerializerMethodField(read_only=True)
-    # user_evaluation = SerializerMethodField(read_only=True)
+    user_evaluation = SerializerMethodField(read_only=True)
     reporting_to = SerializerMethodField(read_only=True)
     created_at = DateTimeField(read_only=True)
     team = CharField(read_only=True)
@@ -165,37 +123,22 @@ class SelfUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email",
-            "full_name",
-            "image",
-            "telegram_link",
-            "birthday",
-            "location",
-            "skills",
-            "user_certificates",
-            "reporting_to",
-            "created_at",
-            "social_insurance_number",
-            "team",
-            "user_company_properties",
-            "salary",
-            "mobile_number"
-            # "user_evaluation",
+            "email", "full_name", "image", "telegram_link", "birthday", "location", "skills", "user_certificates",
+            "reporting_to", "created_at", "social_insurance_number", "team", "user_company_properties", "salary",
+            "mobile_number", "user_evaluation",
         ]
 
     def get_user_certificates(self, obj):
-        training_courses = Training_Courses.objects.filter(user=obj.id)
-
+        training_courses = get_training_courses_for_a_user(obj.id)
         return TrainingCoursesSerializer(training_courses, many=True).data
 
     def get_user_company_properties(self, obj):
-        company_properties = Company_properties.objects.filter(user=obj)
-        print(company_properties)
+        company_properties = get_all_company_properties_for_a_user(obj.id)
         return CompanyPropertiesSerializer(company_properties, many=True).data
 
-    # def get_user_evaluation(self, obj):
-    #     evaluations = Evaluations.objects.filter(user=obj.id)
-    #     return EvaluationSerializer(evaluations, many=True).data
+    def get_user_evaluation(self, obj):
+        evaluations = get_evaluations_for_a_user(obj.id)
+        return UserEvaluationSerializer(evaluations, many=True).data
 
     def get_reporting_to(self, obj):
         reporting_to = obj.reporting_to

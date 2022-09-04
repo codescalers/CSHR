@@ -1,10 +1,8 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
-from server.cshr.models.company_properties import Company_properties
-
-# from server.cshr.models.evaluations import Evaluations
-
-from server.cshr.models.training_courses import Training_Courses
+from server.cshr.models.company_properties import CompanyProperties
+from server.cshr.models.evaluations import UserEvaluations
+from server.cshr.models.training_courses import TrainingCourses
 from server.cshr.models.users import User, UserSkills
 from server.cshr.models.office import Office
 from django.contrib.auth.hashers import make_password
@@ -36,18 +34,20 @@ class GeneralViewUserProfileTests(APITestCase):
         )
         admin.skills.add(react)
         admin.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=admin,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/M683GBLNBAG",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=admin,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/AN9NHYDB990",
         )
-        Company_properties.objects.create(name="computer", user=admin)
-        #    Evaluations.objects.create(user= admin, link= "https://evaluation1")
+        CompanyProperties.objects.create(name="computer", user=admin)
+        UserEvaluations.objects.create(
+            user=admin, link="https://evaluation1", quarter="1 : 3", score=30
+        )
 
         user = User.objects.create(
             first_name="John",
@@ -67,18 +67,20 @@ class GeneralViewUserProfileTests(APITestCase):
         )
         user.skills.add(react)
         user.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=user,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/BHGJFT7778",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=user,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HBHJJ77H3L",
         )
-        Company_properties.objects.create(name="computer", user=user)
-        #    Evaluations.objects.create(user= user, link= "https://evaluation2")
+        CompanyProperties.objects.create(name="computer", user=user)
+        UserEvaluations.objects.create(
+            user=user, link="https://evaluation2", quarter="1 : 3", score=30
+        )
 
         supervisor = User.objects.create(
             first_name="Sarah",
@@ -98,18 +100,20 @@ class GeneralViewUserProfileTests(APITestCase):
         )
         supervisor.skills.add(react)
         supervisor.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=supervisor,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HGYFT99JI3",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=supervisor,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/KY55GG0OQ1",
         )
-        Company_properties.objects.create(name="computer", user=supervisor)
-        #    Evaluations.objects.create(user= supervisor, link= "https://evaluation3")
+        CompanyProperties.objects.create(name="computer", user=supervisor)
+        UserEvaluations.objects.create(
+            user=supervisor, link="https://evaluation3", quarter="1 : 3", score=30
+        )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
@@ -148,7 +152,8 @@ class GeneralViewUserProfileTests(APITestCase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.data["data"][1]["full_name"], "John Blake")
         self.assertEqual(
-            response.data["data"][1]["image"], "/profile_image/default.png"
+            response.data["data"][1]["image"],
+            "http://testserver/profile_image/default.png",
         )
         self.assertEqual(response.data["data"][1]["birthday"], "2000-12-30")
         self.assertEqual(response.data["data"][1]["telegram_link"], "@johnblake")
@@ -164,7 +169,7 @@ class GeneralViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["data"][1].get("social_insurance_number"), None)
         self.assertEqual(response.data["data"][1].get("team"), None)
         self.assertEqual(response.data["data"][1].get("user_company_properties"), None)
-        # self.assertEqual(response.data["data"][1].get("user_evaluation"),None)
+        self.assertEqual(response.data["data"][1].get("user_evaluation"), None)
         self.assertEqual(response.data["data"][1].get("salary"), None)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -196,7 +201,7 @@ class GeneralViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["data"].get("social_insurance_number"), None)
         self.assertEqual(response.data["data"].get("team"), None)
         self.assertEqual(response.data["data"].get("user_company_properties"), None)
-        # self.assertEqual(response.data["data"].get("user_evaluation"),None)
+        self.assertEqual(response.data["data"].get("user_evaluation"), None)
         self.assertEqual(response.data["data"].get("salary"), None)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -234,18 +239,20 @@ class SupervisorViewUserProfileTests(APITestCase):
         )
         admin.skills.add(react)
         admin.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=admin,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/M683GBLNBAG",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=admin,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/AN9NHYDB990",
         )
-        Company_properties.objects.create(name="computer", user=admin)
-        #    Evaluations.objects.create(user= admin, link= "https://evaluation1")
+        CompanyProperties.objects.create(name="computer", user=admin)
+        UserEvaluations.objects.create(
+            user=admin, link="https://evaluation1", quarter="1 : 3", score=30
+        )
 
         user = User.objects.create(
             first_name="John",
@@ -265,18 +272,20 @@ class SupervisorViewUserProfileTests(APITestCase):
         )
         user.skills.add(react)
         user.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=user,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/BHGJFT7778",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=user,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HBHJJ77H3L",
         )
-        Company_properties.objects.create(name="computer", user=user)
-        #    Evaluations.objects.create(user= user, link= "https://evaluation2")
+        CompanyProperties.objects.create(name="computer", user=user)
+        UserEvaluations.objects.create(
+            user=user, link="https://evaluation2", quarter="1 : 3", score=30
+        )
 
         supervisor = User.objects.create(
             first_name="Sarah",
@@ -296,18 +305,20 @@ class SupervisorViewUserProfileTests(APITestCase):
         )
         supervisor.skills.add(react)
         supervisor.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=supervisor,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HGYFT99JI3",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=supervisor,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/KY55GG0OQ1",
         )
-        Company_properties.objects.create(name="computer", user=supervisor)
-        #    Evaluations.objects.create(user= supervisor, link= "https://evaluation3")
+        CompanyProperties.objects.create(name="computer", user=supervisor)
+        UserEvaluations.objects.create(
+            user=supervisor, link="https://evaluation3", quarter="1 : 3", score=30
+        )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
@@ -336,7 +347,7 @@ class SupervisorViewUserProfileTests(APITestCase):
 
     def test_get_all_users_supervisor(self):
         """a supervisor can view specific all fields of all other users except salary"""
-        url = "/api/users/superView/"
+        url = "/api/users/supervisor/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -365,13 +376,16 @@ class SupervisorViewUserProfileTests(APITestCase):
         self.assertEqual(
             response.data["data"][1]["user_company_properties"][0]["name"], "computer"
         )
-        # self.assertEqual(response.data["data"][1]["user_evaluation"][0]["link"],"https://evaluation2")
+        self.assertEqual(
+            response.data["data"][1]["user_evaluation"][0]["link"],
+            "https://evaluation2",
+        )
         self.assertEqual(response.data["data"][1].get("salary"), None)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_a_user_supervisor(self):
         """a supervisor can view all fields of a specific user except salary"""
-        url = "/api/users/superView/2/"
+        url = "/api/users/supervisor/2/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -399,34 +413,36 @@ class SupervisorViewUserProfileTests(APITestCase):
         self.assertEqual(
             response.data["data"]["user_company_properties"][0]["name"], "computer"
         )
-        # self.assertEqual(response.data["data"]["user_evaluation"][0]["link"],"https://evaluation2")
+        self.assertEqual(
+            response.data["data"]["user_evaluation"][0]["link"], "https://evaluation2"
+        )
         self.assertEqual(response.data["data"].get("salary"), None)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_all_users_normaluser(self):
         """a normal user cannot access any supervisor endpoint"""
-        url = "/api/users/superView/"
+        url = "/api/users/supervisor/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_a_user_normaluser(self):
         """a normal user cannot access any supervisor endpoint"""
-        url = "/api/users/superView/2/"
+        url = "/api/users/supervisor/2/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_users_admin(self):
         """an admin cannot access any supervisor endpoint"""
-        url = "/api/users/superView/"
+        url = "/api/users/supervisor/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_a_user_admin(self):
         """an admin cannot access any supervisor endpoint"""
-        url = "/api/users/superView/2/"
+        url = "/api/users/supervisor/2/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -458,18 +474,20 @@ class AdminViewUserProfileTests(APITestCase):
         )
         admin.skills.add(react)
         admin.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=admin,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/M683GBLNBAG",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=admin,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/AN9NHYDB990",
         )
-        Company_properties.objects.create(name="computer", user=admin)
-        #    Evaluations.objects.create(user= admin, link= "https://evaluation1")
+        CompanyProperties.objects.create(name="computer", user=admin)
+        UserEvaluations.objects.create(
+            user=admin, link="https://evaluation1", quarter="1 : 3", score=30
+        )
 
         user = User.objects.create(
             first_name="John",
@@ -489,18 +507,20 @@ class AdminViewUserProfileTests(APITestCase):
         )
         user.skills.add(react)
         user.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=user,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/BHGJFT7778",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=user,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HBHJJ77H3L",
         )
-        Company_properties.objects.create(name="computer", user=user)
-        #    Evaluations.objects.create(user= user, link= "https://evaluation2")
+        CompanyProperties.objects.create(name="computer", user=user)
+        UserEvaluations.objects.create(
+            user=user, link="https://evaluation2", quarter="1 : 3", score=30
+        )
 
         supervisor = User.objects.create(
             first_name="Sarah",
@@ -520,18 +540,20 @@ class AdminViewUserProfileTests(APITestCase):
         )
         supervisor.skills.add(react)
         supervisor.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=supervisor,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HGYFT99JI3",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=supervisor,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/KY55GG0OQ1",
         )
-        Company_properties.objects.create(name="computer", user=supervisor)
-        #    Evaluations.objects.create(user= supervisor, link= "https://evaluation3")
+        CompanyProperties.objects.create(name="computer", user=supervisor)
+        UserEvaluations.objects.create(
+            user=supervisor, link="https://evaluation3", quarter="1 : 3", score=30
+        )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
@@ -564,7 +586,7 @@ class AdminViewUserProfileTests(APITestCase):
         Telegram, email address, Joining date, Location (which office), Reporting to, UserSkills,
         trainings and courses achieved and link to certificates (if available), salary,
         Mobile number, Social insurance number, Team, Company properties, evaluation"""
-        url = "/api/users/adminView/"
+        url = "/api/users/admin/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(len(response.data["data"]), 3)
@@ -591,13 +613,16 @@ class AdminViewUserProfileTests(APITestCase):
         self.assertEqual(
             response.data["data"][1]["user_company_properties"][0]["name"], "computer"
         )
-        # self.assertEqual(response.data["data"][1]["user_evaluation"][0]["link"],"https://evaluation2")
+        self.assertEqual(
+            response.data["data"][1]["user_evaluation"][0]["link"],
+            "https://evaluation2",
+        )
         self.assertEqual(response.data["data"][1]["salary"], {"gross": 2000})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_a_user(self):
         "an admin can view all fields of a specific user including salary"
-        url = "/api/users/adminView/2/"
+        url = "/api/users/admin/2/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.data["data"]["full_name"], "John Blake")
@@ -623,20 +648,22 @@ class AdminViewUserProfileTests(APITestCase):
         self.assertEqual(
             response.data["data"]["user_company_properties"][0]["name"], "computer"
         )
-        # self.assertEqual(response.data["data"]["user_evaluation"][0]["link"],"https://evaluation2")
+        self.assertEqual(
+            response.data["data"]["user_evaluation"][0]["link"], "https://evaluation2"
+        )
         self.assertEqual(response.data["data"]["salary"], {"gross": 2000})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_a_user_not_found(self):
         "a not found response is returned when a wrong id os sent"
-        url = "/api/users/adminView/4/"
+        url = "/api/users/admin/4/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_all_fields_of_a_user(self):
         "an admin can edit all user fields including location, team, reporting to and salary"
-        url = "/api/users/adminView/2/"
+        url = "/api/users/admin/2/"
         data = {
             "email": "user@example.com",
             "telegram_link": "@userexample",
@@ -664,7 +691,7 @@ class AdminViewUserProfileTests(APITestCase):
 
     def test_delete_a_user(self):
         "an admin can delete any user"
-        url = "/api/users/adminView/2/"
+        url = "/api/users/admin/2/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.delete(url, format="json")
         getresponse = self.client.get(url, format="json")
@@ -673,21 +700,21 @@ class AdminViewUserProfileTests(APITestCase):
 
     def test_get_all_users_normaluser(self):
         """a normal user cannot access any adminview endpoint"""
-        url = "/api/users/adminView/"
+        url = "/api/users/admin/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_a_user_normaluser(self):
         """a normal user cannot access any adminview endpoint"""
-        url = "/api/users/adminView/2/"
+        url = "/api/users/admin/2/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_all_fields_of_a_user_normaluser(self):
         """a normal user cannot access any adminview endpoint"""
-        url = "/api/users/adminView/2/"
+        url = "/api/users/admin/2/"
         data = {
             "email": "user@example.com",
             "telegram_link": "@userexample",
@@ -704,14 +731,14 @@ class AdminViewUserProfileTests(APITestCase):
 
     def test_delete_a_user_normaluser(self):
         """a normal user cannot access any adminview endpoint"""
-        url = "/api/users/adminView/2/"
+        url = "/api/users/admin/2/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_users_supervisor(self):
         """a supervisor cannot access any adminview endpoint"""
-        url = "/api/users/adminView/"
+        url = "/api/users/admin/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -720,7 +747,7 @@ class AdminViewUserProfileTests(APITestCase):
 
     def test_get_a_user_supervisor(self):
         """a supervisor cannot access any adminview endpoint"""
-        url = "/api/users/adminView/2/"
+        url = "/api/users/admin/2/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -729,7 +756,7 @@ class AdminViewUserProfileTests(APITestCase):
 
     def test_update_all_fields_of_a_user_supervisor(self):
         """a supervisor user cannot access any adminview endpoint"""
-        url = "/api/users/adminView/2/"
+        url = "/api/users/admin/2/"
         data = {
             "email": "user@example.com",
             "telegram_link": "@userexample",
@@ -748,7 +775,7 @@ class AdminViewUserProfileTests(APITestCase):
 
     def test_delete_a_user_supervisor(self):
         """a supervisor cannot access any adminview endpoint"""
-        url = "/api/users/adminView/2/"
+        url = "/api/users/admin/2/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -782,18 +809,20 @@ class SelfViewUserProfileTests(APITestCase):
         )
         admin.skills.add(react)
         admin.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=admin,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/M683GBLNBAG",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=admin,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/AN9NHYDB990",
         )
-        Company_properties.objects.create(name="computer", user=admin)
-        #    Evaluations.objects.create(user= admin, link= "https://evaluation1")
+        CompanyProperties.objects.create(name="computer", user=admin)
+        UserEvaluations.objects.create(
+            user=admin, link="https://evaluation1", quarter="1 : 3", score=30
+        )
 
         user = User.objects.create(
             first_name="John",
@@ -813,18 +842,20 @@ class SelfViewUserProfileTests(APITestCase):
         )
         user.skills.add(react)
         user.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=user,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/BHGJFT7778",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=user,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HBHJJ77H3L",
         )
-        Company_properties.objects.create(name="computer", user=user)
-        #    Evaluations.objects.create(user= user, link= "https://evaluation2")
+        CompanyProperties.objects.create(name="computer", user=user)
+        UserEvaluations.objects.create(
+            user=user, link="https://evaluation2", quarter="1 : 3", score=30
+        )
 
         supervisor = User.objects.create(
             first_name="Sarah",
@@ -844,18 +875,20 @@ class SelfViewUserProfileTests(APITestCase):
         )
         supervisor.skills.add(react)
         supervisor.skills.add(sql)
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=supervisor,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HGYFT99JI3",
         )
-        Training_Courses.objects.create(
+        TrainingCourses.objects.create(
             user=supervisor,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/KY55GG0OQ1",
         )
-        Company_properties.objects.create(name="computer", user=supervisor)
-        #    Evaluations.objects.create(user= supervisor, link= "https://evaluation3")
+        CompanyProperties.objects.create(name="computer", user=supervisor)
+        UserEvaluations.objects.create(
+            user=supervisor, link="https://evaluation3", quarter="1 : 3", score=30
+        )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
@@ -912,7 +945,9 @@ class SelfViewUserProfileTests(APITestCase):
         self.assertEqual(
             response.data["data"]["user_company_properties"][0]["name"], "computer"
         )
-        # self.assertEqual(response.data["data"]["user_evaluation"][0]["link"],"https://evaluation2")
+        self.assertEqual(
+            response.data["data"]["user_evaluation"][0]["link"], "https://evaluation2"
+        )
         self.assertEqual(response.data["data"]["salary"], {"gross": 2000})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -954,6 +989,9 @@ class SelfViewUserProfileTests(APITestCase):
         self.assertEqual(
             getresponse.data["data"]["user_company_properties"][0]["name"], "computer"
         )
-        # self.assertEqual(getresponse.data["data"]["user_evaluation"][0]["link"],"https://evaluation2")
+        self.assertEqual(
+            getresponse.data["data"]["user_evaluation"][0]["link"],
+            "https://evaluation2",
+        )
         self.assertEqual(getresponse.data["data"]["salary"], {"gross": 2000})
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

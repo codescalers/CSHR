@@ -53,15 +53,12 @@ def get_users_filter(
 ) -> User:
     """Return users by filters"""
 
-    try:
-        users = User.objects.filter(
-            Q(email__icontains=search_input)
-            | Q(first_name__icontains=search_input)
-            | Q(last_name__icontains=search_input)
-        )
-        return users
-    except User.DoesNotExist:
-        return None
+    users = User.objects.filter(
+        Q(email__icontains=search_input)
+        | Q(first_name__icontains=search_input)
+        | Q(last_name__icontains=search_input)
+    )
+    return users
 
 
 def get_all_of_users() -> User:

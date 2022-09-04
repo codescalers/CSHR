@@ -2,49 +2,61 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from server.cshr.models.users import User
 from server.cshr.models.office import Office
+from django.contrib.auth.hashers import make_password
 
 
 class RegisterationTests(APITestCase):
     def setUp(self):
         office = Office.objects.create(name="testOffice", country="testCountry")
 
-        User.objects.create(
-            first_name="string",
-            last_name="string",
-            telegram_link="string",
-            email="user1@example.com",
-            birthday="2022-08-24",
-            mobile_number="string",
-            password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
+        admin = User.objects.create(
+            first_name="Jane",
+            last_name="Brown",
+            telegram_link="@janebrown",
+            email="jane@gmail.com",
+            birthday="1998-08-24",
+            mobile_number="+201234567890",
             location=office,
+            password=make_password("adminpassword"),
             team="Development",
+            salary={"gross": 2000},
             user_type="Admin",
+            social_insurance_number="086 858 276",
+            image="profile_image/default.png",
         )
 
         User.objects.create(
-            first_name="string",
-            last_name="string",
-            telegram_link="string",
-            email="user2@example.com",
-            birthday="2022-08-24",
-            mobile_number="string",
-            password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
+            first_name="John",
+            last_name="Blake",
+            telegram_link="@johnblake",
+            email="john@outlook.com",
+            birthday="2000-12-30",
+            mobile_number="+201012345678",
             location=office,
+            password=make_password("userpassword"),
             team="Development",
+            salary={"gross": 2000},
             user_type="User",
+            reporting_to=admin,
+            social_insurance_number="046 454 286",
+            image="profile_image/default.png",
         )
 
         User.objects.create(
-            first_name="string",
-            last_name="string",
-            telegram_link="string",
-            email="user3@example.com",
-            birthday="2022-08-24",
-            mobile_number="string",
-            password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
+            first_name="Sarah",
+            last_name="Poland",
+            telegram_link="@sarahpoland",
+            email="sarah@hotmail.com",
+            birthday="1996-03-12",
+            mobile_number="+201123456789",
             location=office,
+            password=make_password("superpassword"),
             team="Development",
+            salary={"gross": 2000},
             user_type="Supervisor",
+            reporting_to=admin,
+            social_insurance_number="121 212 121",
+            image="profile_image/default.png",
         )
 
         self.access_token_admin = self.get_token_admin()
@@ -54,21 +66,21 @@ class RegisterationTests(APITestCase):
     def get_token_admin(self):
         """Get token for admin user."""
         url = "/api/auth/login/"
-        data = {"email": "user1@example.com", "password": "string"}
+        data = {"email": "jane@gmail.com", "password": "adminpassword"}
         response = self.client.post(url, data, format="json")
         return response.data["data"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
-        data = {"email": "user2@example.com", "password": "string"}
+        data = {"email": "john@outlook.com", "password": "userpassword"}
         response = self.client.post(url, data, format="json")
         return response.data["data"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
-        data = {"email": "user3@example.com", "password": "string"}
+        data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
         return response.data["data"]["access_token"]
 
@@ -128,7 +140,7 @@ class RegisterationTests(APITestCase):
             "first_name": "string",
             "last_name": "string",
             "telegram_link": "string",
-            "email": "user1@example.com",
+            "email": "sarah@hotmail.com",
             "birthday": "2022-08-24",
             "mobile_number": "string",
             "password": "string",
@@ -195,16 +207,19 @@ class LoginTests(APITestCase):
     def setUp(self):
         office = Office.objects.create(name="testOffice", country="testCountry")
         User.objects.create(
-            first_name="string",
-            last_name="string",
-            telegram_link="string",
-            email="user@example.com",
-            birthday="2022-08-24",
-            mobile_number="string",
-            password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
+            first_name="Sarah",
+            last_name="Poland",
+            telegram_link="@sarahpoland",
+            email="sarah@hotmail.com",
+            birthday="1996-03-12",
+            mobile_number="+201123456789",
             location=office,
+            password=make_password("superpassword"),
             team="Development",
-            user_type="User",
+            salary={"gross": 2000},
+            user_type="Supervisor",
+            social_insurance_number="121 212 121",
+            image="profile_image/default.png",
         )
 
     def test_login_success(self):
@@ -212,7 +227,7 @@ class LoginTests(APITestCase):
         Ensure we can login as a user.
         """
         url = "/api/auth/login/"
-        data = {"email": "user@example.com", "password": "string"}
+        data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -221,7 +236,7 @@ class LoginTests(APITestCase):
         a wrong email not able to login.
         """
         url = "/api/auth/login/"
-        data = {"email": "user2@example.com", "password": "password"}
+        data = {"email": "user2@example.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -230,6 +245,6 @@ class LoginTests(APITestCase):
         a wrong pass not able to login.
         """
         url = "/api/auth/login/"
-        data = {"email": "user1@example.com", "password": "password"}
+        data = {"email": "sarah@hotmail.com", "password": "password"}
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

@@ -9,7 +9,6 @@ from server.cshr.api.permission import (
 )
 from server.cshr.utils.validations import Validator
 from server.cshr.api.response import CustomResponse
-from server.cshr.models import User
 from server.cshr.serializers.users import (
     GeneralUserSerializer,
     SupervisorUserSerializer,
@@ -17,9 +16,11 @@ from server.cshr.serializers.users import (
     SelfUserSerializer,
     UserSkillsSerializer,
 )
-
-# from server.cshr.models.skills import Skills
-from server.cshr.services.users import get_user_by_id, get_or_create_skill_by_name
+from server.cshr.services.users import (
+    get_user_by_id,
+    get_or_create_skill_by_name,
+    get_all_of_users,
+)
 
 
 class GeneralUserAPIView(ViewSet, GenericAPIView):
@@ -27,15 +28,9 @@ class GeneralUserAPIView(ViewSet, GenericAPIView):
     serializer_class = GeneralUserSerializer
 
     def get_all(self, request: Request) -> Response:
-        try:
-            users = User.objects.all()
-            """if there are no instances """
-        except User.DoesNotExist:
-            return CustomResponse.not_found(
-                message="There are no users found", status_code=404
-            )
-
-        serializer = GeneralUserSerializer(users, many=True)
+        """get all users in the system for a normal user"""
+        users = get_all_of_users()
+        serializer = self.get_serializer(users, many=True)
         return CustomResponse.success(
             data=serializer.data, message="show all users", status_code=200
         )
@@ -57,14 +52,8 @@ class SupervisorUserAPIView(ViewSet, GenericAPIView):
     serializer_class = SupervisorUserSerializer
 
     def get_all(self, request: Request) -> Response:
-        try:
-            users = User.objects.all()
-            """if there are no instances """
-        except User.DoesNotExist:
-            return CustomResponse.not_found(
-                message="There are no users found", status_code=404
-            )
-
+        """get all users in the system for a supervisor"""
+        users = get_all_of_users()
         serializer = self.get_serializer(users, many=True)
         return CustomResponse.success(
             data=serializer.data, message="show all users", status_code=200
@@ -84,23 +73,15 @@ class SupervisorUserAPIView(ViewSet, GenericAPIView):
 
 class AdminUserAPIView(ViewSet, GenericAPIView):
     """
-    * Usage
     admin have full control over a user account
     """
 
     permission_classes = [IsAdmin]
     serializer_class = AdminUserSerializer
-    queryset = User.objects.all()
 
     def get_all(self, request: Request) -> Response:
-        try:
-            users = User.objects.all()
-            """if there are no instances """
-        except User.DoesNotExist:
-            return CustomResponse.not_found(
-                message="There are no users found", status_code=404
-            )
-
+        """get all users in the system for an admin"""
+        users = get_all_of_users()
         serializer = self.get_serializer(users, many=True)
         return CustomResponse.success(
             data=serializer.data, message="show all users", status_code=200
@@ -144,19 +125,12 @@ class AdminUserAPIView(ViewSet, GenericAPIView):
 class SelfUserAPIView(ViewSet, GenericAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = SelfUserSerializer
-    queryset = User.objects.all()
 
     def get_one(self, request: Request) -> Response:
 
         """To get a user by id"""
-        try:
-            user = self.request.user
-            """if there are no instances """
-        except User.DoesNotExist:
-            return CustomResponse.not_found(
-                message="There are no users found", status_code=404
-            )
 
+        user = self.request.user
         if user is not None:
             return CustomResponse.success(
                 data=self.get_serializer(user).data,
@@ -167,13 +141,7 @@ class SelfUserAPIView(ViewSet, GenericAPIView):
 
     def put(self, request: Request, format=None) -> Response:
         """To update a user"""
-        try:
-            user = self.request.user
-            """if there are no instances """
-        except User.DoesNotExist:
-            return CustomResponse.not_found(
-                message="There are no users found", status_code=404
-            )
+        user = self.request.user
         serializer = self.get_serializer(user, data=request.data, partial=True)
         if user is not None:
             if serializer.is_valid():
