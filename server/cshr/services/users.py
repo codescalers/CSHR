@@ -1,5 +1,7 @@
+"""This file will containes everything related to User model."""
 from server.cshr.models.users import User
 from django.contrib.auth.hashers import check_password
+from typing import List
 
 
 def get_user_by_id(id: str) -> User:
@@ -36,3 +38,9 @@ def get_user_type_by_id(id: str) -> User:
         return user.user_type
     except User.DoesNotExist:
         return None
+
+
+def filter_users_by_berithday_month(month: str) -> User:
+    """Filter users based on birthdayes."""
+    users: List[User] = User.objects.filter(birthday__month=month)
+    return users

@@ -27,7 +27,6 @@ urlpatterns = [
                 path("meeting/", include("server.cshr.routs.meetings")),
                 path("event/", include("server.cshr.routs.event")),
                 path("home/", include("server.cshr.routs.landing_page")),
-
             ]
         ),
     ),
