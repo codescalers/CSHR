@@ -202,7 +202,7 @@ class OfficeTests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    """test patch methods"""
+    """test put methods"""
 
     def test_admin_update_office(self):
         """test ability to update record with admin credentials"""
@@ -210,7 +210,7 @@ class OfficeTests(APITestCase):
         """create a new record"""
         update_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
-        response = self.client.patch(
+        response = self.client.put(
             update_url, {"name": "updatedByAdmin", "country": "updated"}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
@@ -225,7 +225,7 @@ class OfficeTests(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
-        response = self.client.patch(
+        response = self.client.put(
             update_url,
             {"name": "updatedBySupervisor", "country": "updated"},
             format="json",
@@ -240,7 +240,7 @@ class OfficeTests(APITestCase):
         """create a new record"""
         update_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
-        response = self.client.patch(
+        response = self.client.put(
             update_url, {"name": "updatedByUser", "country": "updated"}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -250,7 +250,7 @@ class OfficeTests(APITestCase):
         createTmp()
         """create a new record"""
         update_url = f"/api/office/{Office.objects.last().id}/"
-        response = self.client.patch(
+        response = self.client.put(
             update_url,
             {"name": "updatedByUnauthenticated", "country": "updated"},
             format="json",
@@ -264,13 +264,11 @@ class OfficeTests(APITestCase):
 
         update_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
-        response = self.client.patch(
+        response = self.client.put(
             update_url, {"name": "updatedPartially"}, format="json"
         )
 
-        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertEqual(Office.objects.last().name, "updatedPartially")
-        self.assertEqual(Office.objects.last().country, "testCountry")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_admin_update_not_exists_office(self):
         """test update request error: not found -- with admin credentials"""
@@ -279,7 +277,7 @@ class OfficeTests(APITestCase):
 
         update_url = f"/api/office/{65}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
-        response = self.client.patch(
+        response = self.client.put(
             update_url, {"name": "updated", "country": "updated"}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -293,7 +291,7 @@ class OfficeTests(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
-        response = self.client.patch(
+        response = self.client.put(
             update_url, {"name": "updated", "country": "updated"}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -305,7 +303,7 @@ class OfficeTests(APITestCase):
 
         update_url = f"/api/office/{65}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
-        response = self.client.patch(
+        response = self.client.put(
             update_url, {"name": "updated", "country": "updated"}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -316,7 +314,7 @@ class OfficeTests(APITestCase):
         """create a new record"""
 
         update_url = f"/api/office/{65}/"
-        response = self.client.patch(
+        response = self.client.put(
             update_url, {"name": "updated", "country": "updated"}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -327,7 +325,7 @@ class OfficeTests(APITestCase):
         """create a new record"""
         update_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
-        response = self.client.patch(update_url, {}, format="json")
+        response = self.client.put(update_url, {}, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_admin_delete_office(self):

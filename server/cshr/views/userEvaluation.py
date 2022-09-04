@@ -2,7 +2,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from server.cshr.serializers.userEvaluation import userEvaluationSerializer
+from server.cshr.serializers.userEvaluation import UserEvaluationSerializer
 from server.cshr.api.response import CustomResponse
 from server.cshr.api.permission import (
     IsAdmin,
@@ -14,7 +14,7 @@ from server.cshr.services.evaluation import get_evaluation_by_id, all_evaluation
 
 
 class EvaluationsAPIView(ViewSet, GenericAPIView):
-    serializer_class = userEvaluationSerializer
+    serializer_class = UserEvaluationSerializer
     permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
 
     def get_all(self, request: Request) -> Response:
@@ -22,7 +22,7 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
         if not has_permission:
             return CustomResponse.unauthorized()
         evaluations = all_evaluations()
-        serializer = userEvaluationSerializer(evaluations, many=True)
+        serializer = UserEvaluationSerializer(evaluations, many=True)
         return CustomResponse.success(
             data=serializer.data, message="evaluations found", status_code=200
         )
@@ -35,7 +35,7 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
             has_permission = CustomPermissions.admin_or_supervisor(request.user)
             if not has_permission and request.user.id != evaluation.user_id:
                 return CustomResponse.unauthorized()
-            serializer = userEvaluationSerializer(evaluation)
+            serializer = UserEvaluationSerializer(evaluation)
             return CustomResponse.success(
                 data=serializer.data, message="evaluation found", status_code=200
             )
@@ -43,22 +43,14 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
             message="Evaluations not found", status_code=404
         )
 
-    def patch(self, request: Request, id: str, format=None) -> Response:
+    def put(self, request: Request, id: str, format=None) -> Response:
         """To update an evaluation"""
         has_permission = CustomPermissions.admin_or_supervisor(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
         evaluation = get_evaluation_by_id(id)
         if evaluation is not None:
-            serializer = userEvaluationSerializer(
-                evaluation, data=request.data, partial=True
-            )
-            # if (
-            #     "user" in request.data
-            #     and request.data["user"] is not None
-            #     or "link" in request.data
-            #     and request.data["link"] is not None
-            # ):
+            serializer = UserEvaluationSerializer(evaluation, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return CustomResponse.success(

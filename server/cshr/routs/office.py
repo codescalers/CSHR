@@ -8,7 +8,7 @@ urlpatterns = [
     path(
         "<str:id>/",
         OfficeAPIView.as_view(
-            {"get": "get", "patch": "patch", "delete": "delete"}, name="office-id"
+            {"get": "get", "put": "put", "delete": "delete"}, name="office-id"
         ),
     ),
 ]

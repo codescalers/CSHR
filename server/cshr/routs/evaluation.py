@@ -12,7 +12,7 @@ urlpatterns = [
     path(
         "user/<str:id>/",
         EvaluationsAPIView.as_view(
-            {"get": "get", "patch": "patch", "delete": "delete"}, name="evaluation-byId"
+            {"get": "get", "put": "put", "delete": "delete"}, name="evaluation-byId"
         ),
     ),
 ]

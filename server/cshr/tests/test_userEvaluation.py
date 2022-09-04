@@ -245,7 +245,7 @@ class EvaluationTests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    """test patch methods"""
+    """test put methods"""
 
     def test_admin_update_evaluation(self):
         """test ability to update record with admin credentials"""
@@ -254,8 +254,15 @@ class EvaluationTests(APITestCase):
         """create a new record"""
         update_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
-        response = self.client.patch(
-            update_url, {"user": "2", "link": "updatedByAdmin"}, format="json"
+        response = self.client.put(
+            update_url,
+            {
+                "user": "2",
+                "link": "updatedByAdmin",
+                "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+                "score": 50,
+            },
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual(UserEvaluations.objects.last().user.id, 2)
@@ -270,9 +277,14 @@ class EvaluationTests(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
-        response = self.client.patch(
+        response = self.client.put(
             update_url,
-            {"user": "2", "link": "updatedBySupervisor"},
+            {
+                "user": "2",
+                "link": "updatedBySupervisor",
+                "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+                "score": 50,
+            },
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
@@ -286,8 +298,15 @@ class EvaluationTests(APITestCase):
         """create a new record"""
         update_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
-        response = self.client.patch(
-            update_url, {"user": "2", "link": "updatedBySupervisor"}, format="json"
+        response = self.client.put(
+            update_url,
+            {
+                "user": "2",
+                "link": "updatedBySupervisor",
+                "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+                "score": 50,
+            },
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -297,26 +316,17 @@ class EvaluationTests(APITestCase):
         createTmp()
         """create a new record"""
         update_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
-        response = self.client.patch(
+        response = self.client.put(
             update_url,
-            {"user": "2", "link": "updatedBySupervisor"},
+            {
+                "user": "2",
+                "link": "updatedBySupervisor",
+                "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+                "score": 50,
+            },
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_admin_update_evaluation_partially(self):
-        """test ability to update record with admin credentials"""
-
-        createTmp()
-        """create a new record"""
-        update_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
-        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
-        response = self.client.patch(
-            update_url, {"link": "updatedByAdminPartially"}, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertEqual(UserEvaluations.objects.last().user.id, 1)
-        self.assertEqual(UserEvaluations.objects.last().link, "updatedByAdminPartially")
 
     def test_admin_update_not_exists_evaluation(self):
         """test update request error: not found -- with admin credentials"""
@@ -326,8 +336,15 @@ class EvaluationTests(APITestCase):
 
         update_url = f"/api/evaluation/user/{65}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
-        response = self.client.patch(
-            update_url, {"user": "2", "link": "updatedBySupervisor"}, format="json"
+        response = self.client.put(
+            update_url,
+            {
+                "user": "2",
+                "link": "updatedBySupervisor",
+                "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+                "score": 50,
+            },
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -341,8 +358,15 @@ class EvaluationTests(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
-        response = self.client.patch(
-            update_url, {"user": "2", "link": "updatedBySupervisor"}, format="json"
+        response = self.client.put(
+            update_url,
+            {
+                "user": "2",
+                "link": "updatedBySupervisor",
+                "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+                "score": 50,
+            },
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -354,8 +378,15 @@ class EvaluationTests(APITestCase):
 
         update_url = f"/api/evaluation/user/{65}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
-        response = self.client.patch(
-            update_url, {"user": "2", "link": "updatedBySupervisor"}, format="json"
+        response = self.client.put(
+            update_url,
+            {
+                "user": "2",
+                "link": "updatedBySupervisor",
+                "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+                "score": 50,
+            },
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -366,20 +397,27 @@ class EvaluationTests(APITestCase):
         """create a new record"""
 
         update_url = f"/api/evaluation/user/{65}/"
-        response = self.client.patch(
-            update_url, {"user": "2", "link": "updatedBySupervisor"}, format="json"
+        response = self.client.put(
+            update_url,
+            {
+                "user": "2",
+                "link": "updatedBySupervisor",
+                "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
+                "score": 50,
+            },
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    # def test_authorized_update_evaluation_bad_request(self):
-    #     """test update request with empty body"""
+    def test_authorized_update_evaluation_bad_request(self):
+        """test update request with empty body"""
 
-    #     createTmp()
-    #     """create a new record"""
-    #     update_url = f"/api/evaluation/user/{UserEvaluations.objects.get().id}/"
-    #     self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
-    #     response = self.client.patch(update_url, {}, format="json")
-    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        createTmp()
+        """create a new record"""
+        update_url = f"/api/evaluation/user/{UserEvaluations.objects.get().id}/"
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
+        response = self.client.put(update_url, {}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_admin_delete_evaluation(self):
         # '''test delete record by id with admin credentials'''
