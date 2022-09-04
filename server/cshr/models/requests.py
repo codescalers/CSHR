@@ -43,3 +43,7 @@ class Requests(TimeStamp):
 
     def __str__(self) -> str:
         return self.type
+
+    class Meta:
+        verbose_name = "Request"
+        verbose_name_plural = "Requests"

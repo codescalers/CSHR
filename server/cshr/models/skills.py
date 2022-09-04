@@ -7,3 +7,7 @@ class Skills(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    class Meta:
+        verbose_name = "Skill"
+        verbose_name_plural = "Skills"
