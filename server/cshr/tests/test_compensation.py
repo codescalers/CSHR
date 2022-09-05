@@ -3,13 +3,13 @@ from rest_framework.test import APITestCase, APIClient
 
 from server.cshr.models.users import User
 from server.cshr.models.office import Office
-from server.cshr.models.meetings import Meetings
+from server.cshr.models.compensation import Compensation
 from django.contrib.auth.hashers import make_password
 
 client = APIClient()
 
 
-class MeetingsTests(APITestCase):
+class CompensationTests(APITestCase):
     def setUp(self):
         office = Office.objects.create(name="testOffice", country="testCountry")
 
@@ -77,158 +77,90 @@ class MeetingsTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["data"]["access_token"]
 
-    def test_create_meeting(self) -> Meetings:
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_create_compensation(self) -> Compensation:
+        url = "/api/compensation/"
+        data = {"reason": "string", "from_date": "2022-08-24", "end_date": "2022-08-24"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_create_meeting_no_meeting_link(self) -> Meetings:
-        url = "/api/meeting/"
-        data = {"date": "2022-08-29T12:26:26.380Z", "invited_users": [1, 2]}
+    def test_create_compensation_no_data(self) -> Compensation:
+        url = "/api/compensation/"
+        data = {}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_meeting_no_invited_users(self) -> Meetings:
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-        }
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
-        )
-        response = client.post(url, data, format="json")
-        # ManyToManyField accept null values when creating a new object.
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    def test_get_certain_meeting(self) -> Meetings:
-        """test to get a valid meeting"""
-        """add meeting"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_get_creation_compensation(self) -> Compensation:
+        """test to get a valid compensation"""
+        """add compensation"""
+        url = "/api/compensation/"
+        data = {"reason": "string", "from_date": "2022-08-24", "end_date": "2022-08-24"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/1/"
+        url = "/api/compensation/1/"
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_invalid_meeting(self) -> Meetings:
-        """test to get a valid meeting"""
-        """add meeting"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_get_invalid_compensation(self) -> Compensation:
+        """test to get a valid compensation"""
+        """add compensation"""
+        url = "/api/compensation/"
+        data = {"reason": "string", "from_date": "2022-08-24", "end_date": "2022-08-24"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/10/"
+        url = "/api/compensation/10/"
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_delete_certain_meeting(self) -> Meetings:
-        """test to delete a valid meeting"""
-        """add meeting"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_delete_compensation(self) -> Compensation:
+        """test to delete a valid compensation"""
+        """add compensation"""
+        url = "/api/compensation/"
+        data = {"reason": "string", "from_date": "2022-08-24", "end_date": "2022-08-24"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/1/"
+        url = "/api/compensation/1/"
         response = client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_delete_invalid_meeting(self) -> Meetings:
-        """test to delete invalid meeting"""
-        """add meeting"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_delete_invalid_compensation(self) -> Compensation:
+        """test to delete invalid compensation"""
+        """add compensation"""
+        url = "/api/compensation/"
+        data = {"reason": "string", "from_date": "2022-08-24", "end_date": "2022-08-24"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/10/"
+        url = "/api/compensation/10/"
         response = client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_get_all_meetings(self) -> Meetings:
-        """test to get all meetings"""
-        url = "/api/meeting/"
+    def test_update_compensation(self) -> Compensation:
+        """update compensation"""
+        url = "/api/compensation/"
+        data = {"reason": "string", "from_date": "2022-08-24", "end_date": "2022-08-24"}
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/compensation/1/"
+        data = {"user": 1}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
-        response = client.get(url, format="json")
+        response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_update_meeting(self) -> Meetings:
-        """update meetings"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
-        )
-        response = client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/1/"
-        data = {
-            "meeting_link": "updated meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
-        response = client.put(url, data, format="json")
-        self.assertEqual(response.status_code, 202)
-
-    def test_update_meeting_invalid_invited_user(self) -> Meetings:
-        """update meeting"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
-        )
-        response = client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/1/"
-        data = {"invited_users": [-1]}
-        response = client.put(url, data, format="json")
-        self.assertEqual(response.status_code, 400)

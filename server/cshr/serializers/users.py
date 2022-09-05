@@ -1,3 +1,4 @@
+"""This file will containes all user serializers."""
 from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
@@ -189,3 +190,11 @@ class SelfUserSerializer(ModelSerializer):
     def get_reporting_to(self, obj):
         reporting_to = obj.reporting_to
         return GeneralUserSerializer(reporting_to).data
+
+
+class BaseUserSerializer(ModelSerializer):
+    """Implemented to be standered class for multiple usecases."""
+
+    class Meta:
+        model = User
+        fields = ["full_name", "email", "image"]
