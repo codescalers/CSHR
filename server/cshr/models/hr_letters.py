@@ -1,6 +1,4 @@
 from django.db import models
-
-
 from server.cshr.models.requests import Requests
 
 
