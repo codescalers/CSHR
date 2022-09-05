@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name="Skills",
+            name="UserSkills",
             fields=[
                 (
                     "id",
@@ -113,8 +113,8 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "Skills_ids",
-                    models.ManyToManyField(related_name="skills", to="cshr.skills"),
+                    "UserSkills_ids",
+                    models.ManyToManyField(related_name="skills", to="cshr.userskills"),
                 ),
             ],
             options={

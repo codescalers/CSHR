@@ -36,7 +36,7 @@ class Requests(TimeStamp):
         User, on_delete=models.CASCADE, related_name="apply_user"
     )
     approval_user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="approve_user", null=True
+        User, on_delete=models.SET_NULL, related_name="approve_user", null=True
     )
     type = models.CharField(max_length=20, choices=TYPE_CHOICES.choices)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES.choices)

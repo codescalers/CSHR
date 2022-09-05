@@ -8,6 +8,7 @@ class HrLetters(Requests):
     a new HR_letter request to the database
     """
 
+    # who is sending to
     addresses = models.CharField(max_length=45)
 
     def __str__(self) -> str:
