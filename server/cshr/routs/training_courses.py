@@ -10,5 +10,4 @@ urlpatterns = [
             {"get": "get", "put": "put", "delete": "delete"}
         ),
     ),
-
 ]

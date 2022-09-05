@@ -1,4 +1,3 @@
-
 from server.cshr.models.meetings import Meetings
 from typing import List
 from rest_framework.serializers import ModelSerializer, SerializerMethodField

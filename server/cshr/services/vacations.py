@@ -14,6 +14,7 @@ def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
     )
     return vacations
 
+
 def get_vacation_by_id(id: str) -> Vacation:
     """Return vacation who have the same id"""
     try:
@@ -25,4 +26,3 @@ def get_vacation_by_id(id: str) -> Vacation:
 def get_all_vacations() -> Vacation:
     """Return all hr letters"""
     return Vacation.objects.all()
-

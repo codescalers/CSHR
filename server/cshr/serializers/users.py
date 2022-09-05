@@ -193,7 +193,6 @@ class SelfUserSerializer(ModelSerializer):
         return GeneralUserSerializer(reporting_to).data
 
 
-
 class BaseUserSerializer(ModelSerializer):
     """Implemented to be standered class for multiple usecases."""
 

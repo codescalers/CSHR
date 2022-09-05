@@ -6,6 +6,7 @@ from typing import List
 
 from django.db.models import Q
 
+
 def get_user_by_id(id: str) -> User:
     """Return user who have the same id"""
     try:
@@ -54,6 +55,7 @@ def filter_users_by_berithday_month(month: str) -> User:
     """Filter users based on birthdayes."""
     users: List[User] = User.objects.filter(birthday__month=month)
     return users
+
 
 def get_users_filter(
     search_input: str,

@@ -33,7 +33,6 @@ urlpatterns = [
                 path("compensation/", include("server.cshr.routs.compensation")),
                 path("hrletter/", include("server.cshr.routs.hr_letters")),
                 path("vacations/", include("server.cshr.routs.vacations")),
-
             ]
         ),
     ),
