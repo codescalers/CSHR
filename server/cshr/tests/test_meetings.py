@@ -207,7 +207,7 @@ class MeetingsTests(APITestCase):
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/meeting/1/"
-                data = {
+        data = {
             "meeting_link": "updated meeting link",
             "date": "2022-08-29T12:26:26.380Z",
             "invited_users": [1, 2],

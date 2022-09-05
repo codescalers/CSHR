@@ -2,6 +2,7 @@
 from server.cshr.models.event import Event
 from typing import List
 
+
 def get_event_by_id(id: str) -> Event:
     """Return event who have the same id"""
     try:
@@ -13,7 +14,6 @@ def get_event_by_id(id: str) -> Event:
 def get_all_events() -> Event:
     """Return all events"""
     return Event.objects.all()
-
 
 
 def filter_events_by_month_and_year(month: str, year: str) -> Event:

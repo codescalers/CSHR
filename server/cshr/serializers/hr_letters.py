@@ -1,4 +1,3 @@
-
 from rest_framework.serializers import ModelSerializer
 from server.cshr.models.hr_letters import HrLetters
 

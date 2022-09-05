@@ -55,6 +55,7 @@ def filter_users_by_berithday_month(month: str) -> User:
     users: List[User] = User.objects.filter(birthday__month=month)
     return users
 
+
 def get_users_filter(
     search_input: str,
 ) -> User:
