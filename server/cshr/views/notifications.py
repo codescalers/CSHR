@@ -2,7 +2,10 @@ from server.cshr.serializers.notifications import NotificationSerializer
 from server.cshr.models.users import User
 from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.services.users import get_user_by_id
-from server.cshr.services.notifications import get_all_notiifications, get_notification_by_id
+from server.cshr.services.notifications import (
+    get_all_notiifications,
+    get_notification_by_id,
+)
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
@@ -12,6 +15,7 @@ from server.cshr.api.response import CustomResponse
 
 class NotificationApiView(ViewSet, GenericAPIView):
     """Class Notification_APIVIEW to create a new meeting into database"""
+
     serializer_class = NotificationSerializer
     permission_classes = (UserIsAuthenticated,)
 
@@ -50,15 +54,21 @@ class NotificationApiView(ViewSet, GenericAPIView):
             return CustomResponse.success(
                 data=serializer.data, message="notification found", status_code=200
             )
-        return CustomResponse.not_found(message="notification not found", status_code=404)
+        return CustomResponse.not_found(
+            message="notification not found", status_code=404
+        )
 
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete a meeting by id"""
         notiifications = get_notification_by_id(id=id)
         if notiifications is not None:
             notiifications.delete()
-            return CustomResponse.success(message="notification deleted", status_code=204)
-        return CustomResponse.not_found(message="notification not found", status_code=404)
+            return CustomResponse.success(
+                message="notification deleted", status_code=204
+            )
+        return CustomResponse.not_found(
+            message="notification not found", status_code=404
+        )
 
     def put(self, request: Request, id: str, format=None) -> Response:
         notiification = get_notification_by_id(id=id)

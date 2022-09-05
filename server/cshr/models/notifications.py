@@ -14,7 +14,7 @@ class TYPE_CHOICES(models.TextChoices):
     HR_LETTERS = "hr_letters", "HR Letters"
     COMPENSATION = "compensation", "Compensation"
     VACATIONS = "vacations", "Vacations"
-    EVENT= "event", "Event"
+    EVENT = "event", "Event"
 
 
 class Notifications(TimeStamp):
@@ -30,7 +30,6 @@ class Notifications(TimeStamp):
     def __str__(self) -> str:
         return self.host_user.first_name
 
-    class Meta:  
+    class Meta:
         verbose_name = "Notification"
         verbose_name_plural = "Notifications"
-        

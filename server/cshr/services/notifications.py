@@ -13,6 +13,11 @@ def get_all_notiifications() -> Notifications:
     """Return all notiifications"""
     return Notifications.objects.all()
 
+
 def last_20_notifications(user_id: int) -> Notifications:
     """Return last 20 notifications"""
-    return Notifications.objects.get(creator_user=user_id).order_by("-timestamp").all()[:20]
+    return (
+        Notifications.objects.get(creator_user=user_id)
+        .order_by("-timestamp")
+        .all()[:20]
+    )

@@ -12,4 +12,3 @@ def get_event_by_id(id: str) -> Event:
 def get_all_events() -> Event:
     """Return all events"""
     return Event.objects.all()
-
