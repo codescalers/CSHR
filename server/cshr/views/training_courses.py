@@ -14,7 +14,7 @@ from server.cshr.services.training_courses import (
 )
 
 
-class TrainingCoursesAPIView(ViewSet, GenericAPIView):
+class TrainingCoursesApiView(ViewSet, GenericAPIView):
     """method to get all Training courses"""
 
     serializer_class = TrainingCoursesSerializer
