@@ -3,13 +3,13 @@ from rest_framework.test import APITestCase, APIClient
 
 from server.cshr.models.users import User
 from server.cshr.models.office import Office
-from server.cshr.models.meetings import Meetings
+from server.cshr.models.hr_letters import HrLetters
 from django.contrib.auth.hashers import make_password
 
 client = APIClient()
 
 
-class MeetingsTests(APITestCase):
+class HrLetterTests(APITestCase):
     def setUp(self):
         office = Office.objects.create(name="testOffice", country="testCountry")
 
@@ -77,158 +77,127 @@ class MeetingsTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["data"]["access_token"]
 
-    def test_create_meeting(self) -> Meetings:
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_create_hr_letter(self) -> HrLetters:
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_create_meeting_no_meeting_link(self) -> Meetings:
-        url = "/api/meeting/"
-        data = {"date": "2022-08-29T12:26:26.380Z", "invited_users": [1, 2]}
+    def test_create_hr_letter_no_address(self) -> HrLetters:
+        url = "/api/hrletter/"
+        data = {}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_meeting_no_invited_users(self) -> Meetings:
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-        }
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
-        )
-        response = client.post(url, data, format="json")
-        # ManyToManyField accept null values when creating a new object.
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    def test_get_certain_meeting(self) -> Meetings:
-        """test to get a valid meeting"""
-        """add meeting"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_get_certain_hr_letters(self) -> HrLetters:
+        """test to get a valid hr letter"""
+        """add hr letter"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/1/"
+        url = "/api/hrletter/1/"
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_invalid_meeting(self) -> Meetings:
-        """test to get a valid meeting"""
-        """add meeting"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_get_invalid_hr_letter(self) -> HrLetters:
+        """test to get a valid hr letter"""
+        """add hr letter"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/10/"
+        url = "/api/hrletter/10/"
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_delete_certain_meeting(self) -> Meetings:
-        """test to delete a valid meeting"""
-        """add meeting"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_delete_certain_hr_letters(self) -> HrLetters:
+        """test to delete a valid hr letter"""
+        """add hr letter"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/1/"
+        url = "/api/hrletter/1/"
         response = client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_delete_invalid_meeting(self) -> Meetings:
-        """test to delete invalid meeting"""
-        """add meeting"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_delete_invalid_hr_letters(self) -> HrLetters:
+        """test to delete invalid hr letter"""
+        """add hr letter"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/10/"
+        url = "/api/hrletter/10/"
         response = client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_get_all_meetings(self) -> Meetings:
-        """test to get all meetings"""
-        url = "/api/meeting/"
+    def test_get_all_hr_letters(self) -> HrLetters:
+        """test to get all hr letters"""
+        url = "/api/hrletter/"
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_update_meeting(self) -> Meetings:
-        """update meetings"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_update_hr_letter(self) -> HrLetters:
+        """update hr letter"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/1/"
-                data = {
-            "meeting_link": "updated meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+        url = "/api/hrletter/edit/1/"
+        data = {"applying_user": 1}
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, 202)
 
-    def test_update_meeting_invalid_invited_user(self) -> Meetings:
-        """update meeting"""
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+    def test_update_hr_letter_non_authorized(self) -> HrLetters:
+        """update hr letter"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/meeting/1/"
-        data = {"invited_users": [-1]}
+        url = "/api/hrletter/edit/1/"
+        data = {"applying_user": 1}
         response = client.put(url, data, format="json")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 403)
+
+    def test_update_hr_letter_invalid_user_id(self) -> HrLetters:
+        """update hr letter"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
+        response = client.post(url, data, format="json")
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/hrletter/edit/1/"
+        data = {"applying_user": -1}
+        response = client.put(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
