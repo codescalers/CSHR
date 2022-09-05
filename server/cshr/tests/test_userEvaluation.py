@@ -472,7 +472,7 @@ class UserEvaluationTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(UserEvaluations.objects.count(), count)
 
-    def test_unauthenticated_delete_user_user_evaluation(self):
+    def test_unauthenticated_delete_user_evaluation(self):
         """test delete record by id with no credentials"""
 
         createUserEvalTmp()
