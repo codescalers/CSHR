@@ -6,7 +6,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-      
         ("cshr", "0021_alter_requests_approval_user"),
     ]
 
