@@ -1,7 +1,9 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
 from server.cshr.models.evaluations import (
-    UserEvaluations, EVALUATION_FORM_TYPE, Evaluations, EVALUATION_FORM_TYPE
+    UserEvaluations,
+    EVALUATION_FORM_TYPE,
+    Evaluations,
 )
 from server.cshr.models.users import User
 from server.cshr.models.office import Office
@@ -18,11 +20,11 @@ def createUserEvalTmp(id=1):
         score=50,
     )
 
+
 def createEvalTmp(id=1):
     """function to create tmp record"""
 
     Evaluations.objects.create(
-
         link="testCase",
         quarter=EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
         form="testCase",
@@ -346,7 +348,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/user/65/"
+        update_url = f"/api/evaluation/user/{65}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.put(
             update_url,
@@ -366,7 +368,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/user/65/"
+        update_url = f"/api/evaluation/user/{65}/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -388,7 +390,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/user/65/"
+        update_url = f"/api/evaluation/user/{65}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.put(
             update_url,
@@ -408,7 +410,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/user/65/"
+        update_url = f"/api/evaluation/user/{65}/"
         response = self.client.put(
             update_url,
             {
@@ -482,9 +484,7 @@ class UserEvaluationTests(APITestCase):
         self.assertEqual(UserEvaluations.objects.count(), count)
 
 
-
 class EvaluationsTest(APITestCase):
-
     def setUp(self):
         office = Office.objects.create(name="testOffice", country="testCountry")
 
@@ -561,14 +561,13 @@ class EvaluationsTest(APITestCase):
             "link": "testCase",
             "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
             "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
-           
         }
 
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Evaluations.objects.last().link, "testCase")
-    
+
     def test_create_evaluation_by_supervisor(self):
         """test unauthorized  evaluation creation by supervisor"""
         url = reverse("evaluation")
@@ -576,14 +575,13 @@ class EvaluationsTest(APITestCase):
             "link": "testCase",
             "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
             "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
-           
         }
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    
+
     def test_create_evaluation_by_user(self):
         """test unauthorized  evaluation creation by user"""
         url = reverse("evaluation")
@@ -591,7 +589,6 @@ class EvaluationsTest(APITestCase):
             "link": "testCase",
             "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
             "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
-           
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.post(url, data, format="json")
@@ -604,11 +601,9 @@ class EvaluationsTest(APITestCase):
             "link": "testCase",
             "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
             "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
-           
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
 
     """test get method"""
 
@@ -768,7 +763,6 @@ class EvaluationsTest(APITestCase):
         response = self.client.put(
             update_url,
             {
-
                 "link": "updatedBySupervisor",
                 "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
                 "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
@@ -786,7 +780,6 @@ class EvaluationsTest(APITestCase):
         response = self.client.put(
             update_url,
             {
-
                 "link": "updatedBySupervisor",
                 "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
                 "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
@@ -801,12 +794,11 @@ class EvaluationsTest(APITestCase):
         createEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/65/"
+        update_url = f"/api/evaluation/{65}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.put(
             update_url,
             {
-
                 "link": "updatedBySupervisor",
                 "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
                 "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
@@ -821,14 +813,13 @@ class EvaluationsTest(APITestCase):
         createEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/65/"
+        update_url = f"/api/evaluation/{65}/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.put(
             update_url,
             {
-
                 "link": "updatedBySupervisor",
                 "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
                 "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
@@ -843,12 +834,11 @@ class EvaluationsTest(APITestCase):
         createEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/65/"
+        update_url = f"/api/evaluation/{65}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.put(
             update_url,
             {
-
                 "link": "updatedBySupervisor",
                 "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
                 "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
@@ -863,11 +853,10 @@ class EvaluationsTest(APITestCase):
         createEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/65/"
+        update_url = f"/api/evaluation/{65}/"
         response = self.client.put(
             update_url,
             {
-
                 "link": "updatedBySupervisor",
                 "quarter": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
                 "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
@@ -885,3 +874,54 @@ class EvaluationsTest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.put(update_url, {}, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # test delete method
+    def test_admin_delete_evaluation(self):
+        # '''test delete record by id with admin credentials'''
+
+        createEvalTmp()
+        """create a new record"""
+        count = Evaluations.objects.count()
+
+        delete_url = f"/api/evaluation/{Evaluations.objects.last().id}/"
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
+        response = self.client.delete(delete_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Evaluations.objects.count(), count - 1)
+
+    def test_supervisor_delete_evaluation(self):
+        """test unauthorized delete record by id with supervisor credentials"""
+
+        createEvalTmp()
+        """create a new record"""
+        count = Evaluations.objects.count()
+        delete_url = f"/api/evaluation/{Evaluations.objects.last().id}/"
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
+        response = self.client.delete(delete_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(Evaluations.objects.count(), count)
+
+    def test_user_delete_evaluation(self):
+        """test unauthorized delete record by id with supervisor credentials"""
+
+        createEvalTmp()
+        """create a new record"""
+        count = Evaluations.objects.count()
+        delete_url = f"/api/evaluation/{Evaluations.objects.last().id}/"
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        response = self.client.delete(delete_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(Evaluations.objects.count(), count)
+
+    def test_unauthenticated_delete_evaluation(self):
+        """test delete record by id with no credentials"""
+
+        createEvalTmp()
+        """create a new record"""
+        count = Evaluations.objects.count()
+        delete_url = f"/api/evaluation/{Evaluations.objects.last().id}/"
+        response = self.client.delete(delete_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(Evaluations.objects.count(), count)

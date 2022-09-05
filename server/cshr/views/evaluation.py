@@ -2,7 +2,10 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from server.cshr.serializers.evaluation import UserEvaluationSerializer, EvaluationSerializer
+from server.cshr.serializers.evaluation import (
+    UserEvaluationSerializer,
+    EvaluationSerializer,
+)
 from server.cshr.api.response import CustomResponse
 from server.cshr.api.permission import (
     IsAdmin,
@@ -12,7 +15,6 @@ from server.cshr.api.permission import (
 )
 from server.cshr.services.evaluation import (
     get_evaluation_by_id,
-    all_evaluations,
     get_user_evaluation_by_id,
     all_user_evaluations,
 )
@@ -63,7 +65,9 @@ class UserEvaluationsAPIView(ViewSet, GenericAPIView):
                     status_code=202,
                     message="user evaluation updated",
                 )
-            return CustomResponse.bad_request(message="user evaluation failed to update")
+            return CustomResponse.bad_request(
+                message="user evaluation failed to update"
+            )
         return CustomResponse.not_found(message="user evaluation not found to update")
 
     def post(self, request: Request) -> Response:
@@ -92,7 +96,9 @@ class UserEvaluationsAPIView(ViewSet, GenericAPIView):
         evaluation = get_user_evaluation_by_id(id)
         if evaluation is not None:
             evaluation.delete()
-            return CustomResponse.success(message="user evaluation deleted", status_code=204)
+            return CustomResponse.success(
+                message="user evaluation deleted", status_code=204
+            )
         return CustomResponse.not_found(message="user evaluation not found")
 
 
@@ -106,37 +112,33 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="evaluations found", status_code=200
         )
-    
+
     def get(self, request: Request, id: str, format=None) -> Response:
-
         evaluation = get_evaluation_by_id(id)
-
         if evaluation is not None:
             serializer = EvaluationSerializer(evaluation)
             return CustomResponse.success(
                 data=serializer.data, message="evaluation found", status_code=200
             )
-        return CustomResponse.not_found(
-            message="evaluation not found", status_code=404
-        )
-    
+        return CustomResponse.not_found(message="evaluation not found", status_code=404)
+
     def put(self, request: Request, id: str, format=None) -> Response:
-            """To update an evaluation"""
-            has_permission = CustomPermissions.admin_or_supervisor(request.user)
-            if not has_permission:
-                return CustomResponse.unauthorized()
-            evaluation = get_evaluation_by_id(id)
-            if evaluation is not None:
-                serializer = EvaluationSerializer(evaluation, data=request.data)
-                if serializer.is_valid():
-                    serializer.save()
-                    return CustomResponse.success(
-                        data=serializer.data,
-                        status_code=202,
-                        message="evaluation updated",
-                    )
-                return CustomResponse.bad_request(message="evaluation failed to update")
-            return CustomResponse.not_found(message="evaluation not found to update")
+        """To update an evaluation"""
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
+        if not has_permission:
+            return CustomResponse.unauthorized()
+        evaluation = get_evaluation_by_id(id)
+        if evaluation is not None:
+            serializer = EvaluationSerializer(evaluation, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return CustomResponse.success(
+                    data=serializer.data,
+                    status_code=202,
+                    message="evaluation updated",
+                )
+            return CustomResponse.bad_request(message="evaluation failed to update")
+        return CustomResponse.not_found(message="evaluation not found to update")
 
     def post(self, request: Request) -> Response:
         """To post new evaluation"""
@@ -154,6 +156,7 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
         return CustomResponse.bad_request(
             error=serializer.errors, message="evaluation creation failed"
         )
+
     def delete(self, request: Request, id, format=None) -> Response:
         """to delete evaluation by admin"""
 
