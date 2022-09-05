@@ -14,7 +14,7 @@
   * Picture Photo
   * birthday
   * Location 1:1 <Office>
-  * Skills M:M <Skills>
+  * UserSkills M:M <UserSkills>
   * Trainings-courses 1:M <Trainings-courses >
   * Social insurance number
   * Team <ENUM> => (Dev-QA-Ops-Marketing-Management-Accounting)
@@ -27,7 +27,7 @@
       Current Salary GROSS (Required)
     } 
 
-* Skills:
+* UserSkills:
   * name UQ
 
 * Office

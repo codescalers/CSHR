@@ -41,11 +41,11 @@ class Migration(migrations.Migration):
             options={"verbose_name": "Request", "verbose_name_plural": "Requests"},
         ),
         migrations.AlterModelOptions(
-            name="skills",
+            name="userskills",
             options={"verbose_name": "Skill", "verbose_name_plural": "Skills"},
         ),
         migrations.AlterModelOptions(
-            name="training_courses",
+            name="trainingcourses",
             options={
                 "verbose_name": "Training course",
                 "verbose_name_plural": "Training courses",

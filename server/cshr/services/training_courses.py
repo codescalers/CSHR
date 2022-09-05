@@ -12,3 +12,7 @@ def get_training_courses_by_id(id: str) -> TrainingCourses:
 def get_all_training_courses() -> TrainingCourses:
     """Return all training courses"""
     return TrainingCourses.objects.all()
+
+def get_training_courses_for_a_user(id: int) -> TrainingCourses:
+    """Return all training courses for a specific user"""
+    return TrainingCourses.objects.filter(user=id)

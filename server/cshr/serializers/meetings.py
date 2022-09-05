@@ -1,6 +1,8 @@
+
+from server.cshr.models.meetings import Meetings
 from typing import List
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from server.cshr.models.meetings import Meetings
+
 from server.cshr.models.users import User
 from server.cshr.serializers.users import BaseUserSerializer
 
