@@ -26,11 +26,11 @@ def send_email():
     from server.cshr.models.users import User
 
     users = User.objects.all()
-    admins = User.objects.filter(user_type = USER_TYPE.ADMIN)
-    admins_emails =[]
+    admins = User.objects.filter(user_type=USER_TYPE.ADMIN)
+    admins_emails = []
     for admin in admins:
         admins_emails.append(admin.email)
-        
+
     for user in users:
         joining_date = user.created_at
         # difference between user joining date and today in days
@@ -42,10 +42,10 @@ def send_email():
         ).days
         user_email = user.email
         try:
-            supervisor = User.objects.get(pk=user.reporting_to.id)        
+            supervisor = User.objects.get(pk=user.reporting_to.id)
             supervisor_email = supervisor.email
-        except:
-            supervisor_email = ""    
+        except User.DoesNotExist:
+            supervisor_email = ""
         if delta_days == 45:
 
             msg = "{fname} {lname} has passed half of the probation period".format(
@@ -58,15 +58,9 @@ def send_email():
                 [
                     user_email,
                     supervisor_email,
-                    
                 ],
             )
-            send_mail(
-                msg,
-                mail_title,
-                settings.EMAIL_HOST_USER,
-                admins_emails
-            )
+            send_mail(msg, mail_title, settings.EMAIL_HOST_USER, admins_emails)
 
         elif delta_days == 90:
             user_msg = "Congratulations on passing your probation period"
@@ -89,9 +83,4 @@ def send_email():
                     supervisor_email,
                 ],
             )
-            send_mail(
-                msg,
-                mail_title,
-                settings.EMAIL_HOST_USER,
-                admins_emails   
-            )
+            send_mail(msg, mail_title, settings.EMAIL_HOST_USER, admins_emails)
