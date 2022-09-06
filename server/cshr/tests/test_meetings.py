@@ -104,13 +104,13 @@ class MeetingsTests(APITestCase):
         data = {
             "meeting_link": "meeting link",
             "date": "2022-08-29T12:26:26.380Z",
+            "invited_users": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
-        # ManyToManyField accept null values when creating a new object.
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_get_certain_meeting(self) -> Meetings:
         """test to get a valid meeting"""
@@ -207,11 +207,7 @@ class MeetingsTests(APITestCase):
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/meeting/1/"
-        data = {
-            "meeting_link": "updated meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
-            "invited_users": [1, 2],
-        }
+        data = {"meeting_link": "updated meeting link"}
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, 202)
 

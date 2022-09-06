@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             new_name="user",
         ),
         migrations.RenameField(
-            model_name="userskills",
+            model_name="skills",
             old_name="Name",
             new_name="name",
         ),
@@ -52,8 +52,8 @@ class Migration(migrations.Migration):
         ),
         migrations.RenameField(
             model_name="user",
-            old_name="UserSkills_ids",
-            new_name="userskills",
+            old_name="Skills_ids",
+            new_name="skills",
         ),
         migrations.RenameField(
             model_name="user",
