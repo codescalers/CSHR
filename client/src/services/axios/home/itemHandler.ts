@@ -1,76 +1,101 @@
-import type { eventNameType } from "./types"
+import type { eventNameType, userBirthDateType, birthDateType } from "./types"
+import { v4 as uuidv4 } from "uuid";
 
 class ItemHandler {
-    public createItems(eventName: eventNameType, event: any) {
-        let items = [];
+    date: Date;
+    public createItems(eventName: eventNameType, event: any, date: Date) {
+        this.date = date;
+        let items: any[] = [];
         console.log(eventName);
         console.log(event);
 
         switch (eventName) {
             case "events":
-                items = this.events(eventName, event);
+                items = [...items, this.events(eventName, event)];
                 break;
             case "birthdates":
-                items = this.birthDates(event);
+                items = [...items, this.birthDates(eventName, event)];
                 break;
             case "meetings":
-                items = this.meetings(event);
-
+                items = [...items, this.meetings(eventName, event)];
+            default:
+                throw new Error("Invalid event name in itemHandler");
         }
-
-
         return items;
     }
 
-    private events(eventName: string, event: any): any[] {
-        return [];
+    // to create the events list
+    private events(eventName: string, events: any): any[] {
+        let items = [];
+        for (const event of events) {
+            items.push(this.eventItem(eventName, event));
+        }
+        return items;
     }
-    private event(eventName: string, event: any): {} {
+    // to create the event item
+    private eventItem(eventName: string, event: any): {} {
+        const id: string = uuidv4();
+
         return {
-            id: event.id,
+            id: id,
             title: event.name,
             description: event.description,
+            date: this.date,
             len: 1,
             className: this.cssClassMapping(eventName)
         }
     }
 
 
+    // to create the birthdates list
+    private birthDates(eventName: string, events: any[]): birthDateType[] {
+        const id: string = uuidv4();
 
-    private birthDates(event: any): any[] {
-        /*        return {
-                   id: event.id,
-                   title: event.name,
-                   description: event.description,
-                   len: 1,
-               } */
+        let user: userBirthDateType;
+        let users: userBirthDateType[] = [];
+        for (const event of events) {
+            user = {
+                full_name: event["full_name"], email: event["email"], image: event["image"]
+            }
+            users = [...users, user];
+        }
+        return [{
+            id: id,
+            title: eventName,
+            className: this.cssClassMapping(eventName),
+            users: users,
+            date: this.date,
+            len: 1,
+        }];
+    }
+
+
+    // to create the meetings list
+    private meetings(eventName: string, event: any): any[] {
+        /*         return {
+                    id: event.id,
+                    title: event.name,
+                    description: event.description,
+                    len: 1,
+                } */
 
         return [];
     }
-    private birthDate(event: any) {
+
+    // to create the meeting Item
+    private meetingItem(eventName: string, event: any) {
+        const id: string = uuidv4();
+
         return {
-            id: event.id,
+            id: id,
             title: event.name,
             description: event.description,
             len: 1,
         }
     }
 
-    private meetings(event: any):any[] {
-/*         return {
-            id: event.id,
-            title: event.name,
-            description: event.description,
-            len: 1,
-        } */
 
-        return [];
-    }
-
-
-
-
-    private cssClassMapping(eventName: string):string {
+    private cssClassMapping(eventName: string): string {
         switch (eventName) {
             case "event":
                 return "task--primary";

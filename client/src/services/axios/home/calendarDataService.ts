@@ -43,7 +43,7 @@ class CalendarDataService {
 
             for (let eventName in data[dayStr + ""]) {
                 let eventArr = data[dayStr + ""][eventName];
-                items = this.itemHandler.createItems(eventName as eventNameType, eventArr);
+                items = this.itemHandler.createItems(eventName as eventNameType, eventArr,date);
                 console.log("items", items);
             }
 
