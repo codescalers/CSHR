@@ -1,7 +1,7 @@
 <script>
   import Calendar from "./CalendarLayout.svelte";
   import { createEventDispatcher, onMount } from "svelte";
-  import calendarDataService from "../../services/axios/home/calendarDataService";
+  import calendarDataService from "../../services/axios/home/CalendarDataService";
 
   //export let user;
   export let isLoading = false;

@@ -1,5 +1,5 @@
 import http from "../http-common";
-import itemHandler from "./itemHandler"
+import itemHandler from "./ItemHandler"
 import type { eventNameType } from "./types"
 
 class CalendarDataService {

@@ -55,15 +55,15 @@ def landinf_page_caliender_functionalty(month: str, year: str):
                     users_birthdates.filter(birthday__day=obj), many=True
                 ).data
 
-        for vaction in vacations:
+        for vacation in vacations:
             # vacations
-            if vaction.from_date.day == obj:
-                response[obj]["vactions"] = LandingPageVacationsSerializer(
-                    vacations.filter(from_date__day=vaction.from_date.day), many=True
+            if vacation.from_date.day == obj:
+                response[obj]["vacations"] = LandingPageVacationsSerializer(
+                    vacations.filter(from_date__day=vacation.from_date.day), many=True
                 ).data
-            elif vaction.end_date.day == obj:
-                response[obj]["vactions"] = LandingPageVacationsSerializer(
-                    vacations.filter(end_date__day=vaction.end_date.day), many=True
+            elif vacation.end_date.day == obj:
+                response[obj]["vacations"] = LandingPageVacationsSerializer(
+                    vacations.filter(end_date__day=vacation.end_date.day), many=True
                 ).data
 
         for meeting in meetings:
