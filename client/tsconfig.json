@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true
+  },
+  "extends": "@tsconfig/svelte/tsconfig.json",
+
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/*", "__sapper__/*", "public/*"]
+}

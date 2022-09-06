@@ -20,3 +20,7 @@ lint:
 migrate:
 	$(CMD) python3 manage.py makemigrations
 	$(CMD) python3 manage.py migrate
+
+
+user:
+	$(CMD) python3 manage.py createsuperuser

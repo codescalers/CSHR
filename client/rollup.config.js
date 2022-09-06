@@ -3,9 +3,17 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
+import sveltePreprocess from 'svelte-preprocess';
+import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import replace from '@rollup/plugin-replace';
+import { config } from 'dotenv';
 
 const production = !process.env.ROLLUP_WATCH;
+const configToReplace = {};
+for (const [key, v] of Object.entries(config().parsed)) {
+	configToReplace[`process.env.${key}`] = `'${v}'`;
+}
 
 function serve() {
 	let server;
@@ -29,19 +37,28 @@ function serve() {
 }
 
 export default {
-	input: 'src/main.js',
+	input: 'src/main.ts',
 	output: {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
 		file: 'public/build/bundle.js'
 	},
+	experimental: {
+		useVitePreprocess: true
+	},
 	plugins: [
 		svelte({
+			preprocess: sveltePreprocess({ sourceMap: !production }),
 			compilerOptions: {
 				// enable run-time checks when not in production
 				dev: !production
 			}
+		}), // svelte plugin for .env
+		replace({
+			include: ["src/**/*.ts", "src/**/*.svelte"],
+			preventAssignment: true,
+			values: configToReplace
 		}),
 		// we'll extract any component CSS out into
 		// a separate file - better for performance
@@ -57,6 +74,10 @@ export default {
 			dedupe: ['svelte']
 		}),
 		commonjs(),
+		typescript({
+			sourceMap: !production,
+			inlineSources: !production
+		}),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated

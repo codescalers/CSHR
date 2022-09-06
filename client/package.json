@@ -1,23 +1,55 @@
 {
-  "name": "svelte-app",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "start": "sirv public --no-clear"
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^11.0.0",
-    "rollup": "^2.3.4",
-    "rollup-plugin-css-only": "^3.1.0",
-    "rollup-plugin-livereload": "^2.0.0",
-    "rollup-plugin-svelte": "^7.0.0",
-    "rollup-plugin-terser": "^7.0.0",
-    "svelte": "^3.0.0"
-  },
-  "dependencies": {
-    "sirv-cli": "^2.0.0"
-  }
+    "name": "CSHR",
+    "version": "1.0.0",
+    "private": false,
+    "type": "module",
+    "scripts": {
+        "build": "rollup -c",
+        "dev": "rollup -c -w ",
+        "env:dev": "env-cmd npm run dev",
+        "start": "sirv public --single",
+        "check": "svelte-check --tsconfig ./tsconfig.json"
+    },
+    "devDependencies": {
+        "@rollup/plugin-commonjs": "^17.0.0",
+        "@rollup/plugin-node-resolve": "^11.0.0",
+        "@rollup/plugin-replace": "^4.0.0",
+        "@rollup/plugin-typescript": "^8.0.0",
+        "@tsconfig/svelte": "^2.0.1",
+        "@types/node": "^18.7.15",
+        "@types/uuid": "^8.3.4",
+        "date-picker-svelte": "^2.1.1",
+        "dotenv": "^16.0.1",
+        "node-sass": "^7.0.1",
+        "rollup": "^2.3.4",
+        "rollup-plugin-css-only": "^3.1.0",
+        "rollup-plugin-livereload": "^2.0.0",
+        "rollup-plugin-svelte": "^7.0.0",
+        "rollup-plugin-terser": "^7.0.0",
+        "svelte": "^3.0.0",
+        "svelte-calendar": "^3.1.6",
+        "svelte-check": "^2.8.0",
+        "svelte-multiselect": "^6.0.0",
+        "svelte-preprocess": "^4.10.7",
+        "svelte-promisable-stores": "^0.1.3",
+        "ts-node": "^10.9.1",
+        "tslib": "^2.0.0",
+        "typescript": "^4.8.2"
+    },
+    "dependencies": {
+        "@beyonk/svelte-datepicker": "^5.0.4",
+        "@date-io/date-fns": "^2.15.0",
+        "axios": "^0.27.2",
+        "date-fns": "^2.29.2",
+        "sirv-cli": "^2.0.0",
+        "sv-bootstrap-modal": "^1.0.3",
+        "svelte-date-range-select": "^1.0.4",
+        "svelte-dialogs": "^1.2.2",
+        "svelte-environment-variables": "^1.0.4",
+        "svelte-gestalt-icons": "^62.0.6",
+        "svelte-inclusive-datepicker": "^1.0.0-alpha.1",
+        "svelte-navigator": "^3.1.6",
+        "svelte-paginate": "^0.0.1",
+        "uuid": "^8.3.2"
+    }
 }

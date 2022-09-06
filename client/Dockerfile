@@ -1,19 +1,14 @@
-FROM node:14-alpine
+FROM node:14.15.0 as build
 
-WORKDIR /usr/src/app
+# install dependencies
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
 
-COPY rollup.config.js ./
-COPY package*.json ./
+# Copy all local files into the image.
+COPY . .
 
-RUN npm install
+RUN npm run build
 
-COPY ./src ./src
-COPY ./public ./public
-
-RUN npm run-script build
-
-EXPOSE 8080
-
-ENV HOST=0.0.0.0
-
-CMD [ "npm", "start" ]
+EXPOSE 3000
+CMD ["npm", "run","dev"]
