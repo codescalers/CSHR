@@ -1,9 +1,7 @@
-from datetime import datetime
 from django.conf import settings
-from django.core.mail import send_mail
+
 from celery import Celery
 from celery.schedules import crontab
-from server.cshr.models.users import USER_TYPE
 import os
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
@@ -14,7 +12,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     "send_email": {
         "task": "send_email",
-        "schedule": 30,
+        "schedule": crontab(minute=0, hour=8),
     }
 }
 mail_title = "Probation period update"
@@ -22,6 +20,9 @@ mail_title = "Probation period update"
 
 @app.task(name="send_email")
 def send_email():
+    from server.cshr.models.users import USER_TYPE
+    from datetime import datetime
+    from django.core.mail import send_mail
     from server.cshr.models.users import User
 
     users = User.objects.all()
@@ -45,7 +46,7 @@ def send_email():
             supervisor_email = supervisor.email
         except:
             supervisor_email = ""    
-        if delta_days == 0:
+        if delta_days == 45:
 
             msg = "{fname} {lname} has passed half of the probation period".format(
                 fname=user.first_name, lname=user.last_name
