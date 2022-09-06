@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_celery_beat",
     "server.cshr",
-    # Third party
+    # Third  party
     "corsheaders",
     "drf_yasg",
     "rest_framework",
