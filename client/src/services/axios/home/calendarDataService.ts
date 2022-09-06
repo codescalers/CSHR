@@ -4,9 +4,9 @@ import type { eventNameType } from "./types"
 
 class CalendarDataService {
 
-    itemHandler = itemHandler;
+    private itemHandler = itemHandler;
 
-    public async getByMonthYearAPI(month: number, year: number) {
+    private async getByMonthYearAPI(month: number, year: number) {
         try {
             return await (await http.get(`/home/?month=${month}&year=${year}`)).data;
         }
@@ -29,6 +29,7 @@ class CalendarDataService {
                len: randInt(4) + 1,
                status: "expired",
            }] */
+
         console.log("today", month + 1, year)
         const { data } = (await this.getByMonthYearAPI(month + 1, year));
         console.log("datam", data["6"]);
@@ -42,12 +43,8 @@ class CalendarDataService {
 
             for (let eventName in data[dayStr + ""]) {
                 let eventArr = data[dayStr + ""][eventName];
-                console.log(eventName);
-                console.log(eventArr);
-                    items = this.itemHandler.createItems(eventName as eventNameType, eventArr);
-
-
-                
+                items = this.itemHandler.createItems(eventName as eventNameType, eventArr);
+                console.log("items", items);
             }
 
         }

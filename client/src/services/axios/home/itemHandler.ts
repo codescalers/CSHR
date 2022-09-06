@@ -3,6 +3,8 @@ import type { eventNameType } from "./types"
 class ItemHandler {
     public createItems(eventName: eventNameType, event: any) {
         let items = [];
+        console.log(eventName);
+        console.log(event);
 
         switch (eventName) {
             case "events":
