@@ -61,11 +61,11 @@ class MeetingsApiView(ViewSet, GenericAPIView):
             return CustomResponse.success(message="meeting deleted", status_code=204)
         return CustomResponse.not_found(message="meeting not found", status_code=404)
 
-    def put(self, request: Request, id: str, format=None) -> Response:
+    def put(self, request: Request, id: str) -> Response:
         meeting = get_meeting_by_id(id=id)
         if meeting is None:
             return CustomResponse.not_found(message="meeting not found")
-        serializer = self.get_serializer(meeting, data=request.data, partial=True)
+        serializer = self.get_serializer(meeting, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return CustomResponse.success(
