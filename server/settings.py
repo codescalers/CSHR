@@ -9,7 +9,7 @@ SECRET_KEY = config("DJANGO_SECRET_KEY")
 DEBUG = config("DJANGO_DEBUG") == "ON"
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
+    "127.0.0.1",
 ]
 
 # Application definition
@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "server.cshr",
     # Third party
-    'corsheaders',
+    "corsheaders",
     "drf_yasg",
     "rest_framework",
 ]
@@ -154,7 +154,4 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "cshr.User"
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://127.0.0.1:8080"
-]
+CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
