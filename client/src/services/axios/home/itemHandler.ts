@@ -1,15 +1,12 @@
-type eventNameType = "birthdates" | "vactions" | "events" | "meetings" | "others";
-
+import type { eventNameType } from "./types"
 
 class ItemHandler {
-    public createItem(eventName: eventNameType, event: any) {
+    public createItems(eventName: eventNameType, event: any) {
         let items = [];
-
-
 
         switch (eventName) {
             case "events":
-                items = this.events(event);
+                items = this.events(eventName, event);
                 break;
             case "birthdates":
                 items = this.birthDates(event);
@@ -23,10 +20,10 @@ class ItemHandler {
         return items;
     }
 
-    private events(eventName: string, event: any) {
-
+    private events(eventName: string, event: any): any[] {
+        return [];
     }
-    private event(eventName: string, event: any) {
+    private event(eventName: string, event: any): {} {
         return {
             id: event.id,
             title: event.name,
@@ -38,13 +35,15 @@ class ItemHandler {
 
 
 
-    private birthDates(event: any) {
-        return {
-            id: event.id,
-            title: event.name,
-            description: event.description,
-            len: 1,
-        }
+    private birthDates(event: any): any[] {
+        /*        return {
+                   id: event.id,
+                   title: event.name,
+                   description: event.description,
+                   len: 1,
+               } */
+
+        return [];
     }
     private birthDate(event: any) {
         return {
@@ -55,19 +54,21 @@ class ItemHandler {
         }
     }
 
-    private meetings(event: any) {
-        return {
+    private meetings(event: any):any[] {
+/*         return {
             id: event.id,
             title: event.name,
             description: event.description,
             len: 1,
-        }
+        } */
+
+        return [];
     }
 
 
 
 
-    private cssClassMapping(eventName: string) {
+    private cssClassMapping(eventName: string):string {
         switch (eventName) {
             case "event":
                 return "task--primary";
@@ -86,6 +87,8 @@ class ItemHandler {
             case "other":
                 return "task--primary";
         }
+
+        return "";
     }
 }
 

@@ -1,5 +1,7 @@
 import http from "../http-common";
 import itemHandler from "./itemHandler"
+import type { eventNameType } from "./types"
+
 class CalendarDataService {
 
     itemHandler = itemHandler;
@@ -42,11 +44,10 @@ class CalendarDataService {
                 let eventArr = data[dayStr + ""][eventName];
                 console.log(eventName);
                 console.log(eventArr);
-                for (let event of eventArr) {
-                    let item = this.itemHandler.createItem(eventName, event);
+                    items = this.itemHandler.createItems(eventName as eventNameType, eventArr);
 
-                    items.push(item);
-                }
+
+                
             }
 
         }
