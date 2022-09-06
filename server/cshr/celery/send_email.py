@@ -2,9 +2,7 @@ from django.conf import settings
 from celery import Celery
 from server.components import config
 from celery.schedules import crontab
-import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
 app = Celery("tasks", broker=config("REDIS_HOST"))
 
 app.autodiscover_tasks()
