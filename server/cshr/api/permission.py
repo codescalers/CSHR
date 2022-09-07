@@ -4,6 +4,7 @@ from rest_framework.request import Request
 from server.cshr.services.users import get_user_type_by_id
 from server.cshr.models.users import USER_TYPE
 from rest_framework.views import APIView
+from server.cshr.models.users import User
 
 
 class UserIsAuthenticated(permissions.BasePermission):
@@ -25,10 +26,11 @@ class IsAdmin(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
         if request.user.is_authenticated:
             userType = get_user_type_by_id(request.user.id)
+
             if userType == USER_TYPE.ADMIN:
                 return True
-            raise PermissionDenied
-        raise PermissionDenied
+            return PermissionDenied
+        return PermissionDenied
 
 
 class IsSupervisor(permissions.BasePermission):
@@ -39,10 +41,11 @@ class IsSupervisor(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView) -> bool:
         if request.user.is_authenticated:
             userType = get_user_type_by_id(request.user.id)
+
             if userType == USER_TYPE.SUPERVISOR:
                 return True
-            raise PermissionDenied
-        raise PermissionDenied
+            return PermissionDenied
+        return PermissionDenied
 
 
 class IsUser(permissions.BasePermission):
@@ -55,5 +58,24 @@ class IsUser(permissions.BasePermission):
             userType = get_user_type_by_id(request.user.id)
             if userType == USER_TYPE.USER:
                 return True
-            raise PermissionDenied
-        raise PermissionDenied
+            return PermissionDenied
+        return PermissionDenied
+
+
+class CustomPermissions:
+    """for check the type of user in views"""
+
+    @staticmethod
+    def admin_or_supervisor(user: User) -> bool:
+        """return True only if the user is a supervisor or admin"""
+        return (
+            True
+            if user.user_type == USER_TYPE.ADMIN
+            or user.user_type == USER_TYPE.SUPERVISOR
+            else False
+        )
+
+    @staticmethod
+    def admin(user: User) -> bool:
+        """return True only if the user is an admin"""
+        return True if user.user_type == USER_TYPE.ADMIN else False
