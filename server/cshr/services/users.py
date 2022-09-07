@@ -1,5 +1,9 @@
-from server.cshr.models.users import User
+"""This file will containes everything related to User model."""
+from server.cshr.models.users import User, UserSkills
 from django.contrib.auth.hashers import check_password
+from typing import List
+
+from django.db.models import Q
 
 
 def get_user_by_id(id: str) -> User:
@@ -14,6 +18,14 @@ def get_user_by_email(email: str) -> User:
     """Return user who have the same email"""
     try:
         return User.objects.get(email=email)
+    except User.DoesNotExist:
+        return None
+
+
+def get_user_by_full_name(first_name: str, last_name: str) -> User:
+    """Return user who have the same email"""
+    try:
+        return User.objects.get(first_name=first_name, last_name=last_name)
     except User.DoesNotExist:
         return None
 
@@ -36,3 +48,32 @@ def get_user_type_by_id(id: str) -> User:
         return user.user_type
     except User.DoesNotExist:
         return None
+
+
+def filter_users_by_berithday_month(month: str) -> User:
+    """Filter users based on birthdayes."""
+    users: List[User] = User.objects.filter(birthday__month=month)
+    return users
+
+
+def get_users_filter(
+    search_input: str,
+) -> User:
+    """Return users by filters"""
+
+    users = User.objects.filter(
+        Q(email__icontains=search_input)
+        | Q(first_name__icontains=search_input)
+        | Q(last_name__icontains=search_input)
+    )
+    return users
+
+
+def get_all_of_users() -> User:
+    """Return all users"""
+    return User.objects.all()
+
+
+def get_or_create_skill_by_name(name: str) -> UserSkills or bool:
+    """Return a skill by name"""
+    return UserSkills.objects.get_or_create(name=name.lower())
