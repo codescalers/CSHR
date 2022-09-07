@@ -16,3 +16,6 @@ migrate:
 	$(CMD) python3 manage.py migrate
 user:
 	$(CMD) python3 manage.py createsuperuser
+	$(CMD) python3 manage.py sqlmigrate cshr 0006
+	
+

@@ -5,7 +5,7 @@ from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.users import User
 
 
-class Training_Courses(TimeStamp):
+class TrainingCourses(TimeStamp):
     """Class training_courses model for adding a new"""
 
     user = models.ForeignKey(
@@ -16,3 +16,7 @@ class Training_Courses(TimeStamp):
 
     def __str__(self) -> str:
         return self.name
+
+    class Meta:
+        verbose_name = "Training course"
+        verbose_name_plural = "Training courses"
