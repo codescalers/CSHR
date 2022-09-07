@@ -2,8 +2,6 @@ import type { eventNameType, eventItemType } from "./types"
 import { v4 as uuidv4 } from "uuid";
 
 class Event {
-
-
     // to create the events list
     public eventsItems(eventName: eventNameType, events: any, date: Date): eventItemType[] {
         let items = [];

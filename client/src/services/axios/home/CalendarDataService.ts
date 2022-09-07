@@ -50,7 +50,7 @@ class CalendarDataService {
                         birthdates = [...birthdates, ...this.itemHandler.birthDate.birthDateItem(eventName, eventArr, date)]
                         break;
                     case "meetings":
-                        meetings = [...meetings, ...this.itemHandler.meeting.meetingsItems(eventName, eventArr)];
+                        meetings = [...meetings, ...this.itemHandler.meeting.meetingsItems(eventName, eventArr, date)];
                         break;
                     default:
                         throw new Error(`Invalid event name in itemHandler ${eventName}`);
@@ -76,9 +76,9 @@ class CalendarDataService {
             case "meetings":
                 return "task--primary";
             case "vacations":
-                return "task--primary";
+                return "task--info";               
             case "birthdates":
-                return "birthdates";
+                return " .task--warning";
             default:
                 throw new Error(`Invalid event name in itemHandler ${eventName}`);
         }

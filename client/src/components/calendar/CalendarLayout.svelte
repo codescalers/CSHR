@@ -4,6 +4,7 @@
   export var headers = [];
   export let days = [];
   export let items = [];
+  export let calendarItems = [];
 
   let dispatch = createEventDispatcher();
   function onDelete(event) {
@@ -20,13 +21,13 @@
 </script>
 
 <div class="calendar">
-  {#each headers as header,i (i)}
+  {#each headers as header, i (i)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
     >
   {/each}
 
-  {#each days as day,i (i) }
+  {#each days as day, i (i)}
     {#if day.enabled}
       <span class="day" on:click={() => dispatch("dayClick", day)}
         >{day.name}</span
@@ -37,7 +38,8 @@
       >
     {/if}
   {/each}
-
+    {#each Object.entries(calendarItems) as [item, className]}
+ 
   {#each items as item (item.id)}
     <section
       on:click={() => dispatch("itemClick", item)}
@@ -46,6 +48,7 @@
       grid-row: {item.startRow};  
       align-self: {item.isBottom ? 'end' : 'center'};"
     >
+      {item["className"]}
       <div class="container">
         <button
           type="button"

@@ -51,3 +51,38 @@ export type calendarOutputItemType = { "meeting": meetingItemType, "className": 
 { "events": eventItemType, "className": classType } |
 { "vacations": vacationItemType, "className": classType } |
 { "birthDates": birthDateItemType, "className": classType };
+
+
+
+export type calendarItemsType= (
+    | {
+        meetings: meetingItemType[];
+        className: string;
+        events?: undefined;
+        vacations?: undefined;
+        birthdates?: undefined;
+      }
+    | {
+        events: eventItemType[];
+        className: string;
+        meetings?: undefined;
+        vacations?: undefined;
+        birthdates?: undefined;
+      }
+    | {
+        vacations: vacationItemType[];
+        className: string;
+        meetings?: undefined;
+        events?: undefined;
+        birthdates?: undefined;
+      }
+    | {
+        birthdates: birthDateItemType[];
+        className: string;
+        meetings?: undefined;
+        events?: undefined;
+        vacations?: undefined;
+      }
+  )[]
+| [any, any, any, any]
+| undefined;
