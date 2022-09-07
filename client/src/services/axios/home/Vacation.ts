@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 
 class Vacation {
     private date: Date;
-    constructor(private cssClassMapping: (eventName: eventNameType) => string) { }
 
     // to create the vacations list
     public vacationsItems(eventName: eventNameType, vacations: any): vacationItemType[] {
@@ -34,7 +33,6 @@ class Vacation {
             len: 1,
             applying_user: applying_user,
             approval_user: approval_user,
-            className: this.cssClassMapping(eventName),
             status: event.status,
             date: this.date,
         }

@@ -1,6 +1,6 @@
 import http from "../http-common";
 import itemHandler from "./ItemHandler"
-import type { eventNameType, calendarItemType } from "./types"
+import type { eventNameType, calendarOutputItemType, meetingItemType, eventItemType, vacationItemType, birthDateItemType } from "./types"
 
 
 class CalendarDataService {
@@ -21,33 +21,76 @@ class CalendarDataService {
         let now = new Date();
         let year = now.getFullYear(); //	this is the month & year displayed
         let month = now.getMonth();
-        /*    let items = [{
-               id: 1,
-               title: "11:00 Task Early in month",
-               className: "task--primary",
-               description: "go to hossam office and discuss plan",
-               date: new Date(y, m, randInt(6)),
-               len: randInt(4) + 1,
-               status: "expired",
-           }] */
+
 
         console.log("today", month + 1, year)
         const { data } = (await this.getByMonthYearAPI(month + 1, year));
         console.log("datam", data["6"]);
 
-        let items: calendarItemType[] = [];
+        let items: calendarOutputItemType[] = [];
+        let meetings: meetingItemType[] = [];
+        let events: eventItemType[] = [];
+        let vacations: vacationItemType[] = [];
+        let birthdates: birthDateItemType[] = [];
 
         for (const dayStr in data) {
             let day: number = +dayStr;
             let date = new Date(year, month, day);
 
             for (let eventName in data[dayStr + ""]) {
+                eventName = eventName as eventNameType;
                 let eventArr = data[dayStr + ""][eventName];
-                items = [...items, ...this.itemHandler.createItems(eventName as eventNameType, eventArr, date)];
-                console.log("items", items);
+                switch (eventName) {
+                    case "events":
+                        events = [...events, ...this.itemHandler.createEventsItems(eventName, eventArr, date)];
+                        break;
+                    case "vacations":
+                        this.itemHandler.createVacationsItems(eventName, eventArr, date);
+                        break;
+                    case "birthdates":
+                        birthdates = [...birthdates, ...this.itemHandler.birthDate.birthDateItem(eventName, eventArr)]
+                        break;
+                    case "meetings":
+                        meetings = [...meetings, ...this.itemHandler.meeting.meetingsItems(eventName, event)];
+                        break;
+
+                    default:
+                        throw new Error(`Invalid event name in itemHandler ${eventName}`);
+                }
+
+                return items;
             }
 
         }
+
+
+        return [
+            { meetings: meetings, className: this.cssClassMapping("meetings") },
+            { events: events, className: this.cssClassMapping("events") },
+            { vacations, className: this.cssClassMapping("vacations") },
+            { birthdates, className: this.cssClassMapping("birthdates") }
+        ];
+    }
+
+
+
+
+
+    private cssClassMapping(eventName: eventNameType): string {
+        switch (eventName) {
+            case "events":
+                return "task--primary";
+            case "meetings":
+                return "task--primary";
+            case "vacations":
+                return "task--primary";
+            case "birthdates":
+                return "birthdates";
+            default:
+                throw new Error(`Invalid event name in itemHandler ${eventName}`);
+        }
+
+        return "";
     }
 }
 

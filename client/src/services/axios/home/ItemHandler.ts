@@ -1,95 +1,37 @@
-import type { eventNameType, userType, birthDateItemType, calendarItemType } from "./types"
+import type { eventNameType, eventItemType, meetingItemType, birthDateItemType, vacationItemType } from "./types"
 import Vacation from "./Vacation";
 import BirthDate from "./Birthdate";
 import Event from "./Event";
-import { v4 as uuidv4 } from "uuid";
+import Meeting from "./Meeting";
 
 class ItemHandler {
-    date: Date;
-    vacation: Vacation = new Vacation(this.cssClassMapping);
-    birthDate = new BirthDate(this.cssClassMapping);
-    event = new Event(this.cssClassMapping);
-    public createItems(eventName: eventNameType, event: any, date: Date): calendarItemType[] {
-        this.date = date;
-        let items: calendarItemType[] = [];
-        console.log(eventName);
-        console.log(event);
+    vacation: Vacation = new Vacation();
+    birthDate = new BirthDate();
+    event = new Event();
+    meeting = Meeting;
 
-        switch (eventName) {
-            case "events":
-                this.event.setDate = this.date;
-                items = [...items, ...this.event.eventsItems(eventName, event)];
-                break;
-            case "vacations":
-                this.vacation.setDate = date;
-                items = [...items, ...this.vacation.vacationsItems(eventName, event)];
-                break;
-            case "birthdates":
-                this.birthDate.setDate = date;
-                items = [...items, ...this.birthDate.birthDateItem(eventName, event)];
-                break;
-            case "meetings":
-                items = [...items, ...this.meetings(eventName, event)];
-                break;
-
-            default:
-                throw new Error(`Invalid event name in itemHandler ${eventName}`);
-        }
-
-        return items;
+    public createEventsItems(eventName: eventNameType, event: any, date: Date): eventItemType[] {
+        this.event.setDate = date;
+        return this.event.eventsItems(eventName, event);
     }
 
 
-
-
-
-
-
-    // to create the meetings list
-    private meetings(eventName: string, event: any): any[] {
-        /*         return {
-                    id: event.id,
-                    title: event.name,
-                    description: event.description,
-                    len: 1,
-                } */
-
-        return [];
+    public createBirthdatesItems(eventName: eventNameType, event: any, date: Date): birthDateItemType[] {
+        this.birthDate.setDate = date;
+        return this.birthDate.birthDateItem(eventName, event);
     }
 
-    // to create the meeting Item
-    private meetingItem(eventName: string, event: any) {
-        const id: string = uuidv4();
+    public createVacationsItems(eventName: eventNameType, event: any, date: Date): vacationItemType[] {
+        this.vacation.setDate = date;
+        return this.vacation.vacationsItems(eventName, event);
+    }
 
-        return {
-            id: id,
-            title: event.name,
-            description: event.description,
-            len: 1,
-        }
+    public createMeetingsItems(eventName: eventNameType, event: any, date: Date): meetingItemType[] {
+        this.meeting.setDate = date;
+        return this.meeting.meetingsItems(eventName, event);
     }
 
 
-    private cssClassMapping(eventName: string): string {
-        switch (eventName) {
-            case "events":
-                return "task--primary";
-            case "tasks":
-                return "task--primary";
-            case "meetings":
-                return "task--primary";
-            case "vacations":
-                return "task--primary";
-            case "birthdates":
-                return "birthdates";
-            case "other":
-                return "task--primary";
-            default:
-                throw new Error(`Invalid event name in itemHandler ${eventName}`);
-        }
-
-        return "";
-    }
 }
 
 

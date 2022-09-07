@@ -10,7 +10,6 @@ export type birthDateItemType = {
     id: string,
     title: string,
     len: number,
-    className: string,
     users: userType[],
     date: Date,
 }
@@ -18,8 +17,7 @@ export type meetingItemType = {
     id: string,
     title: string,
     len: number,
-    meeting_link: string
-    className: string,
+    meeting_link: string,
     invited_users: userType[],
     date: Date,
 }
@@ -30,8 +28,8 @@ export type eventItemType = {
     title: string,
     len: number,
     description: string,
-    className: string,
     date: Date,
+    people: userType[],
 }
 export type vacationItemType = {
     id: string,
@@ -40,8 +38,13 @@ export type vacationItemType = {
     len: number,
     applying_user: userType,
     approval_user: userType,
-    className: string,
     status: string,
     date: Date,
 }
-export type calendarItemType = userType | eventItemType | vacationItemType | birthDateItemType ;
+
+export type classType = "task--primary" | "task--info" | "task--success" | "task--warning" | "task--danger" | "task--secondary" | "task--dark" | "task--light";
+
+
+
+export type calendarItemType = meetingItemType | eventItemType | vacationItemType | birthDateItemType;
+export type calendarOutputItemType = { "meeting": calendarItemType, "className": classType } | { "events": calendarItemType, "className": classType } | { "vacations": calendarItemType, "className": classType } | { "birthDates": calendarItemType, "className": classType };

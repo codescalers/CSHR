@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 
 export default class BirthDate {
     private date: Date;
-    constructor(private cssClassMapping: (eventName: eventNameType) => string) { }
     // to create the birthdates Item
     public birthDateItem(eventName: eventNameType, events: any[]): birthDateItemType[] {
         const id: string = uuidv4();
@@ -19,7 +18,6 @@ export default class BirthDate {
         return [{
             id: id,
             title: eventName,
-            className: this.cssClassMapping(eventName),
             users: users,
             date: this.date,
             len: 1,

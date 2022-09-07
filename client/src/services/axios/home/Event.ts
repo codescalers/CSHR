@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 
 class Event {
     private date: Date;
-    constructor(private cssClassMapping: (eventName: eventNameType) => string) { }
 
 
     // to set the date
@@ -30,7 +29,8 @@ class Event {
             description: event.description,
             date: this.date,
             len: 1,
-            className: this.cssClassMapping(eventName)
+            people: event.people,
+
         }
     }
 }
