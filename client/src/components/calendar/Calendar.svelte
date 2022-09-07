@@ -5,9 +5,21 @@
 
   //export let user;
   export let isLoading = false;
-   onMount(async () => {
-    await calendarDataService.initCalendar();
-  }); 
+  //	The Calendar Component just displays stuff in a row & column. It has no knowledge of dates.
+  //	The items[] below are placed (by you) in a specified row & column of the calendar.
+  //	You need to call findRowCol() to calc the row/col based on each items start date. Each date box has a Date() property.
+  //	And, if an item overlaps rows, then you need to add a 2nd item on the subsequent row.
+
+  let items;
+  onMount(async () => {
+    isLoading = false;
+    let calendarItems = await calendarDataService.initCalendar();
+    console.log("k", calendarItems);
+
+    let [ meetings, events, vacations, birthdates ] = calendarItems;
+    items = [...meetings.meetings,...events.events, ...vacations.vacations, ...birthdates.birthdates];
+    isLoading = true;
+  });
   var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   let monthNames = [
     "January",
@@ -36,19 +48,13 @@
     return Math.floor(Math.random() * max) + 1;
   }
 
-  //	The Calendar Component just displays stuff in a row & column. It has no knowledge of dates.
-  //	The items[] below are placed (by you) in a specified row & column of the calendar.
-  //	You need to call findRowCol() to calc the row/col based on each items start date. Each date box has a Date() property.
-  //	And, if an item overlaps rows, then you need to add a 2nd item on the subsequent row.
-  var items = [];
-
   function initMonthItems() {
     let y = year;
     let m = month;
     let d1 = new Date(y, m, randInt(7) + 7);
     //let g = await InitCalendar();
-
-    items = [
+/* 
+       items = [
       {
         id: 1,
         title: "11:00 Task Early in month",
@@ -108,8 +114,8 @@
         len: 1,
         status: "undone",
       },
-    ];
-
+    ]; */
+ 
     //This is where you calc the row/col to put each dated item
     for (let i of items) {
       let rc = findRowCol(i.date);

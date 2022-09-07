@@ -11,23 +11,19 @@ class ItemHandler {
     meeting = Meeting;
 
     public createEventsItems(eventName: eventNameType, event: any, date: Date): eventItemType[] {
-        this.event.setDate = date;
-        return this.event.eventsItems(eventName, event);
+        return this.event.eventsItems(eventName, event, date);
     }
 
 
     public createBirthdatesItems(eventName: eventNameType, event: any, date: Date): birthDateItemType[] {
-        this.birthDate.setDate = date;
-        return this.birthDate.birthDateItem(eventName, event);
+        return this.birthDate.birthDateItem(eventName, event, date);
     }
 
     public createVacationsItems(eventName: eventNameType, event: any, date: Date): vacationItemType[] {
-        this.vacation.setDate = date;
-        return this.vacation.vacationsItems(eventName, event);
+        return this.vacation.vacationsItems(eventName, event, date);
     }
 
-    public createMeetingsItems(eventName: eventNameType, event: any, date: Date): meetingItemType[] {
-        this.meeting.setDate = date;
+    public createMeetingsItems(eventName: eventNameType, event: any): meetingItemType[] {
         return this.meeting.meetingsItems(eventName, event);
     }
 

@@ -44,7 +44,10 @@ export type vacationItemType = {
 
 export type classType = "task--primary" | "task--info" | "task--success" | "task--warning" | "task--danger" | "task--secondary" | "task--dark" | "task--light";
 
-
-
 export type calendarItemType = meetingItemType | eventItemType | vacationItemType | birthDateItemType;
-export type calendarOutputItemType = { "meeting": calendarItemType, "className": classType } | { "events": calendarItemType, "className": classType } | { "vacations": calendarItemType, "className": classType } | { "birthDates": calendarItemType, "className": classType };
+
+
+export type calendarOutputItemType = { "meeting": meetingItemType, "className": classType } |
+{ "events": eventItemType, "className": classType } |
+{ "vacations": vacationItemType, "className": classType } |
+{ "birthDates": birthDateItemType, "className": classType };

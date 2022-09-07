@@ -2,18 +2,17 @@ import type { eventNameType, userType, vacationItemType } from "./types"
 import { v4 as uuidv4 } from "uuid";
 
 class Vacation {
-    private date: Date;
 
     // to create the vacations list
-    public vacationsItems(eventName: eventNameType, vacations: any): vacationItemType[] {
+    public vacationsItems(eventName: eventNameType, vacations: any, date: Date): vacationItemType[] {
         let items: vacationItemType[] = [];
         for (const vacation of vacations) {
-            items.push(this.vacationItem(eventName, vacation));
+            items.push(this.vacationItem(eventName, vacation, date));
         }
         return items;
     }
     // to create the vacation item
-    private vacationItem(eventName: eventNameType, event: any): vacationItemType {
+    private vacationItem(eventName: eventNameType, event: any, date: Date): vacationItemType {
         const id: string = uuidv4();
 
         const applying_user: userType = {
@@ -34,13 +33,8 @@ class Vacation {
             applying_user: applying_user,
             approval_user: approval_user,
             status: event.status,
-            date: this.date,
+            date: date,
         }
-    }
-
-    // to set the date
-    public set setDate(date: Date) {
-        this.date = date;
     }
 }
 
