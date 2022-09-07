@@ -1,6 +1,6 @@
 import http from "../http-common";
 import itemHandler from "./ItemHandler"
-import type { eventNameType, meetingItemType, eventItemType, vacationItemType, birthDateItemType } from "./types"
+import type { eventNameType, meetingItemType, eventItemType, vacationItemType, birthDateItemType,userType } from "./types"
 
 
 class CalendarDataService {
@@ -15,7 +15,14 @@ class CalendarDataService {
             throw new Error(`Error while fetching Calendar data ${error}`);
         }
     }
-
+    public async postMeeting(invited_users: userType[], date: Date, title: string, description: string) {
+        try {
+            return await (await http.post('/home/meeting', { invited_users, date, title, description })).data;
+        }
+        catch (error) {
+            throw new Error(`Error while posting meeting data ${error}`);
+        }
+    }
 
     public async initCalendar() {
         let now = new Date();

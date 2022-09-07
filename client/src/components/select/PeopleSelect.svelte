@@ -1,28 +1,27 @@
 <script>
+  import { onMount } from "svelte";
+  onMount(async function () {
+    const response = await fetch(
+      "https://api.github.com/repos/sveltejs/svelte"
+    );
+    const data = await response.json();
+    console.log(data);
+  });
   import MultiSelect from "svelte-multiselect";
-  import LanguageSlot from "./LanguageSlot.svelte";
+  import PeopleSlot from "./PeopleSlot.svelte";
+  import LanguageSlot from "./PeopleSlot.svelte";
 
   export let options = [`Svelte`, `React`, `Vue`, `Angular`, `...`];
-
-  let selected = [];
+  export let selected = [];
+  export let placeholder = `Select languages`;
+  export let removeAllTitle = "Remove all";
 </script>
 
 <code>selected = {JSON.stringify(selected)}</code>
 <MultiSelect
-  options={options}
-  maxSelect={5}
-  placeholder="What languages do you know?"
->
-  <LanguageSlot let:option {option} slot="selected" />
-  <LanguageSlot let:option {option} slot="option" />
-<!--   <MinusIcon slot="remove-icon" width="1em" />
- --></MultiSelect>
-
-<MultiSelect
-  bind:selected
   {options}
-  placeholder="Pick your favorite foods"
-  removeAllTitle="Delete all foods"
+  maxSelect={5}
+  {placeholder}
   outerDivClass="foo"
   ulSelectedClass="bar"
   ulOptionsClass="baz"
@@ -37,6 +36,11 @@
   --sms-options-bg="white"
   --sms-min-height="20px"
   --sms-min-width="20px"
-/>
+>
+  <PeopleSlot let:option {option} slot="selected" />
+  <PeopleSlot let:option {option} slot="option" />
+</MultiSelect>
+
+<MultiSelect bind:selected {options} {placeholder} {removeAllTitle} />
 <!--   https://www.npmjs.com/package/svelte-multiselect -->
 <!-- https://svelte-multiselect.netlify.app/#with-css-variables -->

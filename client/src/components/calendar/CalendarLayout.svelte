@@ -4,7 +4,6 @@
   export var headers = [];
   export let days = [];
   export let items = [];
-  export let calendarItems = [];
 
   let dispatch = createEventDispatcher();
   function onDelete(event) {
@@ -38,21 +37,20 @@
       >
     {/if}
   {/each}
-    {#each Object.entries(calendarItems) as [item, className]}
- 
+
   {#each items as item (item.id)}
     <section
       on:click={() => dispatch("itemClick", item)}
       class="task {item.className}"
       style="grid-column: {item.startCol} / span {item.len};      
       grid-row: {item.startRow};  
-      align-self: {item.isBottom ? 'end' : 'center'};"
+      align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};
+      height:'50rem !important';"
     >
-      {item["className"]}
       <div class="container">
         <button
           type="button"
-          class="modal-btn"
+          class="modal-btn m-0 p-0"
           data-bs-toggle="modal"
           data-bs-target={`#modal${item.id}`}
         >
@@ -66,7 +64,7 @@
       {#if item.detailHeader}
         <div class="task-detail">
           <h2>{item.detailHeader}</h2>
-          <p>{item.detailContent}</p>
+          <p>{@html item.detailContent}</p>
         </div>
       {/if}
     </section>

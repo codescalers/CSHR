@@ -11,22 +11,39 @@ class Meeting {
 
         let items = [];
         for (const meeting of meetings) {
-            items.push(this.meetingItem(eventName, meeting,date));
+            items.push(this.meetingItem(eventName, meeting, date));
         }
         return items;
     }
 
+
     // to create the meeting Item
     private meetingItem(eventName: eventNameType, meeting: meetingItemType, date: Date): meetingItemType {
         const id: string = uuidv4();
+        const today = new Date();
+
+        let difficulty = {};
+        if (today.toDateString() === date.toDateString()) {
+            difficulty = {
+                detailHeader: "Meeting Link",
+                detailContent: `<a href="${meeting.meeting_link}" target="_blank" rel="noopener noreferrer">${meeting.meeting_link}</a>`,
+            }
+        }
 
         return {
             id: id,
-            title: eventName,
+            title: "💼meeting",
             len: 1,
             date: date,
             meeting_link: meeting.meeting_link,
             invited_users: meeting.invited_users,
+            className: "task--danger",
+            eventName: eventName,
+            isStart: false,
+            isBottom: true,
+            ...difficulty
+
+
 
         }
     }

@@ -120,33 +120,21 @@
         status: "undone",
       },
     ]; */
-    if (calendarItems != undefined) {
-      //This is where you calc the row/col to put each dated item
-      for (let j of calendarItems) {
-        let calendarObject = Object.entries(j);
-        let prev;
-        console.log("calendarObject", calendarObject);
-        for (let item of calendarObject[0][1]) {
-          let rc = findRowCol(item.date);
 
-          if (rc == null) {
-            console.log("didn`t find date for ", item);
-            console.log(item.date);
-            console.log(days);
-            item.startCol = item.startRow = 0;
-          } else {
-            item.startCol = rc.col;
-            item.startRow = rc.row;
-            item = {
-              ...item,
-              eventName: calendarObject[0][0],
-              className: calendarObject[1][1],
-              startCol: rc.col,
-              startRow: rc.row,
-            };
-            prev = rc;
-            console.log("i", item["className"]);
-          }
+    if (items !== undefined) {
+      //This is where you calc the row/col to put each dated item
+
+      for (let item of items) {
+        let rc = findRowCol(item.date);
+
+        if (rc == null) {
+          console.log("didn`t find date for ", item);
+          console.log(item.date);
+          console.log(days);
+          item.startCol = item.startRow = 0;
+        } else {
+          item.startCol = rc.col;
+          item.startRow = rc.row;
         }
       }
     }
@@ -262,8 +250,6 @@
     {headers}
     {days}
     bind:items
-    bind:calendarItems
-
     on:onDelete={(event) => {
       if (items != undefined) {
         items = items.filter((item) => item.id !== event.detail.id);

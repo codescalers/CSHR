@@ -16,10 +16,14 @@ export default class BirthDate {
         }
         return [{
             id: id,
-            title: eventName,
+            title: "🎂birthday" + (users.length > 1 ? "s" : ""),
             users: users,
             date: date,
             len: 1,
+            className: "task--primary",
+            eventName: eventName,
+            isStart: true,
+            isBottom: false,
         }];
     }
 

@@ -27,13 +27,15 @@ class Vacation {
         }
         return {
             id: id,
-            title: eventName,
+            title: "🌴"+eventName,
             reason: event.reason,
             len: 1,
             applying_user: applying_user,
             approval_user: approval_user,
             status: event.status,
             date: date,
+            className: "task--warning",
+            eventName: eventName,
         }
     }
 }

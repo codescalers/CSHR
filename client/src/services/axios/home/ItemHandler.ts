@@ -23,8 +23,8 @@ class ItemHandler {
         return this.vacation.vacationsItems(eventName, event, date);
     }
 
-    public createMeetingsItems(eventName: eventNameType, event: any): meetingItemType[] {
-        return this.meeting.meetingsItems(eventName, event);
+    public createMeetingsItems(eventName: eventNameType, event: any,date:Date): meetingItemType[] {
+        return this.meeting.meetingsItems(eventName, event,date);
     }
 
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { UserInterface } from "../types";
   import Input from "../components/input/Input.svelte";
-  import Select from "../components/select/Select.svelte";
+  import Select from "../components/select/PeopleSelect.svelte";
   export let user: UserInterface;
 
   import Sidebar from "../components/sidebar/Sidebar.svelte";

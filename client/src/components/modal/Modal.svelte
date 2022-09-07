@@ -37,7 +37,12 @@
           aria-label="Close"
         />
       </div>
-      <div class="modal-body">{body}</div>
+      <div class="modal-body">
+        {body}
+
+        <slot name="body" />
+        <slot name="form" />
+      </div>
       <div class="modal-footer">
         {#if isDelete}
           <button

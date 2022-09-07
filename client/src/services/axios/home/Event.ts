@@ -16,11 +16,13 @@ class Event {
 
         return {
             id: id,
-            title: event.name + " " + eventName,
+            title: '🎉'+event.name ,
             description: event.description,
             date: date,
             len: 1,
             people: event.people,
+            className: "task--info",
+            eventName: eventName,
 
         }
     }
