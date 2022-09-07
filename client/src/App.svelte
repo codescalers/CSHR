@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Footer from "./components/footer/Footer.svelte";
   import SettingsApi from "./components/settings/SettingsApi";
   import { onMount } from "svelte";
   import { SettingsStore } from "./stores";

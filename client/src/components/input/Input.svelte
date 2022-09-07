@@ -9,6 +9,7 @@
   export let label: string = "label";
   export let placeholder: string;
   export let errorMessage: string;
+  export let className: string = "";
   export let hint: string = "";
   export let isError: boolean | null = null;
 
@@ -19,7 +20,7 @@
   };
 </script>
 
-<div class="form-group row">
+<div class={`form-group row ${className}`}>
   <label for={id} class="col-sm-4 col-form-label py-3">{label}</label>
   <div class="col-sm-8">
     <input

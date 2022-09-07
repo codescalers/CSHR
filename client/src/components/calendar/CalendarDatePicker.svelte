@@ -1,26 +1,25 @@
-<script>
+<script lang="ts">
   import DatePicker from "./Datepicker.svelte";
   export let error_message = "";
   export let onlyStart = false;
   export let isLoading = false;
-  export let putLeft = false;
   let startDate = "2022-03-01";
   let endDate = "2022-03-03";
 
-  const locale = {
+  const locale: {
+    en: {
+      days: string[];
+      months: string[];
+      start: number;
+    };
+  } = {
     en: {
       days: "Su|Mo|Tu|We|Th|Fr|Sa".split("|"),
       months: "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec".split("|"),
       start: 0,
     },
-    da: {
-      days: "Sø|Ma|Ti|On|To|Fr|Lø".split("|"),
-      months: "Jan|Feb|Mar|Apr|Maj|Jun|Jul|Aug|Sep|Okt|Nov|Dec".split("|"),
-      start: 1,
-    },
   };
-  let culture = "en";
-  function validateDate(date, error_name) {
+  function validateDate(date: string, error_name: string) {
     let check = Date.parse(date);
     if (!check) {
       //it is not a date with format YYYY-MM-DD
@@ -43,12 +42,12 @@
     style={` opacity: ${isLoading ? "0.1" : "1"}`}
   >
     {#if !error_message}
-    <div class={`${putLeft?"put-left":""}`}>
-      <DatePicker
-        bind:startDate
-        bind:endDate
-        bind:onlyStart
-        {...locale[culture]}
+      <div>
+        <DatePicker
+          bind:startDate
+          bind:endDate
+          bind:onlyStart
+          {...locale["en"]}
         />
       </div>
     {:else}
@@ -122,8 +121,7 @@
     margin-top: 0.4cm;
     background-color: #edf2f9;
   }
-  .put-left{
+  .put-left {
     margin-left: -1.5cm;
-    
   }
 </style>

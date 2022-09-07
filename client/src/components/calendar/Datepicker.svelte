@@ -33,7 +33,7 @@
 
   export let days = "Su|Mo|Tu|We|Th|Fr|Sa".split("|");
   export let months = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec".split(
-    "|"
+  "|"
   );
   export let onlyStart;
   export let start = 0; // first day of the week (0 = Sunday, 1 = Monday)
