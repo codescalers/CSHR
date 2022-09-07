@@ -8,10 +8,7 @@ SECRET_KEY = config("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG") == "ON"
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    'localhost'
-]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # Application definition
 INSTALLED_APPS = [
