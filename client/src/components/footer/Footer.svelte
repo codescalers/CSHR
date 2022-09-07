@@ -1,6 +1,6 @@
 <footer class="container my-5">
   <p class="footer-copyright">
-    Copyright Threefold ©
+    Copyright Threefold  ©
     {new Date().getFullYear()}
   </p>
 </footer>

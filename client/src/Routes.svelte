@@ -13,6 +13,7 @@
   import { onMount } from "svelte";
   import Error from "./pages/Error.svelte";
   import axios from "axios";
+  import Requests from "./pages/Requests.svelte"
   let user: UserInterface;
   const mode = localStorage.getItem("mode") as "light" | "dark" | null;
 
@@ -50,7 +51,7 @@
     <Route path="auth/register/" primary={false}><Register /></Route>
     <Route path="auth/logout/" primary={false}><Logout /></Route>
     <Route path="input" primary={false}><InputExample {user} /></Route>
-
+    <Route path="requests/" primary={false}><Requests {user} /></Route>
     <Route>
       <Error error={404} {user} />
     </Route>
