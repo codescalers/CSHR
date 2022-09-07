@@ -16,3 +16,4 @@ cd <repo name>
 docker build -t <image name> .
 docker run -p <the port you want to run the project on>:8000 <image name>
 ```
+
