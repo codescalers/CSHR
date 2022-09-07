@@ -9,4 +9,4 @@ class Office(TimeStamp):
     country = models.CharField(max_length=45)
 
     def __str__(self) -> str:
-        return self.name
+        return f"{self.name}"

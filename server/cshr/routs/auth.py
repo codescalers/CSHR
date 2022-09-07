@@ -1,13 +1,13 @@
 from django.urls import path
 from server.cshr.views.auth import (
-    RegisterApiView,
-    LoginByTokenApiView,
+    RegisterAPIView,
+    LoginByTokenAPIView,
     MyTokenRefreshView,
 )
 
 
 urlpatterns = [
-    path("signup/", RegisterApiView.as_view()),
-    path("login/", LoginByTokenApiView.as_view()),
+    path("signup/", RegisterAPIView.as_view()),
+    path("login/", LoginByTokenAPIView.as_view()),
     path("token/refresh/", MyTokenRefreshView.as_view()),
 ]
