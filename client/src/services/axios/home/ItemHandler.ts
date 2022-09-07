@@ -36,7 +36,6 @@ class ItemHandler {
                 throw new Error(`Invalid event name in itemHandler ${eventName}`);
         }
 
-        console.log("items++", items);
         return items;
     }
 

@@ -1,6 +1,7 @@
 import http from "../http-common";
 import itemHandler from "./ItemHandler"
-import type { eventNameType } from "./types"
+import type { eventNameType, calendarItemType } from "./types"
+
 
 class CalendarDataService {
 
@@ -34,16 +35,15 @@ class CalendarDataService {
         const { data } = (await this.getByMonthYearAPI(month + 1, year));
         console.log("datam", data["6"]);
 
-        let items = [];
+        let items: calendarItemType[] = [];
 
         for (const dayStr in data) {
             let day: number = +dayStr;
             let date = new Date(year, month, day);
-            console.log(date);
 
             for (let eventName in data[dayStr + ""]) {
                 let eventArr = data[dayStr + ""][eventName];
-                items = this.itemHandler.createItems(eventName as eventNameType, eventArr,date);
+                items = [...items, ...this.itemHandler.createItems(eventName as eventNameType, eventArr, date)];
                 console.log("items", items);
             }
 

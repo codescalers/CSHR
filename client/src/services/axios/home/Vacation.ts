@@ -29,7 +29,7 @@ class Vacation {
         }
         return {
             id: id,
-            title: event.title,
+            title: eventName,
             reason: event.reason,
             len: 1,
             applying_user: applying_user,

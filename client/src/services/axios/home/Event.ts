@@ -26,7 +26,7 @@ class Event {
 
         return {
             id: id,
-            title: event.name,
+            title: event.name + " " + eventName,
             description: event.description,
             date: this.date,
             len: 1,
