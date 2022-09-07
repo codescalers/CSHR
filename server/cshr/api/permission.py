@@ -29,8 +29,8 @@ class IsAdmin(permissions.BasePermission):
 
             if userType == USER_TYPE.ADMIN:
                 return True
-            return PermissionDenied
-        return PermissionDenied
+            return False
+        return False
 
 
 class IsSupervisor(permissions.BasePermission):
@@ -43,9 +43,10 @@ class IsSupervisor(permissions.BasePermission):
             userType = get_user_type_by_id(request.user.id)
 
             if userType == USER_TYPE.SUPERVISOR:
+
                 return True
-            return PermissionDenied
-        return PermissionDenied
+            return False
+        return False
 
 
 class IsUser(permissions.BasePermission):
@@ -58,8 +59,8 @@ class IsUser(permissions.BasePermission):
             userType = get_user_type_by_id(request.user.id)
             if userType == USER_TYPE.USER:
                 return True
-            return PermissionDenied
-        return PermissionDenied
+            return False
+        return False
 
 
 class CustomPermissions:
