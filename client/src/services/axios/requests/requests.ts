@@ -19,6 +19,7 @@ export default async function getRequests() {
         value.type= "HR letters"
         request.push(value)
     })
+    console.log(request)
   
    return request
 }

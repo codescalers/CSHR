@@ -1,22 +1,29 @@
 <script lang="ts">
   import getRequests from "../services/axios/requests/requests";
+  import updateVacations from "../services/axios/requests/vacations"
   import type { UserInterface } from "../types";
   export let user: UserInterface;
   import { onMount } from "svelte";
   import Sidebar from "../components/sidebar/Sidebar.svelte";
 import { } from "os";
-
-  function approve_btn(type,id) {
-    // request.status = "Approved";
+let requests = [];
+  async function  approve_btn (type,id) {
+    
+      if (type == "Vacation"){
+      let data:JSON= JSON.parse('{"status":"approved"}')
+      await updateVacations(id,data);
+       
+      }
+      requests = await getRequests();
     console.log(type,id);
   }
-  function reject_btn(request) {
-    request.status = "Rejected";
-    console.log(request);
+  function reject_btn(type,id) {
+    
+    console.log(type,id);
   }
   let pageCount = 0;
   let pageSize = 3;
-  let requests = [];
+  
   function increment() {
     if (totalRequests - pageCount * 3 - pageSize > 0) {
       pageCount++;
@@ -109,7 +116,7 @@ import { } from "os";
                           >
                         </div>
                       </div>
-                    {:else if request.status == "Approved"}
+                    {:else if request.status == "Approved" || request.status == "approved"}
                       <div
                         class="row  align-items-center justify-content-start "
                       >
@@ -131,7 +138,7 @@ import { } from "os";
                         <div class="col">
                           <button
                             type="button"
-                            on:click={approve_btn(request)}
+                            on:click={approve_btn(request.type,request.id)}
                             class="btn btn-success btn-sm w-100 mb-1"
                             >Approve</button
                           >
