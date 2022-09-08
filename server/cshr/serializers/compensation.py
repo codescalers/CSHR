@@ -11,7 +11,8 @@ class CompensationSerializer(ModelSerializer):
 
     class Meta:
         model = Compensation
-        fields = ["reason", "from_date", "end_date"]
+        fields = "__all__"
+        read_only_fields = ("applying_user", "approval_user", "type", "status")
 
 
 class LandingPageCompensationSerializer(ModelSerializer):
