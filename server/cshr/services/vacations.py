@@ -24,5 +24,5 @@ def get_vacation_by_id(id: str) -> Vacation:
 
 
 def get_all_vacations() -> Vacation:
-    """Return all hr letters"""
+    """Return all vacations"""
     return Vacation.objects.all()

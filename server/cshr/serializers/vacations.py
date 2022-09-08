@@ -29,6 +29,7 @@ class LandingPageVacationsSerializer(ModelSerializer):
     class Meta:
         model = Vacation
         fields = [
+            "id",
             "reason",
             "from_date",
             "end_date",
@@ -38,7 +39,13 @@ class LandingPageVacationsSerializer(ModelSerializer):
         ]
 
     def get_applying_user(self, obj: Vacation) -> BaseUserSerializer:
+        """
+        this function return request's applying user
+        """
         return BaseUserSerializer(obj.applying_user).data
 
     def get_approval_user(self, obj: Vacation) -> BaseUserSerializer:
+        """
+        this function return request's approving user
+        """
         return BaseUserSerializer(obj.approval_user).data
