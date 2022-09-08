@@ -43,4 +43,3 @@ class LandingPageCompensationSerializer(ModelSerializer):
         this function return request's approval user
         """
         return BaseUserSerializer(obj.approval_user).data
-
