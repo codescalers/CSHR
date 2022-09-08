@@ -1,17 +1,11 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
-  onMount(async function () {
-    const response = await fetch(
-      "https://api.github.com/repos/sveltejs/svelte"
-    );
-    const data = await response.json();
-    console.log(data);
-  });
+  import PeopleSlot from "./PeopleSlot.svelte";
+  let options: any[] = [];
+
   import MultiSelect from "svelte-multiselect";
   import PeopleSlot from "./PeopleSlot.svelte";
-  import LanguageSlot from "./PeopleSlot.svelte";
 
-  export let options = [`Svelte`, `React`, `Vue`, `Angular`, `...`];
   export let selected = [];
   export let placeholder = `Select languages`;
   export let removeAllTitle = "Remove all";

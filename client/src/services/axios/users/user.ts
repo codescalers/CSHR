@@ -1,4 +1,4 @@
-import http from "./http-common";
+import http from "../http-common";
 class UserDataService {
 
     public async getAll(): Promise<{ data: any[] }> {
