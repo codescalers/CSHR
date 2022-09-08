@@ -1,3 +1,4 @@
+from typing import Dict
 from django.conf import settings
 from celery import Celery
 from server.components import config
@@ -6,7 +7,8 @@ import datetime
 from django.core.mail import send_mail
 from celery import shared_task
 from server.cshr.models.users import User
-
+from server.cshr.utils.send_email import get_admins_emails
+from server.cshr.utils.send_email import get_supervisor_dict
 
 app = Celery("tasks", broker=config("REDIS_HOST"))
 
@@ -109,25 +111,10 @@ def send_email():
 
 @shared_task()
 def send_email_for_vacation_request(user, data):
-    from server.cshr.models.users import USER_TYPE
     from django.core.mail import send_mail
-    from server.cshr.models.users import User
 
-    admins = User.objects.filter(user_type=USER_TYPE.ADMIN)
-    admins_emails = []
-    for admin in admins:
-        admins_emails.append(admin.email)
-
-    try:
-        supervisor = User.objects.get(pk=user.reporting_to.id)
-        supervisor_email = supervisor.email
-        supervisor_fn = supervisor.fname
-        supervisor_ln = supervisor.lname
-    except Exception:
-        supervisor_email = ""
-        supervisor_fn = "Not"
-        supervisor_ln = "Defined"
-
+    admins_emails = get_admins_emails()
+    supervisor_dict: Dict = get_supervisor_dict(user)
     user_email = user.email
     msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
             Approving user: {supervisor_fname} {supervisor_lname} \n \
@@ -135,8 +122,8 @@ def send_email_for_vacation_request(user, data):
             Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
-        supervisor_fname=supervisor_fn,
-        supervisor_lname=supervisor_ln,
+        supervisor_fname=supervisor_dict["fname"],
+        supervisor_lname=supervisor_dict["lname"],
         reason=data["reason"],
         start_date=data["from_date"],
         end_date=data["end_date"],
@@ -144,7 +131,6 @@ def send_email_for_vacation_request(user, data):
         request_url="dummyurl.com",
     )
     mail_title = "vacation request"
-
     send_mail(
         mail_title, msg, settings.EMAIL_HOST_USER, admins_emails, fail_silently=False
     )
@@ -152,31 +138,17 @@ def send_email_for_vacation_request(user, data):
         mail_title,
         msg,
         settings.EMAIL_HOST_USER,
-        [user_email, supervisor_email],
+        [user_email, supervisor_dict["email"]],
         fail_silently=False,
     )
 
 
 @shared_task
 def send_email_for_hr_letter_request(user: User, data):
-    from server.cshr.models.users import USER_TYPE
     from django.core.mail import send_mail
-    from server.cshr.models.users import User
 
-    admins = User.objects.filter(user_type=USER_TYPE.ADMIN)
-    admins_emails = []
-    for admin in admins:
-        admins_emails.append(admin.email)
-
-    try:
-        supervisor = User.objects.get(pk=user.reporting_to.id)
-        supervisor_email = supervisor.email
-        supervisor_fn = supervisor.fname
-        supervisor_ln = supervisor.lname
-    except Exception:
-        supervisor_email = ""
-        supervisor_fn = "Not"
-        supervisor_ln = "Mentioned"
+    admins_emails = get_admins_emails()
+    supervisor_dict: Dict = get_supervisor_dict(user)
     user_email = user.email
     msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
         Approving user: {supervisor_fname} {supervisor_lname} \n \
@@ -184,8 +156,8 @@ def send_email_for_hr_letter_request(user: User, data):
         Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
-        supervisor_fname=supervisor_fn,
-        supervisor_lname=supervisor_ln,
+        supervisor_fname=supervisor_dict["fname"],
+        supervisor_lname=supervisor_dict["lname"],
         addresses=data["addresses"],
         status=data["status"],
         request_url="dummyurl.com",
@@ -199,31 +171,17 @@ def send_email_for_hr_letter_request(user: User, data):
         mail_title,
         msg,
         settings.EMAIL_HOST_USER,
-        [user_email, supervisor_email],
+        [user_email, supervisor_dict["email"]],
         fail_silently=False,
     )
 
 
 @shared_task()
 def send_email_for_compensation_request(user, data):
-    from server.cshr.models.users import USER_TYPE
     from django.core.mail import send_mail
-    from server.cshr.models.users import User
 
-    admins = User.objects.filter(user_type=USER_TYPE.ADMIN)
-    admins_emails = []
-    for admin in admins:
-        admins_emails.append(admin.email)
-
-    try:
-        supervisor = User.objects.get(pk=user.reporting_to.id)
-        supervisor_email = supervisor.email
-        supervisor_fn = supervisor.fname
-        supervisor_ln = supervisor.lname
-    except Exception:
-        supervisor_email = ""
-        supervisor_fn = "Not"
-        supervisor_ln = "Defined"
+    admins_emails = get_admins_emails()
+    supervisor_dict: Dict = get_supervisor_dict(user)
     user_email = user.email
     msg = " Request information: \n Applying user: {user_fname} {user_lname} \n \
             Approving user: {supervisor_fname} {supervisor_lname} \n \
@@ -231,8 +189,8 @@ def send_email_for_compensation_request(user, data):
             Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
-        supervisor_fname=supervisor_fn,
-        supervisor_lname=supervisor_ln,
+        supervisor_fname=supervisor_dict["fname"],
+        supervisor_lname=supervisor_dict["lname"],
         reason=data["reason"],
         start_date=data["from_date"],
         end_date=data["end_date"],
@@ -248,31 +206,17 @@ def send_email_for_compensation_request(user, data):
         mail_title,
         msg,
         settings.EMAIL_HOST_USER,
-        [user_email, supervisor_email],
+        [user_email, supervisor_dict["email"]],
         fail_silently=False,
     )
 
 
 @shared_task()
 def send_email_for_vacation_reply(user, data):
-    from server.cshr.models.users import USER_TYPE
     from django.core.mail import send_mail
-    from server.cshr.models.users import User
 
-    admins = User.objects.filter(user_type=USER_TYPE.ADMIN)
-    admins_emails = []
-    for admin in admins:
-        admins_emails.append(admin.email)
-
-    try:
-        supervisor = User.objects.get(pk=user.reporting_to.id)
-        supervisor_email = supervisor.email
-        supervisor_fn = supervisor.fname
-        supervisor_ln = supervisor.fname
-    except Exception:
-        supervisor_email = ""
-        supervisor_fn = "Not"
-        supervisor_ln = "Defined"
+    admins_emails = get_admins_emails()
+    supervisor_dict: Dict = get_supervisor_dict(user)
     user_email = user.email
     msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
             Approving user: {supervisor_fname} {supervisor_lname}\n \
@@ -280,8 +224,8 @@ def send_email_for_vacation_reply(user, data):
             Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
-        supervisor_fname=supervisor_fn,
-        supervisor_lname=supervisor_ln,
+        supervisor_fname=supervisor_dict["fname"],
+        supervisor_lname=supervisor_dict["lname"],
         reason=data["reason"],
         start_date=data["from_date"],
         end_date=data["end_date"],
@@ -297,31 +241,17 @@ def send_email_for_vacation_reply(user, data):
         mail_title,
         msg,
         settings.EMAIL_HOST_USER,
-        [user_email, supervisor_email],
+        [user_email, supervisor_dict["email"]],
         fail_silently=False,
     )
 
 
 @shared_task()
 def send_email_for_hr_letter_reply(user, data):
-    from server.cshr.models.users import USER_TYPE
     from django.core.mail import send_mail
-    from server.cshr.models.users import User
 
-    admins = User.objects.filter(user_type=USER_TYPE.ADMIN)
-    admins_emails = []
-    for admin in admins:
-        admins_emails.append(admin.email)
-
-    try:
-        supervisor = User.objects.get(pk=user.reporting_to.id)
-        supervisor_email = supervisor.email
-        supervisor_fn = supervisor.fname
-        supervisor_ln = supervisor.lname
-    except Exception:
-        supervisor_email = ""
-        supervisor_fn = "Not"
-        supervisor_ln = "Defined"
+    admins_emails = get_admins_emails()
+    supervisor_dict: Dict = get_supervisor_dict(user)
     user_email = user.email
     msg = " Reply information: \n Applying user: {user_fname} {user_lname} \n \
             Approving user: {supervisor_fname} {supervisor_lname} \n \
@@ -329,8 +259,8 @@ def send_email_for_hr_letter_reply(user, data):
             Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
-        supervisor_fname=supervisor_fn,
-        supervisor_lname=supervisor_ln,
+        supervisor_fname=supervisor_dict["fname"],
+        supervisor_lname=supervisor_dict["lname"],
         addresses=data["addresses"],
         status=data["status"],
         request_url="dummyurl.com",
@@ -344,31 +274,17 @@ def send_email_for_hr_letter_reply(user, data):
         mail_title,
         msg,
         settings.EMAIL_HOST_USER,
-        [user_email, supervisor_email],
+        [user_email, supervisor_dict["email"]],
         fail_silently=False,
     )
 
 
 @shared_task()
 def send_email_for_compensation_reply(user, data):
-    from server.cshr.models.users import USER_TYPE
     from django.core.mail import send_mail
-    from server.cshr.models.users import User
 
-    admins = User.objects.filter(user_type=USER_TYPE.ADMIN)
-    admins_emails = []
-    for admin in admins:
-        admins_emails.append(admin.email)
-
-    try:
-        supervisor = User.objects.get(pk=user.reporting_to.id)
-        supervisor_email = supervisor.email
-        supervisor_fn = supervisor.fname
-        supervisor_ln = supervisor.lname
-    except Exception:
-        supervisor_email = ""
-        supervisor_fn = "Not"
-        supervisor_ln = "Defined"
+    admins_emails = get_admins_emails()
+    supervisor_dict: Dict = get_supervisor_dict(user)
     user_email = user.email
     msg = "Reply information: \n Applying user: {user_fname} {user_lname} \n \
             Approving user: {supervisor_fname} {supervisor_lname} \n \
@@ -376,8 +292,8 @@ def send_email_for_compensation_reply(user, data):
             Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
-        supervisor_fname=supervisor_fn,
-        supervisor_lname=supervisor_ln,
+        supervisor_fname=supervisor_dict["fname"],
+        supervisor_lname=supervisor_dict["lname"],
         reason=data["reason"],
         start_date=data["from_date"],
         end_date=data["end_date"],
@@ -393,6 +309,6 @@ def send_email_for_compensation_reply(user, data):
         mail_title,
         msg,
         settings.EMAIL_HOST_USER,
-        [user_email, supervisor_email],
+        [user_email, supervisor_dict["email"]],
         fail_silently=False,
     )
