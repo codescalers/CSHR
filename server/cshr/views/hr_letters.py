@@ -9,7 +9,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-
+from server.cshr.celery.send_email import send_email_for_hr_letter_reply
+from server.cshr.celery.send_email import send_email_for_hr_letter_request
 
 from server.cshr.api.response import CustomResponse
 
@@ -30,6 +31,7 @@ class HrLetterApiView(ViewSet, GenericAPIView):
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
+            send_email_for_hr_letter_request(current_user, serializer.data)
             return CustomResponse.success(
                 data=serializer.data,
                 message="Hr letter is created successfully",
@@ -79,9 +81,10 @@ class HrLetterUpdateApiView(ViewSet, GenericAPIView):
         if hr_letter is None:
             return CustomResponse.not_found(message="Hr Letter not found")
         serializer = self.get_serializer(hr_letter, data=request.data, partial=True)
-        currentUser: User = get_user_by_id(request.user.id)
+        current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
-            serializer.save(approval_user=currentUser)
+            serializer.save(approval_user=current_user)
+            send_email_for_hr_letter_reply(current_user, serializer.data)
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="HR Letter updated"
             )
