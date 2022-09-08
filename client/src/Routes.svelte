@@ -42,7 +42,7 @@
 
 <main>
   <Router>
-    <Route path="/" primary={true}><Calendar {user} /></Route>
+    <Route path="/" primary={false}><Calendar {user} /></Route>
     <Route path="/settings" primary={false}><Settings {user} /></Route>
 
     <Route path="auth/login/" primary={false}><Login /></Route>

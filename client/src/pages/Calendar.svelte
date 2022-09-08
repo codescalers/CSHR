@@ -12,7 +12,7 @@
   <section class="fluid-container mt-5 content" slot="content">
     <div>
       <div
-        class="d-flex flex-column-reverse align-items-sm-center flex-xl-row gap-sm-5 gap-xl-2 content"
+        class="d-flex flex-column-reverse align-items-sm-center flex-xl-row gap-sm-4 gap-xl-1 content"
       >
         <div class="mx-5 mb-5 mb-xl-0">
           <CalendarDetails />

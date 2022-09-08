@@ -1,14 +1,39 @@
-<script>
+<script lang="ts">
+  import type {
+    meetingItemType,
+    eventItemType,
+    vacationItemType,
+    birthDateItemType,
+    calendarItemsType,
+  } from "../../services/axios/home/types";
+
   import Calendar from "./CalendarLayout.svelte";
-  import { createEventDispatcher, onMount } from "svelte";
-  import calendarDataService from "../../services/axios/home/calendarDataService";
+  import { onMount } from "svelte";
+  import calendarDataService from "../../services/axios/home/CalendarDataService";
 
   //export let user;
   export let isLoading = false;
-   onMount(async () => {
-    await calendarDataService.initCalendar();
-  }); 
-  var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  //	The Calendar Component just displays stuff in a row & column. It has no knowledge of dates.
+  //	The items[] below are placed (by you) in a specified row & column of the calendar.
+  //	You need to call findRowCol() to calc the row/col based on each items start date. Each date box has a Date() property.
+  //	And, if an item overlaps rows, then you need to add a 2nd item on the subsequent row.
+  let calendarItems: calendarItemsType = [];
+
+  let items: any[] | undefined;
+  onMount(async () => {
+    isLoading = false;
+    calendarItems = await calendarDataService.initCalendar();
+    console.log("k", calendarItems);
+
+    let [meetings, events, vacations, birthdates] = calendarItems;
+    items = [
+      ...(meetings.meetings as unknown as meetingItemType[]),
+      ...(events.events as unknown as eventItemType[]),
+      ...(vacations.vacations as unknown as vacationItemType[]),
+      ...(birthdates.birthdates as unknown as birthDateItemType[]),
+    ];
+    isLoading = true;
+  });
   let monthNames = [
     "January",
     "February",
@@ -24,31 +49,17 @@
     "December",
   ];
 
-  let headers = [];
+  let headers = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   let now = new Date();
   let year = now.getFullYear(); //	this is the month & year displayed
   let month = now.getMonth();
-  let eventText = "Click an item or date";
-
-  var days = []; //	The days to display in each box
-
-  function randInt(max) {
-    return Math.floor(Math.random() * max) + 1;
-  }
-
-  //	The Calendar Component just displays stuff in a row & column. It has no knowledge of dates.
-  //	The items[] below are placed (by you) in a specified row & column of the calendar.
-  //	You need to call findRowCol() to calc the row/col based on each items start date. Each date box has a Date() property.
-  //	And, if an item overlaps rows, then you need to add a 2nd item on the subsequent row.
-  var items = [];
+  /*   let eventText = "Click an item or date";
+   */
+  var days: any[] | undefined = []; //	The days to display in each box
 
   function initMonthItems() {
-    let y = year;
-    let m = month;
-    let d1 = new Date(y, m, randInt(7) + 7);
-    //let g = await InitCalendar();
-
-    items = [
+    /* 
+       items = [
       {
         id: 1,
         title: "11:00 Task Early in month",
@@ -108,28 +119,31 @@
         len: 1,
         status: "undone",
       },
-    ];
+    ]; */
 
-    //This is where you calc the row/col to put each dated item
-    for (let i of items) {
-      let rc = findRowCol(i.date);
-      if (rc == null) {
-        console.log("didn`t find date for ", i);
-        console.log(i.date);
-        console.log(days);
-        i.startCol = i.startRow = 0;
-      } else {
-        i.startCol = rc.col;
-        i.startRow = rc.row;
+    if (items !== undefined) {
+      //This is where you calc the row/col to put each dated item
+
+      for (let item of items) {
+        let rc = findRowCol(item.date);
+
+        if (rc == null) {
+          console.log("didn`t find date for ", item);
+          console.log(item.date);
+          console.log(days);
+          item.startCol = item.startRow = 0;
+        } else {
+          item.startCol = rc.col;
+          item.startRow = rc.row;
+        }
       }
     }
   }
 
-  $: month, year, initContent();
+  $: items, month, year, initContent();
 
   // choose what date/day gets displayed in each date box.
   function initContent() {
-    headers = dayNames;
     initMonth();
     initMonthItems();
   }
@@ -175,8 +189,12 @@
     }
   }
 
-  function findRowCol(dt) {
-    for (let i = 0; i < days.length; i++) {
+  function findRowCol(dt: {
+    getYear: () => any;
+    getMonth: () => any;
+    getDate: () => any;
+  }) {
+    for (let i = 0; days !== undefined && i < days.length; i++) {
       let d = days[i].date;
       if (
         d.getYear() === dt.getYear() &&
@@ -188,7 +206,7 @@
     return null;
   }
 
-  function itemClick(e) {
+  /*   function itemClick(e) {
     eventText =
       "itemClick " + JSON.stringify(e) + " localtime=" + e.date.toString();
   }
@@ -198,7 +216,7 @@
   }
   function headerClick(e) {
     eventText = "onHheaderClick " + JSON.stringify(e);
-  }
+  } */
   function next() {
     month++;
     if (month == 12) {
@@ -233,22 +251,21 @@
     {days}
     bind:items
     on:onDelete={(event) => {
-      items = items.filter((i) => i.id !== event.detail.id);
-      // todo delete from server
+      if (items != undefined) {
+        items = items.filter((item) => item.id !== event.detail.id);
+      } // TODO: delete from server
     }}
     on:onDone={(event) => {
       // todo update server
-      items = items.reduce((acc, i) => {
-        if (i.id === event.detail.id) {
-          i.done = true;
-        }
-        acc.push(i);
-        return acc;
-      }, []);
+      if (items != undefined) {
+        items = items.map((item) => {
+          if (item.id === event.detail.id) {
+            item.status = "done";
+          }
+          return item;
+        });
+      }
     }}
-    on:dayClick={(e) => dayClick(e.detail)}
-    on:itemClick={(e) => itemClick(e.detail)}
-    on:headerClick={(e) => headerClick(e.detail)}
   />
 </div>
 

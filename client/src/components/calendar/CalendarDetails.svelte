@@ -3,9 +3,10 @@
 
 <div class="container d-flex flex-column gap-5 px-4 my-5">
   <div class="text-left">Details</div>
-  <div><i class="fa-solid fa-cake-candles"></i> Birthday</div>
-  <div><i class="fa-solid fa-house"></i> Days OFF</div>
-  <div><i class="fa-solid fa-list-check"></i> Schedule</div>
+  <div>💼 Meeting</div>
+  <div>🎉 Event</div>
+  <div>🌴 Vacation</div>
+  <div>🎂 Birthday</div>
 </div>
 
 <style>

@@ -20,13 +20,13 @@
 </script>
 
 <div class="calendar">
-  {#each headers as header,i (i)}
+  {#each headers as header, i (i)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
     >
   {/each}
 
-  {#each days as day,i (i) }
+  {#each days as day, i (i)}
     {#if day.enabled}
       <span class="day" on:click={() => dispatch("dayClick", day)}
         >{day.name}</span
@@ -44,12 +44,13 @@
       class="task {item.className}"
       style="grid-column: {item.startCol} / span {item.len};      
       grid-row: {item.startRow};  
-      align-self: {item.isBottom ? 'end' : 'center'};"
+      align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};
+      height:'50rem !important';"
     >
       <div class="container">
         <button
           type="button"
-          class="modal-btn"
+          class="modal-btn m-0 p-0"
           data-bs-toggle="modal"
           data-bs-target={`#modal${item.id}`}
         >
@@ -63,7 +64,7 @@
       {#if item.detailHeader}
         <div class="task-detail">
           <h2>{item.detailHeader}</h2>
-          <p>{item.detailContent}</p>
+          <p>{@html item.detailContent}</p>
         </div>
       {/if}
     </section>
