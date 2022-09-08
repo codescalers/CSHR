@@ -25,7 +25,7 @@ class VacationsApiView(ViewSet, GenericAPIView):
         if serializer.is_valid():
             current_user: User = get_user_by_id(request.user.id)
             serializer.save(
-                type=TYPE_CHOICES.HR_LETTERS,
+                type=TYPE_CHOICES.VACATIONS,
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )

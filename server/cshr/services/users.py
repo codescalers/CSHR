@@ -1,5 +1,6 @@
 """This file will containes everything related to User model."""
 from server.cshr.models.users import User, UserSkills
+
 from django.contrib.auth.hashers import check_password
 from typing import List
 
