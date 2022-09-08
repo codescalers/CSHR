@@ -1,19 +1,12 @@
-FROM node:14-alpine
+FROM node:12 AS build
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY rollup.config.js ./
-COPY package*.json ./
+COPY package.json ./
+COPY yarn.lock ./
+RUN yarn install
+COPY . ./
+RUN yarn run build
 
-RUN npm install
-
-COPY ./src ./src
-COPY ./public ./public
-
-RUN npm run-script build
-
-EXPOSE 8080
-
-ENV HOST=0.0.0.0
-
-CMD [ "npm", "start" ]
+FROM nginx:1.19-alpine
+COPY --from=build /app/public /usr/share/nginx/html
