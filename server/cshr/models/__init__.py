@@ -10,3 +10,4 @@ from .evaluations import *
 from .requests import *
 from .meetings import *
 from .event import *
+from .vacation_balance import *
