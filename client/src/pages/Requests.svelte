@@ -81,10 +81,16 @@
   <section class=" container-fluid mt-5" slot="content">
     <div class="row">
       <h4 class="child  mx-5">All Requests</h4>
-      <table class="table align-middle mb-0 mx-5">
+      <table class="table align-middle mb-0 mx-5 w-100">
+        <colgroup>
+          <col span="1" style="width: 35%;">
+          <col span="1" style="width: 25%;">
+          <col span="1" style="width: 15%;">
+          <col span="1" style="width: 15%; ">
+       </colgroup>
         <thead>
           <tr>
-            <th>Name</th>
+            <th scope="col">Name</th>
             <th>Role</th>
             <th>Date</th>
             <th>Desicion</th>
@@ -118,11 +124,11 @@
                 <p class="text-muted mb-0">{request.time}</p>
               </td>
               <td >
-                <div class="container p-0">
+                <div class="container w-100 p-0">
                   <div class="column">
                     {#if request.status == "Rejected"}
-                    <div class="row row-cols-2 align-items-center">
-                      <div class="col-4">
+                    <div class="row align-items-center">
+                      <div class="col">
                         <button
                           type="button"
                           class="btn btn-danger btn-sm w-100 "
@@ -130,15 +136,15 @@
                         >
               
                       </div>
-                      <div class="col-2 pl-0">
+                      <div class="col pl-0">
                         <button type="button" class="btn p-0"
-                          ><i class="bi bi-three-dots-vertical" /></button
+                          ><i class="bi bi-eye"></i></button
                         >
                       </div>
                     </div>
                     {:else if request.status == "Approved"}
-                    <div class="row row-cols-2 align-items-center">
-                      <div class="col-4">
+                    <div class="row  align-items-center justify-content-start ">
+                      <div class="col">
                         <button
                           type="button"
                           class="btn btn-success btn-sm w-100 "
@@ -146,15 +152,15 @@
                         >
               
                       </div>
-                      <div class="col-2 pl-0">
+                      <div class="col pl-0">
                         <button type="button" class="btn p-0"
-                          ><i class="bi bi-three-dots-vertical" /></button
+                          ><i class="bi bi-eye"></i></button
                         >
                       </div>
                     </div>
                     {:else}
-                    <div class="row row-cols-2 align-items-center">
-                      <div class="col-4">
+                    <div class="row align-items-center">
+                      <div class="col">
                         <button
                           type="button"
                           on:click={approve_btn(request)}
@@ -168,9 +174,9 @@
                             >Reject</button
                           >
                       </div>
-                      <div class="col-2 pl-0">
+                      <div class="col pl-0">
                         <button type="button" class="btn p-0"
-                          ><i class="bi bi-three-dots-vertical" /></button
+                          ><i class="bi bi-eye"></i></button
                         >
                       </div>
                     </div>
