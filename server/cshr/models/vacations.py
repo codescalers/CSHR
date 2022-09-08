@@ -31,3 +31,7 @@ class Vacation(Requests):
 
     def ___str__(self):
         return self.reason
+
+    @property
+    def __name__(self):
+        return "vacations"

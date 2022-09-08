@@ -1,3 +1,4 @@
+import datetime
 from server.cshr.serializers.meetings import MeetingsSerializer
 from server.cshr.models.users import User
 from server.cshr.api.permission import UserIsAuthenticated
@@ -8,6 +9,8 @@ from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from server.cshr.api.response import CustomResponse
+
+from server.cshr.utils.parse_date import CSHRDate
 
 
 class MeetingsApiView(ViewSet, GenericAPIView):
@@ -20,13 +23,17 @@ class MeetingsApiView(ViewSet, GenericAPIView):
         """Method to create a new meeting"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            currentUser: User = get_user_by_id(request.user.id)
-            serializer.save(host_user=currentUser)
-            return CustomResponse.success(
-                data=serializer.data,
-                message="meeting is created successfully",
-                status_code=201,
-            )
+            current_user: User = get_user_by_id(request.user.id)
+            provided_date: CSHRDate = CSHRDate(request.data.get("date"))
+            parsing: datetime.datetime = provided_date.parse()
+            if type(parsing) == datetime.datetime:
+                serializer.save(host_user=current_user, date=parsing)
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="meeting is created successfully",
+                    status_code=201,
+                )
+            return parsing
         return CustomResponse.bad_request(
             error=serializer.errors, message="meeting creation failed"
         )
@@ -61,11 +68,11 @@ class MeetingsApiView(ViewSet, GenericAPIView):
             return CustomResponse.success(message="meeting deleted", status_code=204)
         return CustomResponse.not_found(message="meeting not found", status_code=404)
 
-    def put(self, request: Request, id: str, format=None) -> Response:
+    def put(self, request: Request, id: str) -> Response:
         meeting = get_meeting_by_id(id=id)
         if meeting is None:
             return CustomResponse.not_found(message="meeting not found")
-        serializer = self.get_serializer(meeting, data=request.data, partial=True)
+        serializer = self.get_serializer(meeting, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return CustomResponse.success(

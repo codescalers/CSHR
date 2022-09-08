@@ -10,9 +10,7 @@ DEBUG = config("DJANGO_DEBUG") == "ON"
 
 CELERY_IMPORTS = ("server.cshr.celery.send_email",)
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -95,7 +93,9 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 15,
 }
 
 SIMPLE_JWT = {
@@ -141,7 +141,7 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
