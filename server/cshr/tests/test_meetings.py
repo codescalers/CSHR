@@ -81,7 +81,7 @@ class MeetingsTests(APITestCase):
         url = "/api/meeting/"
         data = {
             "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
             "invited_users": [1, 2],
         }
         self.headers = client.credentials(
@@ -92,7 +92,10 @@ class MeetingsTests(APITestCase):
 
     def test_create_meeting_no_meeting_link(self) -> Meetings:
         url = "/api/meeting/"
-        data = {"date": "2022-08-29T12:26:26.380Z", "invited_users": [1, 2]}
+        data = {
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "invited_users": [1, 2],
+        }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
@@ -103,7 +106,7 @@ class MeetingsTests(APITestCase):
         url = "/api/meeting/"
         data = {
             "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -118,7 +121,7 @@ class MeetingsTests(APITestCase):
         url = "/api/meeting/"
         data = {
             "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
             "invited_users": [1, 2],
         }
         self.headers = client.credentials(
@@ -136,7 +139,7 @@ class MeetingsTests(APITestCase):
         url = "/api/meeting/"
         data = {
             "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
             "invited_users": [1, 2],
         }
         self.headers = client.credentials(
@@ -154,7 +157,7 @@ class MeetingsTests(APITestCase):
         url = "/api/meeting/"
         data = {
             "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
             "invited_users": [1, 2],
         }
         self.headers = client.credentials(
@@ -172,7 +175,7 @@ class MeetingsTests(APITestCase):
         url = "/api/meeting/"
         data = {
             "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
             "invited_users": [1, 2],
         }
         self.headers = client.credentials(
@@ -198,7 +201,7 @@ class MeetingsTests(APITestCase):
         url = "/api/meeting/"
         data = {
             "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
             "invited_users": [1, 2],
         }
         self.headers = client.credentials(
@@ -209,7 +212,7 @@ class MeetingsTests(APITestCase):
         url = "/api/meeting/1/"
         data = {
             "meeting_link": "updated meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
             "invited_users": [1, 2],
         }
         response = client.put(url, data, format="json")
@@ -220,7 +223,7 @@ class MeetingsTests(APITestCase):
         url = "/api/meeting/"
         data = {
             "meeting_link": "meeting link",
-            "date": "2022-08-29T12:26:26.380Z",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
             "invited_users": [1, 2],
         }
         self.headers = client.credentials(
@@ -232,3 +235,17 @@ class MeetingsTests(APITestCase):
         data = {"invited_users": [-1]}
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, 400)
+
+    def test_create_meeting_invalid_date_format(self) -> Meetings:
+        """create meeting with no date"""
+        url = "/api/meeting/"
+        data = {
+            "meeting_link": "meeting link",
+            "date": "2022-08-23:25p0",
+            "invited_users": [1, 2],
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

@@ -12,6 +12,7 @@ from server.cshr.services.compensation import (
     get_all_compensations,
     get_compensation_by_id,
 )
+from server.cshr.celery.send_email import send_email_for_compensation_request
 
 
 class CompensationApiView(ViewSet, GenericAPIView):
@@ -80,6 +81,7 @@ class CompensationApiView(ViewSet, GenericAPIView):
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
+            send_email_for_compensation_request(current_user, serializer.data)
             return CustomResponse.success(
                 data=serializer.data,
                 message="Compensation is created successfully",

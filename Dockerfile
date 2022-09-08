@@ -18,14 +18,6 @@ ENV DJANGO_ENV=${DJANGO_ENV} \
 
 # System deps:
 RUN apt-get update \
-  && apt-get install --no-install-recommends -y \
-    bash \
-    build-essential \
-    curl \
-    gettext \
-    git \
-    libpq-dev \
-    wget \
   # Cleaning cache:
   && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* \
   && pip install "poetry==$POETRY_VERSION" && poetry --version
@@ -42,4 +34,3 @@ COPY . .
 EXPOSE 8000
 
 CMD ["./manage.py", "runserver", "0.0.0.0:8000"]
-

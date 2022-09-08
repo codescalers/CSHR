@@ -29,6 +29,7 @@ class LandingPageVacationsSerializer(ModelSerializer):
     class Meta:
         model = Vacation
         fields = [
+            "id",
             "reason",
             "from_date",
             "end_date",

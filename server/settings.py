@@ -10,10 +10,7 @@ DEBUG = config("DJANGO_DEBUG") == "ON"
 
 CELERY_IMPORTS = ("server.cshr.celery.send_email",)
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    'localhost'
-]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -144,7 +141,7 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
