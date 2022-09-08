@@ -123,7 +123,7 @@ def send_email_for_vacation_request(user, data):
         supervisor_email = supervisor.email
         supervisor_fn = supervisor.fname
         supervisor_ln = supervisor.lname
-    except User.DoesNotExist:
+    except Exception:
         supervisor_email = ""
         supervisor_fn = "Not"
         supervisor_ln = "Defined"
