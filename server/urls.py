@@ -41,6 +41,7 @@ urlpatterns = [
                 path("compensation/", include("server.cshr.routs.compensation")),
                 path("hrletter/", include("server.cshr.routs.hr_letters")),
                 path("vacations/", include("server.cshr.routs.vacations")),
+                path("requests/", include("server.cshr.routs.requests")),
                 path(
                     "company_properties/",
                     include("server.cshr.routs.company_properties"),
