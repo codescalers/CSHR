@@ -22,7 +22,7 @@
 
 <code>selected = {JSON.stringify(selected)}</code>
 <MultiSelect
-  {options}
+  bind:options
   {maxSelect}
   {placeholder}
   bind:selected
