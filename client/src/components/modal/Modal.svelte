@@ -7,7 +7,9 @@
     deleteText: string,
     isDone: boolean,
     doneText: string,
-    isFooter: boolean = true;
+    isFooter: boolean = true,
+    isClose = true,
+    closeText = "Close";
 
   let dispatch = createEventDispatcher();
   function onDelete() {
@@ -40,12 +42,21 @@
       </div>
       <div class="modal-body">
         {body}
-
         <slot name="body" />
         <slot name="form" />
       </div>
       {#if isFooter}
         <div class="modal-footer">
+          {#if isClose}
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+              data-bs-target="#modal"
+            >
+              {closeText}
+            </button>
+          {/if}
           {#if isDelete}
             <button
               class="btn  btn-danger"
@@ -68,14 +79,8 @@
               <i class="fa-solid fa-check" />
             </button>
           {/if}
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-            data-bs-target="#modal"
-          >
-            Ok
-          </button>
+
+          <slot name="submit" />
         </div>
       {/if}
     </div>

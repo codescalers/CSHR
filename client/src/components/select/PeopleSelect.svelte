@@ -10,7 +10,7 @@
   export let removeAllTitle = "Remove all users";
   export let isLoading = false;
   export let isError: boolean | null = null;
-  let options: number[] = [];
+  let options: string[] = [];
 
   onMount(async () => {
     isLoading = true;
@@ -18,7 +18,7 @@
       if ($AllUsersStore.length === 0) {
         const users = (await userDataService.getAll()).data;
         AllUsersStore.set(users);
-        options = users.map((user: UserInterface) => user.id);
+        options = users.map((user: UserInterface) => user.id + "");
       }
     } catch (e) {
       isError = true;

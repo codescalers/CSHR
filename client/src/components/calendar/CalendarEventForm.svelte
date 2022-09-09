@@ -7,9 +7,9 @@
   // if true the disable submit button
   export let datePickerDisabled = false;
   let locationIsError: boolean | null = null;
-  let disabled =
-    (locationIsError !== null || locationIsError === false) &&
-    !datePickerDisabled;
+  let disabled: boolean = false;
+  $: disabled =
+    locationIsError === null || locationIsError === true || datePickerDisabled;
 </script>
 
 <div>
