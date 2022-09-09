@@ -55,6 +55,8 @@ export type vacationItemType = {
   date: Date,
   className: string,
   eventName: eventNameType,
+  isStart: boolean,
+  isBottom: boolean,
 }
 
 export type classType = "task--primary" | "task--info" | "task--success" | "task--warning" | "task--danger" | "task--secondary" | "task--dark" | "task--light";

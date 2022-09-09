@@ -27,9 +27,9 @@
 
     let [meetings, events, vacations, birthdates] = calendarItems;
     items = [
+      ...(vacations.vacations as unknown as vacationItemType[]),
       ...(meetings.meetings as unknown as meetingItemType[]),
       ...(events.events as unknown as eventItemType[]),
-      ...(vacations.vacations as unknown as vacationItemType[]),
       ...(birthdates.birthdates as unknown as birthDateItemType[]),
     ];
     isLoading = true;

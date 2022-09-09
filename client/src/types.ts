@@ -5,8 +5,7 @@ export type requestLabelType = "Vacationa" | "HR Letter" | "Compensation" | "Dan
 
 export interface UserInterface {
     id: number;
-    first_name: string;
-    last_name: string;
+    full_name: string;
     email: string;
     phone_number: string;
     password?: string;
@@ -17,9 +16,6 @@ export interface UserInterface {
 }
 
 export interface SettingsInterface {
-    name: string;
-    email: string;
-    password: string;
     "primary-color": string;
     "secondary-color": string;
 }

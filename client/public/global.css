@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #f1f1f1;
-    --secondary-color: #eee;
+    --primary-color: #2B515F;
+    --secondary-color: #EDF2F9;
     --boxes-shadow: 0px 2px 6px #00000030;
     --text-color: #000;
     --text-muted: #757575;
@@ -11,7 +11,7 @@
     --text-light: #fff;
     --text-dark: #222;
     --border-color: #000;
-    --button-background-color: "green" !important;
+    --button-background-color: #2B515F !important;
     --button-text-color: "green" !important;
 }
 
@@ -89,7 +89,7 @@ body {
     font-size: var(--normal-font-size);
     transition: .5s;
     -webkit-transition: .5s;
-    background: var(--white-color)!important;
+    background: var(--white-color) !important;
 }
 
 body section {

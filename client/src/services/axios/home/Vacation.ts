@@ -27,7 +27,7 @@ class Vacation {
         }
         return {
             id: id,
-            title: "🌴"+eventName,
+            title: "🌴" + eventName,
             reason: event.reason,
             len: 1,
             applying_user: applying_user,
@@ -36,6 +36,9 @@ class Vacation {
             date: date,
             className: "task--warning",
             eventName: eventName,
+            isStart: true,
+            isBottom: false,
+
         }
     }
 }

@@ -4,6 +4,8 @@
   export var headers = [];
   export let days = [];
   export let items = [];
+  let widthItem;
+  $: itemLetters = widthItem / 20;
 
   let dispatch = createEventDispatcher();
   function onDelete(event) {
@@ -19,7 +21,7 @@
   }
 </script>
 
-<div class="calendar">
+<div class="calendar table-responsive">
   {#each headers as header, i (i)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
@@ -40,6 +42,7 @@
 
   {#each items as item (item.id)}
     <section
+      bind:clientWidth={widthItem}
       on:click={() => dispatch("itemClick", item)}
       class="task {item.className}"
       style="grid-column: {item.startCol} / span {item.len};      
@@ -57,7 +60,8 @@
           {#if item.className === "birthday"}
             <i class="fa-solid fa-cake-candles" />
           {/if}
-          {item.title}
+          {(item.title + "").slice(0, itemLetters * item.len) +
+            (itemLetters * item.len >= item.title.length ? "" : "...")}
         </button>
       </div>
 
@@ -189,13 +193,13 @@
   .task--warning {
     font-weight: 500;
   }
-  .task--warning {
+  :global(.task--warning) {
     border-left-color: #fdb44d;
     background: #fef0db;
     color: #fc9b10;
     margin-top: -5px;
   }
-  .task--danger {
+  :global(.task--danger) {
     border-left-color: #fa607e;
     grid-column: 2 / span 3;
     grid-row: 3;
@@ -203,18 +207,18 @@
     background: rgba(253, 197, 208, 0.7);
     color: #f8254e;
   }
-  .task--info {
+  :global(.task--info) {
     margin-top: 15px;
     background: rgba(192, 191, 191, 0.7);
     color: #444;
   }
-  .task--primary {
+  :global(.task--primary) {
     background: #c0d6ff;
     margin-top: 15px;
     color: #0a5eff;
   }
 
-  .task-detail {
+  :global(.task-detail) {
     position: absolute;
     left: 0;
     top: calc(100% + 8px);

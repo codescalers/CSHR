@@ -22,8 +22,8 @@ export default class BirthDate {
             len: 1,
             className: "task--primary",
             eventName: eventName,
-            isStart: true,
-            isBottom: false,
+            isStart: false,
+            isBottom: true,
         }];
     }
 

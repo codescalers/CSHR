@@ -7,8 +7,8 @@ class SettingsApi {
         const settings: SettingsType = {
             name: localStorage.getItem("name"),
             email: localStorage.getItem("email"),
-            "primary-color": localStorage.getItem("primary-color") || "#aaaa",
-            "secondary-color": localStorage.getItem("secondary-color") || "#eee",
+            "primary-color": localStorage.getItem("primary-color") || "#2B515F",
+            "secondary-color": localStorage.getItem("secondary-color") || "#EDF2F9",
         }
         return settings;
     }
@@ -26,7 +26,7 @@ class SettingsApi {
             name: localStorage.getItem("name"),
             email: localStorage.getItem("email"),
             "primary-color": localStorage.getItem("primary-color") || "#aaaa",
-            "secondary-color": localStorage.getItem("secondary-color") || "#eee",
+            "secondary-color": localStorage.getItem("secondary-color") || "#EDF2F9",
         }
         SettingsStore.set(settings);
     }

@@ -1,34 +1,14 @@
 <script lang="ts">
   import Input from "../input/Input.svelte";
+  import Submit from "../submit/Submit.svelte";
+  export let startDate: string;
+  export let endDate: string;
   let locationValue: any;
   let locationIsError: boolean | null;
+  let disabled = true;
 </script>
 
 <div>
-  <!--   <div class="form-group row">
-    <label for="colFormLabel" class="col-sm-4 col-form-label py-3">People</label
-    >
-    <div class="col-sm-8">
-      <input
-        type="text"
-        class="form-control"
-        id="colFormLabel"
-        color="#EDF2F9"
-      />
-    </div>
-  </div> -->
-  <!--     <label for="colFormLabel" class="col-sm-4  col-form-label py-3"
-      >Location</label
-    >
-    <div class="col-sm-8">
-      <input
-        type="text"
-        class="form-control"
-        id="colFormLabel"
-        color="#EDF2F9"
-      />
-    </div>
- -->
   <Input
     type="text"
     label={"Location"}
@@ -42,11 +22,5 @@
     placeholder={"write event location"}
     bind:isError={locationIsError}
   />
+  <Submit label="Submit" onClick={() => {}} {disabled} />
 </div>
-
-<style>
-  input[type="text"] {
-    margin-top: 0.3cm;
-    background-color: #edf2f9;
-  }
-</style>

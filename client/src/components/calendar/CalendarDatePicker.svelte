@@ -1,10 +1,12 @@
 <script lang="ts">
   import DatePicker from "./Datepicker.svelte";
-  export let error_message = "";
+  import Input from "../input/Input.svelte";
+  export let startDate = "2022-03-01";
+  export let endDate = "2022-03-03";
+
+  export let errorMessage = "";
   export let onlyStart = false;
   export let isLoading = false;
-  let startDate = "2022-03-01";
-  let endDate = "2022-03-03";
 
   const locale: {
     en: {
@@ -19,15 +21,16 @@
       start: 0,
     },
   };
-  function validateDate(date: string, error_name: string) {
+  function validateDate(date: string, error_name: string): boolean {
     let check = Date.parse(date);
     if (!check) {
       //it is not a date with format YYYY-MM-DD
       //alert("Date is unvalid");
-      error_message = `${error_name} format is invalid message`;
+      errorMessage = `${error_name} format is invalid message`;
+      return true;
     } else {
-      //alert("date");
-      error_message = "";
+      errorMessage = "";
+      return false;
     }
     //it is a date with format YYYY-MM-DD
   }
@@ -41,7 +44,7 @@
     disabled={isLoading}
     style={` opacity: ${isLoading ? "0.1" : "1"}`}
   >
-    {#if !error_message}
+    {#if !errorMessage}
       <div>
         <DatePicker
           bind:startDate
@@ -52,7 +55,7 @@
       </div>
     {:else}
       <div class="alert alert-danger" role="alert">
-        {error_message}
+        {errorMessage}
       </div>
     {/if}
 
@@ -60,68 +63,37 @@
       <slot name="toggler" />
 
       <div class="my-4 px-3">
-        <div class="form-group row pl-5">
-          <label for="colFormLabel" class="col-sm-4 col-form-label py-3"
-            >{!onlyStart ? "Start " : ""}Date</label
-          >
-          <div class="col-sm-8">
-            <input
-              type="text"
-              bind:value={startDate}
-              class={`form-control ${
-                error_message.charAt(0) === "S"
-                  ? "is-invalid error-border text-danger"
-                  : ""
-              } `}
-              color="#EDF2F9"
-              id="validationServer01"
-              aria-describedby="validationServer01Feedback"
-              required
-            />
-
-            <div id="validationServer01Feedback" class="invalid-feedback">
-              Please provide a valid Start Date with this Format YYYY-MM-DD.
-            </div>
-          </div>
-        </div>
+        <Input
+          label={(!onlyStart ? "Start " : "") + "Date"}
+          bind:value={startDate}
+          type="text"
+          hint={"with this Format YYYY-MM-DD."}
+          errorMessage={"Please provide a valid Start Date"}
+          handleInput={() => {
+            return validateDate(startDate, "Start Date");
+          }}
+          size={20}
+          placeholder={"start date"}
+          isError={errorMessage.charAt(0) === "S"}
+        />
 
         {#if !onlyStart}
-          <div class="form-group row">
-            <label for="colFormLabel" class="col-sm-4 col-form-label py-3"
-              >End Date</label
-            >
-            <div class="col-sm-8">
-              <input
-                bind:value={endDate}
-                type="text"
-                class={`form-control ${
-                  error_message.charAt(0) === "E"
-                    ? "is-invalid error-border text-danger"
-                    : ""
-                } `}
-                color="#EDF2F9"
-                id="validationServer02"
-                aria-describedby="validationServer02Feedback"
-                required
-              />
-              <div id="validationServer02Feedback" class="invalid-feedback">
-                Please provide a valid End Date with this Format YYYY-MM-DD.
-              </div>
-            </div>
-          </div>
+          <Input
+            label="End Date"
+            bind:value={endDate}
+            type="text"
+            hint={"with this Format YYYY-MM-DD."}
+            errorMessage={"Please provide a valid End Date"}
+            handleInput={() => {
+              return validateDate(endDate, "End Date");
+            }}
+            size={20}
+            placeholder={"end date"}
+            isError={errorMessage.charAt(0) === "E"}
+          />
         {/if}
         <slot name="form" />
       </div>
     </div>
   </fieldset>
 </div>
-
-<style>
-  input[type="text"] {
-    margin-top: 0.4cm;
-    background-color: #edf2f9;
-  }
-  .put-left {
-    margin-left: -1.5cm;
-  }
-</style>

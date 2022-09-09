@@ -39,8 +39,8 @@ class Meeting {
             invited_users: meeting.invited_users,
             className: "task--danger",
             eventName: eventName,
-            isStart: false,
-            isBottom: true,
+            isStart: true,
+            isBottom: false,
             ...difficulty
 
 

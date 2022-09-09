@@ -1,13 +1,15 @@
 <script lang="ts">
   import CalendarMeetingForm from "./CalenderMeetingForm.svelte";
   import CalendarEventForm from "./CalendarEventForm.svelte";
+  import CalendarLeaveForm from "./CalendarLeaveForm.svelte";
   import CalendarDatePicker from "./CalendarDatePicker.svelte";
   let formToggle: number = 0;
-  let formDisable = true;
+  let startDate = "2022-03-01";
+  let endDate = "2022-03-03";
 </script>
 
 <div class="container">
-  <CalendarDatePicker onlyStart={formToggle === 1}>
+  <CalendarDatePicker onlyStart={formToggle === 1} bind:startDate bind:endDate>
     <div slot="toggler" class="my-4">
       <div class="options">
         <button
@@ -33,16 +35,16 @@
       </div>
     </div>
     <div slot="form">
+      {#if formToggle === 0}
+        <CalendarLeaveForm bind:startDate bind:endDate />
+      {/if}
       {#if formToggle === 1}
-        <CalendarMeetingForm />
+        <CalendarMeetingForm bind:startDate bind:endDate />
       {/if}
 
       {#if formToggle === 2}
-        <CalendarEventForm />
+        <CalendarEventForm bind:startDate bind:endDate />
       {/if}
-      <button type="button" class="btn submit my-5" disabled={formDisable}
-        >Submit</button
-      >
     </div>
   </CalendarDatePicker>
 </div>
@@ -74,18 +76,5 @@
     background-color: #2b515f;
     color: #eee;
     border-radius: 0.5rem;
-  }
-
-  .submit {
-    margin-top: 0.5cm;
-    font-size: 16px;
-    color: #2b515f;
-    background-color: #eff6ff;
-    width: 100%;
-    border: none;
-  }
-  .submit:hover {
-    background-color: #2b515f;
-    color: #eee;
   }
 </style>

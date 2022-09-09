@@ -1,49 +1,79 @@
 <script lang="ts">
   import userDataService from "../../services/axios/users/UserDataService";
   import { onMount } from "svelte";
+  import { AllUsersStore } from "../../stores";
   import PeopleSlot from "./PeopleSlot.svelte";
   import MultiSelect from "svelte-multiselect";
   export let selected: any[] = [];
-  export let maxSelect: number | null = null;
   export let placeholder = `Select Users`;
   export let removeAllTitle = "Remove all users";
-  let options: any[] = [];
+  let isLoading = false;
+  let isError = false;
+  let options: string[] = [];
+
   onMount(async () => {
-    let { data } = await userDataService.getAll();
-    options = data.map((user: any) => {
-      return {
-        id: user.id,
-        full_name: user.full_name,
-        image: user.image,
-      };
-    });
+    isLoading = true;
+    try {
+      if ($AllUsersStore.length === 0) {
+        const users = (await userDataService.getAll()).data;
+        AllUsersStore.set(users);
+        options = users.map((user: any) => user.full_name);
+      }
+    } catch (e) {
+      isError = true;
+    }
+    isLoading = false;
   });
 </script>
 
-<code>selected = {JSON.stringify(selected)}</code>
-<MultiSelect
-  bind:options
-  {maxSelect}
-  {placeholder}
-  bind:selected
-  outerDivClass="foo"
-  ulSelectedClass="bar"
-  ulOptionsClass="baz"
-  liOptionClass="bam"
-  inputClass="slam"
-  liSelectedClass="hi"
-  liActiveOptionClass="mom"
-  sortSelected={true}
-  autocomplete="on"
-  --sms-border-radius="0.3rem"
-  --sms-bg="#edf2f9"
-  --sms-options-bg="white"
-  --sms-min-height="3rem"
-  --sms-min-width="4rem"
->
-  <PeopleSlot let:option {option} slot="selected" />
-  <PeopleSlot let:option {option} slot="option" />
-</MultiSelect>
+{#if isLoading && !isError}
+  loading...
+{/if}
+{#if isError}
+  error loading users
+{/if}
+{#if !isLoading && !isError}
+  <MultiSelect
+    bind:options
+    bind:selected
+    {placeholder}
+    outerDivClass=""
+    ulSelectedClass="bar"
+    ulOptionsClass="baz"
+    liOptionClass="li-option"
+    inputClass="select-box"
+    liSelectedClass="li-selected"
+    liActiveOptionClass="mom"
+    --sms-border-radius="0.3rem"
+    --sms-options-bg="white"
+    --sms-min-height="2.25rem"
+    --sms-min-width="4rem"
+    --sms-bg="var(--secondary-color)"
+    {removeAllTitle}
+  >
+    <PeopleSlot let:option {option} slot="option" />
+    <PeopleSlot let:option {option} slot="selected" />
+  </MultiSelect>
+{/if}
 
 <!--   https://www.npmjs.com/package/svelte-multiselect -->
+
 <!-- https://svelte-multiselect.netlify.app/#with-css-variables -->
+<style>
+  :global(.li-option:hover) {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+  }
+  :global(.li-selected) {
+    background-color: var(--primary-color) !important;
+    color: var(--secondary-color) !important;
+    width: fit-content !important;
+  }
+  :global(.li-selected img) {
+    display: none;
+  }
+  :global(.select-box) {
+    width: 100%;
+    height: 100%;
+  }
+</style>

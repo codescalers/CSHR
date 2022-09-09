@@ -1,20 +1,40 @@
 <script lang="ts">
-  export let option;
-  const { full_name, image } = option;
+  import { onMount } from "svelte";
+  import { AllUsersStore } from "../../stores";
+
+  export let option: any;
+  let image: string;
+  onMount(() => {
+    image = $AllUsersStore.find((user: any) => user.full_name === option).image;
+  });
+
+  let hidden = false;
+  // default back to visible every time src changes to see if the image loads successfully
+  $: image, (hidden = false);
 </script>
 
-<div class="d-flex flex-column gap-2">
-  <img src={image} alt={full_name + " avatar"} /><span>{full_name}</span>
-</div>
+<span class="option">
+  <img
+    src={image}
+    alt={"user avatar"}
+    {hidden}
+    on:error={() => (hidden = true)}
+  /><span>{option}</span>
+</span>
 
 <style>
   img {
-    width: 1.5rem;
-    height: 1.6rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
-    object-fit: contain;
+    object-fit: cover;
   }
-  span {
+  .option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  span span {
     font-size: 1rem;
     font-weight: 400;
     text-align: right;
