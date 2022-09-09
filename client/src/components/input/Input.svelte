@@ -11,9 +11,11 @@
   export let errorMessage: string;
   export let className: string = "";
   export let hint: string = "";
+  // if true the input is invalid && show error message
+  // if false the input is valid && hide error message
+  /// if null the input is not touched && hide error message
   export let isError: boolean | null = null;
   export let isTop: boolean = true;
-
 
   export let handleInput: (e: any) => boolean;
   // for setting the error function
@@ -21,8 +23,11 @@
     node.type = type;
   };
 </script>
+
 <div class={`form-group row ${className}`}>
-  <label for={id} class={`${isTop?"col-sm-4":""} col-form-label py-3`}>{label}</label>
+  <label for={id} class={`${isTop ? "col-sm-4" : ""} col-form-label py-3`}
+    >{label}</label
+  >
   <div class="col-sm-8">
     <input
       use:ref
@@ -49,7 +54,6 @@
     </div>
     <div {id} class="valid-feedback">Looks good!</div>
   </div>
-  
 </div>
 
 <style>
@@ -57,5 +61,4 @@
     margin-top: 0.3cm;
     background-color: #edf2f9;
   }
-  
 </style>

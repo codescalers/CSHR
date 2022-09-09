@@ -4,8 +4,12 @@
   export let startDate: string;
   export let endDate: string;
   let locationValue: any;
-  let locationIsError: boolean | null;
-  let disabled = true;
+  // if true the disable submit button
+  export let datePickerDisabled = false;
+  let locationIsError: boolean | null = null;
+  let disabled =
+    (locationIsError !== null || locationIsError === false) &&
+    !datePickerDisabled;
 </script>
 
 <div>
@@ -14,7 +18,7 @@
     label={"Location"}
     bind:value={locationValue}
     handleInput={() => {
-      return true;
+      return false;
     }}
     size={20}
     errorMessage="location is invalid"

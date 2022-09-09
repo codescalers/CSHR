@@ -10,6 +10,7 @@ export interface UserInterface {
     phone_number: string;
     password?: string;
     role: string;
+    image: string;
     CreatedAt?: string;
     UpdatedAt?: string;
     DeletedAt?: string;

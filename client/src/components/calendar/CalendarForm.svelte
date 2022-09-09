@@ -6,10 +6,16 @@
   let formToggle: number = 0;
   let startDate = "2022-03-01";
   let endDate = "2022-03-03";
+  let datePickerDisabled = false;
 </script>
 
 <div class="container">
-  <CalendarDatePicker onlyStart={formToggle === 1} bind:startDate bind:endDate>
+  <CalendarDatePicker
+    onlyStart={formToggle === 1}
+    bind:startDate
+    bind:endDate
+    bind:datePickerDisabled
+  >
     <div slot="toggler" class="my-4">
       <div class="options">
         <button
@@ -36,14 +42,26 @@
     </div>
     <div slot="form">
       {#if formToggle === 0}
-        <CalendarLeaveForm bind:startDate bind:endDate />
+        <CalendarLeaveForm
+          bind:startDate
+          bind:endDate
+          bind:datePickerDisabled
+        />
       {/if}
       {#if formToggle === 1}
-        <CalendarMeetingForm bind:startDate bind:endDate />
+        <CalendarMeetingForm
+          bind:startDate
+          bind:endDate
+          bind:datePickerDisabled
+        />
       {/if}
 
       {#if formToggle === 2}
-        <CalendarEventForm bind:startDate bind:endDate />
+        <CalendarEventForm
+          bind:startDate
+          bind:endDate
+          bind:datePickerDisabled
+        />
       {/if}
     </div>
   </CalendarDatePicker>

@@ -1,15 +1,16 @@
 <script lang="ts">
+  import type { UserInterface } from "../../types";
   import userDataService from "../../services/axios/users/UserDataService";
   import { onMount } from "svelte";
   import { AllUsersStore } from "../../stores";
   import PeopleSlot from "./PeopleSlot.svelte";
   import MultiSelect from "svelte-multiselect";
-  export let selected: any[] = [];
+  export let selected: number[] = [];
   export let placeholder = `Select Users`;
   export let removeAllTitle = "Remove all users";
-  let isLoading = false;
-  let isError = false;
-  let options: string[] = [];
+  export let isLoading = false;
+  export let isError: boolean | null = null;
+  let options: number[] = [];
 
   onMount(async () => {
     isLoading = true;
@@ -17,7 +18,7 @@
       if ($AllUsersStore.length === 0) {
         const users = (await userDataService.getAll()).data;
         AllUsersStore.set(users);
-        options = users.map((user: any) => user.full_name);
+        options = users.map((user: UserInterface) => user.id);
       }
     } catch (e) {
       isError = true;

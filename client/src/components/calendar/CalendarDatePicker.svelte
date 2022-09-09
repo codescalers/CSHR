@@ -3,10 +3,10 @@
   import Input from "../input/Input.svelte";
   export let startDate = "2022-03-01";
   export let endDate = "2022-03-03";
-
   export let errorMessage = "";
   export let onlyStart = false;
   export let isLoading = false;
+  export let datePickerDisabled = true;
 
   const locale: {
     en: {
@@ -25,11 +25,12 @@
     let check = Date.parse(date);
     if (!check) {
       //it is not a date with format YYYY-MM-DD
-      //alert("Date is unvalid");
       errorMessage = `${error_name} format is invalid message`;
+      datePickerDisabled = true;
       return true;
     } else {
       errorMessage = "";
+      datePickerDisabled = false;
       return false;
     }
     //it is a date with format YYYY-MM-DD

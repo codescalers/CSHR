@@ -1,11 +1,22 @@
 <script lang="ts">
+  import type { UserInterface } from "../../types";
+
   import { onMount } from "svelte";
   import { AllUsersStore } from "../../stores";
 
-  export let option: any;
+  export let option: string;
   let image: string;
+  let full_name: string;
   onMount(() => {
-    image = $AllUsersStore.find((user: any) => user.full_name === option).image;
+    if ($AllUsersStore.length > 0) {
+      const user = $AllUsersStore.find(
+        (user: UserInterface) => user.id === Number(option)
+      );
+      if (user) {
+        image = user.image;
+        full_name = user.full_name;
+      }
+    }
   });
 
   let hidden = false;
@@ -19,7 +30,7 @@
     alt={"user avatar"}
     {hidden}
     on:error={() => (hidden = true)}
-  /><span>{option}</span>
+  /><span>{full_name}</span>
 </span>
 
 <style>

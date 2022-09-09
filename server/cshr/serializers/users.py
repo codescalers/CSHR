@@ -39,6 +39,7 @@ class GeneralUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = [
+            "id",
             "email",
             "full_name",
             "image",

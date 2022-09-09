@@ -5,11 +5,22 @@
   export let startDate: string;
   export let endDate: string;
 
+  // if true the disable submit button
+  export let datePickerDisabled: boolean = false;
+
+  let meetingLocationIsError: boolean | null = null;
+  let meetingPeopleIsError: boolean | null = null;
   let meetingLocationValue: string;
-  let meetingLocationIsError: boolean | null;
-  let disabled = true;
-  export let isLoading = false;
-  export let isError = false;
+
+  export let isLoading: boolean = false;
+  export let isError: boolean | null = false;
+
+  let disabled: boolean = true;
+  $: disabled =
+    (meetingLocationIsError === null || meetingLocationIsError === true) ||
+    (meetingPeopleIsError === null || meetingPeopleIsError === true) ||
+    datePickerDisabled;
+
 </script>
 
 <form>
@@ -17,7 +28,7 @@
     <label for="colFormLabel" class="col-sm-4 col-form-label py-3">People</label
     >
     <div class="col-sm-8">
-      <PeopleSelect />
+      <PeopleSelect bind:isError={meetingPeopleIsError} />
     </div>
   </div>
   <Input
