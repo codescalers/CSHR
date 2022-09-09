@@ -9,7 +9,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-
+from server.cshr.celery.send_email import send_email_for_vacation_reply
+from server.cshr.celery.send_email import send_email_for_vacation_request
 from server.cshr.api.response import CustomResponse
 
 
@@ -25,10 +26,11 @@ class VacationsApiView(ViewSet, GenericAPIView):
         if serializer.is_valid():
             current_user: User = get_user_by_id(request.user.id)
             serializer.save(
-                type=TYPE_CHOICES.HR_LETTERS,
+                type=TYPE_CHOICES.VACATIONS,
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
+            send_email_for_vacation_request(current_user, serializer.data)
             return CustomResponse.success(
                 data=serializer.data,
                 message="vacation request is created successfully",
@@ -81,6 +83,7 @@ class VacationsUpdateApiView(ViewSet, GenericAPIView):
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
+            send_email_for_vacation_reply(current_user, serializer.data)
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="vacation updated"
             )

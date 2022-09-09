@@ -84,6 +84,7 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -97,6 +98,7 @@ class EventTests(APITestCase):
             "name": "test event",
             "description": "our first test event",
             "people": [1, 2],
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -111,6 +113,7 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [],
             "location": "Cairo Egypt",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -127,6 +130,7 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -146,6 +150,7 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -165,6 +170,7 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -177,19 +183,6 @@ class EventTests(APITestCase):
 
     def test_delete_invalid_event(self) -> Event:
         """test to delete invalid event"""
-        """add evvent"""
-        url = "/api/event/"
-        data = {
-            "name": "test event",
-            "description": "our first test event",
-            "people": [1, 2],
-            "location": "Cairo Egypt",
-        }
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
-        )
-        response = client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/event/10/"
         response = client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -211,6 +204,7 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -228,8 +222,9 @@ class EventTests(APITestCase):
         data = {
             "name": "test event",
             "description": "our first test event",
-            "people": [1, 2],
             "location": "Cairo Egypt",
+            "people": [1],
+            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -237,8 +232,23 @@ class EventTests(APITestCase):
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/event/1/"
-        data = {
-            "people": [-1, 1],
-        }
+        data["people"] = [-50]
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, 400)
+
+    def test_create_event_invalid_date_format(self) -> Event:
+        """create event with no date"""
+        url = "/api/event/"
+        data = {
+            "name": "Shelby Austin",
+            "description": "Eius odio recusandae Ipsa consectetur vitae culpa aliquid veniam reiciendis numquam \
+                sed quae aut iusto rerum vel nihil neque et",
+            "location": "Deserunt amet aut saepe autem id eveniet non aliquip voluptas minima cupiditate nostrud hic ea",
+            "date": "2022-08-23ds",
+            "people": [1],
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
