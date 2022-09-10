@@ -28,6 +28,7 @@ class LandingPageHrLetterSerializer(ModelSerializer):
     class Meta:
         model = HrLetters
         fields = [
+            "id",
             "addresses",
             "status",
             "applying_user",
