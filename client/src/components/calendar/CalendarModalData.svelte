@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CalendarBirthdayModel from "./CalendarBirthdayDataModel.svelte";
+  import CalendarBirthdayModel from "./CalendarBirthdayDataModal.svelte";
   export let item: any;
   let birthDayFlag = (item.title + "").includes("🎂");
   let meetingFlag = (item.title + "").includes("💼");
