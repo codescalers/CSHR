@@ -20,6 +20,7 @@ class GeneralViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Male",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -52,6 +53,7 @@ class GeneralViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Male",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -85,6 +87,7 @@ class GeneralViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Male",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
@@ -225,6 +228,7 @@ class SupervisorViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Female",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -257,6 +261,7 @@ class SupervisorViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Male",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -290,6 +295,7 @@ class SupervisorViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Female",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
@@ -460,6 +466,7 @@ class AdminViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Female",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -492,6 +499,7 @@ class AdminViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Female",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -525,6 +533,7 @@ class AdminViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Female",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
@@ -795,6 +804,7 @@ class SelfViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Female",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -827,6 +837,7 @@ class SelfViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Male",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -860,6 +871,7 @@ class SelfViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Female",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
