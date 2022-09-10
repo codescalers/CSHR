@@ -24,6 +24,7 @@ class LandingPageCompensationSerializer(ModelSerializer):
     class Meta:
         model = Compensation
         fields = [
+            "id",
             "reason",
             "from_date",
             "end_date",
