@@ -40,8 +40,10 @@ class GeneralUserSerializer(ModelSerializer):
         model = User
         fields = [
             "id",
-            "email",
             "full_name",
+            "email",
+            "gender",
+            "team",
             "image",
             "telegram_link",
             "birthday",

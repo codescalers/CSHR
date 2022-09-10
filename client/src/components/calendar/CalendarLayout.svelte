@@ -1,34 +1,31 @@
-<script>
+<script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
+  import CalendarModalData from "./CalendarModalData.svelte";
   import Modal from "../modal/Modal.svelte";
-  export var headers = [];
-  export let days = [];
-  export let items = [];
-  let widthItem;
+  export var headers: string[] = [];
+  export let days: any[] = [];
+  export let items: any[] = [];
+
+  let widthItem: number;
   $: itemLetters = widthItem / 20;
 
   let dispatch = createEventDispatcher();
-  function onDelete(event) {
-    const flag = confirm("Are you sure you want to delete this item?");
-    if (flag) {
-      dispatch("onDelete", { id: event.detail.id });
-    }
+  function onDelete(event: { detail: { id: any } }) {
+    dispatch("onDelete", { id: event.detail.id });
   }
-  function onDone(event) {
-    if (flag) {
-      dispatch("onDone", { id: event.detail.id });
-    }
+  function onDone(event: { detail: { id: any } }) {
+    dispatch("onDone", { id: event.detail.id });
   }
 </script>
 
 <div class="calendar table-responsive">
-  {#each headers as header, i (i)}
+  {#each headers as header, index (index)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
     >
   {/each}
 
-  {#each days as day, i (i)}
+  {#each days as day, index (index)}
     {#if day.enabled}
       <span class="day" on:click={() => dispatch("dayClick", day)}
         >{day.name}</span
@@ -73,7 +70,7 @@
       {/if}
     </section>
 
-    <Modal
+ <!--    <Modal
       bind:title={item.title}
       bind:body={item.description}
       bind:id={item.id}
@@ -83,7 +80,13 @@
       on:onDelete={onDelete}
       on:onDone={onDone}
       deleteText={"Delete"}
-      footer={"footer"}
+      isFooter={true}
+    /> -->
+    <CalendarModalData
+      bind:item={item}
+      on:onDelete={onDelete}
+      on:onDelete={onDelete}
+      on:onDone={onDone}
     />
   {/each}
 </div>
