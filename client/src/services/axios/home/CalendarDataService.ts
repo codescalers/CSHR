@@ -15,7 +15,7 @@ class CalendarDataService {
             throw new Error(`Error while fetching Calendar data ${error}`);
         }
     }
-    public async postMeeting(hostedUserID,invitedUsers: string[], date: Date, title: string, meetingLink: string) {
+    public async postMeeting(hostedUserID:number,invitedUsers: string[], date: Date, title: string, meetingLink: string) {
         try {
             return await (await http.post('/home/meeting', { invited_users: invitedUsers, date, title, meeting_link: meetingLink })).data;
         }
