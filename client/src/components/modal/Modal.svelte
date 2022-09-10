@@ -1,8 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  export let title: string,
-    id: number,
-    body: string,
+  export let id: number,
     isDelete: boolean,
     deleteText: string,
     isDone: boolean,
@@ -32,7 +30,8 @@
   >
     <div class="modal-content">
       <div class="modal-header">
-        {title}
+        <slot name="header" />
+
         <button
           class="btn-close"
           data-bs-dismiss="modal"
@@ -41,7 +40,6 @@
         />
       </div>
       <div class="modal-body">
-        {body}
         <slot name="body" />
         <slot name="form" />
       </div>
@@ -81,6 +79,7 @@
           {/if}
 
           <slot name="submit" />
+          <slot name="footer" />
         </div>
       {/if}
     </div>

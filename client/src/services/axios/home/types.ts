@@ -1,9 +1,17 @@
 export type eventNameType = "birthdates" | "vacations" | "events" | "meetings" | "others";
-
+export type dateType = {
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  minute: number;
+}
 export type userType = {
   full_name: string,
   email: string,
   image: string,
+  team: string,
+  gender: string,
 
 }
 export type birthDateItemType = {
@@ -24,6 +32,7 @@ export type meetingItemType = {
   meeting_link: string,
   invited_users: userType[],
   date: Date,
+  parsedDate: dateType,
   className: string,
   eventName: eventNameType,
   isStart: boolean,

@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import CalendarModalData from "./CalendarModalData.svelte";
-  import Modal from "../modal/Modal.svelte";
   export var headers: string[] = [];
   export let days: any[] = [];
   export let items: any[] = [];
@@ -70,7 +69,7 @@
       {/if}
     </section>
 
- <!--    <Modal
+    <!--    <Modal
       bind:title={item.title}
       bind:body={item.description}
       bind:id={item.id}
@@ -83,7 +82,7 @@
       isFooter={true}
     /> -->
     <CalendarModalData
-      bind:item={item}
+      bind:item
       on:onDelete={onDelete}
       on:onDelete={onDelete}
       on:onDone={onDone}
@@ -231,7 +230,7 @@
     padding: 20px;
     box-sizing: border-box;
     border-radius: 14px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.08);
     z-index: 2;
   }
   .task-detail:after,

@@ -10,7 +10,7 @@ export default class BirthDate {
         let users: userType[] = [];
         for (const event of events) {
             user = {
-                full_name: event["full_name"], email: event["email"], image: event["image"]
+                full_name: event["full_name"], email: event["email"], image: event["image"],team:event["team"],gender:event["gender"]
             }
             users = [...users, user];
         }
@@ -22,8 +22,8 @@ export default class BirthDate {
             len: 1,
             className: "task--primary",
             eventName: eventName,
-            isStart: false,
-            isBottom: true,
+            isStart: true,
+            isBottom: false,
         }];
     }
 
