@@ -8,7 +8,7 @@ from rest_framework_simplejwt.state import token_backend
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework import exceptions
 from django.contrib.auth.hashers import check_password
-from typing import Dict, Any
+from typing import Dict, Any, List
 from server.cshr.models.users import User
 from server.cshr.services.users import get_user_by_email, get_user_by_id
 
@@ -102,8 +102,11 @@ class RegisterSerializer(ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop("password", None)
+        reporting_to = validated_data.pop("reporting_to", None)
         instance = self.Meta.model(**validated_data)
         if password is not None:
             instance.set_password(password)
         instance.save()
+        for user in reporting_to:
+            instance.reporting_to.add(user)
         return instance
