@@ -35,3 +35,11 @@ export interface RequestInterface {
 }
 
 
+export type OfficeInterface = {
+    id: number,
+    name: string,
+    country: string,
+}
+
+
+
