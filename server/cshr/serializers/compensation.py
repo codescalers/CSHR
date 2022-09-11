@@ -15,6 +15,12 @@ class CompensationSerializer(ModelSerializer):
         read_only_fields = ("applying_user", "approval_user", "type", "status")
 
 
+class CompensationUpdateSerializer(ModelSerializer):
+    class Meta:
+        model = Compensation
+        exclude = ("approval_user",)
+
+
 class LandingPageCompensationSerializer(ModelSerializer):
     """Implemented to return just custom compensation fields to landing page endpoint."""
 

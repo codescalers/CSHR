@@ -15,7 +15,7 @@ from typing import Any, List, Dict, Union
 from itertools import chain
 
 
-def landinf_page_caliender_functionalty(month: str, year: str):
+def landing_page_calendar_functionality(month: str, year: str):
     """
     This function will filter all of events based on its yesr, month.
     """

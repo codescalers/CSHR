@@ -1,6 +1,6 @@
 import http from "../http-common";
 import itemHandler from "./ItemHandler"
-import type { eventNameType, meetingItemType, eventItemType, vacationItemType, birthDateItemType,userType } from "./types"
+import type { eventNameType, meetingItemType, eventItemType, vacationItemType, birthDateItemType, userType } from "./types"
 
 
 class CalendarDataService {
@@ -15,9 +15,9 @@ class CalendarDataService {
             throw new Error(`Error while fetching Calendar data ${error}`);
         }
     }
-    public async postMeeting(invited_users: userType[], date: Date, title: string, description: string) {
+    public async postMeeting(hostedUserID:number,invitedUsers: string[], date: Date, title: string, meetingLink: string) {
         try {
-            return await (await http.post('/home/meeting', { invited_users, date, title, description })).data;
+            return await (await http.post('/home/meeting', { invited_users: invitedUsers, date, title, meeting_link: meetingLink })).data;
         }
         catch (error) {
             throw new Error(`Error while posting meeting data ${error}`);
@@ -32,7 +32,6 @@ class CalendarDataService {
 
         console.log("today", month + 1, year)
         const { data } = (await this.getByMonthYearAPI(month + 1, year));
-        console.log("datam", data["6"]);
 
         let meetings: meetingItemType[] = [];
         let events: eventItemType[] = [];
@@ -83,7 +82,7 @@ class CalendarDataService {
             case "meetings":
                 return "task--primary";
             case "vacations":
-                return "task--info";               
+                return "task--info";
             case "birthdates":
                 return " .task--warning";
             default:

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { UserInterface } from "../types";
   import Input from "../components/input/Input.svelte";
+  import StackedImages from "../components/image/StackedImages.svelte";
   import Select from "../components/select/PeopleSelect.svelte";
   export let user: UserInterface;
 
@@ -28,6 +29,7 @@
       bind:isError
     />
 
+    <StackedImages />
     <Select />
   </section>
 </Sidebar>

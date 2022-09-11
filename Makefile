@@ -20,6 +20,5 @@ user:
 	
 
 
-
 user:
 	$(CMD) python3 manage.py createsuperuser

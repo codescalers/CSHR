@@ -5,21 +5,19 @@ export type requestLabelType = "Vacationa" | "HR Letter" | "Compensation" | "Dan
 
 export interface UserInterface {
     id: number;
-    first_name: string;
-    last_name: string;
+    full_name: string;
     email: string;
     phone_number: string;
+    team: string;
     password?: string;
     role: string;
+    image: string;
     CreatedAt?: string;
     UpdatedAt?: string;
     DeletedAt?: string;
 }
 
 export interface SettingsInterface {
-    name: string;
-    email: string;
-    password: string;
     "primary-color": string;
     "secondary-color": string;
 }
@@ -35,5 +33,13 @@ export interface RequestInterface {
     status: requestStatusType;
     created_at: string;
 }
+
+
+export type OfficeInterface = {
+    id: number,
+    name: string,
+    country: string,
+}
+
 
 

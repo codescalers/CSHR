@@ -33,11 +33,11 @@
         email: settingsInputData[1] + "",
         "primary-color":
           settingsInputData[2] === undefined
-            ? "#aaaa"
+            ? "#2B515F"
             : settingsInputData[2] + "",
         "secondary-color":
           settingsInputData[3] === undefined
-            ? "#eee"
+            ? "#EDF2F9"
             : settingsInputData[3] + "",
         "background-image":
           settingsInputData[4] === undefined

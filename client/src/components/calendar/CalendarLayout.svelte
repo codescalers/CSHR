@@ -1,32 +1,30 @@
-<script>
-  import { createEventDispatcher, onMount } from "svelte";
-  import Modal from "../modal/Modal.svelte";
-  export var headers = [];
-  export let days = [];
-  export let items = [];
+<script lang="ts">
+  import { createEventDispatcher } from "svelte";
+  import CalendarModalData from "./CalendarModalData.svelte";
+  export var headers: string[] = [];
+  export let days: any[] = [];
+  export let items: any[] = [];
+
+  let widthItem: number;
+  $: itemLetters = Math.ceil(widthItem / 14);
 
   let dispatch = createEventDispatcher();
-  function onDelete(event) {
-    const flag = confirm("Are you sure you want to delete this item?");
-    if (flag) {
-      dispatch("onDelete", { id: event.detail.id });
-    }
+  function onDelete(event: { detail: { id: any } }) {
+    dispatch("onDelete", { id: event.detail.id });
   }
-  function onDone(event) {
-    if (flag) {
-      dispatch("onDone", { id: event.detail.id });
-    }
+  function onDone(event: { detail: { id: any } }) {
+    dispatch("onDone", { id: event.detail.id });
   }
 </script>
 
-<div class="calendar">
-  {#each headers as header, i (i)}
+<div class="calendar table-responsive">
+  {#each headers as header, index (index)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
     >
   {/each}
 
-  {#each days as day, i (i)}
+  {#each days as day, index (index)}
     {#if day.enabled}
       <span class="day" on:click={() => dispatch("dayClick", day)}
         >{day.name}</span
@@ -40,6 +38,7 @@
 
   {#each items as item (item.id)}
     <section
+      bind:clientWidth={widthItem}
       on:click={() => dispatch("itemClick", item)}
       class="task {item.className}"
       style="grid-column: {item.startCol} / span {item.len};      
@@ -47,19 +46,16 @@
       align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};
       height:'50rem !important';"
     >
-      <div class="container">
-        <button
-          type="button"
-          class="modal-btn m-0 p-0"
-          data-bs-toggle="modal"
-          data-bs-target={`#modal${item.id}`}
-        >
-          {#if item.className === "birthday"}
-            <i class="fa-solid fa-cake-candles" />
-          {/if}
-          {item.title}
-        </button>
-      </div>
+      <button
+        type="button"
+        class="modal-btn m-0 pl-0 "
+        style="text-align: left;"
+        data-bs-toggle="modal"
+        data-bs-target={`#modal${item.id}`}
+      >
+        {(item.title + "").slice(0, itemLetters * item.len) +
+          (itemLetters * item.len >= item.title.length ? "" : "...")}
+      </button>
 
       {#if item.detailHeader}
         <div class="task-detail">
@@ -69,7 +65,7 @@
       {/if}
     </section>
 
-    <Modal
+    <!--    <Modal
       bind:title={item.title}
       bind:body={item.description}
       bind:id={item.id}
@@ -79,7 +75,13 @@
       on:onDelete={onDelete}
       on:onDone={onDone}
       deleteText={"Delete"}
-      footer={"footer"}
+      isFooter={true}
+    /> -->
+    <CalendarModalData
+      bind:item
+      on:onDelete={onDelete}
+      on:onDelete={onDelete}
+      on:onDone={onDone}
     />
   {/each}
 </div>
@@ -179,6 +181,7 @@
     align-self: center;
     z-index: 2;
     border-radius: 15px;
+    text-align: left;
   }
   .task:hover {
     filter: brightness(95%);
@@ -189,32 +192,28 @@
   .task--warning {
     font-weight: 500;
   }
-  .task--warning {
+  :global(.task--warning) {
     border-left-color: #fdb44d;
     background: #fef0db;
     color: #fc9b10;
-    margin-top: -5px;
   }
-  .task--danger {
+  :global(.task--danger) {
     border-left-color: #fa607e;
     grid-column: 2 / span 3;
     grid-row: 3;
-    margin-top: 15px;
     background: rgba(253, 197, 208, 0.7);
     color: #f8254e;
   }
-  .task--info {
-    margin-top: 15px;
+  :global(.task--info) {
     background: rgba(192, 191, 191, 0.7);
     color: #444;
   }
-  .task--primary {
+  :global(.task--primary) {
     background: #c0d6ff;
-    margin-top: 15px;
     color: #0a5eff;
   }
 
-  .task-detail {
+  :global(.task-detail) {
     position: absolute;
     left: 0;
     top: calc(100% + 8px);
@@ -224,8 +223,8 @@
     padding: 20px;
     box-sizing: border-box;
     border-radius: 14px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-    z-index: 2;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.08);
+    z-index: -1;
   }
   .task-detail:after,
   .task-detail:before {

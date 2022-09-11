@@ -1,19 +1,23 @@
 <script lang="ts">
   import { v4 as uuidv4 } from "uuid";
 
-  export let type: "email" | "text" | "password" | "number" | "url" = "text";
+  export let type: "time" | "email" | "text" | "password" | "number" | "url" =
+    "text";
   export let id: string = uuidv4(); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
   export let value: any;
   export let name: string = id;
   export let size: number = 255;
   export let label: string = "label";
   export let placeholder: string;
-  export let errorMessage: string;
   export let className: string = "";
+  export let correctMessage: string = "";
+  export let errorMessage: string;
   export let hint: string = "";
+  // if true the input is invalid && show error message
+  // if false the input is valid && hide error message
+  /// if null the input is not touched && hide error message
   export let isError: boolean | null = null;
   export let isTop: boolean = true;
-
 
   export let handleInput: (e: any) => boolean;
   // for setting the error function
@@ -21,8 +25,11 @@
     node.type = type;
   };
 </script>
+
 <div class={`form-group row ${className}`}>
-  <label for={id} class={`${isTop?"col-sm-4":""} col-form-label py-3`}>{label}</label>
+  <label for={id} class={`${isTop ? "col-sm-4" : ""} col-form-label py-3`}
+    >{label}</label
+  >
   <div class="col-sm-8">
     <input
       use:ref
@@ -47,15 +54,13 @@
     <div {id} class="invalid-feedback ">
       <span class="alert-link">{errorMessage}</span> , {hint}
     </div>
-    <div {id} class="valid-feedback">Looks good!</div>
+    <div {id} class="valid-feedback">{correctMessage}</div>
   </div>
-  
 </div>
 
 <style>
   input {
     margin-top: 0.3cm;
-    background-color: #edf2f9;
+    background-color: var(--secondary-color);
   }
-  
 </style>

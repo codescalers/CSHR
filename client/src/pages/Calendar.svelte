@@ -14,7 +14,7 @@
       <div
         class="d-flex flex-column-reverse align-items-sm-center flex-xl-row gap-sm-4 gap-xl-1 content"
       >
-        <div class="mx-5 mb-5 mb-xl-0">
+        <div class="mb-5 mb-xl-0 d-flex flex-lg-column flex-row-reverse mx-5 ">
           <CalendarDetails />
           <CalendarEventForm />
         </div>

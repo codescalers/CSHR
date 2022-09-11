@@ -1,9 +1,17 @@
 export type eventNameType = "birthdates" | "vacations" | "events" | "meetings" | "others";
-
+export type dateType = {
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  minute: number;
+}
 export type userType = {
   full_name: string,
   email: string,
   image: string,
+  team: string,
+  gender: string,
 
 }
 export type birthDateItemType = {
@@ -23,7 +31,9 @@ export type meetingItemType = {
   len: number,
   meeting_link: string,
   invited_users: userType[],
+  host_user: userType,
   date: Date,
+  parsedDate: dateType,
   className: string,
   eventName: eventNameType,
   isStart: boolean,
@@ -55,6 +65,8 @@ export type vacationItemType = {
   date: Date,
   className: string,
   eventName: eventNameType,
+  isStart: boolean,
+  isBottom: boolean,
 }
 
 export type classType = "task--primary" | "task--info" | "task--success" | "task--warning" | "task--danger" | "task--secondary" | "task--dark" | "task--light";

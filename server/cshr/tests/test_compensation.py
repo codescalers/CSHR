@@ -151,16 +151,56 @@ class CompensationTests(APITestCase):
         response = client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_update_compensation(self) -> Compensation:
-        """update compensation"""
+    def test_update_compensation_request(self) -> Compensation:
+        """add compensation request"""
         url = "/api/compensation/"
-        data = {"reason": "string", "from_date": "2022-08-24", "end_date": "2022-08-24"}
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/compensation/1/"
-        data = {"user": 1}
+        url = "/api/compensation/edit/1/"
+        data = {"applying_user": 1}
+        response = client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 202)
+
+    def test_update_compensation_request_not_authorized(self) -> Compensation:
+        """add compensation request"""
+        url = "/api/compensation/"
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+        }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/compensation/edit/1/"
+        data = {"applying_user": 1}
         response = client.put(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, 403)
+
+    def test_update_compensation_request_invalid_user_id(self) -> Compensation:
+        """add compensation request"""
+        url = "/api/compensation/"
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/compensation/edit/1/"
+        data = {"applying_user": -1}
+        response = client.put(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
