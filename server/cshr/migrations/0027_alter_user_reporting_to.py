@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0026_remove_user_reporting_to_user_reporting_to'),
+        ("cshr", "0026_remove_user_reporting_to_user_reporting_to"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='reporting_to',
+            model_name="user",
+            name="reporting_to",
             field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
         ),
     ]

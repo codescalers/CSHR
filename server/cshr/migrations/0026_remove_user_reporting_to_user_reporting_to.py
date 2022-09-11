@@ -7,17 +7,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0025_event_date'),
+        ("cshr", "0025_event_date"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='user',
-            name='reporting_to',
+            model_name="user",
+            name="reporting_to",
         ),
         migrations.AddField(
-            model_name='user',
-            name='reporting_to',
+            model_name="user",
+            name="reporting_to",
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL),
         ),
     ]

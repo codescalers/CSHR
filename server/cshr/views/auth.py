@@ -23,33 +23,33 @@ class RegisterApiView(GenericAPIView):
         """Method to register a new user"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            first_name = serializer.validated_data['first_name']
-            last_name = serializer.validated_data['last_name']
-            email = serializer.validated_data['email']
-            mobile_number = serializer.validated_data['mobile_number']
-            telegram_link = serializer.validated_data['telegram_link']
-            birthday = serializer.validated_data['birthday']
-            password = serializer.validated_data['password']
-            team = serializer.validated_data['team']
-            salary = serializer.validated_data['salary']
-            location = serializer.validated_data['location']
-            user_type = serializer.validated_data['user_type']
-            reporting_to = serializer.validated_data['reporting_to']
-            
+            first_name = serializer.validated_data["first_name"]
+            last_name = serializer.validated_data["last_name"]
+            email = serializer.validated_data["email"]
+            mobile_number = serializer.validated_data["mobile_number"]
+            telegram_link = serializer.validated_data["telegram_link"]
+            birthday = serializer.validated_data["birthday"]
+            password = serializer.validated_data["password"]
+            team = serializer.validated_data["team"]
+            salary = serializer.validated_data["salary"]
+            location = serializer.validated_data["location"]
+            user_type = serializer.validated_data["user_type"]
+            reporting_to = serializer.validated_data["reporting_to"]
+
             user = User.objects.create(
-            first_name=first_name,
-            last_name=last_name,
-            telegram_link=telegram_link,
-            email=email,
-            birthday=birthday,
-            mobile_number=mobile_number,
-            location=location,
-            password=password,
-            team=team,
-            salary=salary,
-            user_type=user_type,
-            reporting_to =reporting_to,
-        )
+                first_name=first_name,
+                last_name=last_name,
+                telegram_link=telegram_link,
+                email=email,
+                birthday=birthday,
+                mobile_number=mobile_number,
+                location=location,
+                password=password,
+                team=team,
+                salary=salary,
+                user_type=user_type,
+                reporting_to=reporting_to,
+            )
             return CustomResponse.success(
                 data=serializer.data,
                 message="User created successfully",
