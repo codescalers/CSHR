@@ -53,9 +53,6 @@
           data-bs-toggle="modal"
           data-bs-target={`#modal${item.id}`}
         >
-          {#if item.className === "birthday"}
-            <i class="fa-solid fa-cake-candles" />
-          {/if}
           {(item.title + "").slice(0, itemLetters * item.len) +
             (itemLetters * item.len >= item.title.length ? "" : "...")}
         </button>
@@ -199,24 +196,20 @@
     border-left-color: #fdb44d;
     background: #fef0db;
     color: #fc9b10;
-    margin-top: -5px;
   }
   :global(.task--danger) {
     border-left-color: #fa607e;
     grid-column: 2 / span 3;
     grid-row: 3;
-    margin-top: 15px;
     background: rgba(253, 197, 208, 0.7);
     color: #f8254e;
   }
   :global(.task--info) {
-    margin-top: 15px;
     background: rgba(192, 191, 191, 0.7);
     color: #444;
   }
   :global(.task--primary) {
     background: #c0d6ff;
-    margin-top: 15px;
     color: #0a5eff;
   }
 
@@ -231,7 +224,7 @@
     box-sizing: border-box;
     border-radius: 14px;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.08);
-    z-index: 2;
+    z-index: -1;
   }
   .task-detail:after,
   .task-detail:before {

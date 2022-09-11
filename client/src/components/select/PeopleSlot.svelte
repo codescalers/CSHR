@@ -15,6 +15,7 @@
       if (user) {
         image = user.image;
         full_name = user.full_name;
+        
       }
     }
   });

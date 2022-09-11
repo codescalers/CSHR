@@ -68,9 +68,7 @@
 </form>
 
 <Modal
-  title="💼 Meeting Form"
-  body={""}
-  id={modalID}
+  id={modalID + ""}
   isDelete={false}
   isDone={false}
   isFooter={true}
@@ -78,6 +76,9 @@
   deleteText={"Delete"}
   isClose={false}
 >
+  <header slot="header">
+    <h6>💼 Meeting Form</h6>
+  </header>
   <form slot="form">
     <Input
       type="text"

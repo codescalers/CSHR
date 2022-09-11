@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<div class="container d-flex flex-column gap-5 px-5 my-5 mx-xl-4">
+<div class="container d-flex flex-column gap-3 px-4 my-5">
   <div class="text-left">Details</div>
   <div class="task--danger">💼 Meeting</div>
   <div class="task--info">🎉 Event</div>

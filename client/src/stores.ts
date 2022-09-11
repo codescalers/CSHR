@@ -11,6 +11,8 @@ export const UserStore: Writable<UserInterface> = writable({
     image: "https://avatars.githubusercontent.com/u/11314585?v=4",
     role: "admin",
     id: 1,
+    team:"development",
     password: "123456"
+
 
 })

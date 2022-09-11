@@ -16,19 +16,23 @@
 </form>
 
 <Modal
-  title="Leave Form"
-  body={"Are you sure you want to submit this form? You will not be able to edit it after submission."}
-  id={modalID}
+  id={modalID + ""}
   isDelete={false}
   isDone={false}
   isFooter={true}
   doneText={"Done"}
   deleteText={"Delete"}
 >
-<form slot="form">
-  
-</form>
+  <header slot="header">
+    <h6>Leave Form</h6>
+  </header>
+  <form slot="form" />
   <div slot="submit">
-    <Submit label="Submit" onClick={() => {}} className="btn btn-primary" disabled={datePickerDisabled} />
+    <Submit
+      label="Submit"
+      onClick={() => {}}
+      className="btn btn-primary"
+      disabled={datePickerDisabled}
+    />
   </div>
 </Modal>

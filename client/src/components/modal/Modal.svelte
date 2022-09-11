@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  export let id: number,
+  export let id: string,
     isDelete: boolean,
     deleteText: string,
     isDone: boolean,

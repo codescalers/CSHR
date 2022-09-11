@@ -1,9 +1,10 @@
 <script lang="ts">
+  import type { birthDateItemType } from "../../services/axios/home/types";
   import { UserStore } from "../../stores";
   import Modal from "../modal/Modal.svelte";
   import StackedImages from "../image/StackedImages.svelte";
 
-  export let item: any;
+  export let item: birthDateItemType;
 </script>
 
 <Modal
@@ -16,13 +17,13 @@
   deleteText={""}
   isFooter={true}
 >
-  <div slot="header">
+  <header slot="header">
     <h6 class="modal-title" id="exampleModalLongTitle">
       {item.title.toUpperCase()}
     </h6>
-  </div>
+  </header>
   <div slot="body">
-    <div class="container d-flex flex-column gap-5 px-5 my-5 mx-xl-4">
+    <div class="container d-flex flex-column gap-5 px-5 my-5">
       <StackedImages stackedImages={[...item.users]} />
       <div class="d-flex flex-column gap-2">
         {#each item.users as user, index (index)}
@@ -43,15 +44,17 @@
               >
             </div>
           </div>
-          <div class="my-2 right">
-            <a
-              href={`mailto:${user.email}?subject=Happy%20Birth%20Day%20ahmad&body=Dear%20${user.full_name}%2C%0D%0A%0D%0AI%20wish%20you%20a%20happy%20birthday%20${user.full_name}%F0%9F%8E%82%0D%0A%0D%0A%0D%0Ayour%20beloved%2C%0D%0A${$UserStore.full_name}`}
-            >
-              <button class="btn btn-outline-primary">
-                send a message</button
-              ></a
-            >
-          </div>
+          {#if Number($UserStore.id) !== Number(item.id)}
+            <div class="my-2 right">
+              <a
+                href={`mailto:${user.email}?subject=Happy%20Birth%20Day%20ahmad&body=Dear%20${user.full_name}%2C%0D%0A%0D%0AI%20wish%20you%20a%20happy%20birthday%20${user.full_name}%F0%9F%8E%82%0D%0A%0D%0A%0D%0Ayour%20beloved%2C%0D%0A${$UserStore.full_name}`}
+              >
+                <button class="btn btn-outline-primary">
+                  send a message</button
+                ></a
+              >
+            </div>
+          {/if}
           {#if index != item.users.length - 1}
             <hr />
           {/if}

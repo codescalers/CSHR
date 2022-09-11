@@ -1,7 +1,6 @@
 <script lang="ts">
   type stackedImageType = {
     image: string;
-    alt: string;
     full_name?: string;
     gender?: string;
     team?: string;
@@ -9,7 +8,7 @@
 
   export let stackedImages: stackedImageType[];
   let extra: number = 0;
-   //let width: number = 0;
+  //let width: number = 0;
   /* let images: stackedImageType[] = stackedImages;
   let numberOfImages = stackedImages.length;
   $: numberOfImages = Math.ceil(width / 100) + 2;
@@ -17,7 +16,7 @@
   $: images = stackedImages.splice(0, numberOfImages); */
 </script>
 
-<div class="d-flex gap-0 px-4" >
+<div class="d-flex gap-0 px-4">
   {#each stackedImages as image, index (index)}
     <div
       class="stacked_img"
@@ -28,6 +27,7 @@
       }),url("https://i.imgur.com/9LDfN2H.png");z-index:${
         100 - index
       };border:1.5px solid ${image.gender === "Male" ? "blue" : "pink"}`}
+      data-bs-toggle="tooltip"
       title={image.full_name + " #" + image.team}
     >
       {#if image.full_name}
