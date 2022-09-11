@@ -12,8 +12,6 @@
   let clickedParticipantUser: userType =
     item.invited_users[clickedParticipantIndex];
   $: clickedParticipantUser = item.invited_users[clickedParticipantIndex];
-
-console.log(clickedParticipantUser)
 </script>
 
 <Modal
@@ -33,6 +31,9 @@ console.log(clickedParticipantUser)
   </div>
   <div slot="body">
     <div class="container d-flex flex-column gap-5 px-5 my-5">
+      <h3 class="mx-auto text-muted">
+        <a href={item.meeting_link}>Meeting Link</a>
+      </h3>
       <div class="row">
         <h5>Organizer</h5>
       </div>
