@@ -2,17 +2,21 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from ..serializers.compensation import CompensationSerializer
+from ..serializers.compensation import (
+    CompensationSerializer,
+    CompensationUpdateSerializer,
+)
 from ..api.response import CustomResponse
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import UserIsAuthenticated
+from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.compensation import (
     get_all_compensations,
     get_compensation_by_id,
 )
 from server.cshr.celery.send_email import send_email_for_compensation_request
+from server.cshr.celery.send_email import send_email_for_compensation_reply
 
 
 class CompensationApiView(ViewSet, GenericAPIView):
@@ -41,23 +45,6 @@ class CompensationApiView(ViewSet, GenericAPIView):
         serializer = CompensationSerializer(compensation)
         return CustomResponse.success(
             data=serializer.data, message="Compensation found", status_code=200
-        )
-
-    """method to update a Compensation by id"""
-
-    def put(self, request: Request, id: str, format=None) -> Response:
-
-        compensation = get_compensation_by_id(id=id)
-        if compensation is None:
-            return CustomResponse.not_found(message="Compensation not found")
-        serializer = self.get_serializer(compensation, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return CustomResponse.success(
-                data=serializer.data, status_code=200, message="Compensation updated"
-            )
-        return CustomResponse.bad_request(
-            data=serializer.errors, message="Compensation failed to update"
         )
 
     def delete(self, request: Request, id, format=None) -> Response:
@@ -89,4 +76,26 @@ class CompensationApiView(ViewSet, GenericAPIView):
             )
         return CustomResponse.bad_request(
             error=serializer.errors, message="Compensation creation failed"
+        )
+
+
+class CompensationUpdateApiView(ViewSet, GenericAPIView):
+    serializer_class = CompensationUpdateSerializer
+    permission_classes = [IsAdmin]
+    """method to update a Compensation by id"""
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        compensation = get_compensation_by_id(id=id)
+        if compensation is None:
+            return CustomResponse.not_found(message="compensation not found")
+        serializer = self.get_serializer(compensation, data=request.data, partial=True)
+        current_user: User = get_user_by_id(request.user.id)
+        if serializer.is_valid():
+            serializer.save(approval_user=current_user)
+            send_email_for_compensation_reply(current_user, serializer.data)
+            return CustomResponse.success(
+                data=serializer.data, status_code=202, message="compensation updated"
+            )
+        return CustomResponse.bad_request(
+            data=serializer.errors, message="compensation failed to update"
         )
