@@ -17,14 +17,14 @@
   }
 </script>
 
-<div class="calendar table-responsive">
-  {#each headers as header, index (index)}
+<div class="calendar table-responsive table-responsive">
+  {#each headers as header, indexndex (indexndex)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
     >
   {/each}
 
-  {#each days as day, index (index)}
+  {#each days as day, indexndex (indexndex)}
     {#if day.enabled}
       <span class="day" on:click={() => dispatch("dayClick", day)}
         >{day.name}</span
@@ -38,6 +38,7 @@
 
   {#each items as item (item.id)}
     <section
+      bind:clientWidth={widthItem}
       bind:clientWidth={widthItem}
       on:click={() => dispatch("itemClick", item)}
       class="task {item.className}"
@@ -65,7 +66,7 @@
       {/if}
     </section>
 
-    <!--    <Modal
+    <!--    <!--    <Modal
       bind:title={item.title}
       bind:body={item.description}
       bind:id={item.id}
@@ -192,12 +193,12 @@
   .task--warning {
     font-weight: 500;
   }
-  :global(.task--warning) {
+  :global(:global(.task--warning)) {
     border-left-color: #fdb44d;
     background: #fef0db;
     color: #fc9b10;
   }
-  :global(.task--danger) {
+  :global(:global(.task--danger)) {
     border-left-color: #fa607e;
     grid-column: 2 / span 3;
     grid-row: 3;
@@ -208,12 +209,12 @@
     background: rgba(192, 191, 191, 0.7);
     color: #444;
   }
-  :global(.task--primary) {
+  :global(:global(.task--primary)) {
     background: #c0d6ff;
     color: #0a5eff;
   }
 
-  :global(.task-detail) {
+  :global(:global(.task-detail)) {
     position: absolute;
     left: 0;
     top: calc(100% + 8px);

@@ -93,6 +93,7 @@ class User(AbstractBaseUser, TimeStamp):
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
     gender = models.CharField(max_length=20, choices=GENDER_TYPE.choices)
+    gender = models.CharField(max_length=20, choices=GENDER_TYPE.choices)
     social_insurance_number = models.CharField(max_length=45)
     USERNAME_FIELD = "email"
     reporting_to = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)

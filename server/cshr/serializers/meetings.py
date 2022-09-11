@@ -11,6 +11,7 @@ class MeetingsSerializer(ModelSerializer):
     invited_users: List[User] = SerializerMethodField()
     date = SerializerMethodField()
     host_user = SerializerMethodField()
+    host_user = SerializerMethodField()
 
     class Meta:
         model = Meetings

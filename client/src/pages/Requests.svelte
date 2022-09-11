@@ -7,23 +7,39 @@
   export let user: UserInterface;
   import { onMount } from "svelte";
   import Sidebar from "../components/sidebar/Sidebar.svelte";
-  import {} from "os";
-  let modalID = 129981;
-  let requests = [];
-  async function approve_btn(type, id) {
-    if (type == "Vacation") {
-      let data: JSON = JSON.parse('{"status":"approved"}');
-      await updateVacations(id, data);
+import { } from "os";
+let requests = [];
+  async function  approve_btn (type,id) { 
+    if (type == "Vacation"){
+    let data:JSON= JSON.parse('{"status":"approved"}')
+    await updateVacations(id,data);
+      
+    }else if (type == "HR letters"){
+      let data:JSON= JSON.parse('{"status":"approved"}')
+      await updateLetters(id,data);
+    }else if (type == "Compensation"){
+      let data:JSON= JSON.parse('{"status":"approved"}')
+      await updateCompensation(id,data);
     }
     requests = await getRequests();
-    console.log(type, id);
+    console.log(type,id);
   }
-  function reject_btn(type, id) {
-    console.log(type, id);
+  async function reject_btn(type,id) {
+    if (type == "Vacation"){
+    let data:JSON= JSON.parse('{"status":"rejected"}')
+    await updateVacations(id,data);
+      
+    }else if (type == "HR letters"){
+      let data:JSON= JSON.parse('{"status":"rejected"}')
+      await updateLetters(id,data);
+    }else if (type == "Compensation"){
+      let data:JSON= JSON.parse('{"status":"rejected"}')
+      await updateCompensation(id,data);
+    }
+    requests = await getRequests();
+    console.log(type,id);
   }
-  function view_btn(type, id) {
-    
-  }
+  
   let pageCount = 0;
   let pageSize = 3;
 
@@ -204,6 +220,7 @@
   </Modal>
 
   </section>
+  
 </Sidebar>
 
 <style>
