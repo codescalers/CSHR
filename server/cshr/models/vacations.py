@@ -1,4 +1,3 @@
-from pyexpat import model
 from django.db import models
 
 from server.cshr.models.users import User
@@ -39,9 +38,11 @@ class Vacation(Requests):
     def __name__(self):
         return "vacations"
 
+
 class PublicHolidays(models.Model):
     date = models.DateField()
-    
+
+
 class VacationBalance(models.Model):
     """User vacation balance model."""
 
@@ -55,5 +56,3 @@ class VacationBalance(models.Model):
     public_holidays = models.ManyToManyField(PublicHolidays)
     date = models.DateField(auto_now=True)
     old_balance = models.JSONField(default=dict, null=True)
-
-

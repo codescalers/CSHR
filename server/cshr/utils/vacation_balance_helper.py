@@ -42,7 +42,7 @@ class VacationBalanceHelper:
         balance_format["unpaid"] = user_balance.unpaid
         balance_format["emergencies"] = user_balance.emergencies
         balance_format["leave_execuses"] = user_balance.leave_execuses
-        #balance_format["public_holidays"] = user_balance.public_holidays
+        # balance_format["public_holidays"] = user_balance.public_holidays
         balance_format["year"] = user_balance.date.year
         user.vacationbalance.old_balance = balance_format
         user.save()
@@ -74,7 +74,7 @@ class VacationBalanceHelper:
             "sick_leaves": self.read()["sick_leaves"],
             "compensation": self.read()["compensation"],
             "unpaid": self.read()["unpaid"],
-            #"public_holidays": self.read()["public_holidays"],
+            # "public_holidays": self.read()["public_holidays"],
         }
         return calculated_values
 
@@ -92,18 +92,17 @@ class VacationBalanceHelper:
         joining date like i.e sick_leaves.
         """
         calaculated_values = self.calculate_vacation_values(user=user)
-        balance: VacationBalance = (
-            VacationBalance.objects.create(
-                user=user,
-                annual_leaves=calaculated_values["annual_leaves"],
-                compensation=calaculated_values["compensation"],
-                sick_leaves=calaculated_values["sick_leaves"],
-                emergencies=calaculated_values["emergencies"],
-                #public_holidays=calaculated_values["public_holidays"],
-                leave_execuses=calaculated_values["leave_execuses"],
-                unpaid=calaculated_values["unpaid"],
-            ),
-        )
+        VacationBalance.objects.create(
+            user=user,
+            annual_leaves=calaculated_values["annual_leaves"],
+            compensation=calaculated_values["compensation"],
+            sick_leaves=calaculated_values["sick_leaves"],
+            emergencies=calaculated_values["emergencies"],
+            # public_holidays=calaculated_values["public_holidays"],
+            leave_execuses=calaculated_values["leave_execuses"],
+            unpaid=calaculated_values["unpaid"],
+        ),
+
         return VacationBalance.objects.get(user=user)
 
     def update_balance(
