@@ -67,10 +67,11 @@ class GeneralUserSerializer(ModelSerializer):
             return f"/{obj.image}"
 
     def random_color(self):
-        color: str = "" 
+        color: str = ""
         for i in range(0, 3):
             color += str(random.randint(1, 10))
         return f"#{color}"
+
 
 class SupervisorUserSerializer(ModelSerializer):
     """
@@ -213,4 +214,4 @@ class BaseUserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "full_name", "email", "image","team","gender"]
+        fields = ["id", "full_name", "email", "image", "team", "gender"]
