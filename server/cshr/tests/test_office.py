@@ -20,7 +20,7 @@ class OfficeTests(APITestCase):
             first_name="sting",
             last_name="strig",
             telegram_link="sting",
-            email="use1@xample.com",
+            email="user1@example.com",
             birthday="2022-08-24",
             mobile_number="sring",
             password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
