@@ -3,7 +3,6 @@ from rest_framework.generics import GenericAPIView
 from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.api.response import CustomResponse
 from typing import Any
-
 from server.cshr.services.landing_page import landinf_page_caliender_functionalty
 
 
