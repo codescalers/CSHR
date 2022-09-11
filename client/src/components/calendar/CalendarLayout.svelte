@@ -6,7 +6,7 @@
   export let items: any[] = [];
 
   let widthItem: number;
-  $: itemLetters = widthItem / 20;
+  $: itemLetters = Math.ceil(widthItem / 14);
 
   let dispatch = createEventDispatcher();
   function onDelete(event: { detail: { id: any } }) {
@@ -46,17 +46,16 @@
       align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};
       height:'50rem !important';"
     >
-      <div class="container">
-        <button
-          type="button"
-          class="modal-btn m-0 p-0"
-          data-bs-toggle="modal"
-          data-bs-target={`#modal${item.id}`}
-        >
-          {(item.title + "").slice(0, itemLetters * item.len) +
-            (itemLetters * item.len >= item.title.length ? "" : "...")}
-        </button>
-      </div>
+      <button
+        type="button"
+        class="modal-btn m-0 pl-0 "
+        style="text-align: left;"
+        data-bs-toggle="modal"
+        data-bs-target={`#modal${item.id}`}
+      >
+        {(item.title + "").slice(0, itemLetters * item.len) +
+          (itemLetters * item.len >= item.title.length ? "" : "...")}
+      </button>
 
       {#if item.detailHeader}
         <div class="task-detail">
@@ -182,6 +181,7 @@
     align-self: center;
     z-index: 2;
     border-radius: 15px;
+    text-align: left;
   }
   .task:hover {
     filter: brightness(95%);
