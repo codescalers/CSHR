@@ -1,4 +1,4 @@
-import type { eventNameType, meetingItemType,dateType } from "./types"
+import type { eventNameType, meetingItemType, dateType } from "./types"
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,7 +21,7 @@ class Meeting {
     private meetingItem(eventName: eventNameType, meeting: meetingItemType, date: Date): meetingItemType {
         const id: string = uuidv4();
         const today = new Date();
-        let parsedDate= meeting.date as unknown as dateType;
+        let parsedDate = meeting.date as unknown as dateType;
         let difficulty = {};
         if (today.toDateString() === date.toDateString()) {
             difficulty = {
@@ -38,6 +38,7 @@ class Meeting {
             parsedDate: parsedDate,
             meeting_link: meeting.meeting_link,
             invited_users: meeting.invited_users,
+            host_user: meeting.host_user,
             className: "task--danger",
             eventName: eventName,
             isStart: false,

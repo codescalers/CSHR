@@ -31,6 +31,7 @@ export type meetingItemType = {
   len: number,
   meeting_link: string,
   invited_users: userType[],
+  host_user: userType[],
   date: Date,
   parsedDate: dateType,
   className: string,

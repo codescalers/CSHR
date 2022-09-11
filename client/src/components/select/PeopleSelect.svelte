@@ -27,13 +27,19 @@
   });
 </script>
 
-{#if isLoading && !isError}
-  loading...
-{/if}
 {#if isError}
-  error loading users
-{/if}
-{#if !isLoading && !isError}
+  <img
+    class="loader"
+    src="https://icon-library.com/images/not-found-icon/not-found-icon-20.jpg"
+    alt="Not Found"
+  />
+{:else if isLoading && !isError}
+  <img
+    class="loader"
+    src="https://c.tenor.com/On7kvXhzml4AAAAi/loading-gif.gif"
+    alt="Loading..."
+  />
+{:else if !isLoading && !isError}
   <MultiSelect
     bind:options
     bind:selected
@@ -76,5 +82,11 @@
   :global(.select-box) {
     width: 100%;
     height: 100%;
+  }
+  .loader {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    margin:0 auto;
   }
 </style>

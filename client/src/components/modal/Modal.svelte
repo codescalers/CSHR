@@ -25,7 +25,7 @@
   aria-hidden="true"
 >
   <div
-    class="modal-dialog model-dialog-centered model-dialog-scrollable "
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
     role="document"
   >
     <div class="modal-content">
@@ -48,9 +48,10 @@
           {#if isClose}
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn btn-secondary"
               data-bs-dismiss="modal"
               data-bs-target="#modal"
+
             >
               {closeText}
             </button>
