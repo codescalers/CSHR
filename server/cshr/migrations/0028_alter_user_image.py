@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0027_alter_user_gender'),
+        ("cshr", "0027_alter_user_gender"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='image',
-            field=models.ImageField(upload_to='profile_image/'),
+            model_name="user",
+            name="image",
+            field=models.ImageField(upload_to="profile_image/"),
         ),
     ]

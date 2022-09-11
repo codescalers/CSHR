@@ -33,6 +33,7 @@ class USER_TYPE(models.TextChoices):
 
 class GENDER_TYPE(models.TextChoices):
     """gender of users"""
+
     MALE = "Male", "male"
     FEMALE = "Female", "female"
 
