@@ -192,6 +192,14 @@
   .task--warning {
     font-weight: 500;
   }
+  
+  .task-detail{
+    visibility: hidden;
+  }
+  .task--danger:hover .task-detail {
+    visibility: visible;
+  }
+
   :global(.task--warning) {
     border-left-color: #fdb44d;
     background: #fef0db;
@@ -224,7 +232,8 @@
     box-sizing: border-box;
     border-radius: 14px;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.08);
-    z-index: -1;
+    z-index: 1000;
+
   }
   .task-detail:after,
   .task-detail:before {
