@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from server.cshr.celery.send_email import send_email_for_vacation_reply
 from server.cshr.celery.send_email import send_email_for_vacation_request
 from server.cshr.api.response import CustomResponse
+from datetime import datetime
 
 
 class VacationsApiView(ViewSet, GenericAPIView):
@@ -74,15 +75,22 @@ class VacationsApiView(ViewSet, GenericAPIView):
 class VacationsUpdateApiView(ViewSet, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
     permission_classes = [IsAdmin]
-
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
+        print(request.data)
         if vacation is None:
             return CustomResponse.not_found(message="Hr Letter not found")
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
+            change_log=vacation.change_log
+            change= {"approved_user":current_user.id,"approved_date":datetime.now(),"comments":{"user":current_user.id,"comment":request.data["comment"]}}
+            change_log["change"+str((len(change_log))+1)]=change
+            print(change_log)
+            vacation.change_log=change_log
+            vacation.save()
+
             send_email_for_vacation_reply(current_user, serializer.data)
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="vacation updated"
