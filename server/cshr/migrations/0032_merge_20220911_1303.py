@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0029_alter_user_image'),
-        ('cshr', '0031_publicholidays_alter_vacationbalance_compensation_and_more'),
+        ("cshr", "0029_alter_user_image"),
+        ("cshr", "0031_publicholidays_alter_vacationbalance_compensation_and_more"),
     ]
 
-    operations = [
-    ]
+    operations = []
