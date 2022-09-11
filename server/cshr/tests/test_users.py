@@ -154,10 +154,6 @@ class GeneralViewUserProfileTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.data["data"][1]["full_name"], "John Blake")
-        self.assertEqual(
-            response.data["data"][1]["image"],
-            "http://testserver/profile_image/default.png",
-        )
         self.assertEqual(response.data["data"][1]["birthday"], "2000-12-30")
         self.assertEqual(response.data["data"][1]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["data"][1]["email"], "john@outlook.com")
@@ -186,10 +182,6 @@ class GeneralViewUserProfileTests(APITestCase):
         response = self.client.get(url, format="json")
         response = self.client.get(url, format="json")
         self.assertEqual(response.data["data"]["full_name"], "John Blake")
-        self.assertEqual(
-            response.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
-        )
         self.assertEqual(response.data["data"]["birthday"], "2000-12-30")
         self.assertEqual(response.data["data"]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["data"]["email"], "john@outlook.com")
