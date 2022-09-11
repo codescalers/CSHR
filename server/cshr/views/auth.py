@@ -36,7 +36,7 @@ class RegisterApiView(GenericAPIView):
             user_type = serializer.validated_data["user_type"]
             reporting_to = serializer.validated_data["reporting_to"]
 
-            user = User.objects.create(
+            User.objects.create(
                 first_name=first_name,
                 last_name=last_name,
                 telegram_link=telegram_link,
