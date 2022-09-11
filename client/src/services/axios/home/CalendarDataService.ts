@@ -6,21 +6,23 @@ import type { eventNameType, meetingItemType, eventItemType, vacationItemType, b
 class CalendarDataService {
 
     private itemHandler = itemHandler;
+    private errorMessage: string = "Error in Office Data Service: ";
+
 
     private async getByMonthYearAPI(month: number, year: number) {
         try {
             return await (await http.get(`/home/?month=${month}&year=${year}`)).data;
         }
         catch (error) {
-            throw new Error(`Error while fetching Calendar data ${error}`);
+            console.error(`${this.errorMessage} Error while fetching Calendar data ${error}`);
         }
     }
-    public async postMeeting(hostedUserID:number,invitedUsers: string[], date: Date, title: string, meetingLink: string) {
+    public async postMeeting(hostedUserID: number, invitedUsers: string[], date: Date, title: string, meetingLink: string) {
         try {
             return await (await http.post('/home/meeting', { invited_users: invitedUsers, date, title, meeting_link: meetingLink })).data;
         }
         catch (error) {
-            throw new Error(`Error while posting meeting data ${error}`);
+            console.error(`${this.errorMessage}Error while posting meeting data ${error}`);
         }
     }
 

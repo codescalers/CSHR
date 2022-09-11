@@ -15,7 +15,6 @@
       if (user) {
         image = user.image;
         full_name = user.full_name;
-        
       }
     }
   });
@@ -27,7 +26,7 @@
 
 <span class="option">
   <img
-    src={image}
+    src={process.env.APP_BASE_API_URL + image}
     alt={"user avatar"}
     {hidden}
     on:error={() => (hidden = true)}

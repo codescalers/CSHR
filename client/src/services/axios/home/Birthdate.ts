@@ -10,6 +10,7 @@ export default class BirthDate {
         let users: userType[] = [];
         for (const event of events) {
             user = {
+                id: event.id,
                 full_name: event["full_name"], email: event["email"], image: event["image"],team:event["team"],gender:event["gender"]
             }
             users = [...users, user];

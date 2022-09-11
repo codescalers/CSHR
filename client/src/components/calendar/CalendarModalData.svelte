@@ -6,15 +6,13 @@
   let meetingFlag = (item.title + "").includes("💼");
   let eventFlag = (item.title + "").includes("🎉");
   let vacationFlag = (item.title + "").includes("🌴");
-  console.log(item);
 </script>
 
 {#if birthDayFlag}
   <CalendarBirthdayModel bind:item />
 {/if}
 {#if meetingFlag}
-<CalendarMeetingModel bind:item />
-
+  <CalendarMeetingModel bind:item />
 {/if}
 {#if eventFlag}{/if}
 {#if vacationFlag}{/if}
