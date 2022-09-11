@@ -53,6 +53,6 @@ class VacationBalance(models.Model):
     annual_leaves = models.IntegerField()
     emergencies = models.IntegerField()
     leave_execuses = models.IntegerField()
-    public_holidays = models.ManyToManyField(PublicHolidays)
+    public_holidays = models.IntegerField()
     date = models.DateField(auto_now=True)
     old_balance = models.JSONField(default=dict, null=True)
