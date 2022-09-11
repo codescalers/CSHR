@@ -1,29 +1,32 @@
 <script lang="ts">
   import getRequests from "../services/axios/requests/requests";
-  import updateVacations from "../services/axios/requests/vacations"
+  import Modal from "../components/modal/Modal.svelte";
+  import ModalButton from "../components/modal/ModalButton.svelte";
+  import updateVacations from "../services/axios/requests/vacations";
   import type { UserInterface } from "../types";
   export let user: UserInterface;
   import { onMount } from "svelte";
   import Sidebar from "../components/sidebar/Sidebar.svelte";
-import { } from "os";
-let requests = [];
-  async function  approve_btn (type,id) {
-    
-      if (type == "Vacation"){
-      let data:JSON= JSON.parse('{"status":"approved"}')
-      await updateVacations(id,data);
-       
-      }
-      requests = await getRequests();
-    console.log(type,id);
+  import {} from "os";
+  let modalID = 129981;
+  let requests = [];
+  async function approve_btn(type, id) {
+    if (type == "Vacation") {
+      let data: JSON = JSON.parse('{"status":"approved"}');
+      await updateVacations(id, data);
+    }
+    requests = await getRequests();
+    console.log(type, id);
   }
-  function reject_btn(type,id) {
+  function reject_btn(type, id) {
+    console.log(type, id);
+  }
+  function view_btn(type, id) {
     
-    console.log(type,id);
   }
   let pageCount = 0;
   let pageSize = 3;
-  
+
   function increment() {
     if (totalRequests - pageCount * 3 - pageSize > 0) {
       pageCount++;
@@ -83,7 +86,11 @@ let requests = [];
               </td>
               <td>
                 <p class="fw-bold mb-1">{request.type}</p>
-                <p class="text-muted mb-0">{(request.type == "HR letters")? request.addresses : request.reason }</p>
+                <p class="text-muted mb-0">
+                  {request.type == "HR letters"
+                    ? request.addresses
+                    : request.reason}
+                </p>
               </td>
               <td>
                 <p class="fw-bold mb-1">
@@ -92,8 +99,7 @@ let requests = [];
                     : "---"}
                 </p>
                 <p class="text-muted mb-0">
-                  <span class="text-muted">End: </span>{
-                    request.end_date
+                  <span class="text-muted">End: </span>{request.end_date
                     ? request.from_date
                     : "---"}
                 </p>
@@ -106,12 +112,12 @@ let requests = [];
                         <div class="col">
                           <button
                             type="button"
-                            class="btn btn-danger btn-sm w-100 "
+                            class="btn btn-danger btn-border btn-sm w-100 "
                             disabled>Rejected</button
                           >
                         </div>
                         <div class="col pl-0">
-                          <button type="button" class="btn p-0"
+                          <button type="button" class=" btn btn-view p-0"
                             ><i class="bi bi-eye" /></button
                           >
                         </div>
@@ -123,12 +129,16 @@ let requests = [];
                         <div class="col">
                           <button
                             type="button"
-                            class="btn btn-success btn-sm w-100 "
+                            class="btn btn-success btn-border btn-sm w-100 "
                             disabled>Approved</button
                           >
                         </div>
                         <div class="col pl-0">
-                          <button type="button" class="btn p-0"
+                          <button
+                            type="button"
+                            class="btn  btn-view p-0"
+                            data-bs-toggle={"modal"}
+                            data-bs-target={"#modal" + modalID}
                             ><i class="bi bi-eye" /></button
                           >
                         </div>
@@ -138,18 +148,18 @@ let requests = [];
                         <div class="col">
                           <button
                             type="button"
-                            on:click={approve_btn(request.type,request.id)}
-                            class="btn btn-success btn-sm w-100 mb-1"
+                            on:click={approve_btn(request.type, request.id)}
+                            class="btn btn-success btn-border btn-sm w-100 mb-1"
                             >Approve</button
                           >
                           <button
                             type="button"
-                            on:click={reject_btn(request.type,request.id)}
-                            class="btn btn-danger btn-sm w-100">Reject</button
+                            on:click={reject_btn(request.type, request.id)}
+                            class="btn btn-danger btn-border btn-sm w-100">Reject</button
                           >
                         </div>
                         <div class="col pl-0">
-                          <button type="button" class="btn p-0"
+                          <button type="button" class="btn btn-view p-0"
                             ><i class="bi bi-eye" /></button
                           >
                         </div>
@@ -177,6 +187,22 @@ let requests = [];
         >
       </div>
     </div>
+   
+    <Modal
+      id={modalID + ""}
+      isDelete={false}
+      isDone={false}
+      isFooter={true}
+      doneText={"Done"}
+      deleteText={"Delete"}
+      isClose={false}
+    >
+    <header slot="header">
+      <h6></h6>
+    </header>
+  
+  </Modal>
+
   </section>
 </Sidebar>
 
@@ -209,4 +235,19 @@ let requests = [];
     border: unset !important;
     outline: unset !important;
   }
+  .btn-view {
+    border:none !important;
+  }
+  .btn-border{
+    border-radius: 35px;
+  }
+  .btn-success{
+    background:#29CC97;
+    border-color: #29CC97;
+  }
+  .btn-danger{
+    background:#F12B2C;
+    border-color: #F12B2C;
+  }
+  
 </style>
