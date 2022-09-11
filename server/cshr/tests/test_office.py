@@ -17,12 +17,12 @@ class OfficeTests(APITestCase):
         office = Office.objects.create(name="testOffice", country="testCountry")
 
         User.objects.create(
-            first_name="string",
-            last_name="string",
-            telegram_link="string",
+            first_name="sting",
+            last_name="strig",
+            telegram_link="sting",
             email="user1@example.com",
             birthday="2022-08-24",
-            mobile_number="string",
+            mobile_number="sring",
             password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
             location=office,
             team="Development",
