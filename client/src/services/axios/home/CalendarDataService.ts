@@ -32,7 +32,6 @@ class CalendarDataService {
 
         console.log("today", month + 1, year)
         const { data } = (await this.getByMonthYearAPI(month + 1, year));
-        console.log("datam", data["6"]);
 
         let meetings: meetingItemType[] = [];
         let events: eventItemType[] = [];
