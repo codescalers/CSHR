@@ -67,7 +67,7 @@
     let totalNotifications = requests.length;
 </script>
   
-  <Sidebar bind:user={user}>
+  <Sidebar>
     <span slot="page-name">Notification</span>
     <section class=" fluid-container mt-5" slot="content">
 

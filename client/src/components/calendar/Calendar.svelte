@@ -5,6 +5,7 @@
     vacationItemType,
     birthDateItemType,
     calendarItemsType,
+    eventNameType
   } from "../../services/axios/home/types";
 
   import Calendar from "./CalendarLayout.svelte";
@@ -15,9 +16,10 @@
   export let isLoading = false;
   //	The Calendar Component just displays stuff in a row & column. It has no knowledge of dates.
   //	The items[] below are placed (by you) in a specified row & column of the calendar.
-  //	You need to call findRowCol() to calc the row/col based on each items start date. Each date box has a Date() property.
+  //	You need to call findRowCol() to calc the rsow/col based on each items start date. Each date box has a Date() property.
   //	And, if an item overlaps rows, then you need to add a 2nd item on the subsequent row.
   let calendarItems: calendarItemsType = [];
+  export let eventNames: Set<eventNameType>;
 
   let items: any[] | undefined;
   onMount(async () => {
@@ -242,11 +244,10 @@
       {year}
       <button class="icon-btn" on:click={() => next()}>&gt;</button>
     </h1>
-    <!--     {eventText}
- -->
   </div>
 
   <Calendar
+  bind:eventNames
     {headers}
     {days}
     bind:items

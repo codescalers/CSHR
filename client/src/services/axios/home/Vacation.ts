@@ -11,36 +11,48 @@ class Vacation {
         }
         return items;
     }
+
+    // subtracte 2 dates from eachother
+    private subtractDates(date1: Date, date2: Date): number {
+        return Math.abs(date1.getTime() - date2.getTime());
+    }
+
+
+
     // to create the vacation item
-    private vacationItem(eventName: eventNameType, event: any, date: Date): vacationItemType {
+    private vacationItem(eventName: eventNameType, vacation: any, date: Date): vacationItemType {
         const id: string = uuidv4();
 
         const applying_user: userType = {
-            id: event.applying_user.id,
-            full_name: event.applying_user.full_name,
-            email: event.applying_user.email,
-            image: event.applying_user.image,
-            team: event.applying_user.team,
-            gender: event.applying_user.gender
+            id: vacation.applying_user.id,
+            full_name: vacation.applying_user.full_name,
+            email: vacation.applying_user.email,
+            image: vacation.applying_user.image,
+            team: vacation.applying_user.team,
+            gender: vacation.applying_user.gender
         }
         const approval_user: userType = {
-            id: event.approval_user.id,
-            full_name: event.approval_user.full_name,
-            email: event.approval_user.email,
-            image: event.approval_user.image,
-            team: event.approval_user.team,
-            gender: event.approval_user.gender
+            id: vacation.approval_user.id,
+            full_name: vacation.approval_user.full_name,
+            email: vacation.approval_user.email,
+            image: vacation.approval_user.image,
+            team: vacation.approval_user.team,
+            gender: vacation.approval_user.gender
         }
-        console.log("event", event)
-
+        console.log("event", vacation);
+        let [from_year, from_month, from_day] = (vacation.from_date).split("-");
+        let from_date = new Date(from_year, from_month, from_day);
+        let [endYear, endMonth, endDay] = (vacation.end_date).split("-");
+        let end_date = new Date(endYear, endMonth, endDay);
+        let length = this.subtractDates(from_date, end_date) / (1000 * 3600 * 24);
         return {
             id: id,
             title: "🌴" + eventName,
-            reason: event.reason,
-            len: 1,
+            reason: vacation.reason,
+            len: length,
             applying_user: applying_user,
             approval_user: approval_user,
-            status: event.status,
+            status: vacation.status,
             date: date,
             className: "task--warning",
             eventName: eventName,
