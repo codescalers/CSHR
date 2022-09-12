@@ -41,41 +41,35 @@
 
   {#each items as item (item.id)}
     {#if eventNames.has(item.eventName)}
-
-        <section
-          bind:clientWidth={widthItem}
-          style="align-self: {item.isBottom
-            ? 'end'
-            : item.isStart
-            ? 'start'
-            : 'center'};grid-column: {item.startCol} / span {item.len};      
+      <section
+        style="align-self: {item.isBottom
+          ? 'end'
+          : item.isStart
+          ? 'start'
+          : 'center'};grid-column: {item.startCol} / span {item.len};      
         grid-row: {item.startRow};  "
-          on:click={() => dispatch("itemClick", item)}
-   
-          class="task {item.className} d-flex flex-column justify-content-center align-items-center"
+        on:click={() => dispatch("itemClick", item)}
+        class="task {item.className} d-flex flex-column justify-content-center align-items-center"
+      >
+        <button
+          type="button"
+          class="modal-btn m-0 pl-0 "
+          style="text-align: left;"
+          data-bs-toggle="modal"
+          data-bs-target={`#modal${item.id}`}
         >
-          <button
-            type="button"
-            class="modal-btn m-0 pl-0 "
-            style="text-align: left;"
-            data-bs-toggle="modal"
-            data-bs-target={`#modal${item.id}`}
-          >
-            {(item.title + "").slice(0, itemLetters * item.len) +
-              (itemLetters * item.len >= item.title.length ? "" : "...")}
-          </button>
+          {item.title + ""}
+        </button>
 
-          {#if item.detailHeader}
-            <div class="task-detail">
-              <h2>{item.detailHeader}</h2>
-              <p>{@html item.detailContent}</p>
-            </div>
-          {/if}
-        </section>
-        
-    {/if}
+        {#if item.detailHeader}
+          <div class="task-detail">
+            <h2>{item.detailHeader}</h2>
+            <p>{@html item.detailContent}</p>
+          </div>
+        {/if}
+      </section>
 
-    <!--    <Modal
+      <!--    <Modal
       bind:title={item.title}
       bind:body={item.description}
       bind:id={item.id}
@@ -87,12 +81,13 @@
       deleteText={"Delete"}
       isFooter={true}
     /> -->
-    <CalendarModalData
-      bind:item
-      on:onDelete={onDelete}
-      on:onDelete={onDelete}
-      on:onDone={onDone}
-    />
+      <CalendarModalData
+        bind:item
+        on:onDelete={onDelete}
+        on:onDelete={onDelete}
+        on:onDone={onDone}
+      />
+    {/if}
   {/each}
 </div>
 
@@ -102,6 +97,9 @@
     border: none;
     cursor: pointer;
     width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .calendar {

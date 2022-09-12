@@ -3,10 +3,10 @@
   import CalendarMeetingModel from "./CalendarMeetingDataModal.svelte";
   import CalendarEventDataModal from "./CalendarEventDataModal.svelte";
   export let item: any;
-  let birthDayFlag = (item.title + "").includes("🎂");
-  let meetingFlag = (item.title + "").includes("💼");
-  let eventFlag = (item.title + "").includes("🎉");
-  let vacationFlag = (item.title + "").includes("🌴");
+  let birthDayFlag = item.eventName === "birthdates";
+  let meetingFlag = item.eventName === "meetings";
+  let eventFlag = item.eventName === "events";
+  let vacationFlag = item.eventName === "vacations";
 </script>
 
 {#if birthDayFlag}
