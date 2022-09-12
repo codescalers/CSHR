@@ -188,8 +188,8 @@ class SelfUserSerializer(ModelSerializer):
         return UserEvaluationSerializer(evaluations, many=True).data
 
     def get_reporting_to(self, obj):
-        reporting_to = obj.reporting_to
-        return GeneralUserSerializer(reporting_to).data
+        reporting_to = obj.reporting_to.all()
+        return BaseUserSerializer(reporting_to, many=True).data
 
 
 class BaseUserSerializer(ModelSerializer):
