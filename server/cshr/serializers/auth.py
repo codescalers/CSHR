@@ -11,7 +11,6 @@ from django.contrib.auth.hashers import check_password
 from typing import Dict, Any
 from server.cshr.models.users import User
 from server.cshr.services.users import get_user_by_email, get_user_by_id
-import os
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
