@@ -1,6 +1,4 @@
 <script lang="ts">
-    import type { UserInterface } from "../types";
-    export let user: UserInterface;
     import Sidebar from "../components/sidebar/Sidebar.svelte";
    
     let pageCount = 0;

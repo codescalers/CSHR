@@ -8,8 +8,6 @@
   export let items: any[] = [];
   export let eventNames: Set<eventNameType>;
 
-  let widthItem: number;
-  $: itemLetters = Math.ceil(widthItem / 14);
 
   let dispatch = createEventDispatcher();
   function onDelete(event: { detail: { id: any } }) {
