@@ -69,7 +69,7 @@ class GeneralUserSerializer(ModelSerializer):
     def random_color(self):
         color: str = ""
         for i in range(0, 3):
-            color += str(random.randint(1, 9))
+            color += str(random.randint(1, 5))
         return f"#{color}"
 
 

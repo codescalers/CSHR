@@ -24,9 +24,9 @@
       class="stacked_img my-2"
       style={`background-image:url(${
         process.env.APP_BASE_API_URL + image.image
-      });background-color:${image.image};z-index:${
+      });background-color:${image.gender === "Male" ? "#2986cc" : "#FB5858"};z-index:${
         100 - index
-      };border:1.5px solid ${image.gender === "Male" ? "blue" : "pink"}`}
+      };border:1.5px solid ${image.gender === "Male" ? "var(--secondary-color)" : "pink"}`}
       data-bs-toggle="tooltip"
       title={image.full_name + " #" + image.team}
       on:click={() => (itemIndex = index)}
@@ -65,7 +65,6 @@
     font-size: 1.7rem;
     font-weight: 700;
     letter-spacing: -0.1rem;
-    background-color: var(--secondary-color);
     cursor: pointer;
   }
   :global(.stacked_img:nth-child(n + 2):hover) {

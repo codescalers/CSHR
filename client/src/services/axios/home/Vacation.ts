@@ -16,15 +16,23 @@ class Vacation {
         const id: string = uuidv4();
 
         const applying_user: userType = {
+            id: event.applying_user.id,
             full_name: event.applying_user.full_name,
             email: event.applying_user.email,
             image: event.applying_user.image,
+            team: event.applying_user.team,
+            gender: event.applying_user.gender
         }
         const approval_user: userType = {
+            id: event.approval_user.id,
             full_name: event.approval_user.full_name,
             email: event.approval_user.email,
             image: event.approval_user.image,
+            team: event.approval_user.team,
+            gender: event.approval_user.gender
         }
+        console.log("event", event)
+
         return {
             id: id,
             title: "🌴" + eventName,
