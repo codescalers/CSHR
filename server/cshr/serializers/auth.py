@@ -8,7 +8,7 @@ from rest_framework_simplejwt.state import token_backend
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework import exceptions
 from django.contrib.auth.hashers import check_password
-from typing import Dict, Any, List
+from typing import Dict, Any
 from server.cshr.models.users import User
 from server.cshr.services.users import get_user_by_email, get_user_by_id
 
