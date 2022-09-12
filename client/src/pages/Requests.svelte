@@ -1,7 +1,7 @@
 <script lang="ts">
   import getRequests from "../services/axios/requests/requests";
   import Modal from "../components/modal/Modal.svelte";
-  import ModalButton from "../components/modal/ModalButton.svelte";
+  import RequestModal from "../components/requests/requestModal.svelte"
   import updateVacations from "../services/axios/requests/vacations";
   import updateLetters from "../services/axios/requests/hr_letters";
   import updateCompensation from "../services/axios/requests/compensation"
@@ -55,7 +55,7 @@
   
   let pageCount = 0;
   let pageSize = 3;
-  let modalID =3;
+  let modalID =6;
   function increment() {
       if (totalRequests - (pageCount * 3) - pageSize  > 0 ){
           pageCount++;
@@ -151,7 +151,7 @@
                         <div class="col pl-0">
                           <button type="button" class=" btn btn-view p-0"
                           data-bs-toggle={"modal"}
-                          data-bs-target={"#modal" + modalID}
+                          data-bs-target={"#modal" + index}
                             ><i class="bi bi-eye" /></button
                           >
                         </div>
@@ -172,9 +172,10 @@
                             type="button"
                             class="btn  btn-view p-0"
                             data-bs-toggle={"modal"}
-                            data-bs-target={"#modal" + modalID}
+                            data-bs-target={"#modal" + index}
                             ><i class="bi bi-eye" /></button
                           >
+                          <RequestModal {index}{request}></RequestModal>
                         </div>
                       </div>
                     {:else}
@@ -196,7 +197,7 @@
                         <div class="col pl-0">
                           <button type="button" class="btn btn-view p-0"
                           data-bs-toggle={"modal"}
-                          data-bs-target={"#modal" + modalID}
+                          data-bs-target={"#modal" + index}
                             ><i class="bi bi-eye" /></button
                           >
                         </div>
@@ -224,8 +225,8 @@
         >
       </div>
     </div>
-   
-    <Modal
+    
+    <!-- <Modal
       id={modalID + ""}
       isDelete={false}
       isDone={false}
@@ -238,12 +239,13 @@
       <h6>Vacation Details</h6>
     </header>
     <div slot="body">
+      <RequestModal></RequestModal>
       <div>
         
       </div>
-    </div>
+    </div> 
   
-  </Modal>
+  </Modal>-->
 
   </section>
   
