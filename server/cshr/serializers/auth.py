@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import check_password
 from typing import Dict, Any
 from server.cshr.models.users import User
 from server.cshr.services.users import get_user_by_email, get_user_by_id
+import os
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -22,6 +23,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         if hasattr(user, "permission"):
             token["permission"] = user.permission
         token["email"] = user.email
+        token["full_name"]=user.full_name
+        token["mobile_number"]=user.mobile_number
+        token["team"]= user.team
+        token["user_type"]=user.user_type
+        token["image"] =user.image.url 
         return token
 
     def validate(self, attrs: Any) -> Dict[str, Any]:
