@@ -19,7 +19,7 @@ export default async function getRequests() {
         value.type= "HR letters"
         request.push(value)
     })
-  
+    document.body.style.cursor='default';
    return request
 }
     

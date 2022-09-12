@@ -1,10 +1,9 @@
 <script lang="ts">
   import { Router, Link } from "svelte-navigator";
-  import type { UserInterface } from "../../types";
-  import {onMount} from "svelte";
+  import { onMount } from "svelte";
   import Image from "../image/Image.svelte";
   import Footer from "../footer/Footer.svelte";
-  export let user: UserInterface;
+  import { UserStore } from "../../stores";
 
   onMount(() => {
     const showNavbar = (
@@ -48,7 +47,7 @@
 
     // Your code to run since DOM is loaded and ready
   });
-/*   document.addEventListener("DOMContentLoaded", function (_event) {
+  /*   document.addEventListener("DOMContentLoaded", function (_event) {
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -97,9 +96,11 @@
       <i class="bx bx-menu" id="header-toggle" />
       <slot name="page-name" />
     </div>
-    <div class="header_img">
-
-      <Image src="https://i.imgur.com/hczKIze.jpg" alt="personal-image" />
+    <div class="d-flex flex-row gap-2">
+      <h5 class="py-2 text-muted">{$UserStore.full_name}</h5>
+      <div class="header_img">
+        <Image src="https://i.imgur.com/hczKIze.jpg" alt="personal-image" />
+      </div>
     </div>
   </header>
   <div class="l-navbar" id="nav-bar">

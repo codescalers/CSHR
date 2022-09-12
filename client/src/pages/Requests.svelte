@@ -3,31 +3,43 @@
   import Modal from "../components/modal/Modal.svelte";
   import ModalButton from "../components/modal/ModalButton.svelte";
   import updateVacations from "../services/axios/requests/vacations";
+  import updateLetters from "../services/axios/requests/hr_letters";
+  import updateCompensation from "../services/axios/requests/compensation"
   import type { UserInterface } from "../types";
   export let user: UserInterface;
   import { onMount } from "svelte";
+
+
   import Sidebar from "../components/sidebar/Sidebar.svelte";
-import { } from "os";
-let requests = [];
-  async function  approve_btn (type,id) { 
-    if (type == "Vacation"){
-    let data:JSON= JSON.parse('{"status":"approved"}')
-    await updateVacations(id,data);
+
+  let requests :any = [];
+  async function  approve_btn (element: any,index:number) { 
+    document.body.style.cursor ='wait';
+    if (element.type == "Vacation"){
+      console.log("before")
+     if(await updateVacations(element.id, { status: "approved"}) ){
+      console.log("after")
+      requests[index].status = "approved";
+     }
       
-    }else if (type == "HR letters"){
-      let data:JSON= JSON.parse('{"status":"approved"}')
-      await updateLetters(id,data);
-    }else if (type == "Compensation"){
+    }else if (element.type == "HR letters"){
+      
+      await updateLetters(element.id, { status: "approved"});
+    }else if (element.type == "Compensation"){
       let data:JSON= JSON.parse('{"status":"approved"}')
       await updateCompensation(id,data);
     }
     requests = await getRequests();
-    console.log(type,id);
+    document.body.style.cursor ='defult';
+    console.log(element);
   }
   async function reject_btn(type,id) {
+    document.body.style.cursor='wait';
     if (type == "Vacation"){
     let data:JSON= JSON.parse('{"status":"rejected"}')
-    await updateVacations(id,data);
+     if (await updateVacations(id,data)){
+
+     }
       
     }else if (type == "HR letters"){
       let data:JSON= JSON.parse('{"status":"rejected"}')
@@ -37,25 +49,29 @@ let requests = [];
       await updateCompensation(id,data);
     }
     requests = await getRequests();
+    document.body.style.cursor='default';
     console.log(type,id);
   }
   
   let pageCount = 0;
   let pageSize = 3;
-
+  let modalID =3;
   function increment() {
-    if (totalRequests - pageCount * 3 - pageSize > 0) {
-      pageCount++;
+      if (totalRequests - (pageCount * 3) - pageSize  > 0 ){
+          pageCount++;
+      }
     }
-  }
   function decrement() {
-    if (pageCount > 0) {
-      pageCount--;
+      if (pageCount > 0 ){
+          pageCount--;
+      }
     }
-  }
-  let totalRequests = requests.length;
+  
+  let totalRequests = 1;
   onMount(async () => {
     requests = await getRequests();
+    totalRequests = requests.length;
+    console.log(requests)
   });
 </script>
 
@@ -80,7 +96,7 @@ let requests = [];
           </tr>
         </thead>
         <tbody>
-          {#each requests.slice(pageCount * 3, pageCount * 3 + 3) as request}
+          {#each requests.slice(pageCount * 3, pageCount * 3 + 3) as request,index (index)}
             <tr>
               <td>
                 <div class="d-flex  align-items-center">
@@ -92,7 +108,7 @@ let requests = [];
                   />
                   <div class="ms-3">
                     <p class="fw-bold mb-1">
-                      {request.applying_user.full_name}
+                      {request.applying_user.full_name} 
                     </p>
                     <p class="text-muted mb-0">
                       {request.applying_user.email}
@@ -123,7 +139,7 @@ let requests = [];
               <td>
                 <div class="container w-100 p-0">
                   <div class="column">
-                    {#if request.status == "Rejected"}
+                    {#if request.status == "Rejected" || request.status == "rejected"}
                       <div class="row align-items-center">
                         <div class="col">
                           <button
@@ -134,6 +150,8 @@ let requests = [];
                         </div>
                         <div class="col pl-0">
                           <button type="button" class=" btn btn-view p-0"
+                          data-bs-toggle={"modal"}
+                          data-bs-target={"#modal" + modalID}
                             ><i class="bi bi-eye" /></button
                           >
                         </div>
@@ -164,18 +182,21 @@ let requests = [];
                         <div class="col">
                           <button
                             type="button"
-                            on:click={approve_btn(request.type, request.id)}
+                            on:click={()=>approve_btn(request,index)}
                             class="btn btn-success btn-border btn-sm w-100 mb-1"
                             >Approve</button
                           >
                           <button
                             type="button"
-                            on:click={reject_btn(request.type, request.id)}
+                            
+                            on:click={()=>reject_btn(request.type, request.id)}
                             class="btn btn-danger btn-border btn-sm w-100">Reject</button
                           >
                         </div>
                         <div class="col pl-0">
                           <button type="button" class="btn btn-view p-0"
+                          data-bs-toggle={"modal"}
+                          data-bs-target={"#modal" + modalID}
                             ><i class="bi bi-eye" /></button
                           >
                         </div>
@@ -193,7 +214,7 @@ let requests = [];
       <div class="col-2 mr-5">
         <label class="text-muted mb-0 ">Rows per page:</label>
         <label class="text-muted mb-0"
-          >{pageCount + 1} of {totalRequests / pageSize}</label
+          >{pageCount + 1} of {Math.ceil(totalRequests / pageSize)}</label
         >
         <button class="pagination-button" on:click={decrement}
           ><i class="icon fa-solid fa-chevron-left" /></button
@@ -214,8 +235,13 @@ let requests = [];
       isClose={false}
     >
     <header slot="header">
-      <h6></h6>
+      <h6>Vacation Details</h6>
     </header>
+    <div slot="body">
+      <div>
+        
+      </div>
+    </div>
   
   </Modal>
 

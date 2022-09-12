@@ -39,7 +39,7 @@
   {#each items as item (item.id)}
     <section
       bind:clientWidth={widthItem}
-      bind:clientWidth={widthItem}
+     
       on:click={() => dispatch("itemClick", item)}
       class="task {item.className}"
       style="grid-column: {item.startCol} / span {item.len};      
@@ -193,7 +193,15 @@
   .task--warning {
     font-weight: 500;
   }
-  :global(:global(.task--warning)) {
+  
+  .task-detail{
+    visibility: hidden;
+  }
+  .task--danger:hover .task-detail {
+    visibility: visible;
+  }
+
+  :global(.task--warning) {
     border-left-color: #fdb44d;
     background: #fef0db;
     color: #fc9b10;
@@ -225,7 +233,8 @@
     box-sizing: border-box;
     border-radius: 14px;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.08);
-    z-index: -1;
+    z-index: 1000;
+
   }
   .task-detail:after,
   .task-detail:before {

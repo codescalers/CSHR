@@ -7,6 +7,8 @@
   };
 
   export let stackedImages: stackedImageType[];
+  export let itemIndex: number = 0;
+
   let extra: number = 0;
   //let width: number = 0;
   /* let images: stackedImageType[] = stackedImages;
@@ -16,19 +18,18 @@
   $: images = stackedImages.splice(0, numberOfImages); */
 </script>
 
-<div class="d-flex gap-0 px-4">
+<div class="d-flex flex-row gap-0 px-4 unstack flex-wrap align-self-start">
   {#each stackedImages as image, index (index)}
     <div
-      class="stacked_img"
+      class="stacked_img my-2"
       style={`background-image:url(${
-        image.image?.length === 0
-          ? "https://i.imgur.com/9LDfN2H.png"
-          : process.env.APP_BASE_API_URL + image.image
-      }),url("https://i.imgur.com/9LDfN2H.png");z-index:${
+        process.env.APP_BASE_API_URL + image.image
+      });background-color:${image.image};z-index:${
         100 - index
       };border:1.5px solid ${image.gender === "Male" ? "blue" : "pink"}`}
       data-bs-toggle="tooltip"
       title={image.full_name + " #" + image.team}
+      on:click={() => (itemIndex = index)}
     >
       {#if image.full_name}
         <span class="text">
@@ -55,7 +56,7 @@
     height: 4.7rem;
     border-radius: 50%;
     overflow: hidden;
-    margin-left: -25px;
+    margin-left: -35px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -65,6 +66,10 @@
     font-weight: 700;
     letter-spacing: -0.1rem;
     background-color: var(--secondary-color);
+    cursor: pointer;
+  }
+  :global(.stacked_img:nth-child(n + 2):hover) {
+    margin-left: 5px;
   }
 
   .stacked_img .text {

@@ -7,6 +7,7 @@ export type dateType = {
   minute: number;
 }
 export type userType = {
+  id: number,
   full_name: string,
   email: string,
   image: string,
