@@ -1,6 +1,6 @@
 from server.cshr.serializers.vacations import VacationsSerializer
 from server.cshr.serializers.vacations import VacationsUpdateSerializer
-from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
+from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.services.users import get_user_by_id
@@ -75,7 +75,7 @@ class VacationsApiView(ViewSet, GenericAPIView):
 
 class VacationsUpdateApiView(ViewSet, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
-    permission_classes = [IsAdmin]
+    permission_classes = [IsSupervisor]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
@@ -85,7 +85,9 @@ class VacationsUpdateApiView(ViewSet, GenericAPIView):
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
-            send_email_for_vacation_reply(current_user, serializer.data)
+            # to send email async just add .delay after function name as the line below
+            # send_email_for_vacation_reply.delay(current_user.id, serializer.data)
+            send_email_for_vacation_reply(current_user.id, serializer.data)
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="vacation updated"
             )

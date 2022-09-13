@@ -9,7 +9,7 @@ from ..serializers.compensation import (
 from ..api.response import CustomResponse
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
+from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.compensation import (
     get_all_compensations,
@@ -83,7 +83,7 @@ class CompensationApiView(ViewSet, GenericAPIView):
 
 class CompensationUpdateApiView(ViewSet, GenericAPIView):
     serializer_class = CompensationUpdateSerializer
-    permission_classes = [IsAdmin]
+    permission_classes = [IsSupervisor]
     """method to update a Compensation by id"""
 
     def put(self, request: Request, id: str, format=None) -> Response:
@@ -94,7 +94,9 @@ class CompensationUpdateApiView(ViewSet, GenericAPIView):
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
-            send_email_for_compensation_reply(current_user, serializer.data)
+            # to send email async just add .delay after function name as the line below
+            # send_email_for_compensation_reply.delay(current_user.id, serializer.data)
+            send_email_for_compensation_reply(current_user.id, serializer.data)
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="compensation updated"
             )

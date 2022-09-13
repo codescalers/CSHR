@@ -2,7 +2,7 @@ from server.cshr.serializers.hr_letters import HrLetterSerializer
 from server.cshr.serializers.hr_letters import HrLetterUpdateSerializer
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
+from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.hr_letters import get_all_hrLetters, get_hrLetter_by_id
 from rest_framework.generics import GenericAPIView
@@ -76,7 +76,7 @@ class HrLetterApiView(ViewSet, GenericAPIView):
 
 class HrLetterUpdateApiView(ViewSet, GenericAPIView):
     serializer_class = HrLetterUpdateSerializer
-    permission_classes = [IsAdmin]
+    permission_classes = [IsSupervisor]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         hr_letter = get_hrLetter_by_id(id=id)
@@ -86,7 +86,9 @@ class HrLetterUpdateApiView(ViewSet, GenericAPIView):
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
-            send_email_for_hr_letter_reply(current_user, serializer.data)
+            # to send email async just add .delay after function name as the line below
+            # send_email_for_hr_letter_reply.delay(current_user.id, serializer.data)
+            send_email_for_hr_letter_reply(current_user.id, serializer.data)
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="HR Letter updated"
             )

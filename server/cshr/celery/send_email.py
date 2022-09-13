@@ -1,4 +1,3 @@
-from typing import Dict
 from django.conf import settings
 from celery import Celery
 from server.components import config
@@ -192,22 +191,22 @@ def send_email_for_compensation_request(user_id, data):
 
 
 @shared_task()
-def send_email_for_vacation_reply(user, data):
+def send_email_for_vacation_reply(approving_user_id, data):
     from django.core.mail import send_mail
     from server.cshr.utils.send_email import get_admins_emails
-    from server.cshr.utils.send_email import get_supervisor_dict
+    from server.cshr.models.users import User
+    from server.cshr.utils.send_email import get_supervisor_emails
 
+    approving_user: User = User.objects.get(pk=approving_user_id)
+    applying_user_id = data["applying_user"]
+    applying_user = User.objects.get(pk=applying_user_id)
     admins_emails = get_admins_emails()
-    supervisor_dict: Dict = get_supervisor_dict(user)
-    user_email = user.email
-    msg = "Request information: \n Approval user: {user_fname} {user_lname} \n \
-            Approving user: {supervisor_fname} {supervisor_lname}\n \
+    supervisor_emails = get_supervisor_emails(applying_user)
+    msg = "Request information: \n Approving user: {user_fname} {user_lname} \n \
             Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
             Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        supervisor_fname=supervisor_dict["fname"],
-        supervisor_lname=supervisor_dict["lname"],
+        user_fname=approving_user.first_name,
+        user_lname=approving_user.last_name,
         reason=data["reason"],
         start_date=data["from_date"],
         end_date=data["end_date"],
@@ -215,71 +214,57 @@ def send_email_for_vacation_reply(user, data):
         request_url="dummyurl.com",
     )
     mail_title = "Vacation reply"
-
-    send_mail(
-        mail_title, msg, settings.EMAIL_HOST_USER, admins_emails, fail_silently=False
-    )
-    send_mail(
-        mail_title,
-        msg,
-        settings.EMAIL_HOST_USER,
-        [user_email, supervisor_dict["email"]],
-        fail_silently=False,
-    )
+    recievers = admins_emails + supervisor_emails
+    recievers.append(applying_user.email)
+    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
 
 @shared_task()
-def send_email_for_hr_letter_reply(user, data):
+def send_email_for_hr_letter_reply(approving_user_id, data):
     from django.core.mail import send_mail
     from server.cshr.utils.send_email import get_admins_emails
-    from server.cshr.utils.send_email import get_supervisor_dict
+    from server.cshr.models.users import User
+    from server.cshr.utils.send_email import get_supervisor_emails
 
+    approving_user: User = User.objects.get(pk=approving_user_id)
+    applying_user_id = data["applying_user"]
+    applying_user = User.objects.get(pk=applying_user_id)
     admins_emails = get_admins_emails()
-    supervisor_dict: Dict = get_supervisor_dict(user)
-    user_email = user.email
-    msg = " Reply information: \n Applying user: {user_fname} {user_lname} \n \
-            Approving user: {supervisor_fname} {supervisor_lname} \n \
+    supervisor_emails = get_supervisor_emails(applying_user)
+
+    msg = " Reply information: \n Approving user: {user_fname} {user_lname} \n \
             Addresses : {addresses} \n \
             Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        supervisor_fname=supervisor_dict["fname"],
-        supervisor_lname=supervisor_dict["lname"],
+        user_fname=approving_user.first_name,
+        user_lname=approving_user.last_name,
         addresses=data["addresses"],
         status=data["status"],
         request_url="dummyurl.com",
     )
     mail_title = "Hr Letter reply"
-
-    send_mail(
-        mail_title, msg, settings.EMAIL_HOST_USER, admins_emails, fail_silently=False
-    )
-    send_mail(
-        mail_title,
-        msg,
-        settings.EMAIL_HOST_USER,
-        [user_email, supervisor_dict["email"]],
-        fail_silently=False,
-    )
+    recievers = admins_emails + supervisor_emails
+    recievers.append(applying_user.email)
+    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
 
 @shared_task()
-def send_email_for_compensation_reply(user, data):
+def send_email_for_compensation_reply(approving_user_id, data):
     from django.core.mail import send_mail
     from server.cshr.utils.send_email import get_admins_emails
-    from server.cshr.utils.send_email import get_supervisor_dict
+    from server.cshr.models.users import User
+    from server.cshr.utils.send_email import get_supervisor_emails
 
+    approving_user: User = User.objects.get(pk=approving_user_id)
+    applying_user_id = data["applying_user"]
+    applying_user = User.objects.get(pk=applying_user_id)
     admins_emails = get_admins_emails()
-    supervisor_dict: Dict = get_supervisor_dict(user)
-    user_email = user.email
-    msg = "Reply information: \n Applying user: {user_fname} {user_lname} \n \
-            Approving user: {supervisor_fname} {supervisor_lname} \n \
+    supervisor_emails = get_supervisor_emails(applying_user)
+
+    msg = "Reply information: \n Approving user: {user_fname} {user_lname} \n \
             Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
             Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        supervisor_fname=supervisor_dict["fname"],
-        supervisor_lname=supervisor_dict["lname"],
+        user_fname=approving_user.first_name,
+        user_lname=approving_user.last_name,
         reason=data["reason"],
         start_date=data["from_date"],
         end_date=data["end_date"],
@@ -287,14 +272,6 @@ def send_email_for_compensation_reply(user, data):
         request_url="dummyurl.com",
     )
     mail_title = "Compensation reply"
-
-    send_mail(
-        mail_title, msg, settings.EMAIL_HOST_USER, admins_emails, fail_silently=False
-    )
-    send_mail(
-        mail_title,
-        msg,
-        settings.EMAIL_HOST_USER,
-        [user_email, supervisor_dict["email"]],
-        fail_silently=False,
-    )
+    recievers = admins_emails + supervisor_emails
+    recievers.append(applying_user.email)
+    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
