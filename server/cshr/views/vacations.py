@@ -1,6 +1,6 @@
 from server.cshr.serializers.vacations import VacationsSerializer
 from server.cshr.serializers.vacations import VacationsUpdateSerializer
-from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
+from server.cshr.api.permission import IsSupervisor, UserIsAuthenticated, IsAdmin
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.services.users import get_user_by_id
@@ -14,6 +14,8 @@ from server.cshr.celery.send_email import send_email_for_vacation_request
 from server.cshr.api.response import CustomResponse
 from datetime import datetime
 import json
+
+from server.cshr.utils.update_change_log import update_vacation_change_log
 
 
 class VacationsApiView(ViewSet, GenericAPIView):
@@ -43,13 +45,13 @@ class VacationsApiView(ViewSet, GenericAPIView):
         )
 
     def get_all(self, request: Request) -> Response:
+        """method to get a single HR Letter by id"""
         vacations = get_all_vacations()
         serializer = VacationsSerializer(vacations, many=True)
         return CustomResponse.success(
             data=serializer.data, message="vacation requests found", status_code=200
         )
 
-        """method to get a single HR Letter by id"""
 
     def get_one(self, request: Request, id: str, format=None) -> Response:
 
@@ -75,17 +77,18 @@ class VacationsApiView(ViewSet, GenericAPIView):
 class VacationsUpdateApiView(ViewSet, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
     permission_classes = [IsAdmin]
+
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
             return CustomResponse.not_found(message="Hr Letter not found")
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
         current_user: User = get_user_by_id(request.user.id)
-        
-        change_log=vacation.change_log
-        change= {"approved_user":current_user.id,"approved_date":str(datetime.now()),"comments":{"user":current_user.id,"comment":request.data["comment"]}}
-        change_log["change"+str((len(change_log))+1)]=change
-        change_log=json.loads(json.dumps(change_log))
+        changed = update_vacation_change_log(vacation, )
+        # change_log=vacation.change_log
+        # change= {"approved_user":current_user.id,"approved_date":str(datetime.now()),"comments":{"user":current_user.id,"comment":request.data["comment"]}}
+        # change_log["change"+str((len(change_log))+1)]=change
+        # change_log=json.loads(json.dumps(change_log))
         if serializer.is_valid():
             
             serializer.save(approval_user=current_user,change_log=change_log)
@@ -96,4 +99,21 @@ class VacationsUpdateApiView(ViewSet, GenericAPIView):
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="vacation failed to update"
+        )
+
+class VacationApprovalAPIView(GenericAPIView):
+    """Use this class endpoint to change approved user value."""
+    serializer_class = VacationsSerializer
+    permission_classes = [IsAdmin | IsSupervisor]
+
+    def put(self, request: Request, id: str) -> Request:
+        """Use this endpoint to approve request."""
+        vacation = get_vacation_by_id(id=id)
+        vacation.approval_user = request.user
+        vacation.status = STATUS_CHOICES.APPROVED
+        comment=request.data.get('comment')
+        comment_ = {"user": request.user,"comment": comment}
+        update_vacation_change_log(vacation, datetime.now, comment_)
+        return CustomResponse.success(
+            data=VacationsSerializer(vacation).data, status_code=202, message="vacation status updated"
         )
