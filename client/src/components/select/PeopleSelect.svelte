@@ -22,7 +22,10 @@
         users.forEach((user: UserInterface) => {
           if (user.id !== $UserStore.id) options.push(user.id + "");
         });
-        alert("op" + options.length + "");
+      } else {
+        $AllUsersStore.forEach((user: UserInterface) => {
+          if (user.id !== $UserStore.id) options.push(user.id + "");
+        });
       }
     } catch (e) {
       isError = true;
