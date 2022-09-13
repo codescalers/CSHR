@@ -7,18 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0032_merge_20220911_1303'),
+        ("cshr", "0032_merge_20220911_1303"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hrletters',
-            name='date',
+            model_name="hrletters",
+            name="date",
             field=models.DateField(default=datetime.date(2022, 9, 11)),
         ),
         migrations.AddField(
-            model_name='hrletters',
-            name='with_date',
+            model_name="hrletters",
+            name="with_date",
             field=models.BooleanField(default=False),
         ),
     ]

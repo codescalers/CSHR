@@ -36,7 +36,6 @@ class LandingPageHrLetterSerializer(ModelSerializer):
             "with_date",
             "date",
             "created_at",
-
         ]
 
     def get_applying_user(self, obj: HrLetters) -> BaseUserSerializer:

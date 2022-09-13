@@ -4,6 +4,7 @@ from django.db import models
 from server.cshr.models.requests import Requests
 from datetime import date
 
+
 class HrLetters(Requests):
     """
     Class hr letters model for adding
@@ -13,7 +14,8 @@ class HrLetters(Requests):
     # who is sending to
     addresses = models.CharField(max_length=45)
     date = models.DateField(default=date.today())
-    with_date= models.BooleanField(default=False)
+    with_date = models.BooleanField(default=False)
+
     def __str__(self) -> str:
         return self.addresses
 
