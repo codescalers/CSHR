@@ -96,7 +96,7 @@ class User(AbstractBaseUser, TimeStamp):
     gender = models.CharField(max_length=20, choices=GENDER_TYPE.choices)
     social_insurance_number = models.CharField(max_length=45)
     USERNAME_FIELD = "email"
-    reporting_to = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
+    reporting_to = models.ManyToManyField("User", blank=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
