@@ -1,6 +1,6 @@
 <script lang="ts">
   import Submit from "../submit/Submit.svelte";
-  import ModalButton from "../modal/ModalButton.svelte";
+  import ModalButton from "../modal/ModalOpenButton.svelte";
   import Modal from "../modal/Modal.svelte";
   // import Input from "../input/Input.svelte";
   export let modalID = 1211112121121121;

@@ -42,6 +42,9 @@
       <div class="modal-body">
         <slot name="body" />
         <slot name="form" />
+        <div class="m-auto">
+          <slot name="loader" />
+        </div>
       </div>
       {#if isFooter}
         <div class="modal-footer">
@@ -51,7 +54,6 @@
               class="btn btn-secondary"
               data-bs-dismiss="modal"
               data-bs-target="#modal"
-
             >
               {closeText}
             </button>

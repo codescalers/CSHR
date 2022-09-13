@@ -2,7 +2,7 @@
   import type { UserInterface } from "../../types";
   import userDataService from "../../services/axios/users/UserDataService";
   import { onMount } from "svelte";
-  import { AllUsersStore } from "../../stores";
+  import { AllUsersStore, UserStore } from "../../stores";
   import PeopleSlot from "./PeopleSlot.svelte";
   import MultiSelect from "svelte-multiselect";
   export let selected: number[] = [];
@@ -19,7 +19,10 @@
       if ($AllUsersStore.length === 0) {
         const users = (await userDataService.getAll()).data;
         AllUsersStore.set(users);
-        options = users.map((user: UserInterface) => user.id + "");
+        users.forEach((user: UserInterface) => {
+          if (user.id !== $UserStore.id) options.push(user.id + "");
+        });
+        alert("op" + options.length + "");
       }
     } catch (e) {
       isError = true;
@@ -90,6 +93,6 @@
     width: 40px;
     height: 40px;
     text-align: center;
-    margin:0 auto;
+    margin: 0 auto;
   }
 </style>

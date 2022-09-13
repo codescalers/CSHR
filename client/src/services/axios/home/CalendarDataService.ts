@@ -50,6 +50,69 @@ class CalendarDataService {
         }
     }
 
+
+    public async postEvent(e: { description: string, name: string, people: number[], end_date: string, end_time: string, from_date: string, from_time: string, location: string }) {
+        try {
+            if (!e.name || !e.people || e.people.length !== 0 || !e.end_date || !e.location || !e.end_time || !e.from_time) throw new Error("Invalid data");
+            if (e.people.length === 0) throw new Error("No invited users");
+            const [fromHour, fromMinute] = e.from_time.split(":");
+            const [fromYear, fromMonth, fromDay] = e.from_date.split("-");
+            const [endHour, endMinute] = e.end_time.split(":");
+            const [endYear, endMonth, endDay] = e.from_date.split("-");
+            const { status } = await http.post("/meeting/", JSON.stringify({
+                "people": e.people,
+                "from_date": {
+                    year: Number(fromYear),
+                    month: Number(fromMonth),
+                    day: Number(fromDay),
+                    hour: Number(fromHour),
+                    minute: Number(fromMinute)
+                },
+                "end_date": {
+                    year: Number(endYear),
+                    month: Number(endMonth),
+                    day: Number(endDay),
+                    hour: Number(endHour),
+                    minute: Number(endMinute)
+                },
+                "name": e.name,
+                "description": e.description,
+                "location": e.location
+            }));
+            if (status !== 201) {
+                throw new Error("Error while posting event with status " + status);
+            }
+
+        }
+        catch (error) {
+            alert(error)
+            console.error(`${this.errorMessage} Error while posting event data ${error}`);
+            return error
+        }
+    }
+
+    public async postLeave(e: { applyingUserId: number, reason: string, end_date: string, from_date: string, location: string }) {
+        try {
+            if (!e.applyingUserId || !e.end_date || !e.location) throw new Error("Invalid data");
+            const { status } = await http.post("/vacation/", JSON.stringify({
+                "applying_user_id": e.applyingUserId,
+                "from_date": e.from_date,
+                "end_date": e.end_date,
+                "reason": e.reason,
+                "type": ""
+            }));
+            if (status !== 201) {
+                throw new Error("Error while posting leave with status " + status);
+            }
+
+        }
+        catch (error) {
+            alert(error)
+            console.error(`${this.errorMessage} Error while leave event data ${error}`);
+            return error
+        }
+    }
+
     public async initCalendar() {
         let now = new Date();
         let year = now.getFullYear(); //	this is the month & year displayed
