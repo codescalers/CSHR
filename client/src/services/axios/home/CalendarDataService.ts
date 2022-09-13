@@ -21,26 +21,30 @@ class CalendarDataService {
             if (!e.hostedUserID || !e.invitedUsers || !e.meetingLink || !e.time || !e.date) throw new Error("Invalid data");
             if (e.invitedUsers.length === 0) throw new Error("No invited users");
             if (e.invitedUsers.includes(e.hostedUserID)) throw new Error("Hosted user is also invited");
-
+            console.log("meeting", e)
             const [hour, minute] = e.time.split(":");
             const [year, month, day] = e.date.split("-");
-            alert(e.hostedUserID+"s")
-            const { data } = await http.post("/home/meeting/", {
+            alert(e.hostedUserID + "s")
+            const { status } = await http.post("/meeting/", JSON.stringify({
                 "host_user": e.hostedUserID,
                 "invited_users": e.invitedUsers,
                 "date": {
-                    year: year,
-                    month: month,
-                    day: day,
+                    year: Number(year),
+                    month: Number(month),
+                    day: Number(day),
                     hour: Number(hour),
                     minute: Number(minute)
                 },
                 "meeting_link": e.meetingLink,
                 "location": e.location
-            });
-            return data;
+            }));
+            if (status !== 201) {
+                throw new Error("Error while posting meeting");
+            }
+
         }
         catch (error) {
+            alert(error)
             console.error(`${this.errorMessage} Error while posting meeting data ${error}`);
             return error
         }

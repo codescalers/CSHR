@@ -33,11 +33,13 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
 ]
+#  removed   "django.middleware.csrf.CsrfViewMiddleware",
+
 
 ROOT_URLCONF = "server.urls"
 
@@ -155,8 +157,15 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "cshr.User"
 
+""" CORS_ALLOW_CREDENTIALS: True
+ """
 CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
-
+""" CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8080'  # for localhost (SVELTE Default)
+] """
+""" CORS_ORIGIN_WHITELIST = (
+    'http://localhost:8080'  # for localhost (SVELTE Default)
+) """
 # email config
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "cshr.User"

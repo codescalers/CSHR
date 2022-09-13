@@ -12,7 +12,12 @@ class Event(TimeStamp):
     description = models.CharField(max_length=200)
     people = models.ManyToManyField(User, related_name="event_participants")
     location = models.TextField(max_length=300)
-    date = models.DateTimeField(null=True)
+    start_date = models.DateTimeField(null=True)
+    end_date = models.DateTimeField(null=True)
 
     def __str__(self) -> str:
         return self.name
+
+    class Meta:
+        verbose_name = "Event"
+        verbose_name_plural = "Events"

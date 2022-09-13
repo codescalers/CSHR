@@ -114,7 +114,6 @@
     <Submit
       label="Submit"
       onClick={async () => {
-        alert("submit");
         await CalendarDataService.postMeeting({
           hostedUserID: $UserStore.id,
           date: startDate,

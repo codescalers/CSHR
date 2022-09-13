@@ -10,6 +10,7 @@
   export let removeAllTitle = "Remove all users";
   export let isLoading = false;
   export let isError: boolean | null = null;
+  // user ids
   let options: string[] = [];
 
   onMount(async () => {
@@ -57,9 +58,11 @@
     --sms-min-width="4rem"
     --sms-bg="var(--secondary-color)"
     {removeAllTitle}
+    id="people-select"
+    name="people-select"
   >
-    <PeopleSlot let:option {option} slot="option" />
-    <PeopleSlot let:option {option} slot="selected" />
+    <PeopleSlot let:idx {idx} let:option {option} slot="option" />
+    <PeopleSlot let:idx {idx} let:option {option} slot="selected" />
   </MultiSelect>
 {/if}
 
