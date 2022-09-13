@@ -31,7 +31,7 @@ class HrLetterApiView(ViewSet, GenericAPIView):
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
-            send_email_for_hr_letter_request(current_user, serializer.data)
+            send_email_for_hr_letter_request.delay(current_user.id, serializer.data)
             return CustomResponse.success(
                 data=serializer.data,
                 message="Hr letter is created successfully",

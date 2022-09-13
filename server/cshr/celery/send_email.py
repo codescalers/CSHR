@@ -6,10 +6,7 @@ from celery.schedules import crontab
 import datetime
 from django.core.mail import send_mail
 from celery import shared_task
-from server.cshr.models.users import User
-from server.cshr.utils.send_email import get_admins_emails
-from server.cshr.utils.send_email import get_supervisor_dict
-from server.cshr.utils.send_email import get_supervisor_emails
+
 
 app = Celery("tasks", broker=config("REDIS_HOST"))
 
@@ -111,15 +108,19 @@ def send_email():
 
 
 @shared_task()
-def send_email_for_vacation_request(user, data):
+def send_email_for_vacation_request(user_id, data):
     from django.core.mail import send_mail
+    from server.cshr.models.users import User
+    from server.cshr.utils.send_email import get_admins_emails
+    from server.cshr.utils.send_email import get_supervisor_emails
 
+    user: User = User.objects.get(pk=user_id)
     admins_emails = get_admins_emails()
     supervisor_emails = get_supervisor_emails(user)
     user_email = user.email
     msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
-            Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
-            Status :{status} \n Request Url: {request_url}".format(
+        Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
+        Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
         reason=data["reason"],
@@ -134,12 +135,15 @@ def send_email_for_vacation_request(user, data):
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
 
-@shared_task
-def send_email_for_hr_letter_request(user: User, data):
+@shared_task()
+def send_email_for_hr_letter_request(user_id, data):
     from django.core.mail import send_mail
+    from server.cshr.models.users import User
+    from server.cshr.utils.send_email import get_admins_emails
+    from server.cshr.utils.send_email import get_supervisor_emails
 
+    user: User = User.objects.get(pk=user_id)
     admins_emails = get_admins_emails()
-    # supervisor_dict: Dict = get_supervisor_dict(user)
     supervisor_emails = get_supervisor_emails(user)
     user_email = user.email
     msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
@@ -159,15 +163,19 @@ def send_email_for_hr_letter_request(user: User, data):
 
 
 @shared_task()
-def send_email_for_compensation_request(user, data):
+def send_email_for_compensation_request(user_id, data):
     from django.core.mail import send_mail
+    from server.cshr.models.users import User
+    from server.cshr.utils.send_email import get_admins_emails
+    from server.cshr.utils.send_email import get_supervisor_emails
 
+    user: User = User.objects.get(pk=user_id)
     admins_emails = get_admins_emails()
     supervisor_emails = get_supervisor_emails(user)
     user_email = user.email
     msg = " Request information: \n Applying user: {user_fname} {user_lname} \n \
-            Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
-            Status :{status} \n Request Url: {request_url}".format(
+        Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
+        Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
         reason=data["reason"],
@@ -186,6 +194,8 @@ def send_email_for_compensation_request(user, data):
 @shared_task()
 def send_email_for_vacation_reply(user, data):
     from django.core.mail import send_mail
+    from server.cshr.utils.send_email import get_admins_emails
+    from server.cshr.utils.send_email import get_supervisor_dict
 
     admins_emails = get_admins_emails()
     supervisor_dict: Dict = get_supervisor_dict(user)
@@ -221,6 +231,8 @@ def send_email_for_vacation_reply(user, data):
 @shared_task()
 def send_email_for_hr_letter_reply(user, data):
     from django.core.mail import send_mail
+    from server.cshr.utils.send_email import get_admins_emails
+    from server.cshr.utils.send_email import get_supervisor_dict
 
     admins_emails = get_admins_emails()
     supervisor_dict: Dict = get_supervisor_dict(user)
@@ -254,6 +266,8 @@ def send_email_for_hr_letter_reply(user, data):
 @shared_task()
 def send_email_for_compensation_reply(user, data):
     from django.core.mail import send_mail
+    from server.cshr.utils.send_email import get_admins_emails
+    from server.cshr.utils.send_email import get_supervisor_dict
 
     admins_emails = get_admins_emails()
     supervisor_dict: Dict = get_supervisor_dict(user)
