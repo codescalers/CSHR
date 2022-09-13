@@ -32,7 +32,7 @@ class VacationsApiView(ViewSet, GenericAPIView):
             )
             # to send email async just add .delay after function name as the line below
             # send_email_for_vacation_request.delay(current_user.id, serializer.data)
-            send_email_for_vacation_request.delay(current_user.id, serializer.data)
+            send_email_for_vacation_request(current_user.id, serializer.data)
             return CustomResponse.success(
                 data=serializer.data,
                 message="vacation request is created successfully",
