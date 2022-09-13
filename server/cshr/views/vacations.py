@@ -109,11 +109,11 @@ class VacationApprovalAPIView(GenericAPIView):
     def put(self, request: Request, id: str) -> Request:
         """Use this endpoint to approve request."""
         vacation = get_vacation_by_id(id=id)
-        vacation.approval_user = request.user
+        # vacation.approval_user = request.user
         vacation.status = STATUS_CHOICES.APPROVED
         comment=request.data.get('comment')
-        comment_ = {"user": request.user,"comment": comment}
-        update_vacation_change_log(vacation, datetime.now, comment_)
+        comment_ = {"user": request.user.id,"comment": comment}
+        update_vacation_change_log(vacation, str(datetime.today()), comment_)
         return CustomResponse.success(
             data=VacationsSerializer(vacation).data, status_code=202, message="vacation status updated"
         )
