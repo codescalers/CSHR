@@ -4,6 +4,8 @@
   import ModalButton from "../modal/ModalButton.svelte";
   import Modal from "../modal/Modal.svelte";
   import PeopleSelect from "../select/PeopleSelect.svelte";
+  import CalendarDataService from "../../services/axios/home/CalendarDataService";
+  import { UserStore } from "../../stores";
 
   export let startDate: string;
   export let endDate: string;
@@ -37,6 +39,7 @@
     meetingLinkIsError === true ||
     meetingTimeIsError === null ||
     meetingTimeIsError === true ||
+    meetingTimeValue === undefined ||
     peopleSelected.length === 0;
 </script>
 
@@ -110,7 +113,17 @@
   <div slot="submit">
     <Submit
       label="Submit"
-      onClick={() => {}}
+      onClick={async () => {
+        alert("submit");
+        await CalendarDataService.postMeeting({
+          hostedUserID: $UserStore.id,
+          date: startDate,
+          invitedUsers: peopleSelected,
+          location: meetingLocationValue,
+          meetingLink: meetingLinkValue,
+          time: meetingTimeValue,
+        });
+      }}
       className="btn btn-primary"
       bind:disabled={submitDisabled}
     />

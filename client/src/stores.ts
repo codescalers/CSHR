@@ -11,7 +11,7 @@ export const UserStore: Writable<UserInterface> = writable({
     email: "tcarvalhovb@gmail.com",
     image: "https://avatars.githubusercontent.com/u/11314585?v=4",
     role: "admin",
-    id: 1,
+    id: 2,
     team: "development",
     password: "123456"
 

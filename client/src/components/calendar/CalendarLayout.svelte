@@ -8,7 +8,6 @@
   export let items: any[] = [];
   export let eventNames: Set<eventNameType>;
 
-
   let dispatch = createEventDispatcher();
   function onDelete(event: { detail: { id: any } }) {
     dispatch("onDelete", { id: event.detail.id });
@@ -40,14 +39,15 @@
   {#each items as item (item.id)}
     {#if eventNames.has(item.eventName)}
       <section
-        style="align-self: {item.isBottom
+        on:click={() => dispatch("itemClick", item)}
+        class="task {item.className}"
+        style="grid-column: {item.startCol} / span {item.len};      
+          grid-row: {item.startRow};  
+          align-self: {item.isBottom
           ? 'end'
           : item.isStart
           ? 'start'
-          : 'center'};grid-column: {item.startCol} / span {item.len};      
-        grid-row: {item.startRow};  "
-        on:click={() => dispatch("itemClick", item)}
-        class="task {item.className} d-flex flex-column justify-content-center align-items-center"
+          : 'center'};"
       >
         <button
           type="button"
