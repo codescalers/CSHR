@@ -68,7 +68,9 @@ class CompensationApiView(ViewSet, GenericAPIView):
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
-            send_email_for_compensation_request.delay(current_user.id, serializer.data)
+            # to send email async just add .delay after function name as the line below
+            # send_email_for_compensation_request.delay(current_user.id, serializer.data)
+            send_email_for_compensation_request(current_user.id, serializer.data)
             return CustomResponse.success(
                 data=serializer.data,
                 message="Compensation is created successfully",

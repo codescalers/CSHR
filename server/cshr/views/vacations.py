@@ -30,6 +30,8 @@ class VacationsApiView(ViewSet, GenericAPIView):
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
+            # to send email async just add .delay after function name as the line below
+            # send_email_for_vacation_request.delay(current_user.id, serializer.data)
             send_email_for_vacation_request.delay(current_user.id, serializer.data)
             return CustomResponse.success(
                 data=serializer.data,
