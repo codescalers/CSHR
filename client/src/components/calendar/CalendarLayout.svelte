@@ -39,16 +39,14 @@
 
   {#each items as item (item.id)}
     {#if eventNames.has(item.eventName)}
+   
       <section
-        style="align-self: {item.isBottom
-          ? 'end'
-          : item.isStart
-          ? 'start'
-          : 'center'};grid-column: {item.startCol} / span {item.len};      
-        grid-row: {item.startRow};  "
-        on:click={() => dispatch("itemClick", item)}
-        class="task {item.className} d-flex flex-column justify-content-center align-items-center"
-      >
+      on:click={() => dispatch("itemClick", item)}
+      class="task {item.className}"
+      style="grid-column: {item.startCol} / span {item.len};      
+      grid-row: {item.startRow};  
+      align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};"
+    >
         <button
           type="button"
           class="modal-btn m-0 pl-0 "
@@ -95,8 +93,6 @@
     border: none;
     cursor: pointer;
     width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
   }
 
@@ -117,7 +113,7 @@
     box-sizing: border-box;
     color: #707172;
     position: relative;
-    z-index: 1;
+    z-index: 1000;
   }
   .day:nth-of-type(7n + 7) {
     border-right: 0;

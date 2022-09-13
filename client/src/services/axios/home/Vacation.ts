@@ -44,7 +44,7 @@ class Vacation {
         let from_date = new Date(from_year, from_month, from_day);
         let [endYear, endMonth, endDay] = (vacation.end_date).split("-");
         let end_date = new Date(endYear, endMonth, endDay);
-        let length = this.subtractDates(from_date, end_date) / (1000 * 3600 * 24);
+        let length = (this.subtractDates(from_date, end_date) / (1000 * 3600 * 24))+2;
         return {
             id: id,
             title: "🌴" + eventName,
