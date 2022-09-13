@@ -29,7 +29,7 @@
   onMount(async () => {
     requests = await getRequests();
     totalRequests = requests.length;
-    console.log(requests)
+  
   });
 </script>
 
@@ -173,19 +173,6 @@
     border: unset !important;
     outline: unset !important;
   }
-  .btn-view {
-    border:none !important;
-  }
-  .btn-border{
-    border-radius: 35px;
-  }
-  .btn-success{
-    background:#29CC97;
-    border-color: #29CC97;
-  }
-  .btn-danger{
-    background:#F12B2C;
-    border-color: #F12B2C;
-  }
+
   
 </style>

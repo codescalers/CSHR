@@ -4,28 +4,37 @@
     import updateLetters from "../../services/axios/requests/hr_letters";
     import updateCompensation from "../../services/axios/requests/compensation"
     import getRequests from "../../services/axios/requests/requests"
-    export let request:any, index:number
+    export let request:any, index:number, requests:any
 
     
   async function  approve_btn (element: any,index:number) { 
-    document.body.style.cursor ='wait';
+    document.getElementById(`approve-${index}`).style.cursor ='wait';
+    document.getElementById(`reject-${index}`).style.cursor ='wait';
     if (element.type == "Vacation"){
-      console.log("before")
      if(await updateVacations(element.id, { status: "approved"}) ){
-      console.log("after"+index)
-      
+      document.getElementById(`approve-${index}`).style.cursor ='defult';
+      document.getElementById(`approve-${index}`).disabled = true;
+      document.getElementById(`reject-${index}`).style.display= 'none';
      }
       
     }else if (element.type == "HR letters"){
-      
-      await updateLetters(element.id, { status: "approved"});
+      document.getElementById(`approve-${index}`).style.cursor ='wait';
+      document.getElementById(`reject-${index}`).style.cursor ='wait';
+      if (await updateLetters(element.id, { status: "approved"})){
+        document.getElementById(`approve-${index}`).style.cursor ='defult';
+        document.getElementById(`approve-${index}`).disabled = true;
+        document.getElementById(`reject-${index}`).style.display= 'none';
+      }
     }else if (element.type == "Compensation"){
-      let data:JSON= JSON.parse('{"status":"approved"}')
-      await updateCompensation(element.id,data);
+      document.getElementById(`approve-${index}`).style.cursor ='wait';
+      document.getElementById(`reject-${index}`).style.cursor ='wait';
+      if(await updateCompensation(element.id,{"status":"approved"})){
+        document.getElementById(`approve-${index}`).style.cursor ='defult';
+        document.getElementById(`approve-${index}`).disabled = true;
+        document.getElementById(`reject-${index}`).style.display= 'none';
+      }
     }
-    element = await getRequests();
     document.body.style.cursor ='defult';
-    console.log(element);
   }
   async function reject_btn(element: any,index:number) {
     document.body.style.cursor='wait';
@@ -72,6 +81,7 @@
       >
         <div class="col">
           <button
+           
             type="button"
             class="btn btn-success btn-border btn-sm w-100 "
             disabled>Approved</button
@@ -92,6 +102,7 @@
       <div class="row align-items-center">
         <div class="col">
           <button
+            id="approve-{index}"
             type="button"
             on:click={()=>approve_btn(request,index)}
             class="btn btn-success btn-border btn-sm w-100 mb-1"
@@ -99,7 +110,7 @@
           >
           <button
             type="button"
-            
+            id="reject-{index}"
             on:click={()=>reject_btn(request,index)}
             class="btn btn-danger btn-border btn-sm w-100">Reject</button
           >
@@ -110,7 +121,24 @@
           data-bs-target={"#modal" + index}
             ><i class="bi bi-eye" /></button
           >
+          <RequestModal {index}{request}></RequestModal>
         </div>
       </div>
     {/if}
   </div>
+  <style>
+      .btn-view {
+    border:none !important;
+  }
+  .btn-border{
+    border-radius: 35px;
+  }
+  .btn-success{
+    background:#29CC97;
+    border-color: #29CC97;
+  }
+  .btn-danger{
+    background:#F12B2C;
+    border-color: #F12B2C;
+  }
+  </style>
