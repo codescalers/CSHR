@@ -66,19 +66,6 @@
           </div>
         {/if}
       </section>
-
-      <!--    <Modal
-      bind:title={item.title}
-      bind:body={item.description}
-      bind:id={item.id}
-      isDelete={true}
-      isDone={true}
-      doneText={"Done"}
-      on:onDelete={onDelete}
-      on:onDone={onDone}
-      deleteText={"Delete"}
-      isFooter={true}
-    /> -->
       <CalendarModalData
         bind:item
         on:onDelete={onDelete}

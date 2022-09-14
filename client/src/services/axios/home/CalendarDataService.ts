@@ -95,7 +95,7 @@ class CalendarDataService {
         try {
             if (!e.applyingUserId || !e.end_date) throw new Error("Invalid data");
             const { status } = await http.post("/vacations/", JSON.stringify({
-                "applying_user_id": e.applyingUserId,
+                "applying_user": e.applyingUserId,
                 "from_date": e.from_date,
                 "end_date": e.end_date,
                 "reason": e.reason,
