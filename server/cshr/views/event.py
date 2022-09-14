@@ -28,7 +28,7 @@ class EventApiView(ViewSet, GenericAPIView):
                 type(from_date_parsing) == datetime.datetime
                 and type(end_date_parsing) == datetime.datetime
             ):
-                serializer.save(from_date=from_date_parsing,end_date=end_date_parsing)
+                serializer.save(from_date=from_date_parsing, end_date=end_date_parsing)
                 return CustomResponse.success(
                     data=serializer.data,
                     message="event is created successfully",
