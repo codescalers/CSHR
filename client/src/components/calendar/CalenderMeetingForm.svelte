@@ -1,9 +1,11 @@
 <script lang="ts">
   import Input from "../input/Input.svelte";
-  import Submit from "../submit/Submit.svelte";
-  import ModalButton from "../modal/ModalButton.svelte";
+  import ModalOpenButton from "../modal/ModalOpenButton.svelte";
+  import ModalCloseButton from "../modal/ModalCloseButton.svelte";
   import Modal from "../modal/Modal.svelte";
   import PeopleSelect from "../select/PeopleSelect.svelte";
+  import CalendarDataService from "../../services/axios/home/CalendarDataService";
+  import { UserStore } from "../../stores";
 
   export let startDate: string;
   export let endDate: string;
@@ -20,7 +22,7 @@
 
   let meetingPeopleIsError: boolean | null = false;
   export let isLoading: boolean = false;
-  export let isError: boolean | null = false;
+  export let isError: boolean = false;
 
   let peopleSelected: number[] = [];
   $: fillDisabled =
@@ -37,6 +39,7 @@
     meetingLinkIsError === true ||
     meetingTimeIsError === null ||
     meetingTimeIsError === true ||
+    meetingTimeValue === undefined ||
     peopleSelected.length === 0;
 </script>
 
@@ -64,7 +67,7 @@
     placeholder={"Meeting Location"}
     bind:isError={meetingLocationIsError}
   />
-  <ModalButton label="Fill" bind:disabled={fillDisabled} {modalID} />
+  <ModalOpenButton label="Fill" bind:disabled={fillDisabled} {modalID} />
 </form>
 
 <Modal
@@ -74,43 +77,81 @@
   isFooter={true}
   doneText={"Done"}
   deleteText={"Delete"}
-  isClose={false}
+  isClose={true}
 >
   <header slot="header">
     <h6>💼 Meeting Form</h6>
   </header>
+
   <form slot="form">
-    <Input
-      type="text"
-      label={"Meeting Link"}
-      bind:value={meetingLinkValue}
-      handleInput={() => {
-        return false;
-      }}
-      size={20}
-      errorMessage="Meeting Link is invalid"
-      hint={"please write a valid link"}
-      placeholder={"Meeting Link"}
-      bind:isError={meetingLinkIsError}
-    />
-    <Input
-      type="time"
-      label={"Meeting Time"}
-      bind:value={meetingTimeValue}
-      handleInput={() => {
-        return false;
-      }}
-      size={20}
-      errorMessage="Meeting Time is invalid"
-      hint={"please write a valid time"}
-      placeholder={"Meeting Time"}
-      bind:isError={meetingTimeIsError}
-    />
+    {#if isError}
+      <div class="alert alert-danger" role="alert">
+        <strong>Oh snap!</strong> Change a few things up and try submitting again.
+      </div>
+    {:else if isLoading}
+      <div class="alert alert-info" role="alert">
+        <strong>Loading...</strong> Please wait.
+      </div>
+    {:else}
+      <Input
+        type="text"
+        label={"Meeting Link"}
+        bind:value={meetingLinkValue}
+        handleInput={() => {
+          return false;
+        }}
+        size={20}
+        errorMessage="Meeting Link is invalid"
+        hint={"please write a valid link"}
+        placeholder={"Meeting Link"}
+        bind:isError={meetingLinkIsError}
+      />
+      <Input
+        type="time"
+        label={"Meeting Time"}
+        bind:value={meetingTimeValue}
+        handleInput={() => {
+          return false;
+        }}
+        size={20}
+        errorMessage="Meeting Time is invalid"
+        hint={"please write a valid time"}
+        placeholder={"Meeting Time"}
+        bind:isError={meetingTimeIsError}
+      />
+    {/if}
   </form>
+
   <div slot="submit">
-    <Submit
+    <ModalCloseButton
+      {modalID}
       label="Submit"
-      onClick={() => {}}
+      onClick={async () => {
+        isLoading = true;
+        try {
+          await CalendarDataService.postMeeting({
+            hostedUserID: $UserStore.id,
+            date: startDate,
+            invitedUsers: peopleSelected,
+            location: meetingLocationValue,
+            meetingLink: meetingLinkValue,
+            time: meetingTimeValue,
+          });
+          isLoading = false;
+          meetingLocationValue = "";
+          meetingTimeValue = "";
+          meetingLinkValue = "";
+          peopleSelected = [];
+        } catch (e) {
+          isError = true;
+        } finally {
+          isLoading = false;
+          meetingLocationValue = "";
+          meetingTimeValue = "";
+          meetingLinkValue = "";
+          peopleSelected = [];
+        }
+      }}
       className="btn btn-primary"
       bind:disabled={submitDisabled}
     />

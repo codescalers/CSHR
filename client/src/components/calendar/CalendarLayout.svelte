@@ -1,12 +1,12 @@
 <script lang="ts">
+  import type { eventNameType } from "../../services/axios/home/types";
+
   import { createEventDispatcher } from "svelte";
   import CalendarModalData from "./CalendarModalData.svelte";
   export var headers: string[] = [];
   export let days: any[] = [];
   export let items: any[] = [];
-
-  let widthItem: number;
-  $: itemLetters = Math.ceil(widthItem / 14);
+  export let eventNames: Set<eventNameType>;
 
   let dispatch = createEventDispatcher();
   function onDelete(event: { detail: { id: any } }) {
@@ -37,53 +37,39 @@
   {/each}
 
   {#each items as item (item.id)}
-    <section
-      bind:clientWidth={widthItem}
-     
-      on:click={() => dispatch("itemClick", item)}
-      class="task {item.className}"
-      style="grid-column: {item.startCol} / span {item.len};      
-      grid-row: {item.startRow};  
-      align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};
-      height:'50rem !important';"
-    >
-      <button
-        type="button"
-        class="modal-btn m-0 pl-0 "
-        style="text-align: left;"
-        data-bs-toggle="modal"
-        data-bs-target={`#modal${item.id}`}
-      >
-        {(item.title + "").slice(0, itemLetters * item.len) +
-          (itemLetters * item.len >= item.title.length ? "" : "...")}
-      </button>
+    {#if eventNames.has(item.eventName)}
+      <section
+        on:click={() => dispatch("itemClick", item)}
+        style="grid-column: {item.startCol} / span {item.len};      
+        grid-row: {item.startRow};  
+        align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};
+      "
+        class="task {item.className}"
+        >
+        <button
+          type="button"
+          class="modal-btn m-0 pl-0 "
+          style="text-align: left;"
+          data-bs-toggle="modal"
+          data-bs-target={`#modal${item.id}`}
+        >
+          {item.title + ""}
+        </button>
 
-      {#if item.detailHeader}
-        <div class="task-detail">
-          <h2>{item.detailHeader}</h2>
-          <p>{@html item.detailContent}</p>
-        </div>
-      {/if}
-    </section>
-
-    <!--    <!--    <Modal
-      bind:title={item.title}
-      bind:body={item.description}
-      bind:id={item.id}
-      isDelete={true}
-      isDone={true}
-      doneText={"Done"}
-      on:onDelete={onDelete}
-      on:onDone={onDone}
-      deleteText={"Delete"}
-      isFooter={true}
-    /> -->
-    <CalendarModalData
-      bind:item
-      on:onDelete={onDelete}
-      on:onDelete={onDelete}
-      on:onDone={onDone}
-    />
+        {#if item.detailHeader}
+          <div class="task-detail">
+            <h2>{item.detailHeader}</h2>
+            <p>{@html item.detailContent}</p>
+          </div>
+        {/if}
+      </section>
+      <CalendarModalData
+        bind:item
+        on:onDelete={onDelete}
+        on:onDelete={onDelete}
+        on:onDone={onDone}
+      />
+    {/if}
   {/each}
 </div>
 
@@ -93,6 +79,9 @@
     border: none;
     cursor: pointer;
     width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .calendar {
@@ -193,8 +182,8 @@
   .task--warning {
     font-weight: 500;
   }
-  
-  .task-detail{
+
+  .task-detail {
     visibility: hidden;
   }
   .task--danger:hover .task-detail {
@@ -234,7 +223,6 @@
     border-radius: 14px;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.08);
     z-index: 1000;
-
   }
   .task-detail:after,
   .task-detail:before {

@@ -1,9 +1,6 @@
 <script lang="ts">
-  import type { UserInterface } from "../types";
   import Input from "../components/input/Input.svelte";
-  import StackedImages from "../components/image/StackedImages.svelte";
   import Select from "../components/select/PeopleSelect.svelte";
-  export let user: UserInterface;
 
   import Sidebar from "../components/sidebar/Sidebar.svelte";
   const handleInput = (e: any): boolean => {
@@ -14,7 +11,7 @@
   let isError: null | boolean = null;
 </script>
 
-<Sidebar bind:user>
+<Sidebar>
   <span slot="page-name">Calendar</span>
   <section class="fluid-container mt-5 content" slot="content">
     <Input
@@ -29,7 +26,6 @@
       bind:isError
     />
 
-    <StackedImages />
     <Select />
   </section>
 </Sidebar>

@@ -15,7 +15,14 @@ class MeetingsSerializer(ModelSerializer):
 
     class Meta:
         model = Meetings
-        fields = ("id", "invited_users", "date", "meeting_link", "host_user")
+        fields = (
+            "id",
+            "invited_users",
+            "date",
+            "meeting_link",
+            "host_user",
+            "location",
+        )
 
     def get_invited_users(self, obj: Meetings) -> List[BaseUserSerializer]:
         """Returns a list of users that invited to the meeting."""

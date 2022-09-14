@@ -30,7 +30,7 @@
   <label for={id} class={`${isTop ? "col-sm-4" : ""} col-form-label py-3`}
     >{label}</label
   >
-  <div class="col-sm-8">
+  <div class={`${isTop ?"col-sm-8":"col-sm-12"}`}>
     <input
       use:ref
       bind:value

@@ -21,12 +21,16 @@
 <div class="d-flex flex-row gap-0 px-4 unstack flex-wrap align-self-start">
   {#each stackedImages as image, index (index)}
     <div
-      class="stacked_img my-2"
+      class={`stacked_img my-2 ${
+        itemIndex === index && stackedImages.length !== 1 ? "activate" : ""
+      }`}
       style={`background-image:url(${
         process.env.APP_BASE_API_URL + image.image
-      });background-color:${image.image};z-index:${
-        100 - index
-      };border:1.5px solid ${image.gender === "Male" ? "blue" : "pink"}`}
+      });background-color:${
+        image.gender === "Male" ? "#2986cc" : "#FB5858"
+      };z-index:${100 - index};border:1.5px solid ${
+        image.gender === "Male" ? "var(--secondary-color)" : "pink"
+      }`}
       data-bs-toggle="tooltip"
       title={image.full_name + " #" + image.team}
       on:click={() => (itemIndex = index)}
@@ -65,8 +69,18 @@
     font-size: 1.7rem;
     font-weight: 700;
     letter-spacing: -0.1rem;
-    background-color: var(--secondary-color);
     cursor: pointer;
+  }
+  .activate {
+    border: 1px solid rgba(0, 62, 120, 1) !important;
+    position: relative;
+    bottom: 1.8rem;
+    box-shadow: 0px 15px 70px -10px rgba(0, 62, 120, 1.1);
+    -webkit-box-shadow: 0px 15px 70px -10px rgba(0, 62, 120, 1.1);
+    -moz-box-shadow: 0px 15px 70px -10px rgba(0, 62, 120, 1.1);
+  }
+  .activate:nth-child(n + 2) {
+    margin-left: 5px;
   }
   :global(.stacked_img:nth-child(n + 2):hover) {
     margin-left: 5px;

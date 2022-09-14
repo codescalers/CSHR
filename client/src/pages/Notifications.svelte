@@ -1,6 +1,4 @@
 <script lang="ts">
-    import type { UserInterface } from "../types";
-    export let user: UserInterface;
     import Sidebar from "../components/sidebar/Sidebar.svelte";
    
     let pageCount = 0;
@@ -67,7 +65,7 @@
     let totalNotifications = requests.length;
 </script>
   
-  <Sidebar bind:user={user}>
+  <Sidebar>
     <span slot="page-name">Notification</span>
     <section class=" fluid-container mt-5" slot="content">
 

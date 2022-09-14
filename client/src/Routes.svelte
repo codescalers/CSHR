@@ -2,7 +2,6 @@
   import { Router, Route } from "svelte-navigator";
   import Register from "./pages/Register.svelte";
   import Login from "./pages/Login.svelte";
-  import type { UserInterface } from "./types";
   import Calendar from "./pages/Calendar.svelte";
   import Notifications from "./pages/Notifications.svelte";
   import InputExample from "./pages/InputExample.svelte";
@@ -12,21 +11,19 @@
   import isAuthenticated from "./services/authentication/IsAuthenticated";
   import { onMount } from "svelte";
   import Error from "./pages/Error.svelte";
-  import axios from "axios";
+  import { UserStore } from "./stores";
   import Requests from "./pages/Requests.svelte"
-  let user: UserInterface;
   const mode = localStorage.getItem("mode") as "light" | "dark" | null;
 
-  const config = {
+/*   const config = {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
   };
-
+ */
   onMount(async () => {
     if (mode) setTheme(mode);
     isAuthenticated();
-    const userDetails = await axios.get("/dashboard/user/", config);
-    user = await userDetails.data.data;
-    if (!user) {
+    
+    if (!$UserStore) {
       return {
         status: 302,
         redirect: "/login",
@@ -42,18 +39,19 @@
 
 <main>
   <Router>
-    <Route path="/" primary={false}><Calendar {user} /></Route>
-    <Route path="/settings" primary={false}><Settings {user} /></Route>
+    <Route path="/" primary={false}><Calendar /></Route>
+    <Route path="/settings" primary={false}><Settings /></Route>
 
     <Route path="auth/login/" primary={false}><Login /></Route>
-    <Route path="notifications/" primary={false}><Notifications {user} /></Route
-    >
+    <Route path="notifications/" primary={false}><Notifications /></Route>
     <Route path="auth/register/" primary={false}><Register /></Route>
     <Route path="auth/logout/" primary={false}><Logout /></Route>
-    <Route path="input" primary={false}><InputExample {user} /></Route>
-    <Route path="requests/" primary={false}><Requests {user} /></Route>
+    <Route path="input" primary={false}><InputExample  /></Route>
+    <Route path="requests/" primary={false}><Requests  /></Route>
+   
+
     <Route>
-      <Error error={404} {user} />
+      <Error error={404}  />
     </Route>
   </Router>
 </main>

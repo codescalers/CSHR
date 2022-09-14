@@ -11,6 +11,7 @@ class Meetings(TimeStamp):
         User, on_delete=models.CASCADE, related_name="host_user"
     )
     invited_users = models.ManyToManyField(User, related_name="invited_users")
+    location = models.CharField(max_length=250, default="remote")
     meeting_link = models.CharField(max_length=250)
     date = models.DateTimeField()
 

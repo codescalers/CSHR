@@ -84,8 +84,10 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
+        # editted here
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
@@ -98,7 +100,8 @@ class EventTests(APITestCase):
             "name": "test event",
             "description": "our first test event",
             "people": [1, 2],
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -113,7 +116,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -130,7 +134,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -150,7 +155,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -170,7 +176,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -204,7 +211,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -224,7 +232,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "location": "Cairo Egypt",
             "people": [1],
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
