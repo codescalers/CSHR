@@ -9,6 +9,7 @@ from celery import shared_task
 from server.cshr.models.users import User
 from server.cshr.utils.send_email import get_admins_emails
 from server.cshr.utils.send_email import get_supervisor_dict
+from server.cshr.utils.send_email import get_supervisor_emails
 
 app = Celery("tasks", broker=config("REDIS_HOST"))
 
@@ -114,16 +115,13 @@ def send_email_for_vacation_request(user, data):
     from django.core.mail import send_mail
 
     admins_emails = get_admins_emails()
-    supervisor_dict: Dict = get_supervisor_dict(user)
+    supervisor_emails = get_supervisor_emails(user)
     user_email = user.email
     msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
-            Approving user: {supervisor_fname} {supervisor_lname} \n \
             Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
             Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
-        supervisor_fname=supervisor_dict["fname"],
-        supervisor_lname=supervisor_dict["lname"],
         reason=data["reason"],
         start_date=data["from_date"],
         end_date=data["end_date"],
@@ -131,16 +129,9 @@ def send_email_for_vacation_request(user, data):
         request_url="dummyurl.com",
     )
     mail_title = "vacation request"
-    send_mail(
-        mail_title, msg, settings.EMAIL_HOST_USER, admins_emails, fail_silently=False
-    )
-    send_mail(
-        mail_title,
-        msg,
-        settings.EMAIL_HOST_USER,
-        [user_email, supervisor_dict["email"]],
-        fail_silently=False,
-    )
+    recievers = admins_emails + supervisor_emails
+    recievers.append(user_email)
+    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
 
 @shared_task
@@ -148,32 +139,23 @@ def send_email_for_hr_letter_request(user: User, data):
     from django.core.mail import send_mail
 
     admins_emails = get_admins_emails()
-    supervisor_dict: Dict = get_supervisor_dict(user)
+    # supervisor_dict: Dict = get_supervisor_dict(user)
+    supervisor_emails = get_supervisor_emails(user)
     user_email = user.email
     msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
-        Approving user: {supervisor_fname} {supervisor_lname} \n \
         Addresses : {addresses} \n  \
         Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
-        supervisor_fname=supervisor_dict["fname"],
-        supervisor_lname=supervisor_dict["lname"],
         addresses=data["addresses"],
         status=data["status"],
         request_url="dummyurl.com",
     )
     mail_title = "Hr Letter request"
+    recievers = admins_emails + supervisor_emails
+    recievers.append(user_email)
 
-    send_mail(
-        mail_title, msg, settings.EMAIL_HOST_USER, admins_emails, fail_silently=False
-    )
-    send_mail(
-        mail_title,
-        msg,
-        settings.EMAIL_HOST_USER,
-        [user_email, supervisor_dict["email"]],
-        fail_silently=False,
-    )
+    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
 
 @shared_task()
@@ -181,16 +163,13 @@ def send_email_for_compensation_request(user, data):
     from django.core.mail import send_mail
 
     admins_emails = get_admins_emails()
-    supervisor_dict: Dict = get_supervisor_dict(user)
+    supervisor_emails = get_supervisor_emails(user)
     user_email = user.email
     msg = " Request information: \n Applying user: {user_fname} {user_lname} \n \
-            Approving user: {supervisor_fname} {supervisor_lname} \n \
             Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
             Status :{status} \n Request Url: {request_url}".format(
         user_fname=user.first_name,
         user_lname=user.last_name,
-        supervisor_fname=supervisor_dict["fname"],
-        supervisor_lname=supervisor_dict["lname"],
         reason=data["reason"],
         start_date=data["from_date"],
         end_date=data["end_date"],
@@ -198,17 +177,10 @@ def send_email_for_compensation_request(user, data):
         request_url="dummyurl.com",
     )
     mail_title = "Compensation request"
+    recievers = admins_emails + supervisor_emails
+    recievers.append(user_email)
 
-    send_mail(
-        mail_title, msg, settings.EMAIL_HOST_USER, admins_emails, fail_silently=False
-    )
-    send_mail(
-        mail_title,
-        msg,
-        settings.EMAIL_HOST_USER,
-        [user_email, supervisor_dict["email"]],
-        fail_silently=False,
-    )
+    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
 
 @shared_task()
@@ -218,7 +190,7 @@ def send_email_for_vacation_reply(user, data):
     admins_emails = get_admins_emails()
     supervisor_dict: Dict = get_supervisor_dict(user)
     user_email = user.email
-    msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
+    msg = "Request information: \n Approval user: {user_fname} {user_lname} \n \
             Approving user: {supervisor_fname} {supervisor_lname}\n \
             Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
             Status :{status} \n Request Url: {request_url}".format(

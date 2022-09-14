@@ -17,14 +17,14 @@
   }
 </script>
 
-<div class="calendar table-responsive">
-  {#each headers as header, index (index)}
+<div class="calendar table-responsive table-responsive">
+  {#each headers as header, indexndex (indexndex)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
     >
   {/each}
 
-  {#each days as day, index (index)}
+  {#each days as day, indexndex (indexndex)}
     {#if day.enabled}
       <span class="day" on:click={() => dispatch("dayClick", day)}
         >{day.name}</span
@@ -195,7 +195,7 @@
     background: #fef0db;
     color: #fc9b10;
   }
-  :global(.task--danger) {
+  :global(:global(.task--danger)) {
     border-left-color: #fa607e;
     grid-column: 2 / span 3;
     grid-row: 3;
@@ -206,12 +206,12 @@
     background: rgba(192, 191, 191, 0.7);
     color: #444;
   }
-  :global(.task--primary) {
+  :global(:global(.task--primary)) {
     background: #c0d6ff;
     color: #0a5eff;
   }
 
-  :global(.task-detail) {
+  :global(:global(.task-detail)) {
     position: absolute;
     left: 0;
     top: calc(100% + 8px);

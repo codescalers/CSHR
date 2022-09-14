@@ -12,6 +12,7 @@
   import { onMount } from "svelte";
   import Error from "./pages/Error.svelte";
   import { UserStore } from "./stores";
+  import Requests from "./pages/Requests.svelte"
   const mode = localStorage.getItem("mode") as "light" | "dark" | null;
 
 /*   const config = {
@@ -46,6 +47,8 @@
     <Route path="auth/register/" primary={false}><Register /></Route>
     <Route path="auth/logout/" primary={false}><Logout /></Route>
     <Route path="input" primary={false}><InputExample  /></Route>
+    <Route path="requests/" primary={false}><Requests  /></Route>
+   
 
     <Route>
       <Error error={404}  />
