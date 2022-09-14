@@ -1,3 +1,4 @@
+from array import array
 from django.conf import settings
 from celery import Celery
 from server.components import config
@@ -124,7 +125,7 @@ def send_email_for_vacation_request(user_id, data):
     user: User = get_user_by_id(user_id)
     if user is None:
         raise ObjectDoesNotExist("No user is found with this id")
-    recievers = get_email_recievers(user)
+    recievers: array[str] = get_email_recievers(user)
     msg = get_vacation_request_email_template(user, data)
     mail_title = "vacation request"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
@@ -144,7 +145,7 @@ def send_email_for_hr_letter_request(user_id, data):
     user: User = get_user_by_id(user_id)
     if user is None:
         raise ObjectDoesNotExist("No user is found with this id")
-    recievers = get_email_recievers(user)
+    recievers: array[str] = get_email_recievers(user)
     msg = get_hr_letter_request_email_template(user, data)
     mail_title = "Hr Letter request"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
@@ -164,7 +165,7 @@ def send_email_for_compensation_request(user_id, data):
     user: User = get_user_by_id(user_id)
     if user is None:
         raise ObjectDoesNotExist("No user is found with this id")
-    recievers = get_email_recievers(user)
+    recievers: array[str] = get_email_recievers(user)
     msg = get_compensation_request_email_template(user, data)
     mail_title = "Compensation request"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
@@ -186,7 +187,7 @@ def send_email_for_vacation_reply(approving_user_id, data):
         raise ObjectDoesNotExist("No user is found with this id")
     applying_user_id = data["applying_user"]
     applying_user = User.objects.get(pk=applying_user_id)
-    recievers = get_email_recievers(applying_user)
+    recievers: array[str] = get_email_recievers(applying_user)
     msg = get_vacation_reply_email_template(approving_user, data)
     mail_title = "Vacation reply"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
@@ -208,7 +209,7 @@ def send_email_for_hr_letter_reply(approving_user_id, data):
         raise ObjectDoesNotExist("No user is found with this id")
     applying_user_id = data["applying_user"]
     applying_user = User.objects.get(pk=applying_user_id)
-    recievers = get_email_recievers(applying_user)
+    recievers: array[str] = get_email_recievers(applying_user)
     msg = get_hr_letter_reply_email_template(approving_user, data)
     mail_title = "Hr Letter reply"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
@@ -230,7 +231,7 @@ def send_email_for_compensation_reply(approving_user_id, data):
         raise ObjectDoesNotExist("No user is found with this id")
     applying_user_id = data["applying_user"]
     applying_user = User.objects.get(pk=applying_user_id)
-    recievers = get_email_recievers(applying_user)
+    recievers: array[str] = get_email_recievers(applying_user)
     msg = get_compensation_reply_email_template(approving_user, data)
     mail_title = "Compensation reply"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
