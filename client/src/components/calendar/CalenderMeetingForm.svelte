@@ -22,7 +22,7 @@
 
   let meetingPeopleIsError: boolean | null = false;
   export let isLoading: boolean = false;
-  export let isError: boolean  = false;
+  export let isError: boolean = false;
 
   let peopleSelected: number[] = [];
   $: fillDisabled =
@@ -77,7 +77,7 @@
   isFooter={true}
   doneText={"Done"}
   deleteText={"Delete"}
-  isClose={false}
+  isClose={true}
 >
   <header slot="header">
     <h6>💼 Meeting Form</h6>

@@ -91,15 +91,16 @@ class CalendarDataService {
         }
     }
 
-    public async postLeave(e: { applyingUserId: number, reason: string, end_date: string, from_date: string, location: string }) {
+    public async postLeave(e: { applyingUserId: number, reason: string, end_date: string, from_date: string }) {
         try {
-            if (!e.applyingUserId || !e.end_date || !e.location) throw new Error("Invalid data");
-            const { status } = await http.post("/vacation/", JSON.stringify({
+            if (!e.applyingUserId || !e.end_date) throw new Error("Invalid data");
+            const { status } = await http.post("/vacations/", JSON.stringify({
                 "applying_user_id": e.applyingUserId,
                 "from_date": e.from_date,
                 "end_date": e.end_date,
                 "reason": e.reason,
-                "type": ""
+                "type": "vacations",
+                "status": "pending"
             }));
             if (status !== 201) {
                 throw new Error("Error while posting leave with status " + status);
