@@ -6,22 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0033_meetings_location'),
+        ("cshr", "0033_meetings_location"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='event',
-            options={'verbose_name': 'Event', 'verbose_name_plural': 'Events'},
+            name="event",
+            options={"verbose_name": "Event", "verbose_name_plural": "Events"},
         ),
         migrations.RenameField(
-            model_name='event',
-            old_name='date',
-            new_name='end_date',
+            model_name="event",
+            old_name="date",
+            new_name="end_date",
         ),
         migrations.AddField(
-            model_name='event',
-            name='start_date',
+            model_name="event",
+            name="start_date",
             field=models.DateTimeField(null=True),
         ),
     ]

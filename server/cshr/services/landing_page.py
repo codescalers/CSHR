@@ -76,7 +76,7 @@ def landing_page_calendar_functionality(month: str, year: str):
             if event.from_date.day == obj:
                 response[obj]["events"] = EventSerializer(
                     events.filter(from_date__day=event.from_date.day), many=True
-                ).data 
+                ).data
             if event.end_date.day == obj:
                 response[obj]["events"] = EventSerializer(
                     events.filter(end_date__day=event.end_date.day), many=True

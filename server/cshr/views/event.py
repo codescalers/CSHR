@@ -21,10 +21,13 @@ class EventApiView(ViewSet, GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             from_date: CSHRDate = CSHRDate(request.data.get("from_date"))
-            from_date_parsing: datetime.datetime = from_date.parse() 
+            from_date_parsing: datetime.datetime = from_date.parse()
             end_date: CSHRDate = CSHRDate(request.data.get("end_date"))
             end_date_parsing: datetime.datetime = end_date.parse()
-            if type(from_date_parsing) == datetime.datetime and  type(end_date_parsing) == datetime.datetime:
+            if (
+                type(from_date_parsing) == datetime.datetime
+                and type(end_date_parsing) == datetime.datetime
+            ):
                 serializer.save(date=from_date_parsing)
                 return CustomResponse.success(
                     data=serializer.data,

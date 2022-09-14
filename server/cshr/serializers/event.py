@@ -11,7 +11,7 @@ class EventSerializer(ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ["people", "name", "description", "location", "from_date","end_date"]
+        fields = ["people", "name", "description", "location", "from_date", "end_date"]
 
     def get_people(self, obj: Event) -> BaseUserSerializer:
         return BaseUserSerializer(obj.people.all(), many=True).data
@@ -24,11 +24,12 @@ class EventSerializer(ModelSerializer):
             "hour": obj.from_date.hour,
             "minute": obj.from_date.minute,
         }
+
     def get_end_date(self, obj: Event) -> Dict:
-            return {
-                "year": obj.end_date.year,
-                "month": obj.end_date.month,
-                "day": obj.end_date.day,
-                "hour": obj.end_date.hour,
-                "minute": obj.end_date.minute,
-            }
+        return {
+            "year": obj.end_date.year,
+            "month": obj.end_date.month,
+            "day": obj.end_date.day,
+            "hour": obj.end_date.hour,
+            "minute": obj.end_date.minute,
+        }

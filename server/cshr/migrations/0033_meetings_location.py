@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0032_merge_20220911_1303'),
+        ("cshr", "0032_merge_20220911_1303"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='meetings',
-            name='location',
-            field=models.CharField(default='remote', max_length=250),
+            model_name="meetings",
+            name="location",
+            field=models.CharField(default="remote", max_length=250),
         ),
     ]

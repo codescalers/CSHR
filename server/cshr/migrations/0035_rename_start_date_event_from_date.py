@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0034_alter_event_options_rename_date_event_end_date_and_more'),
+        ("cshr", "0034_alter_event_options_rename_date_event_end_date_and_more"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='event',
-            old_name='start_date',
-            new_name='from_date',
+            model_name="event",
+            old_name="start_date",
+            new_name="from_date",
         ),
     ]

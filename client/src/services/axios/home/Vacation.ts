@@ -72,7 +72,7 @@ class Vacation {
             id: id,
             title: "🌴" + eventName,
             reason: vacation.reason,
-            len: length,
+            len: 1,
             applying_user: applying_user,
             approval_user: approval_user,
             status: vacation.status,

@@ -40,15 +40,12 @@
     {#if eventNames.has(item.eventName)}
       <section
         on:click={() => dispatch("itemClick", item)}
-        class="task {item.className}"
         style="grid-column: {item.startCol} / span {item.len};      
-          grid-row: {item.startRow};  
-          align-self: {item.isBottom
-          ? 'end'
-          : item.isStart
-          ? 'start'
-          : 'center'};"
-      >
+        grid-row: {item.startRow};  
+        align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};
+      "
+        class="task {item.className}"
+        >
         <button
           type="button"
           class="modal-btn m-0 pl-0 "
