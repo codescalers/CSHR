@@ -121,7 +121,9 @@ def send_email_for_vacation_request(user_id, data):
     )
     from server.cshr.services.users import get_user_by_id
     from django.core.exceptions import ObjectDoesNotExist
+    from server.cshr.utils.send_email import check_email_configuration
 
+    check_email_configuration()
     user: User = get_user_by_id(user_id)
     if user is None:
         raise ObjectDoesNotExist("No user is found with this id")
@@ -141,7 +143,9 @@ def send_email_for_hr_letter_request(user_id, data):
     )
     from server.cshr.services.users import get_user_by_id
     from django.core.exceptions import ObjectDoesNotExist
+    from server.cshr.utils.send_email import check_email_configuration
 
+    check_email_configuration()
     user: User = get_user_by_id(user_id)
     if user is None:
         raise ObjectDoesNotExist("No user is found with this id")
@@ -161,7 +165,9 @@ def send_email_for_compensation_request(user_id, data):
     )
     from server.cshr.services.users import get_user_by_id
     from django.core.exceptions import ObjectDoesNotExist
+    from server.cshr.utils.send_email import check_email_configuration
 
+    check_email_configuration()
     user: User = get_user_by_id(user_id)
     if user is None:
         raise ObjectDoesNotExist("No user is found with this id")
@@ -181,7 +187,9 @@ def send_email_for_vacation_reply(approving_user_id, data):
     )
     from server.cshr.services.users import get_user_by_id
     from django.core.exceptions import ObjectDoesNotExist
+    from server.cshr.utils.send_email import check_email_configuration
 
+    check_email_configuration()
     approving_user: User = get_user_by_id(approving_user_id)
     if approving_user is None:
         raise ObjectDoesNotExist("No user is found with this id")
@@ -203,7 +211,9 @@ def send_email_for_hr_letter_reply(approving_user_id, data):
     )
     from server.cshr.services.users import get_user_by_id
     from django.core.exceptions import ObjectDoesNotExist
+    from server.cshr.utils.send_email import check_email_configuration
 
+    check_email_configuration()
     approving_user: User = get_user_by_id(approving_user_id)
     if approving_user is None:
         raise ObjectDoesNotExist("No user is found with this id")
@@ -225,7 +235,9 @@ def send_email_for_compensation_reply(approving_user_id, data):
     )
     from server.cshr.services.users import get_user_by_id
     from django.core.exceptions import ObjectDoesNotExist
+    from server.cshr.utils.send_email import check_email_configuration
 
+    check_email_configuration()
     approving_user: User = get_user_by_id(approving_user_id)
     if approving_user is None:
         raise ObjectDoesNotExist("No user is found with this id")
