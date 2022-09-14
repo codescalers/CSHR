@@ -18,13 +18,13 @@
 </script>
 
 <div class="calendar table-responsive table-responsive">
-  {#each headers as header, indexndex (indexndex)}
+  {#each headers as header, index (index)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
     >
   {/each}
 
-  {#each days as day, indexndex (indexndex)}
+  {#each days as day, index (index)}
     {#if day.enabled}
       <span class="day" on:click={() => dispatch("dayClick", day)}
         >{day.name}</span
@@ -45,7 +45,7 @@
         align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};
       "
         class="task {item.className}"
-        >
+      >
         <button
           type="button"
           class="modal-btn m-0 pl-0 "
@@ -195,7 +195,7 @@
     background: #fef0db;
     color: #fc9b10;
   }
-  :global(:global(.task--danger)) {
+  :global(.task--danger) {
     border-left-color: #fa607e;
     grid-column: 2 / span 3;
     grid-row: 3;
@@ -206,12 +206,12 @@
     background: rgba(192, 191, 191, 0.7);
     color: #444;
   }
-  :global(:global(.task--primary)) {
+  :global(.task--primary) {
     background: #c0d6ff;
     color: #0a5eff;
   }
 
-  :global(:global(.task-detail)) {
+  :global(.task-detail) {
     position: absolute;
     left: 0;
     top: calc(100% + 8px);

@@ -19,14 +19,10 @@
       if ($AllUsersStore.length === 0) {
         const users = (await userDataService.getAll()).data;
         AllUsersStore.set(users);
-        users.forEach((user: UserInterface) => {
-          if (user.id !== $UserStore.id) options.push(user.id + "");
-        });
-      } else {
-        $AllUsersStore.forEach((user: UserInterface) => {
-          if (user.id !== $UserStore.id) options.push(user.id + "");
-        });
       }
+      $AllUsersStore.forEach((user: UserInterface) => {
+        if (user.id !== $UserStore.id) options.push(user.id + "");
+      });
     } catch (e) {
       isError = true;
     }

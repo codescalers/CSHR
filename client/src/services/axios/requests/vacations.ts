@@ -1,4 +1,3 @@
-import axios from 'axios';
 import http from "../http-common";
 
 export default async function updateVacations(id: string,data:Object | JSON)   {

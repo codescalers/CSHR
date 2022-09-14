@@ -1,4 +1,3 @@
-import axios from 'axios';
 import http from "../http-common";
 
 export default async function updateLetters(id: string,data:JSON | Object) {
