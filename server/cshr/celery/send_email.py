@@ -6,7 +6,11 @@ import datetime
 from django.core.mail import send_mail
 from celery import shared_task
 
+# from django.core.exceptions import ImproperlyConfigured
 
+
+# if (config("REDIS_HOST") is None):
+#     raise ImproperlyConfigured("REDIS_HOST is not defined")
 app = Celery("tasks", broker=config("REDIS_HOST"))
 
 app.autodiscover_tasks()
@@ -111,20 +115,11 @@ def send_email_for_vacation_request(user_id, data):
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers
+    from server.cshr.utils.emails_templates import get_vacation_request_email_template
 
     user: User = User.objects.get(pk=user_id)
     recievers = get_email_recievers(user)
-    msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
-        Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
-        Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
+    msg = get_vacation_request_email_template(user, data)
     mail_title = "vacation request"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
@@ -134,18 +129,11 @@ def send_email_for_hr_letter_request(user_id, data):
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers
+    from server.cshr.utils.emails_templates import get_hr_letter_request_email_template
 
     user: User = User.objects.get(pk=user_id)
     recievers = get_email_recievers(user)
-    msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
-        Addresses : {addresses} \n  \
-        Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        addresses=data["addresses"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
+    msg = get_hr_letter_request_email_template(user, data)
     mail_title = "Hr Letter request"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
@@ -155,20 +143,13 @@ def send_email_for_compensation_request(user_id, data):
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers
+    from server.cshr.utils.emails_templates import (
+        get_compensation_request_email_template,
+    )
 
     user: User = User.objects.get(pk=user_id)
     recievers = get_email_recievers(user)
-    msg = " Request information: \n Applying user: {user_fname} {user_lname} \n \
-        Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
-        Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
+    msg = get_compensation_request_email_template(user, data)
     mail_title = "Compensation request"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
@@ -178,22 +159,13 @@ def send_email_for_vacation_reply(approving_user_id, data):
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers
+    from server.cshr.utils.emails_templates import get_vacation_reply_email_template
 
     approving_user: User = User.objects.get(pk=approving_user_id)
     applying_user_id = data["applying_user"]
     applying_user = User.objects.get(pk=applying_user_id)
     recievers = get_email_recievers(applying_user)
-    msg = "Request information: \n Approving user: {user_fname} {user_lname} \n \
-            Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
-            Status :{status} \n Request Url: {request_url}".format(
-        user_fname=approving_user.first_name,
-        user_lname=approving_user.last_name,
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
+    msg = get_vacation_reply_email_template(approving_user, data)
     mail_title = "Vacation reply"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
@@ -203,21 +175,13 @@ def send_email_for_hr_letter_reply(approving_user_id, data):
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers
+    from server.cshr.utils.emails_templates import get_hr_letter_reply_email_template
 
     approving_user: User = User.objects.get(pk=approving_user_id)
     applying_user_id = data["applying_user"]
     applying_user = User.objects.get(pk=applying_user_id)
     recievers = get_email_recievers(applying_user)
-
-    msg = " Reply information: \n Approving user: {user_fname} {user_lname} \n \
-            Addresses : {addresses} \n \
-            Status :{status} \n Request Url: {request_url}".format(
-        user_fname=approving_user.first_name,
-        user_lname=approving_user.last_name,
-        addresses=data["addresses"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
+    msg = get_hr_letter_reply_email_template(approving_user, data)
     mail_title = "Hr Letter reply"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
@@ -227,22 +191,12 @@ def send_email_for_compensation_reply(approving_user_id, data):
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers
+    from server.cshr.utils.emails_templates import get_compensation_reply_email_template
 
     approving_user: User = User.objects.get(pk=approving_user_id)
     applying_user_id = data["applying_user"]
     applying_user = User.objects.get(pk=applying_user_id)
     recievers = get_email_recievers(applying_user)
-
-    msg = "Reply information: \n Approving user: {user_fname} {user_lname} \n \
-            Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
-            Status :{status} \n Request Url: {request_url}".format(
-        user_fname=approving_user.first_name,
-        user_lname=approving_user.last_name,
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
+    msg = get_compensation_reply_email_template(approving_user, data)
     mail_title = "Compensation reply"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
