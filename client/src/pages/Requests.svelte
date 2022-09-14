@@ -12,10 +12,10 @@
 
 
   let pageCount = 0;
-  let pageSize = 3;
-  let modalID =6;
+  let pageSize = 7;
+  
   function increment() {
-      if (totalRequests - (pageCount * 3) - pageSize  > 0 ){
+      if (totalRequests - (pageCount * 7) - pageSize  > 0 ){
           pageCount++;
       }
     }
@@ -54,7 +54,7 @@
           </tr>
         </thead>
         <tbody>
-          {#each requests.slice(pageCount * 3, pageCount * 3 + 3) as request,index (index)}
+          {#each requests.slice(pageCount * 7, pageCount * 7 + 7) as request,index (index)}
             <tr>
               <td>
                 <div class="d-flex  align-items-center">
@@ -104,41 +104,22 @@
         </tbody>
       </table>
     </div>
-    <div class="row justify-content-end mt-3">
-      <div class="col-2 mr-5">
-        <label class="text-muted mb-0 ">Rows per page:</label>
-        <label class="text-muted mb-0"
-          >{pageCount + 1} of {Math.ceil(totalRequests / pageSize)}</label
-        >
-        <button class="pagination-button" on:click={decrement}
-          ><i class="icon fa-solid fa-chevron-left" /></button
-        >
-        <button class="pagination-button" on:click={increment}
-          ><i class="icon fa-solid fa-chevron-right" /></button
-        >
-      </div>
-    </div>
+
     
-    <!-- <Modal
-      id={modalID + ""}
-      isDelete={false}
-      isDone={false}
-      isFooter={true}
-      doneText={"Done"}
-      deleteText={"Delete"}
-      isClose={false}
-    >
-    <header slot="header">
-      <h6>Vacation Details</h6>
-    </header>
-    <div slot="body">
-      <RequestModal></RequestModal>
-      <div>
-        
-      </div>
-    </div> 
-  
-  </Modal>-->
+    <div class="row justify-content-end mt-3">
+    <div class="col-2 mr-5">
+      <label class="text-muted mb-0 ">Rows per page:</label>
+      <label class="text-muted mb-0"
+        >{pageCount + 1} of {Math.ceil(totalRequests / pageSize)}</label
+      >
+      <button class="pagination-button" on:click={decrement}
+        ><i class="icon fa-solid fa-chevron-left" /></button
+      >
+      <button class="pagination-button" on:click={increment}
+        ><i class="icon fa-solid fa-chevron-right" /></button
+      >
+    </div>
+  </div>
 
   </section>
   

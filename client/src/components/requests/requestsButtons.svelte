@@ -39,17 +39,30 @@
   async function reject_btn(element: any,index:number) {
     document.body.style.cursor='wait';
     if (element.type == "Vacation"){
-    
+      document.getElementById(`approve-${index}`).style.cursor ='wait';
+      document.getElementById(`reject-${index}`).style.cursor ='wait';
      if (await updateVacations(element.id,{"status":"rejected"})){
-
+        document.getElementById(`reject-${index}`).style.cursor ='defult';
+        document.getElementById(`reject-${index}`).disabled = true;
+        document.getElementById(`approve-${index}`).style.display= 'none';
      }
       
     }else if (element.type == "HR letters"){
-      let data:JSON= JSON.parse('{"status":"rejected"}')
-      await updateLetters(element.id,data);
+      document.getElementById(`approve-${index}`).style.cursor ='wait';
+      document.getElementById(`reject-${index}`).style.cursor ='wait';
+      if(await updateLetters(element.id,{"status":"rejected"})){
+        document.getElementById(`reject-${index}`).style.cursor ='defult';
+        document.getElementById(`reject-${index}`).disabled = true;
+        document.getElementById(`approve-${index}`).style.display= 'none';       
+      }
     }else if (element.type == "Compensation"){
-      let data:JSON= JSON.parse('{"status":"rejected"}')
-      await updateCompensation(element.id,data);
+      document.getElementById(`approve-${index}`).style.cursor ='wait';
+      document.getElementById(`reject-${index}`).style.cursor ='wait';
+      if(await updateCompensation(element.id,{"status":"rejected"})){
+        document.getElementById(`reject-${index}`).style.cursor ='defult';
+        document.getElementById(`reject-${index}`).disabled = true;
+        document.getElementById(`approve-${index}`).style.display= 'none';    
+      }
     }
     element = await getRequests();
     document.body.style.cursor='default';
