@@ -29,6 +29,17 @@
     </h6>
   </header>
   <div slot="body">
+    <h6 class="modal-title" id="exampleModalLongTitle">
+      <div class="d-flex flex-row justify-content-between gap-2">
+        <div>{""}</div>
+        <div class="d-flex flex-row justify-content-between gap-2">
+          <div>{item.from_time} - {item.end_time}</div>
+          <dov
+            >{`${item.date.getDate()}-${item.date.getMonth()}-${item.date.getFullYear()}`}</dov
+          >
+        </div>
+      </div>
+    </h6>
     <div class="container d-flex flex-column gap-5 px-5 my-5">
       <StackedImages stackedImages={[...item.people]} bind:itemIndex />
       {#if itemIndex !== null && clickedUser !== undefined && clickedUser !== null}

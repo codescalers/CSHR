@@ -53,8 +53,11 @@ export type eventItemType = {
   date: Date,
   className: string,
   people: userType[],
+  from_time: string,
+  end_time: string,
   eventName: eventNameType,
 }
+
 export type vacationItemType = {
   id: string,
   title: string,

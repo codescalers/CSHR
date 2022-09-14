@@ -32,11 +32,14 @@ class Event {
         let end = end_date.getDate() - lastDay.getDate();
 
         if (end <= 0) {
+            alert("from " + from_date + " end" + end_date + "lengt " + (end_date.getDate() - from_date.getDate() + 1));
             return [{
                 id: id,
                 title: '🎉' + event.name,
                 description: event.description,
                 date: from_date,
+                from_time: fromHour + ":" + fromMinute,
+                end_time: endHour + ":" + endMinute,
                 len: end_date.getDate() - from_date.getDate() + 1,
                 people: event.people,
                 className: "task--info",
@@ -45,6 +48,9 @@ class Event {
             }]
         }
         else {
+            lastDay.setDate(lastDay.getDate() + 1)
+            alert(` from ${from_date}\\\\ end ${end_date} length ${end_date.getDate() - from_date.getDate() + 1} start ${start - 1} end ${end} last day ${lastDay}`)
+
             return [{
                 id: id,
                 title: '🎉' + event.name,
@@ -54,6 +60,8 @@ class Event {
                 people: event.people,
                 className: "task--info",
                 eventName: eventName,
+                from_time: fromHour + ":" + fromMinute,
+                end_time: endHour + ":" + endMinute,
             }, {
                 id: uuidv4(),
                 title: '',
@@ -63,6 +71,8 @@ class Event {
                 people: event.people,
                 className: "task--info",
                 eventName: eventName,
+                from_time: fromHour + ":" + fromMinute,
+                end_time: endHour + ":" + endMinute,
             },]
         }
     }
