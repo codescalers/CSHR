@@ -3,11 +3,11 @@
   export let user: UserInterface;
 </script>
 
-<div class="card rounded">
-  <div class="card-body">
+<div class="card rounded bg-light shadow">
+  <div class="card-body px-4">
     <h5 class="card-title">
       <div
-        class={`circular_img my-2  mx-auto`}
+        class={`my-2  mx-auto card-img-top circular_img`}
         style={`background-image:url(${
           process.env.APP_BASE_API_URL + user.image
         });background-color:${
@@ -18,20 +18,37 @@
         data-bs-toggle="tooltip"
         title={user.full_name + " #" + user.team}
       />
-      <span> {user.full_name} </span>
+      <div class="text-center my-4 mx-3">{user.full_name}</div>
     </h5>
-    <p class="card-text">
-      Some quick example text to build on the card title and make up the bulk of
-      the card's content.
+    <p class="card-text" />
+    <p class="blockquote-footer w-100 text-center">
+      <small>
+        <cite title="Team"># {user.team}</cite>
+      </small>
+      <br />
+      <small>
+        <cite title="Address">
+          <i class="bi bi-geo" />
+          {user.address}</cite
+        >
+      </small>
     </p>
-    <a href="#" class="btn btn-primary">visit profile</a>
+    <blockquote class="blockquote mb-0">
+      <p class="text-center">
+        {user.job_title}
+      </p>
+    </blockquote>
+    <div class="text-center my-4">
+      <a href="#" class="btn btn-secondary">send email</a>
+      <a href="#" class="btn btn-primary">visit profile</a>
+    </div>
   </div>
 </div>
 
 <style>
   :global(.circular_img) {
-    width: 4.7rem;
-    height: 4.7rem;
+    width: 6.7rem !important;
+    height: 6.7rem !important;
     border-radius: 50%;
     overflow: hidden;
     background-size: cover;
@@ -40,7 +57,6 @@
     font-size: 1.7rem;
     font-weight: 700;
     letter-spacing: -0.1rem;
-
     text-align: center;
   }
 </style>

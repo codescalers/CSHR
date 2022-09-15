@@ -16,6 +16,8 @@ export interface UserInterface {
     CreatedAt?: string;
     UpdatedAt?: string;
     DeletedAt?: string;
+    job_title: string;
+    address: string;
 }
 
 export interface SettingsInterface {
