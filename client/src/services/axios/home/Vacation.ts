@@ -60,6 +60,8 @@ class Vacation {
                 date: from_date,
                 className: "task--warning",
                 eventName: eventName,
+                from_date: vacation.from_date,
+                end_date: vacation.end_date,
                 isStart: true,
                 isBottom: false,
 
@@ -79,6 +81,8 @@ class Vacation {
                 date: from_date,
                 className: "task--warning",
                 eventName: eventName,
+                from_date: vacation.from_date,
+                end_date: vacation.end_date,
                 isStart: true,
                 isBottom: false,
             },
@@ -93,6 +97,8 @@ class Vacation {
                 date: lastDay,
                 className: "task--warning",
                 eventName: eventName,
+                from_date: vacation.from_date,
+                end_date: vacation.end_date,
                 isStart: true,
                 isBottom: false,
             }

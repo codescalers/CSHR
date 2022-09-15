@@ -32,11 +32,16 @@
     <h6 class="modal-title" id="exampleModalLongTitle">
       <div class="d-flex flex-row justify-content-between gap-2">
         <div>{""}</div>
-        <div class="d-flex flex-row justify-content-between gap-2">
+        <div class="d-flex flex-column justify-content-between gap-2">
+          <div class="d-flex flex-row justify-content-between gap-2">
+            <span>
+              {`${item.from_date.getDate()}/${item.from_date.getMonth()}.${item.from_date.getFullYear()}`}
+            </span>
+            <span>
+              {`${item.end_date.getDate()}/${item.end_date.getMonth()}.${item.end_date.getFullYear()}`}
+            </span>
+          </div>
           <div>{item.from_time} - {item.end_time}</div>
-          <dov
-            >{`${item.date.getDate()}-${item.date.getMonth()}-${item.date.getFullYear()}`}</dov
-          >
         </div>
       </div>
     </h6>
