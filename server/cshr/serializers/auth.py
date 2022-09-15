@@ -22,6 +22,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         if hasattr(user, "permission"):
             token["permission"] = user.permission
         token["email"] = user.email
+        token["full_name"] = user.full_name
+        token["mobile_number"] = user.mobile_number
+        token["team"] = user.team
+        token["user_type"] = user.user_type
+        token["image"] = user.image.url
         return token
 
     def validate(self, attrs: Any) -> Dict[str, Any]:
