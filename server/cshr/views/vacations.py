@@ -90,3 +90,4 @@ class VacationsUpdateApiView(ViewSet, GenericAPIView):
         return CustomResponse.bad_request(
             data=serializer.errors, message="vacation failed to update"
         )
+# class VacationsCommentApiView(ViewSet, GenericAPIView):
