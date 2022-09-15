@@ -1,39 +1,33 @@
 <script lang="ts">
   import getRequests from "../services/axios/requests/requests";
-  import ActionButton from "../components/requests/requestsButtons.svelte"
- 
+  import ActionButton from "../components/requests/requestsButtons.svelte";
 
-  import type { UserInterface } from "../types";
-  export let user: UserInterface;
   import { onMount } from "svelte";
-
 
   import Sidebar from "../components/sidebar/Sidebar.svelte";
 
-
   let pageCount = 0;
   let pageSize = 7;
-  
+
   function increment() {
-      if (totalRequests - (pageCount * 7) - pageSize  > 0 ){
-          pageCount++;
-      }
+    if (totalRequests - pageCount * 7 - pageSize > 0) {
+      pageCount++;
     }
+  }
   function decrement() {
-      if (pageCount > 0 ){
-          pageCount--;
-      }
+    if (pageCount > 0) {
+      pageCount--;
     }
-    let requests :any = [];
+  }
+  let requests: any = [];
   let totalRequests = 1;
   onMount(async () => {
     requests = await getRequests();
     totalRequests = requests.length;
-  
   });
 </script>
 
-<Sidebar bind:user>
+<Sidebar>
   <span slot="page-name">Requests</span>
   <section class=" container-fluid mt-5" slot="content">
     <div class="row">
@@ -54,7 +48,7 @@
           </tr>
         </thead>
         <tbody>
-          {#each requests.slice(pageCount * 7, pageCount * 7 + 7) as request,index (index)}
+          {#each requests.slice(pageCount * 7, pageCount * 7 + 7) as request, index (index)}
             <tr>
               <td>
                 <div class="d-flex  align-items-center">
@@ -66,7 +60,7 @@
                   />
                   <div class="ms-3">
                     <p class="fw-bold mb-1">
-                      {request.applying_user.full_name} 
+                      {request.applying_user.full_name}
                     </p>
                     <p class="text-muted mb-0">
                       {request.applying_user.email}
@@ -96,7 +90,7 @@
               </td>
               <td>
                 <div class="container w-100 p-0">
-                  <ActionButton {request} {index}/>
+                  <ActionButton {request} {index} />
                 </div>
               </td>
             </tr>
@@ -105,24 +99,21 @@
       </table>
     </div>
 
-    
     <div class="row justify-content-end mt-3">
-    <div class="col-2 mr-5">
-      <label class="text-muted mb-0 ">Rows per page:</label>
-      <label class="text-muted mb-0"
-        >{pageCount + 1} of {Math.ceil(totalRequests / pageSize)}</label
-      >
-      <button class="pagination-button" on:click={decrement}
-        ><i class="icon fa-solid fa-chevron-left" /></button
-      >
-      <button class="pagination-button" on:click={increment}
-        ><i class="icon fa-solid fa-chevron-right" /></button
-      >
+      <div class="col-2 mr-5">
+        <label class="text-muted mb-0 ">Rows per page:</label>
+        <label class="text-muted mb-0"
+          >{pageCount + 1} of {Math.ceil(totalRequests / pageSize)}</label
+        >
+        <button class="pagination-button" on:click={decrement}
+          ><i class="icon fa-solid fa-chevron-left" /></button
+        >
+        <button class="pagination-button" on:click={increment}
+          ><i class="icon fa-solid fa-chevron-right" /></button
+        >
+      </div>
     </div>
-  </div>
-
   </section>
-  
 </Sidebar>
 
 <style>
@@ -154,6 +145,4 @@
     border: unset !important;
     outline: unset !important;
   }
-
-  
 </style>

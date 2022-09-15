@@ -1,17 +1,34 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { UserInterface } from "../../types";
   import User from "./User.svelte";
-  export let users: UserInterface[];
+  import { AllUsersStore } from "../../stores";
+  import userDataService from "../../services/axios/users/UserDataService";
+
+  export let isLoading = false;
+  export let isError: boolean | null = null;
+
+  onMount(async () => {
+    isLoading = true;
+    try {
+      if ($AllUsersStore.length === 0) {
+        const users: UserInterface[] = (await userDataService.getAll()).data;
+        AllUsersStore.set(users);
+      }
+    } catch (e) {
+      isError = true;
+    }
+    isLoading = false;
+  });
 </script>
 
 <div class="container">
-  <h1>All Users</h1>
 
-  <div class="row row-cols-lg-3 row-cols-2 gy-2">
-    <div class="col">
-      {#each users as user (user.id)}
-        <User {user} />
+  <div class="row justify-content-between">
+    {#each $AllUsersStore as user (user.id)}
+    <div class="col-sm-5 col-lg-3 my-4">
+        <User bind:user />
+      </div>
       {/each}
-    </div>
   </div>
 </div>

@@ -4,6 +4,7 @@
   import Login from "./pages/Login.svelte";
   import Calendar from "./pages/Calendar.svelte";
   import Notifications from "./pages/Notifications.svelte";
+  import Users from "./pages/Users.svelte";
   import InputExample from "./pages/InputExample.svelte";
   import Logout from "./pages/Logout.svelte";
   import Settings from "./pages/Settings.svelte";
@@ -48,6 +49,7 @@
     <Route path="auth/logout/" primary={false}><Logout /></Route>
     <Route path="input" primary={false}><InputExample  /></Route>
     <Route path="requests/" primary={false}><Requests  /></Route>
+    <Route path="users/" primary={false}><Users  /></Route>
    
 
     <Route>

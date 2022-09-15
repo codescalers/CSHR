@@ -37,6 +37,7 @@ class GeneralUserSerializer(ModelSerializer):
 
     user_certificates = SerializerMethodField()
     image = SerializerMethodField()
+    age = SerializerMethodField()
 
     class Meta:
         model = User
@@ -44,6 +45,7 @@ class GeneralUserSerializer(ModelSerializer):
             "id",
             "full_name",
             "email",
+            "age",
             "gender",
             "team",
             "email",
@@ -74,6 +76,11 @@ class GeneralUserSerializer(ModelSerializer):
         for i in range(0, 3):
             color += str(random.randint(1, 5))
         return f"#{color}"
+
+    def get_age(self, obj):
+        """calculate age from birthday"""
+
+        return obj.age
 
 
 class SupervisorUserSerializer(ModelSerializer):

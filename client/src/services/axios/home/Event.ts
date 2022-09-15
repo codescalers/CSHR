@@ -6,7 +6,7 @@ class Event {
     public eventsItems(eventName: eventNameType, events: any, date: Date): eventItemType[] {
         let items: eventItemType[] = [];
         for (const event of events) {
-            items = [...items, ...(this.eventItem(eventName, event, date))];
+            items = [...items, ...(this.eventItem(eventName, event))];
         }
         return items;
     }
@@ -22,41 +22,73 @@ class Event {
 
 
     // to create the event item
-    private eventItem(eventName: eventNameType, event: any, date: Date): eventItemType[] {
-        const id: string = uuidv4();
+    private eventItem(eventName: eventNameType, event: any): eventItemType[] {
 
         let { year: fromYear, month: fromMonth, day: fromDay, hour: fromHour, minute: fromMinute } = (event.from_date);
 
-        let from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
-        let from_date2 = new Date(fromYear, Number(fromMonth) - 1, fromDay);
+        let original_from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
+        let clone_from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
+        let incremental_from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
+        let weekly_from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
         let { year: endYear, month: endMonth, day: endDay, hour: endHour, minute: endMinute } = (event.end_date);
 
         let end_date = new Date(endYear, Number(endMonth) - 1, endDay);
-        const lastDay = this.lastDayOFWeek(from_date2);
-
-     /*    let difference = end_date.getDate() - from_date.getDate();
-        from_date.setDate(from_date.getDate() + difference)
-        let items: eventItemType[] = []; */
-    /*     for (; (from_date.getDate() - lastDay.getDate()) - difference <= 0;) {
-            difference =
-                lastDay.setDate(lastDay.getDate() + 6);
-            items.push(
+        const lastDay = this.lastDayOFWeek(clone_from_date);
+        let items: eventItemType[] = [];
+        let length = 0;
+        for (; true === true;) {
+            if (incremental_from_date.getDate() < end_date.getDate() && incremental_from_date.getDate() < lastDay.getDate()) {
+                length += 1;
+                incremental_from_date.setDate(incremental_from_date.getDate() + 1);
+            }
+            else if (incremental_from_date.getDate() === end_date.getDate() || incremental_from_date.getDate() === lastDay.getDate()) {
+                length += 1;
+                items = [...items,
                 {
-                    id: id,
+                    id: uuidv4(),
                     title: '🎉' + event.name,
                     description: event.description,
-                    date: from_date,
+                    date: weekly_from_date,
                     from_time: fromHour + ":" + fromMinute,
                     end_time: endHour + ":" + endMinute,
-                    len: end_date.getDate() - from_date.getDate() + 1,
+                    len: length,
+                    from_date: original_from_date,
+                    end_date: end_date,
                     people: event.people,
                     className: "task--info",
                     eventName: eventName,
-
+                }]
+                if (incremental_from_date.getDate() === end_date.getDate()) {
+                    break;
                 }
-            )
+                incremental_from_date.setDate(incremental_from_date.getDate() + 1);
+                weekly_from_date = new Date((incremental_from_date));
+                lastDay.setDate(lastDay.getDate() + 7);
+                length = 0;
+            }
         }
- */
+        return items;
+
+        /*     for (; (from_date.getDate() - lastDay.getDate()) - difference <= 0;) {
+                difference =
+                    lastDay.setDate(lastDay.getDate() + 6);
+                items.push(
+                    {
+                        id: id,
+                        title: '🎉' + event.name,
+                        description: event.description,
+                        date: from_date,
+                        from_time: fromHour + ":" + fromMinute,
+                        end_time: endHour + ":" + endMinute,
+                        len: end_date.getDate() - from_date.getDate() + 1,
+                        people: event.people,
+                        className: "task--info",
+                        eventName: eventName,
+    
+                    }
+                )
+            }
+    
 
         let start = lastDay.getDate() - from_date.getDate();
         let end = end_date.getDate() - lastDay.getDate();
@@ -64,8 +96,7 @@ class Event {
 
         //alert(` from ${from_date}\\\\ end ${end_date} length ${end_date.getDate() - from_date.getDate() + 1} start ${start - 1} end ${end} last day ${lastDay}`)
         if (end <= 0) {
-/*             alert("from " + from_date + " end" + end_date + "lengt " + (end_date.getDate() - from_date.getDate() + 1));
- */            return [{
+          return [{
                 id: id,
                 title: '🎉' + event.name,
                 description: event.description,
@@ -112,7 +143,7 @@ class Event {
                 from_date: from_date,
                 end_date: end_date,
             },]
-        }
+        } */
     }
 }
 

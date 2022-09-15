@@ -12,6 +12,7 @@ export interface UserInterface {
     password?: string;
     role: string;
     image: string;
+    gender: string;
     CreatedAt?: string;
     UpdatedAt?: string;
     DeletedAt?: string;
