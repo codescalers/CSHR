@@ -9,9 +9,13 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-from server.cshr.celery.send_email import send_email_for_vacation_reply
-from server.cshr.celery.send_email import send_email_for_vacation_request
 from server.cshr.api.response import CustomResponse
+from server.cshr.utils.email_messages_templates import (
+    get_vacation_request_email_template,
+    get_vacation_reply_email_template,
+)
+from server.cshr.celery.send_email import send_email_for_request
+from server.cshr.celery.send_email import send_email_for_reply
 
 
 class VacationsApiView(ViewSet, GenericAPIView):
@@ -31,8 +35,12 @@ class VacationsApiView(ViewSet, GenericAPIView):
                 applying_user=current_user,
             )
             # to send email async just add .delay after function name as the line below
-            # send_email_for_vacation_request.delay(current_user.id, serializer.data)
-            send_email_for_vacation_request(current_user.id, serializer.data)
+            # send_email_for_request.delay(current_user.id, serializer.data)
+            msg = get_vacation_request_email_template(current_user, serializer.data)
+            send_email_for_request(
+                current_user.id, serializer.data, msg, "Vacation request"
+            )
+
             return CustomResponse.success(
                 data=serializer.data,
                 message="vacation request is created successfully",
@@ -86,8 +94,11 @@ class VacationsUpdateApiView(ViewSet, GenericAPIView):
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
             # to send email async just add .delay after function name as the line below
-            # send_email_for_vacation_reply.delay(current_user.id, serializer.data)
-            send_email_for_vacation_reply(current_user.id, serializer.data)
+            # send_email_for_reply.delay(current_user.id, serializer.data)
+            msg = get_vacation_reply_email_template(current_user, serializer.data)
+            send_email_for_reply(
+                current_user.id, serializer.data, msg, "Vacation reply"
+            )
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="vacation updated"
             )

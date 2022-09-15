@@ -9,8 +9,14 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-from server.cshr.celery.send_email import send_email_for_hr_letter_reply
-from server.cshr.celery.send_email import send_email_for_hr_letter_request
+from server.cshr.celery.send_email import send_email_for_reply
+from server.cshr.celery.send_email import send_email_for_request
+from server.cshr.utils.email_messages_templates import (
+    get_hr_letter_request_email_template,
+)
+from server.cshr.utils.email_messages_templates import (
+    get_hr_letter_reply_email_template,
+)
 
 from server.cshr.api.response import CustomResponse
 
@@ -32,8 +38,11 @@ class HrLetterApiView(ViewSet, GenericAPIView):
                 applying_user=current_user,
             )
             # to send email async just add .delay after function name as the line below
-            # send_email_for_hr_letter_request.delay(current_user.id, serializer.data)
-            send_email_for_hr_letter_request(current_user.id, serializer.data)
+            # send_email_for_request.delay(current_user.id, serializer.data)
+            msg = get_hr_letter_request_email_template(current_user, serializer.data)
+            send_email_for_request(
+                current_user.id, serializer.data, msg, "Hr Letter request"
+            )
             return CustomResponse.success(
                 data=serializer.data,
                 message="Hr letter is created successfully",
@@ -87,8 +96,11 @@ class HrLetterUpdateApiView(ViewSet, GenericAPIView):
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
             # to send email async just add .delay after function name as the line below
-            # send_email_for_hr_letter_reply.delay(current_user.id, serializer.data)
-            send_email_for_hr_letter_reply(current_user.id, serializer.data)
+            # send_email_for_reply.delay(current_user.id, serializer.data)
+            msg = get_hr_letter_reply_email_template(current_user, serializer.data)
+            send_email_for_reply(
+                current_user.id, serializer.data, msg, "Hr Letter reply"
+            )
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="HR Letter updated"
             )

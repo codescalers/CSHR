@@ -112,13 +112,10 @@ def send_email():
 
 
 @shared_task()
-def send_email_for_vacation_request(user_id, data):
+def send_email_for_request(user_id, data, msg, mail_title):
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers
-    from server.cshr.utils.email_messages_templates import (
-        get_vacation_request_email_template,
-    )
     from server.cshr.services.users import get_user_by_id
     from django.core.exceptions import ObjectDoesNotExist
     from server.cshr.utils.send_email import check_email_configuration
@@ -128,63 +125,14 @@ def send_email_for_vacation_request(user_id, data):
     if user is None:
         raise ObjectDoesNotExist("No user is found with this id")
     recievers: array[str] = get_email_recievers(user)
-    msg = get_vacation_request_email_template(user, data)
-    mail_title = "vacation request"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
 
 @shared_task()
-def send_email_for_hr_letter_request(user_id, data):
+def send_email_for_reply(approving_user_id, data, msg, mail_title):
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers
-    from server.cshr.utils.email_messages_templates import (
-        get_hr_letter_request_email_template,
-    )
-    from server.cshr.services.users import get_user_by_id
-    from django.core.exceptions import ObjectDoesNotExist
-    from server.cshr.utils.send_email import check_email_configuration
-
-    check_email_configuration()
-    user: User = get_user_by_id(user_id)
-    if user is None:
-        raise ObjectDoesNotExist("No user is found with this id")
-    recievers: array[str] = get_email_recievers(user)
-    msg = get_hr_letter_request_email_template(user, data)
-    mail_title = "Hr Letter request"
-    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
-
-
-@shared_task()
-def send_email_for_compensation_request(user_id, data):
-    from django.core.mail import send_mail
-    from server.cshr.models.users import User
-    from server.cshr.utils.send_email import get_email_recievers
-    from server.cshr.utils.email_messages_templates import (
-        get_compensation_request_email_template,
-    )
-    from server.cshr.services.users import get_user_by_id
-    from django.core.exceptions import ObjectDoesNotExist
-    from server.cshr.utils.send_email import check_email_configuration
-
-    check_email_configuration()
-    user: User = get_user_by_id(user_id)
-    if user is None:
-        raise ObjectDoesNotExist("No user is found with this id")
-    recievers: array[str] = get_email_recievers(user)
-    msg = get_compensation_request_email_template(user, data)
-    mail_title = "Compensation request"
-    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
-
-
-@shared_task()
-def send_email_for_vacation_reply(approving_user_id, data):
-    from django.core.mail import send_mail
-    from server.cshr.models.users import User
-    from server.cshr.utils.send_email import get_email_recievers
-    from server.cshr.utils.email_messages_templates import (
-        get_vacation_reply_email_template,
-    )
     from server.cshr.services.users import get_user_by_id
     from django.core.exceptions import ObjectDoesNotExist
     from server.cshr.utils.send_email import check_email_configuration
@@ -196,54 +144,4 @@ def send_email_for_vacation_reply(approving_user_id, data):
     applying_user_id = data["applying_user"]
     applying_user = User.objects.get(pk=applying_user_id)
     recievers: array[str] = get_email_recievers(applying_user)
-    msg = get_vacation_reply_email_template(approving_user, data)
-    mail_title = "Vacation reply"
-    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
-
-
-@shared_task()
-def send_email_for_hr_letter_reply(approving_user_id, data):
-    from django.core.mail import send_mail
-    from server.cshr.models.users import User
-    from server.cshr.utils.send_email import get_email_recievers
-    from server.cshr.utils.email_messages_templates import (
-        get_hr_letter_reply_email_template,
-    )
-    from server.cshr.services.users import get_user_by_id
-    from django.core.exceptions import ObjectDoesNotExist
-    from server.cshr.utils.send_email import check_email_configuration
-
-    check_email_configuration()
-    approving_user: User = get_user_by_id(approving_user_id)
-    if approving_user is None:
-        raise ObjectDoesNotExist("No user is found with this id")
-    applying_user_id = data["applying_user"]
-    applying_user = User.objects.get(pk=applying_user_id)
-    recievers: array[str] = get_email_recievers(applying_user)
-    msg = get_hr_letter_reply_email_template(approving_user, data)
-    mail_title = "Hr Letter reply"
-    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
-
-
-@shared_task()
-def send_email_for_compensation_reply(approving_user_id, data):
-    from django.core.mail import send_mail
-    from server.cshr.models.users import User
-    from server.cshr.utils.send_email import get_email_recievers
-    from server.cshr.utils.email_messages_templates import (
-        get_compensation_reply_email_template,
-    )
-    from server.cshr.services.users import get_user_by_id
-    from django.core.exceptions import ObjectDoesNotExist
-    from server.cshr.utils.send_email import check_email_configuration
-
-    check_email_configuration()
-    approving_user: User = get_user_by_id(approving_user_id)
-    if approving_user is None:
-        raise ObjectDoesNotExist("No user is found with this id")
-    applying_user_id = data["applying_user"]
-    applying_user = User.objects.get(pk=applying_user_id)
-    recievers: array[str] = get_email_recievers(applying_user)
-    msg = get_compensation_reply_email_template(approving_user, data)
-    mail_title = "Compensation reply"
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)

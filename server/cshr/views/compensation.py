@@ -15,8 +15,14 @@ from server.cshr.services.compensation import (
     get_all_compensations,
     get_compensation_by_id,
 )
-from server.cshr.celery.send_email import send_email_for_compensation_request
-from server.cshr.celery.send_email import send_email_for_compensation_reply
+from server.cshr.celery.send_email import send_email_for_request
+from server.cshr.celery.send_email import send_email_for_reply
+from server.cshr.utils.email_messages_templates import (
+    get_compensation_reply_email_template,
+)
+from server.cshr.utils.email_messages_templates import (
+    get_compensation_request_email_template,
+)
 
 
 class CompensationApiView(ViewSet, GenericAPIView):
@@ -69,8 +75,11 @@ class CompensationApiView(ViewSet, GenericAPIView):
                 applying_user=current_user,
             )
             # to send email async just add .delay after function name as the line below
-            # send_email_for_compensation_request.delay(current_user.id, serializer.data)
-            send_email_for_compensation_request(current_user.id, serializer.data)
+            # send_email_for_request.delay(current_user.id, serializer.data)
+            msg = get_compensation_request_email_template(current_user, serializer.data)
+            send_email_for_request(
+                current_user.id, serializer.data, msg, "Compensation request"
+            )
             return CustomResponse.success(
                 data=serializer.data,
                 message="Compensation is created successfully",
@@ -95,8 +104,11 @@ class CompensationUpdateApiView(ViewSet, GenericAPIView):
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
             # to send email async just add .delay after function name as the line below
-            # send_email_for_compensation_reply.delay(current_user.id, serializer.data)
-            send_email_for_compensation_reply(current_user.id, serializer.data)
+            # send_email_for_reply.delay(current_user.id, serializer.data)
+            msg = get_compensation_reply_email_template(current_user, serializer.data)
+            send_email_for_reply(
+                current_user.id, serializer.data, msg, "Compensation reply"
+            )
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="compensation updated"
             )
