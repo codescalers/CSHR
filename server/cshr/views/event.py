@@ -20,16 +20,21 @@ class EventApiView(ViewSet, GenericAPIView):
         """Method to create a new event"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            provided_date: CSHRDate = CSHRDate(request.data.get("date"))
-            parsing: datetime.datetime = provided_date.parse()
-            if type(parsing) == datetime.datetime:
-                serializer.save(date=parsing)
+            from_date: CSHRDate = CSHRDate(request.data.get("from_date"))
+            from_date_parsing: datetime.datetime = from_date.parse()
+            end_date: CSHRDate = CSHRDate(request.data.get("end_date"))
+            end_date_parsing: datetime.datetime = end_date.parse()
+            if (
+                type(from_date_parsing) == datetime.datetime
+                and type(end_date_parsing) == datetime.datetime
+            ):
+                serializer.save(from_date=from_date_parsing, end_date=end_date_parsing)
                 return CustomResponse.success(
                     data=serializer.data,
                     message="event is created successfully",
                     status_code=201,
                 )
-            return parsing
+            return from_date_parsing
         return CustomResponse.bad_request(
             error=serializer.errors, message="event creation failed"
         )

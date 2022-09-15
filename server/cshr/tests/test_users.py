@@ -20,6 +20,7 @@ class GeneralViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Male",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -52,6 +53,7 @@ class GeneralViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Male",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -89,6 +91,7 @@ class GeneralViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Male",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
@@ -159,10 +162,6 @@ class GeneralViewUserProfileTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.data["data"][1]["full_name"], "John Blake")
-        self.assertEqual(
-            response.data["data"][1]["image"],
-            "http://testserver/profile_image/default.png",
-        )
         self.assertEqual(response.data["data"][1]["birthday"], "2000-12-30")
         self.assertEqual(response.data["data"][1]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["data"][1]["email"], "john@outlook.com")
@@ -180,7 +179,7 @@ class GeneralViewUserProfileTests(APITestCase):
         )
         self.assertEqual(response.data["data"][1].get("mobile_number"), None)
         self.assertEqual(response.data["data"][1].get("social_insurance_number"), None)
-        self.assertEqual(response.data["data"][1].get("team"), None)
+        self.assertEqual(response.data["data"][1].get("team"), "Development")
         self.assertEqual(response.data["data"][1].get("user_company_properties"), None)
         self.assertEqual(response.data["data"][1].get("user_evaluation"), None)
         self.assertEqual(response.data["data"][1].get("salary"), None)
@@ -196,10 +195,6 @@ class GeneralViewUserProfileTests(APITestCase):
         response = self.client.get(url, format="json")
         response = self.client.get(url, format="json")
         self.assertEqual(response.data["data"]["full_name"], "John Blake")
-        self.assertEqual(
-            response.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
-        )
         self.assertEqual(response.data["data"]["birthday"], "2000-12-30")
         self.assertEqual(response.data["data"]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["data"]["email"], "john@outlook.com")
@@ -217,7 +212,7 @@ class GeneralViewUserProfileTests(APITestCase):
         )
         self.assertEqual(response.data["data"].get("mobile_number"), None)
         self.assertEqual(response.data["data"].get("social_insurance_number"), None)
-        self.assertEqual(response.data["data"].get("team"), None)
+        self.assertEqual(response.data["data"].get("team"), "Development")
         self.assertEqual(response.data["data"].get("user_company_properties"), None)
         self.assertEqual(response.data["data"].get("user_evaluation"), None)
         self.assertEqual(response.data["data"].get("salary"), None)
@@ -243,6 +238,7 @@ class SupervisorViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Female",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -275,6 +271,7 @@ class SupervisorViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Male",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -312,6 +309,7 @@ class SupervisorViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Female",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
@@ -496,6 +494,7 @@ class AdminViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Female",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -528,6 +527,7 @@ class AdminViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Female",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -565,6 +565,7 @@ class AdminViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Female",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
@@ -849,6 +850,7 @@ class SelfViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Female",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -881,6 +883,7 @@ class SelfViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Male",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -918,6 +921,7 @@ class SelfViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Female",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",

@@ -1,4 +1,5 @@
 """This file will containes all user serializers."""
+import random
 from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
@@ -35,12 +36,16 @@ class GeneralUserSerializer(ModelSerializer):
     """
 
     user_certificates = SerializerMethodField()
+    image = SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
-            "email",
+            "id",
             "full_name",
+            "email",
+            "gender",
+            "team",
             "image",
             "telegram_link",
             "birthday",
@@ -54,6 +59,18 @@ class GeneralUserSerializer(ModelSerializer):
     def get_user_certificates(self, obj):
         training_courses = get_training_courses_for_a_user(obj.id)
         return TrainingCoursesSerializer(training_courses, many=True).data
+
+    def get_image(self, obj):
+        if obj.image == "":
+            return self.random_color()
+        else:
+            return f"/{obj.image}"
+
+    def random_color(self):
+        color: str = ""
+        for i in range(0, 3):
+            color += str(random.randint(1, 5))
+        return f"#{color}"
 
 
 class SupervisorUserSerializer(ModelSerializer):
@@ -197,4 +214,4 @@ class BaseUserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "full_name", "email", "image"]
+        fields = ["id", "full_name", "email", "image", "team", "gender"]

@@ -1,30 +1,35 @@
-<script>
-	export let name;
+<script lang="ts">
+  import SettingsApi from "./components/settings/SettingsApi";
+  import { onMount } from "svelte";
+  import { SettingsStore } from "./stores";
+  import Routes from "./Routes.svelte";
+  onMount(async function () {
+    $SettingsStore = await SettingsApi.getSettings();
+  });
+  let rootElement: HTMLDivElement;
+
+  $: rootElement &&
+    rootElement.style.setProperty(
+      "--primary-color",
+      $SettingsStore["primary-color"]
+    );
+  $: rootElement &&
+    rootElement.style.setProperty(
+      "--secondary-color",
+      $SettingsStore["secondary-color"]
+    );
 </script>
 
-<main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
+<div class="fluid-container all" bind:this={rootElement}>
+  <Routes />
+</div>
 
 <style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+  :root {
+    --primary-color: inherit;
+    --secondary-color: inherit;
+    --background-image: inherit;
+    --text-color: var(var(--secondary-color));
+    font-family: "Quicksand", sans-serif;
+  }
 </style>

@@ -31,6 +31,13 @@ class USER_TYPE(models.TextChoices):
     SUPERVISOR = "Supervisor", "supervisor"
 
 
+class GENDER_TYPE(models.TextChoices):
+    """gender of users"""
+
+    MALE = "Male", "male"
+    FEMALE = "Female", "female"
+
+
 class CshrBaseUserManger(BaseUserManager):
     """this is the main class for user manger"""
 
@@ -72,9 +79,7 @@ class User(AbstractBaseUser, TimeStamp):
 
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
-    image = models.ImageField(
-        upload_to="profile_image/", default="profile_image/default.png"
-    )
+    image = models.ImageField(upload_to="profile_image/", null=True, blank=True)
     email = models.EmailField(max_length=45, unique=True)
     mobile_number = models.CharField(max_length=15)
     telegram_link = models.CharField(max_length=100)
@@ -87,6 +92,7 @@ class User(AbstractBaseUser, TimeStamp):
         related_name="skills",
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
+    gender = models.CharField(max_length=20, choices=GENDER_TYPE.choices)
     social_insurance_number = models.CharField(max_length=45)
     USERNAME_FIELD = "email"
     reporting_to = models.ManyToManyField("User", blank=True)
