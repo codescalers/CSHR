@@ -1,7 +1,7 @@
 from server.cshr.models.users import User
 
 
-def get_vacation_request_email_template(user: User, data) -> str:
+def get_vacation_request_email_template(user: User, data, url) -> str:
     msg = """Request information:
    Applying user: {user_fname} {user_lname}
    Reason: {reason}
@@ -15,12 +15,12 @@ def get_vacation_request_email_template(user: User, data) -> str:
         start_date=data["from_date"],
         end_date=data["end_date"],
         status=data["status"],
-        request_url="dummyurl.com",
+        request_url=url,
     )
     return msg
 
 
-def get_hr_letter_request_email_template(user: User, data) -> str:
+def get_hr_letter_request_email_template(user: User, data, url) -> str:
     msg = """Request information:
     Applying user: {user_fname} {user_lname}
     Addresses : {addresses}
@@ -30,12 +30,12 @@ def get_hr_letter_request_email_template(user: User, data) -> str:
         user_lname=user.last_name,
         addresses=data["addresses"],
         status=data["status"],
-        request_url="dummyurl.com",
+        request_url=url,
     )
     return msg
 
 
-def get_compensation_request_email_template(user: User, data) -> str:
+def get_compensation_request_email_template(user: User, data, url) -> str:
     msg = """Request information:
     Applying user: {user_fname} {user_lname}
     Reason: {reason}
@@ -49,12 +49,12 @@ def get_compensation_request_email_template(user: User, data) -> str:
         start_date=data["from_date"],
         end_date=data["end_date"],
         status=data["status"],
-        request_url="dummyurl.com",
+        request_url=url,
     )
     return msg
 
 
-def get_vacation_reply_email_template(approving_user: User, data) -> str:
+def get_vacation_reply_email_template(approving_user: User, data, url) -> str:
     msg = """Request information:
    Approving user: {user_fname} {user_lname}
    Reason: {reason}
@@ -68,12 +68,12 @@ def get_vacation_reply_email_template(approving_user: User, data) -> str:
         start_date=data["from_date"],
         end_date=data["end_date"],
         status=data["status"],
-        request_url="dummyurl.com",
+        request_url=url,
     )
     return msg
 
 
-def get_hr_letter_reply_email_template(approving_user: User, data) -> str:
+def get_hr_letter_reply_email_template(approving_user: User, data, url) -> str:
     msg = """Reply information:
     Approving user: {user_fname} {user_lname}
     Addresses : {addresses}
@@ -83,12 +83,12 @@ def get_hr_letter_reply_email_template(approving_user: User, data) -> str:
         user_lname=approving_user.last_name,
         addresses=data["addresses"],
         status=data["status"],
-        request_url="dummyurl.com",
+        request_url=url,
     )
     return msg
 
 
-def get_compensation_reply_email_template(approving_user: User, data) -> str:
+def get_compensation_reply_email_template(approving_user: User, data, url) -> str:
     msg = """Reply information:
     Approving user: {user_fname} {user_lname}
     Reason: {reason}
@@ -102,6 +102,6 @@ def get_compensation_reply_email_template(approving_user: User, data) -> str:
         start_date=data["from_date"],
         end_date=data["end_date"],
         status=data["status"],
-        request_url="dummyurl.com",
+        request_url=url,
     )
     return msg

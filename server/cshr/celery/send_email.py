@@ -112,7 +112,7 @@ def send_email():
 
 
 @shared_task()
-def send_email_for_request(user_id, data, msg, mail_title):
+def send_email_for_request(user_id, msg, mail_title):
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers

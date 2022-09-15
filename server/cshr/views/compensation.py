@@ -74,12 +74,13 @@ class CompensationApiView(ViewSet, GenericAPIView):
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
+            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             # to send email async just add .delay after function name as the line below
             # send_email_for_request.delay(current_user.id, serializer.data)
-            msg = get_compensation_request_email_template(current_user, serializer.data)
-            send_email_for_request(
-                current_user.id, serializer.data, msg, "Compensation request"
+            msg = get_compensation_request_email_template(
+                current_user, serializer.data, url
             )
+            send_email_for_request(current_user.id, msg, "Compensation request")
             return CustomResponse.success(
                 data=serializer.data,
                 message="Compensation is created successfully",
@@ -103,9 +104,12 @@ class CompensationUpdateApiView(ViewSet, GenericAPIView):
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
+            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             # to send email async just add .delay after function name as the line below
             # send_email_for_reply.delay(current_user.id, serializer.data)
-            msg = get_compensation_reply_email_template(current_user, serializer.data)
+            msg = get_compensation_reply_email_template(
+                current_user, serializer.data, url
+            )
             send_email_for_reply(
                 current_user.id, serializer.data, msg, "Compensation reply"
             )
