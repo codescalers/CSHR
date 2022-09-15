@@ -1,5 +1,5 @@
 from django.urls import path
-from server.cshr.views.vacations import VacationsApiView, VacationsUpdateApiView
+from server.cshr.views.vacations import VacationApprovalAPIView, VacationsApiView, VacationsUpdateApiView
 
 
 urlpatterns = [
@@ -11,6 +11,7 @@ urlpatterns = [
             {
                 "put": "put",
             }
-        ),
-    ),
+        )),
+
+    path("put/<str:id>/", VacationApprovalAPIView.as_view()),
 ]
