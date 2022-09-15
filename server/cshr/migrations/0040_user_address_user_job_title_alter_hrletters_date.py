@@ -7,25 +7,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0039_alter_hrletters_date'),
+        ("cshr", "0039_alter_hrletters_date"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='address',
-            field=models.CharField(default='Ss', max_length=150),
+            model_name="user",
+            name="address",
+            field=models.CharField(default="Ss", max_length=150),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='user',
-            name='job_title',
-            field=models.CharField(default='ss', max_length=150),
+            model_name="user",
+            name="job_title",
+            field=models.CharField(default="ss", max_length=150),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='hrletters',
-            name='date',
+            model_name="hrletters",
+            name="date",
             field=models.DateField(default=datetime.date(2022, 9, 15)),
         ),
     ]
