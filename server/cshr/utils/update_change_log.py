@@ -15,8 +15,10 @@ def update_vacation_change_log(
     ):
     change =vacation.change_log
     # change: Dict = {}
+   
     change['approved_user'] = vacation.approval_user.id
     change['approved_date'] = approved_date
+
     if vacation.change_log.__contains__('comments'):
 
       change['comments'].append(comment)
@@ -28,9 +30,30 @@ def update_vacation_change_log(
     print(change['comments'])
     print(change)
     # tmp.append(change)
-    # print(type(tmp))
-    # print(tmp)
     # vacation.change_log=json.loads(json.dumps(tmp))
     print(vacation.change_log)
+    vacation.save()
+    return change
+
+def update_vacation_comment_log(
+        vacation: Vacation,
+        comment: List[Dict]
+    ):
+    change =vacation.change_log
+    # change: Dict = {}
+    if vacation.approval_user is not None:
+      change['approved_user'] = vacation.approval_user.id
+      
+    #   change['approved_date'] = approved_date
+    print(vacation.approval_user)
+
+    if vacation.change_log.__contains__('comments'):
+
+      change['comments'].append(comment)
+    else:
+        change['comments']= [comment]
+
+    # print(comment)
+    # change['comments'].append(comment)
     vacation.save()
     return change
