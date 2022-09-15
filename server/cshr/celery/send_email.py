@@ -7,11 +7,11 @@ import datetime
 from django.core.mail import send_mail
 from celery import shared_task
 
-# from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured
 
 
-# if (config("REDIS_HOST") is None):
-#     raise ImproperlyConfigured("REDIS_HOST is not defined")
+if config("REDIS_HOST") is None:
+    raise ImproperlyConfigured("REDIS_HOST is not defined")
 app = Celery("tasks", broker=config("REDIS_HOST"))
 
 app.autodiscover_tasks()
