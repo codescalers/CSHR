@@ -31,12 +31,12 @@
     (_, index) => index < value * 10 && index >= (value - 1) * 10
   );
   $: length = Math.ceil($AllUsersStore.length / parseFloat(20 + ""));
-  alert($AllUsersStore.length);
+
 </script>
 
 <div class="container">
   {#if isError}
-    <ErrorComponent />
+    <ErrorComponent errorMessage="please try to reload page and raise an issues" />
   {:else if isLoading}
     <LoadingComponent />
   {:else}
