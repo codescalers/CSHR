@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import Image from "../image/Image.svelte";
   import Footer from "../footer/Footer.svelte";
-  import { UserStore } from "../../stores";
+  import { UserStore, NotificationStore } from "../../stores";
 
   onMount(() => {
     const showNavbar = (
@@ -58,19 +58,34 @@
     <div class="d-flex flex-row gap-4">
       <div>
         <Link to="/notifications" class="btn position-relative">
-          <i class="bi bi-bell"></i>
-          <span
-            style="background: var(--primary-color); "
-            class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-          >
-            99+
-            <span class="visually-hidden bg-primary">unread messages</span>
-          </span>
+          <i class="bi bi-bell" />
+          {#if $NotificationStore.length > 0}
+            <span
+              style="background: var(--primary-color); "
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+            >
+              +{$NotificationStore.length}
+              <span class="visually-hidden  bg-primary">unread messages</span>
+            </span>
+          {/if}
         </Link>
       </div>
       <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
       <div class="header_img">
-        <Image src="https://i.imgur.com/hczKIze.jpg" alt="personal-image" />
+        <Link to="/profile">
+          <div
+          class={`circular_img`}
+          style={`background-image:url(${
+            process.env.APP_BASE_API_URL + $UserStore.image
+          });background-color:${
+            $UserStore.gender === "Male" ? "#2986cc" : "#FB5858"
+          };border:1.5px solid ${
+            $UserStore.gender === "Male" ? "var(--secondary-color)" : "pink"
+          }`}
+          data-bs-toggle="tooltip"
+          title={$UserStore.full_name + " #" + $UserStore.team}
+        />
+        </Link>
       </div>
     </div>
   </header>

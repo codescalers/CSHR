@@ -39,8 +39,8 @@
       </p>
     </blockquote>
     <div class=" d-flex flex-row justify-content-center gap-3 my-3">
-      <a href="#" class="btn btn-secondary">send email</a>
-      <a href="#" class="btn btn-primary">visit profile</a>
+      <a href="#" class="btn btn-primary">send email</a>
+      <a href="#" class="btn btn-outline-primary">visit profile</a>
     </div>
   </div>
 </div>

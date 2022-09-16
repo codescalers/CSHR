@@ -14,4 +14,7 @@
   .content {
     height: fit-content;
   }
+  section {
+    background-color: transparent;
+  }
 </style>
