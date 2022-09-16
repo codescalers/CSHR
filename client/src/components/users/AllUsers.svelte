@@ -3,7 +3,7 @@
   import type { UserInterface } from "../../types";
   import User from "./User.svelte";
   import { AllUsersStore } from "../../stores";
-  import userDataService from "../../services/axios/users/UserDataService";
+  import usersDataService from "../../services/axios/users/UsersDataService";
   import LoadingComponent from "../loader/LoadingComponent.svelte";
   import ErrorComponent from "../error/ErrorComponent.svelte";
   import Pagination from "../pagination/Pagination.svelte";
@@ -15,7 +15,7 @@
     isLoading = true;
     try {
       if ($AllUsersStore.length === 0) {
-        const users: UserInterface[] = (await userDataService.getAll()).data;
+        const users: UserInterface[] = (await usersDataService.getAll()).data;
         AllUsersStore.set(users);
       }
     } catch (e) {

@@ -12,12 +12,13 @@ export interface UserInterface {
     password?: string;
     role: string;
     image: string;
-    gender: string;
+    gender: "Female" | "Male";
+    address: string;
+    birthday: string;
     CreatedAt?: string;
     UpdatedAt?: string;
     DeletedAt?: string;
     job_title: string;
-    address: string;
 }
 
 export interface SettingsInterface {

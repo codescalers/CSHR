@@ -13,17 +13,18 @@
   import { onMount } from "svelte";
   import Error from "./pages/Error.svelte";
   import { UserStore } from "./stores";
-  import Requests from "./pages/Requests.svelte"
+  import Requests from "./pages/Requests.svelte";
+  import UserProfile from "./pages/UserProfile.svelte";
   const mode = localStorage.getItem("mode") as "light" | "dark" | null;
 
-/*   const config = {
+  /*   const config = {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
   };
  */
   onMount(async () => {
     if (mode) setTheme(mode);
     isAuthenticated();
-    
+
     if (!$UserStore) {
       return {
         status: 302,
@@ -47,13 +48,13 @@
     <Route path="notifications/" primary={false}><Notifications /></Route>
     <Route path="auth/register/" primary={false}><Register /></Route>
     <Route path="auth/logout/" primary={false}><Logout /></Route>
-    <Route path="input" primary={false}><InputExample  /></Route>
-    <Route path="requests/" primary={false}><Requests  /></Route>
-    <Route path="users/" primary={false}><Users  /></Route>
-   
+    <Route path="input" primary={false}><InputExample /></Route>
+    <Route path="requests/" primary={false}><Requests /></Route>
+    <Route path="users/" primary={false}><Users /></Route>
+    <Route path="profile/" primary={false}><UserProfile /></Route>
 
     <Route>
-      <Error error={404}  />
+      <Error error={404} />
     </Route>
   </Router>
 </main>

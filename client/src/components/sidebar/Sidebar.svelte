@@ -55,7 +55,7 @@
       <i class="bx bx-menu" id="header-toggle" />
       <slot name="page-name" />
     </div>
-    <div class="d-flex flex-row gap-3">
+    <div class="d-flex flex-row gap-4">
       <div>
         <Link to="/notifications" class="btn position-relative">
           <i class="bi bi-bell"></i>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { UserInterface } from "../../types";
-  import userDataService from "../../services/axios/users/UserDataService";
+  import usersDataService from "../../services/axios/users/UsersDataService";
   import { onMount } from "svelte";
   import { AllUsersStore, UserStore } from "../../stores";
   import PeopleSlot from "./PeopleSlot.svelte";
@@ -17,7 +17,7 @@
     isLoading = true;
     try {
       if ($AllUsersStore.length === 0) {
-        const users = (await userDataService.getAll()).data;
+        const users = (await usersDataService.getAll()).data;
         AllUsersStore.set(users);
       }
       $AllUsersStore.forEach((user: UserInterface) => {
