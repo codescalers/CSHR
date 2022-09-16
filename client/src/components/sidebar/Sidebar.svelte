@@ -47,47 +47,6 @@
 
     // Your code to run since DOM is loaded and ready
   });
-  /*   document.addEventListener("DOMContentLoaded", function (_event) {
-    const showNavbar = (
-      toggleId: string,
-      navId: string,
-      bodyId: string,
-      headerId: string
-    ) => {
-      const toggle = document.getElementById(toggleId),
-        nav = document.getElementById(navId),
-        bodypd = document.getElementById(bodyId),
-        headerpd = document.getElementById(headerId);
-
-      // Validate that all variables exist
-      if (toggle && nav && bodypd && headerpd) {
-        toggle.addEventListener("click", () => {
-          // show navbar
-          nav.classList.toggle("show");
-          // change icon
-          toggle.classList.toggle("bx-x");
-          // add padding to body
-          bodypd.classList.toggle("body-pd");
-          // add padding to header
-          headerpd.classList.toggle("body-pd");
-        });
-      }
-    };
-
-    showNavbar("header-toggle", "nav-bar", "body-pd", "header");
-
-    const linkColor = document.querySelectorAll(".nav_link");
-
-    function colorLink(this: any) {
-      if (linkColor) {
-        linkColor.forEach((l) => l.classList.remove("active"));
-        this.classList.add("active");
-      }
-    }
-    linkColor.forEach((l) => l.addEventListener("click", colorLink));
-
-    // Your code to run since DOM is loaded and ready
-  }); */
 </script>
 
 <div id="body-pd">
@@ -96,8 +55,20 @@
       <i class="bx bx-menu" id="header-toggle" />
       <slot name="page-name" />
     </div>
-    <div class="d-flex flex-row gap-2">
-      <h5 class="py-2 text-muted">{$UserStore.full_name}</h5>
+    <div class="d-flex flex-row gap-3">
+      <div>
+        <Link to="/notifications" class="btn position-relative">
+          <i class="bi bi-bell"></i>
+          <span
+            style="background: var(--primary-color); "
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+          >
+            99+
+            <span class="visually-hidden bg-primary">unread messages</span>
+          </span>
+        </Link>
+      </div>
+      <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
       <div class="header_img">
         <Image src="https://i.imgur.com/hczKIze.jpg" alt="personal-image" />
       </div>
