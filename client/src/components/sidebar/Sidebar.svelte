@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Router, Link } from "svelte-navigator";
   import { onMount } from "svelte";
-  import Image from "../image/Image.svelte";
   import Footer from "../footer/Footer.svelte";
   import { UserStore, NotificationStore } from "../../stores";
 
@@ -57,8 +56,11 @@
     </div>
     <div class="d-flex flex-row gap-4">
       <div>
-        <Link to="/notifications" class="btn position-relative">
-          <i class="bi bi-bell" />
+        <Link
+          to="/notifications"
+          class="position-relative"
+        >
+          <i class="bi bi-bell notification-btn my-5" />
           {#if $NotificationStore.length > 0}
             <span
               style="background: var(--primary-color); "
@@ -170,3 +172,18 @@
     <Footer />
   </div>
 </div>
+
+<style>
+  .notification-btn {
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color) ;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 0.75rem;
+    transition: all 0.2s ease-in-out;
+  }
+  .notification-btn:hover {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--secondary-color) ;
+  }
+</style>
