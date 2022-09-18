@@ -153,5 +153,5 @@ def send_email_for_reply(approving_user_id, data, msg, mail_title) -> Response:
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
     return CustomResponse.success(
         message="email is sent successfully",
-        status_code=201,
+        status_code=202,
     )
