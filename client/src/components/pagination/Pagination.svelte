@@ -1,5 +1,7 @@
 <script lang="ts">
+  // page index value
   export let value: number;
+  // number of pages
   export let length: number;
   let pages = Array.from({ length: length }, (_, i) => i);
 
@@ -62,24 +64,3 @@
     </ul>
   </nav>
 </div>
-
-<!-- 
-
-<nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-end">
-    <li class="page-item" class:disabled={isPrevDisabled}>
-      <a class="page-link" href="#" tabindex="-1">Previous</a>
-    </li>
-    {#each pages as _, page (page)}
-      <li class={`page-item ${value === page + 1 ? "active" : ""}`}>
-        <a class="page-link " href="#" on:click={() => (value = page + 1)}
-          >{page + 1}</a
-        >
-      </li>
-    {/each}
-    <li class="page-item">
-      <a class="page-link" class:disabled={isNextDisabled} href="#">Next</a>
-    </li>
-  </ul>
-</nav>
- -->

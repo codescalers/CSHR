@@ -60,16 +60,18 @@
           to="/notifications"
           class="position-relative"
         >
-          <i class="bi bi-bell notification-btn my-5" />
+        <p class="mt-2">
+          <i class="bi bi-bell notification-btn" />
           {#if $NotificationStore.length > 0}
             <span
               style="background: var(--primary-color); "
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+              class="position-absolute top-5 start-100 translate-middle badge rounded-pill"
             >
               +{$NotificationStore.length}
               <span class="visually-hidden  bg-primary">unread messages</span>
             </span>
           {/if}
+        </p>
         </Link>
       </div>
       <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
