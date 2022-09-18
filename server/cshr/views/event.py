@@ -39,16 +39,15 @@ class BaseEventsAPIView(ListAPIView, GenericAPIView):
         )
 
     def get_queryset(self) -> Response:
-        events = get_all_events()
-        return events
+        return get_all_events()
 
-class EventApiView(ViewSet, GenericAPIView):
+class EventApiView(GenericAPIView):
     """Class Event_APIVIEW to create a new event into database"""
 
     serializer_class = EventSerializer
     permission_classes = (UserIsAuthenticated,)
 
-    def get_one(self, request: Request, id: str, format=None) -> Response:
+    def get(self, request: Request, id: str, format=None) -> Response:
         """method to get a single event by id"""
         event = get_event_by_id(id=id)
         if event is None:
