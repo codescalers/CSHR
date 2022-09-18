@@ -271,7 +271,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": {}
+            "change_log": {},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
@@ -279,8 +279,7 @@ class VacationsTests(APITestCase):
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/put/1/"
-        data = {"status": "Rejected",
-                "comment": "hi admin"}
+        data = {"status": "Rejected", "comment": "hi admin"}
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, 202)
 
@@ -291,7 +290,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": {}
+            "change_log": {},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
