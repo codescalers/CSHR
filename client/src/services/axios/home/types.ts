@@ -53,8 +53,13 @@ export type eventItemType = {
   date: Date,
   className: string,
   people: userType[],
+  from_time: string,
+  end_time: string,
   eventName: eventNameType,
+  from_date: Date,
+  end_date: Date,
 }
+
 export type vacationItemType = {
   id: string,
   title: string,
@@ -68,6 +73,8 @@ export type vacationItemType = {
   eventName: eventNameType,
   isStart: boolean,
   isBottom: boolean,
+  from_date: Date,
+  end_date: Date,
 }
 
 export type classType = "task--primary" | "task--info" | "task--success" | "task--warning" | "task--danger" | "task--secondary" | "task--dark" | "task--light";

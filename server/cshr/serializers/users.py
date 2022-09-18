@@ -46,6 +46,9 @@ class GeneralUserSerializer(ModelSerializer):
             "email",
             "gender",
             "team",
+            "email",
+            "gender",
+            "team",
             "image",
             "telegram_link",
             "birthday",
@@ -54,6 +57,8 @@ class GeneralUserSerializer(ModelSerializer):
             "user_certificates",
             "reporting_to",
             "created_at",
+            "job_title",
+            "address",
         ]
 
     def get_user_certificates(self, obj):

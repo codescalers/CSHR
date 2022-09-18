@@ -2,6 +2,7 @@
   import CalendarBirthdayModel from "./CalendarBirthdayDataModal.svelte";
   import CalendarMeetingModel from "./CalendarMeetingDataModal.svelte";
   import CalendarEventDataModal from "./CalendarEventDataModal.svelte";
+  import CalendarVacationDataModal from "./CalendarVacationDataModal.svelte";
   export let item: any;
   let birthDayFlag = item.eventName === "birthdates";
   let meetingFlag = item.eventName === "meetings";
@@ -18,4 +19,6 @@
 {#if eventFlag}
   <CalendarEventDataModal bind:item />
 {/if}
-{#if vacationFlag}{/if}
+{#if vacationFlag}
+  <CalendarVacationDataModal bind:item />
+{/if}

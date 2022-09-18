@@ -12,6 +12,7 @@
   let clickedParticipantUser: userType =
     item.invited_users[clickedParticipantIndex];
   $: clickedParticipantUser = item.invited_users[clickedParticipantIndex];
+  
 </script>
 
 <Modal
