@@ -4,7 +4,7 @@ from server.cshr.models.users import User
 from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.meetings import get_all_meetings, get_meeting_by_id
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView , ListAPIView
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -13,7 +13,7 @@ from server.cshr.api.response import CustomResponse
 from server.cshr.utils.parse_date import CSHRDate
 
 
-class MeetingsApiView(ViewSet, GenericAPIView):
+class BaseMeetingsApiView(ListAPIView, GenericAPIView):
     """Class Meeting_APIVIEW to create a new meeting into database"""
 
     serializer_class = MeetingsSerializer
@@ -45,6 +45,13 @@ class MeetingsApiView(ViewSet, GenericAPIView):
             data=serializer.data, message="meetings found", status_code=200
         )
 
+
+
+
+class MeetingsApiView(ListAPIView, GenericAPIView):
+    serializer_class = MeetingsSerializer
+    permission_classes = (UserIsAuthenticated,)
+    
     def get_one(self, request: Request, id: str, format=None) -> Response:
         """method to get a single meeting by id"""
         meeting = get_meeting_by_id(id=id)

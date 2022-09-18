@@ -64,21 +64,21 @@ class OfficeTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "user1@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "user2@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "user3@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     """test post method"""
 
@@ -126,7 +126,7 @@ class OfficeTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "Offices found")
+        self.assertEqual(response.results["message"], "Offices found")
 
     def test_get_all_office_by_supervisor(self):
         """test list offices by supervisor"""
@@ -138,7 +138,7 @@ class OfficeTests(APITestCase):
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "Offices found")
+        self.assertEqual(response.results["message"], "Offices found")
 
     def test_get_all_office_by_user(self):
         """test list offices by user"""
@@ -148,7 +148,7 @@ class OfficeTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "Offices found")
+        self.assertEqual(response.results["message"], "Offices found")
 
     def test_get_all_office_by_unauthenticated_user(self):
         """test list offices by unauthenticated user"""

@@ -83,21 +83,21 @@ class UserEvaluationTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "user1@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "user2@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "user3@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     """test post method"""
 
@@ -165,7 +165,7 @@ class UserEvaluationTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "user evaluations found")
+        self.assertEqual(response.results["message"], "user evaluations found")
 
     def test_get_all_user_evaluation_by_supervisor(self):
         """test list evaluations by supervisor"""
@@ -178,7 +178,7 @@ class UserEvaluationTests(APITestCase):
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "user evaluations found")
+        self.assertEqual(response.results["message"], "user evaluations found")
 
     def test_get_all_user_evaluation_by_user(self):
         """test list evaluations by user"""
@@ -536,21 +536,21 @@ class EvaluationsTest(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "user1@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "user2@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "user3@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     """test post method"""
 
@@ -615,7 +615,7 @@ class EvaluationsTest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "evaluations found")
+        self.assertEqual(response.results["message"], "evaluations found")
 
     def test_get_all_evaluation_by_supervisor(self):
         """test list evaluations by supervisor"""
@@ -628,7 +628,7 @@ class EvaluationsTest(APITestCase):
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "evaluations found")
+        self.assertEqual(response.results["message"], "evaluations found")
 
     def test_get_all_evaluation_by_user(self):
         """test list evaluations by user"""
@@ -639,7 +639,7 @@ class EvaluationsTest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "evaluations found")
+        self.assertEqual(response.results["message"], "evaluations found")
 
     def test_get_all_evaluation_by_unauthenticated_user(self):
         """test list evaluations by unauthenticated user"""

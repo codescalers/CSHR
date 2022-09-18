@@ -1,4 +1,4 @@
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView , ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -19,13 +19,13 @@ from server.cshr.celery.send_email import send_email_for_compensation_request
 from server.cshr.celery.send_email import send_email_for_compensation_reply
 
 
-class CompensationApiView(ViewSet, GenericAPIView):
+class BaseCompensationApiView(ListAPIView, GenericAPIView):
     """method to get all Compensation"""
 
     serializer_class = CompensationSerializer
     permission_class = UserIsAuthenticated
 
-    def get_all(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
 
         compensation = get_all_compensations()
 
@@ -33,28 +33,6 @@ class CompensationApiView(ViewSet, GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="Compensation found", status_code=200
         )
-
-    """method to get a single Compensation by id"""
-
-    def get(self, request: Request, id: str, format=None) -> Response:
-        compensation = get_compensation_by_id(id=id)
-        if compensation is None:
-            return CustomResponse.not_found(
-                message="Compensation not found", status_code=404
-            )
-        serializer = CompensationSerializer(compensation)
-        return CustomResponse.success(
-            data=serializer.data, message="Compensation found", status_code=200
-        )
-
-    def delete(self, request: Request, id, format=None) -> Response:
-        """method to delete a Compensation by id"""
-        compensation = get_compensation_by_id(id=id)
-        if compensation is None:
-            return CustomResponse.not_found(message="Compensation not found")
-
-        compensation.delete()
-        return CustomResponse.success(message="User deleted", status_code=204)
 
     """method to create a new Compensation"""
 
@@ -78,8 +56,33 @@ class CompensationApiView(ViewSet, GenericAPIView):
             error=serializer.errors, message="Compensation creation failed"
         )
 
+class CompensationApiView(ListAPIView, GenericAPIView):
 
-class CompensationUpdateApiView(ViewSet, GenericAPIView):
+    serializer_class = CompensationSerializer
+    permission_class = UserIsAuthenticated
+    
+    def delete(self, request: Request, id, format=None) -> Response:
+        """method to delete a Compensation by id"""
+        compensation = get_compensation_by_id(id=id)
+        if compensation is None:
+            return CustomResponse.not_found(message="Compensation not found")
+
+        compensation.delete()
+        return CustomResponse.success(message="User deleted", status_code=204)
+        """method to get a single Compensation by id"""
+
+    def get(self, request: Request, id: str, format=None) -> Response:
+        compensation = get_compensation_by_id(id=id)
+        if compensation is None:
+            return CustomResponse.not_found(
+                message="Compensation not found", status_code=404
+            )
+        serializer = CompensationSerializer(compensation)
+        return CustomResponse.success(
+            data=serializer.data, message="Compensation found", status_code=200
+        )
+    
+class CompensationUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = CompensationUpdateSerializer
     permission_classes = [IsAdmin]
     """method to update a Compensation by id"""

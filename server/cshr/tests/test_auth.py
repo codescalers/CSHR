@@ -76,21 +76,21 @@ class RegisterationTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "jane@gmail.com", "password": "adminpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "john@outlook.com", "password": "userpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.results["data"]["access_token"]
 
     def test_register_user_admin(self) -> User:
         """

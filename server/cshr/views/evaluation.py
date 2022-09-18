@@ -1,4 +1,4 @@
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView , ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -20,11 +20,11 @@ from server.cshr.services.evaluation import (
 )
 
 
-class UserEvaluationsAPIView(ViewSet, GenericAPIView):
+class BaseUserEvaluationsAPIView(ListAPIView, GenericAPIView):
     serializer_class = UserEvaluationSerializer
     permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
 
-    def get_all(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         has_permission = CustomPermissions.admin_or_supervisor(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
@@ -33,6 +33,45 @@ class UserEvaluationsAPIView(ViewSet, GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="user evaluations found", status_code=200
         )
+
+    def post(self, request: Request) -> Response:
+        """To post new user evaluation"""
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
+        if not has_permission:
+            return CustomResponse.unauthorized()
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return CustomResponse.success(
+                data=serializer.data,
+                message="user evaluation created successfully",
+                status_code=201,
+            )
+        return CustomResponse.bad_request(
+            error=serializer.errors, message="user evaluation creation failed"
+        )
+
+
+class UserEvaluationsAPIView(ListAPIView, GenericAPIView):
+    serializer_class = UserEvaluationSerializer
+    permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
+    
+    
+    def delete(self, request: Request, id, format=None) -> Response:
+        """to delete user evaluation by admin"""
+
+        has_permission = CustomPermissions.admin(request.user)
+        if not has_permission:
+            return CustomResponse.unauthorized()
+        evaluation = get_user_evaluation_by_id(id)
+        if evaluation is not None:
+            evaluation.delete()
+            return CustomResponse.success(
+                message="user evaluation deleted", status_code=204
+            )
+        return CustomResponse.not_found(message="user evaluation not found")
+    
+    
 
     def get(self, request: Request, id: str, format=None) -> Response:
 
@@ -70,49 +109,57 @@ class UserEvaluationsAPIView(ViewSet, GenericAPIView):
             )
         return CustomResponse.not_found(message="user evaluation not found to update")
 
-    def post(self, request: Request) -> Response:
-        """To post new user evaluation"""
-        has_permission = CustomPermissions.admin_or_supervisor(request.user)
-        if not has_permission:
-            return CustomResponse.unauthorized()
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return CustomResponse.success(
-                data=serializer.data,
-                message="user evaluation created successfully",
-                status_code=201,
-            )
-        return CustomResponse.bad_request(
-            error=serializer.errors, message="user evaluation creation failed"
-        )
-
-    def delete(self, request: Request, id, format=None) -> Response:
-        """to delete user evaluation by admin"""
-
-        has_permission = CustomPermissions.admin(request.user)
-        if not has_permission:
-            return CustomResponse.unauthorized()
-        evaluation = get_user_evaluation_by_id(id)
-        if evaluation is not None:
-            evaluation.delete()
-            return CustomResponse.success(
-                message="user evaluation deleted", status_code=204
-            )
-        return CustomResponse.not_found(message="user evaluation not found")
-
-
-class EvaluationsAPIView(ViewSet, GenericAPIView):
+    
+    
+    
+class BaseEvaluationsAPIView(ListAPIView, GenericAPIView):
     serializer_class = EvaluationSerializer
     permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
 
-    def get_all(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         evaluations = all_user_evaluations()
         serializer = EvaluationSerializer(evaluations, many=True)
         return CustomResponse.success(
             data=serializer.data, message="evaluations found", status_code=200
         )
 
+
+    def post(self, request: Request) -> Response:
+        """To post new evaluation"""
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
+        if not has_permission:
+            return CustomResponse.unauthorized()
+        serializer = EvaluationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return CustomResponse.success(
+                data=serializer.data,
+                message="evaluation created successfully",
+                status_code=201,
+            )
+        return CustomResponse.bad_request(
+            error=serializer.errors, message="evaluation creation failed"
+        )
+
+
+
+class EvaluationsAPIView(ListAPIView, GenericAPIView):
+    serializer_class = EvaluationSerializer
+    permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
+    
+    def delete(self, request: Request, id, format=None) -> Response:
+        """to delete evaluation by admin"""
+
+        has_permission = CustomPermissions.admin(request.user)
+        if not has_permission:
+            return CustomResponse.unauthorized()
+        evaluation = get_evaluation_by_id(id)
+        if evaluation is not None:
+            evaluation.delete()
+            return CustomResponse.success(message="evaluation deleted", status_code=204)
+        return CustomResponse.not_found(message="evaluation not found")
+    
+    
     def get(self, request: Request, id: str, format=None) -> Response:
         evaluation = get_evaluation_by_id(id)
         if evaluation is not None:
@@ -139,32 +186,3 @@ class EvaluationsAPIView(ViewSet, GenericAPIView):
                 )
             return CustomResponse.bad_request(message="evaluation failed to update")
         return CustomResponse.not_found(message="evaluation not found to update")
-
-    def post(self, request: Request) -> Response:
-        """To post new evaluation"""
-        has_permission = CustomPermissions.admin_or_supervisor(request.user)
-        if not has_permission:
-            return CustomResponse.unauthorized()
-        serializer = EvaluationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return CustomResponse.success(
-                data=serializer.data,
-                message="evaluation created successfully",
-                status_code=201,
-            )
-        return CustomResponse.bad_request(
-            error=serializer.errors, message="evaluation creation failed"
-        )
-
-    def delete(self, request: Request, id, format=None) -> Response:
-        """to delete evaluation by admin"""
-
-        has_permission = CustomPermissions.admin(request.user)
-        if not has_permission:
-            return CustomResponse.unauthorized()
-        evaluation = get_evaluation_by_id(id)
-        if evaluation is not None:
-            evaluation.delete()
-            return CustomResponse.success(message="evaluation deleted", status_code=204)
-        return CustomResponse.not_found(message="evaluation not found")

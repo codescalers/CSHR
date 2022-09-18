@@ -5,7 +5,7 @@ from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.hr_letters import get_all_hrLetters, get_hrLetter_by_id
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView , ListAPIView
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -15,7 +15,7 @@ from server.cshr.celery.send_email import send_email_for_hr_letter_request
 from server.cshr.api.response import CustomResponse
 
 
-class HrLetterApiView(ViewSet, GenericAPIView):
+class BaseHrLetterApiView(ListAPIView, GenericAPIView):
     """Class HR_Letter_APIVIEW to create a new hr letter into database"""
 
     serializer_class = HrLetterSerializer
@@ -41,17 +41,25 @@ class HrLetterApiView(ViewSet, GenericAPIView):
             error=serializer.errors, message="Hr letter creation failed"
         )
 
-    def get_all(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         hrLetters = get_all_hrLetters()
         serializer = HrLetterSerializer(hrLetters, many=True)
         return CustomResponse.success(
             data=serializer.data, message="Hr letters found", status_code=200
         )
 
+       
+
+
+
+class HrLetterApiView(ListAPIView, GenericAPIView):
+    
+    serializer_class = HrLetterSerializer
+    permission_classes = (UserIsAuthenticated,)
+    
+    
+    def get(self, request: Request, id: str, format=None) -> Response:
         """method to get a single HR Letter by id"""
-
-    def get_one(self, request: Request, id: str, format=None) -> Response:
-
         hr_letter = get_hrLetter_by_id(id=id)
         if hr_letter is None:
             return CustomResponse.not_found(
@@ -70,9 +78,8 @@ class HrLetterApiView(ViewSet, GenericAPIView):
             hr_letter.delete()
             return CustomResponse.success(message="Hr Letter deleted", status_code=204)
         return CustomResponse.not_found(message="Hr Letter not found", status_code=404)
-
-
-class HrLetterUpdateApiView(ViewSet, GenericAPIView):
+    
+class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = HrLetterUpdateSerializer
     permission_classes = [IsAdmin]
 

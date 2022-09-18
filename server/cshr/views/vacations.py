@@ -5,17 +5,18 @@ from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.vacations import get_vacation_by_id, get_all_vacations
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView , ListAPIView
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from server.cshr.celery.send_email import send_email_for_vacation_reply
 from server.cshr.celery.send_email import send_email_for_vacation_request
 from server.cshr.api.response import CustomResponse
+from server.cshr.services.event import get_all_events, get_event_by_id
 
 
-class VacationsApiView(ViewSet, GenericAPIView):
-    """Class Vacations_APIView to create a new vacation into database"""
+class BaseVacationsApiView(ListAPIView, GenericAPIView):
+    """Class Vacations_APIView to create a new vacation into database or get all"""
 
     serializer_class = VacationsSerializer
     permission_classes = [UserIsAuthenticated]
@@ -40,17 +41,22 @@ class VacationsApiView(ViewSet, GenericAPIView):
             error=serializer.errors, message="vacation request creation failed"
         )
 
-    def get_all(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
+        
+        """ method to get all vacations"""
         vacations = get_all_vacations()
         serializer = VacationsSerializer(vacations, many=True)
         return CustomResponse.success(
             data=serializer.data, message="vacation requests found", status_code=200
         )
+        
 
-        """method to get a single HR Letter by id"""
-
-    def get_one(self, request: Request, id: str, format=None) -> Response:
-
+class VacationsApiView(ListAPIView, GenericAPIView):
+    serializer_class = VacationsSerializer
+    permission_classes = [UserIsAuthenticated]
+    """Class Vacations_APIView to delete  vacation from database or get certain vacation"""
+    def get(self, request: Request, id: str, format=None) -> Response:
+        """method to get a single vacation by id"""
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
             return CustomResponse.not_found(
@@ -70,8 +76,7 @@ class VacationsApiView(ViewSet, GenericAPIView):
             return CustomResponse.success(message="Hr Letter deleted", status_code=204)
         return CustomResponse.not_found(message="Hr Letter not found", status_code=404)
 
-
-class VacationsUpdateApiView(ViewSet, GenericAPIView):
+class VacationsUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
     permission_classes = [IsAdmin]
 
