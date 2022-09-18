@@ -142,5 +142,7 @@ def send_email_for_reply(approving_user_id, data, msg, mail_title):
         raise ObjectDoesNotExist("No user is found with this id")
     applying_user_id = data["applying_user"]
     applying_user = get_user_by_id(applying_user_id)
+    if applying_user is None:
+        raise ObjectDoesNotExist("No user is found with this id")
     recievers: array[str] = get_email_recievers(applying_user)
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
