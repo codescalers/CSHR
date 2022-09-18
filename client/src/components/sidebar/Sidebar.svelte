@@ -74,17 +74,17 @@
       <div class="header_img">
         <Link to="/profile">
           <div
-          class={`circular_img`}
-          style={`background-image:url(${
-            process.env.APP_BASE_API_URL + $UserStore.image
-          });background-color:${
-            $UserStore.gender === "Male" ? "#2986cc" : "#FB5858"
-          };border:1.5px solid ${
-            $UserStore.gender === "Male" ? "var(--secondary-color)" : "pink"
-          }`}
-          data-bs-toggle="tooltip"
-          title={$UserStore.full_name + " #" + $UserStore.team}
-        />
+            class={`circular_img`}
+            style={`background-image:url(${
+              process.env.APP_BASE_API_URL + $UserStore.image
+            });background-color:${
+              $UserStore.gender === "Male" ? "#2986cc" : "#FB5858"
+            };border:1.5px solid ${
+              $UserStore.gender === "Male" ? "var(--secondary-color)" : "pink"
+            }`}
+            data-bs-toggle="tooltip"
+            title={$UserStore.full_name + " #" + $UserStore.team}
+          />
         </Link>
       </div>
     </div>
@@ -165,7 +165,7 @@
       </Router>
     </nav>
   </div>
-  <div class="height-100 bg-light">
+  <div class="height-100 bg-light d-flex flex-column justify-content-between">
     <slot name="content" />
     <Footer />
   </div>
