@@ -378,10 +378,6 @@ class SupervisorViewUserProfileTests(APITestCase):
         response = self.client.get(url, format="json")
         self.assertEqual(len(response.data["data"]), 3)
         self.assertEqual(response.data["data"][1]["full_name"], "John Blake")
-        self.assertEqual(
-            response.data["data"][1]["image"],
-            "http://testserver/profile_image/default.png",
-        )
         self.assertEqual(response.data["data"][1]["birthday"], "2000-12-30")
         self.assertEqual(response.data["data"][1]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["data"][1]["email"], "john@outlook.com")
@@ -420,10 +416,6 @@ class SupervisorViewUserProfileTests(APITestCase):
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.data["data"]["full_name"], "John Blake")
-        self.assertEqual(
-            response.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
-        )
         self.assertEqual(response.data["data"]["birthday"], "2000-12-30")
         self.assertEqual(response.data["data"]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["data"]["email"], "john@outlook.com")
@@ -636,10 +628,6 @@ class AdminViewUserProfileTests(APITestCase):
         response = self.client.get(url, format="json")
         self.assertEqual(len(response.data["data"]), 3)
         self.assertEqual(response.data["data"][1]["full_name"], "John Blake")
-        self.assertEqual(
-            response.data["data"][1]["image"],
-            "http://testserver/profile_image/default.png",
-        )
         self.assertEqual(response.data["data"][1]["birthday"], "2000-12-30")
         self.assertEqual(response.data["data"][1]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["data"][1]["email"], "john@outlook.com")
@@ -676,10 +664,6 @@ class AdminViewUserProfileTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.data["data"]["full_name"], "John Blake")
-        self.assertEqual(
-            response.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
-        )
         self.assertEqual(response.data["data"]["birthday"], "2000-12-30")
         self.assertEqual(response.data["data"]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["data"]["email"], "john@outlook.com")
@@ -987,10 +971,6 @@ class SelfViewUserProfileTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.data["data"]["full_name"], "John Blake")
-        self.assertEqual(
-            response.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
-        )
         self.assertEqual(response.data["data"]["birthday"], "2000-12-30")
         self.assertEqual(response.data["data"]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["data"]["email"], "john@outlook.com")
@@ -1031,10 +1011,6 @@ class SelfViewUserProfileTests(APITestCase):
         response = self.client.put(url, data, format="json")
         getresponse = self.client.get(url, format="json")
         self.assertEqual(getresponse.data["data"]["full_name"], "John Blake")
-        self.assertEqual(
-            getresponse.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
-        )
         self.assertEqual(getresponse.data["data"]["birthday"], "1981-08-31")
         self.assertEqual(getresponse.data["data"]["telegram_link"], "@janjounexample")
         self.assertEqual(getresponse.data["data"]["email"], "janjoun@example.com")
