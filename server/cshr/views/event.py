@@ -4,7 +4,6 @@ from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.services.event import get_all_events, get_event_by_id
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
-from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from server.cshr.api.response import CustomResponse
 from server.cshr.utils.parse_date import CSHRDate
