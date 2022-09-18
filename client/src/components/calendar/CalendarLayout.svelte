@@ -17,7 +17,7 @@
   }
 </script>
 
-<div class="calendar table-responsive table-responsive">
+<div class="calendar table-responsive">
   {#each headers as header, index (index)}
     <span class="day-name" on:click={() => dispatch("headerClick", header)}
       >{header}</span
@@ -45,7 +45,7 @@
         align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};
       "
         class="task {item.className}"
-      >
+        >
         <button
           type="button"
           class="modal-btn m-0 pl-0 "

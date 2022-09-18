@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import Image from "../image/Image.svelte";
   import Footer from "../footer/Footer.svelte";
-  import { UserStore, NotificationStore } from "../../stores";
+  import { UserStore } from "../../stores";
 
   onMount(() => {
     const showNavbar = (
@@ -47,6 +47,47 @@
 
     // Your code to run since DOM is loaded and ready
   });
+  /*   document.addEventListener("DOMContentLoaded", function (_event) {
+    const showNavbar = (
+      toggleId: string,
+      navId: string,
+      bodyId: string,
+      headerId: string
+    ) => {
+      const toggle = document.getElementById(toggleId),
+        nav = document.getElementById(navId),
+        bodypd = document.getElementById(bodyId),
+        headerpd = document.getElementById(headerId);
+
+      // Validate that all variables exist
+      if (toggle && nav && bodypd && headerpd) {
+        toggle.addEventListener("click", () => {
+          // show navbar
+          nav.classList.toggle("show");
+          // change icon
+          toggle.classList.toggle("bx-x");
+          // add padding to body
+          bodypd.classList.toggle("body-pd");
+          // add padding to header
+          headerpd.classList.toggle("body-pd");
+        });
+      }
+    };
+
+    showNavbar("header-toggle", "nav-bar", "body-pd", "header");
+
+    const linkColor = document.querySelectorAll(".nav_link");
+
+    function colorLink(this: any) {
+      if (linkColor) {
+        linkColor.forEach((l) => l.classList.remove("active"));
+        this.classList.add("active");
+      }
+    }
+    linkColor.forEach((l) => l.addEventListener("click", colorLink));
+
+    // Your code to run since DOM is loaded and ready
+  }); */
 </script>
 
 <div id="body-pd">
@@ -55,37 +96,10 @@
       <i class="bx bx-menu" id="header-toggle" />
       <slot name="page-name" />
     </div>
-    <div class="d-flex flex-row gap-4">
-      <div>
-        <Link to="/notifications" class="btn position-relative">
-          <i class="bi bi-bell" />
-          {#if $NotificationStore.length > 0}
-            <span
-              style="background: var(--primary-color); "
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-            >
-              +{$NotificationStore.length}
-              <span class="visually-hidden  bg-primary">unread messages</span>
-            </span>
-          {/if}
-        </Link>
-      </div>
-      <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
+    <div class="d-flex flex-row gap-2">
+      <h5 class="py-2 text-muted">{$UserStore.full_name}</h5>
       <div class="header_img">
-        <Link to="/profile">
-          <div
-          class={`circular_img`}
-          style={`background-image:url(${
-            process.env.APP_BASE_API_URL + $UserStore.image
-          });background-color:${
-            $UserStore.gender === "Male" ? "#2986cc" : "#FB5858"
-          };border:1.5px solid ${
-            $UserStore.gender === "Male" ? "var(--secondary-color)" : "pink"
-          }`}
-          data-bs-toggle="tooltip"
-          title={$UserStore.full_name + " #" + $UserStore.team}
-        />
-        </Link>
+        <Image src="https://i.imgur.com/hczKIze.jpg" alt="personal-image" />
       </div>
     </div>
   </header>

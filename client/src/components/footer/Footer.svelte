@@ -1,4 +1,4 @@
-<footer class="container">
+<footer class="container my-5">
   <p class="footer-copyright">
     Copyright Threefold ©
     {new Date().getFullYear()}
@@ -6,14 +6,13 @@
 </footer>
 
 <style>
+  /* footer */
+  :global(footer *) {
+    color: var(--primary-color) !important;
+  }
 
   footer {
-    position: fixed;
-    bottom: 0;
-    width: 90%;
-    margin: 0 auto;
+    margin: auto;
     text-align: center;
-    color: var(--primary-color) !important;
-
   }
 </style>

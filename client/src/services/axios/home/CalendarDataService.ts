@@ -21,8 +21,10 @@ class CalendarDataService {
             if (!e.hostedUserID || !e.invitedUsers || !e.meetingLink || !e.time || !e.date) throw new Error("Invalid data");
             if (e.invitedUsers.length === 0) throw new Error("No invited users");
             if (e.invitedUsers.includes(e.hostedUserID)) throw new Error("Hosted user is also invited");
+            console.log("meeting", e)
             const [hour, minute] = e.time.split(":");
             const [year, month, day] = e.date.split("-");
+            alert(e.hostedUserID + "s")
             const { status } = await http.post("/meeting/", JSON.stringify({
                 "host_user": e.hostedUserID,
                 "invited_users": e.invitedUsers,
@@ -37,7 +39,7 @@ class CalendarDataService {
                 "location": e.location
             }));
             if (status !== 201) {
-                throw new Error("Error while posting meeting with status " + status);
+                throw new Error("Error while posting meeting");
             }
 
         }
@@ -51,13 +53,13 @@ class CalendarDataService {
 
     public async postEvent(e: { description: string, name: string, people: number[], end_date: string, end_time: string, from_date: string, from_time: string, location: string }) {
         try {
-            if (!e.name || !e.people || e.people.length === 0 || !e.end_date || !e.location || !e.end_time || !e.from_time) throw new Error("Invalid data");
+            if (!e.name || !e.people || e.people.length !== 0 || !e.end_date || !e.location || !e.end_time || !e.from_time) throw new Error("Invalid data");
             if (e.people.length === 0) throw new Error("No invited users");
             const [fromHour, fromMinute] = e.from_time.split(":");
             const [fromYear, fromMonth, fromDay] = e.from_date.split("-");
             const [endHour, endMinute] = e.end_time.split(":");
             const [endYear, endMonth, endDay] = e.from_date.split("-");
-            const data = {
+            const { status } = await http.post("/meeting/", JSON.stringify({
                 "people": e.people,
                 "from_date": {
                     year: Number(fromYear),
@@ -76,8 +78,7 @@ class CalendarDataService {
                 "name": e.name,
                 "description": e.description,
                 "location": e.location
-            }
-            const { status } = await http.post("/event/", JSON.stringify(data));
+            }));
             if (status !== 201) {
                 throw new Error("Error while posting event with status " + status);
             }
@@ -97,7 +98,7 @@ class CalendarDataService {
                 "applying_user": e.applyingUserId,
                 "from_date": e.from_date,
                 "end_date": e.end_date,
-                "reason": "emergency_leave",
+                "reason": e.reason,
                 "type": "vacations",
                 "status": "pending"
             }));

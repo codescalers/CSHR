@@ -12,18 +12,9 @@ export interface UserInterface {
     password?: string;
     role: string;
     image: string;
-    gender: "Female" | "Male";
-    address: string;
-    birthday: string;
     CreatedAt?: string;
     UpdatedAt?: string;
     DeletedAt?: string;
-    job_title: string;
-    telegram_link: string,
-    skills: number[],
-    user_certificates: number[],
-    reporting_to: number[],
-
 }
 
 export interface SettingsInterface {
@@ -48,10 +39,6 @@ export type OfficeInterface = {
     id: number,
     name: string,
     country: string,
-}
-
-export type NotificationInterface = {
-    id: number,
 }
 
 

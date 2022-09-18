@@ -1,5 +1,5 @@
 import { Writable, writable } from "svelte/store";
-import type { SettingsInterface, UserInterface, OfficeInterface ,NotificationInterface} from "./types";
+import type { SettingsInterface, UserInterface, OfficeInterface } from "./types";
 
 
 
@@ -13,21 +13,9 @@ export const UserStore: Writable<UserInterface> = writable({
     image: "https://avatars.githubusercontent.com/u/11314585?v=4",
     role: "admin",
     team: "development",
-    password: "123456",
-    address: "Rua dos Bobos, 0",
-    job_title: "Software Engineer Lead",
-    birthday: "2022-09-13",
-    gender:"Male",
-    telegram_link:"link",
-    skills:[1],
-    user_certificates:[1],
-    reporting_to:[1],
-
-
-
+    password: "123456"
 
 
 })
 
 export const OfficeStore: Writable<OfficeInterface[]> = writable([])
-export const NotificationStore: Writable<NotificationInterface[]> = writable([{id:1}])
