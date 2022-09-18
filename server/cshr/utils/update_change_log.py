@@ -1,59 +1,41 @@
 """This file has change_log_update function."""
-import json
-from server.cshr.models.users import User
 from server.cshr.models.vacations import Vacation
 
 from typing import List, Dict
-import datetime 
-
+import datetime
 
 
 def update_vacation_change_log(
-        vacation: Vacation,
-        approved_date: str(datetime.datetime.today()),
-        comment: List[Dict]
-    ):
-    change =vacation.change_log
-    # change: Dict = {}
-   
-    change['approved_user'] = vacation.approval_user.id
-    change['approved_date'] = approved_date
+    vacation: Vacation,
+    approved_date: str(datetime.datetime.today()),
+    comment: List[Dict],
+):
+    change = vacation.change_log
 
-    if vacation.change_log.__contains__('comments'):
+    change["approved_user"] = vacation.approval_user.id
+    change["approved_date"] = approved_date
 
-      change['comments'].append(comment)
+    if vacation.change_log.__contains__("comments"):
+
+        change["comments"].append(comment)
     else:
-        change['comments']= [comment]
+        change["comments"] = [comment]
 
-    # print(comment)
-    # change['comments'].append(comment)
-    print(change['comments'])
-    print(change)
-    # tmp.append(change)
-    # vacation.change_log=json.loads(json.dumps(tmp))
-    print(vacation.change_log)
     vacation.save()
     return change
 
-def update_vacation_comment_log(
-        vacation: Vacation,
-        comment: List[Dict]
-    ):
-    change =vacation.change_log
-    # change: Dict = {}
+
+def update_vacation_comment_log(vacation: Vacation, comment: List[Dict]):
+    change = vacation.change_log
     if vacation.approval_user is not None:
-      change['approved_user'] = vacation.approval_user.id
-      
-    #   change['approved_date'] = approved_date
+        change["approved_user"] = vacation.approval_user.id
+
     print(vacation.approval_user)
 
-    if vacation.change_log.__contains__('comments'):
+    if vacation.change_log.__contains__("comments"):
 
-      change['comments'].append(comment)
+        change["comments"].append(comment)
     else:
-        change['comments']= [comment]
-
-    # print(comment)
-    # change['comments'].append(comment)
+        change["comments"] = [comment]
     vacation.save()
     return change

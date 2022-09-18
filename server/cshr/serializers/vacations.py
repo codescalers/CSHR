@@ -19,13 +19,14 @@ class VacationsUpdateSerializer(ModelSerializer):
         model = Vacation
         exclude = ("approval_user",)
 
+
 class VacationsCommentsSerializer(ModelSerializer):
     "For the users to leave a comment without updating other fields"
+
     class Meta:
         model = Vacation
-        fields=""
+        fields = ""
         # read_only_fields = ("applying_user", "approval_user", "type", "status","from_date","end_date")
-    
 
 
 class LandingPageVacationsSerializer(ModelSerializer):
