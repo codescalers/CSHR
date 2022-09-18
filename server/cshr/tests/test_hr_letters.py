@@ -165,7 +165,7 @@ class HrLetterTests(APITestCase):
         url = "/api/hrletter/"
         data = {"addresses": "testing addr"}
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -194,7 +194,7 @@ class HrLetterTests(APITestCase):
         data = {"addresses": "testing addr"}
         response = client.post(url, data, format="json")
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/hrletter/edit/1/"

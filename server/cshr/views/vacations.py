@@ -1,6 +1,6 @@
 from server.cshr.serializers.vacations import VacationsSerializer
 from server.cshr.serializers.vacations import VacationsUpdateSerializer
-from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
+from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.services.users import get_user_by_id
@@ -9,9 +9,13 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-from server.cshr.celery.send_email import send_email_for_vacation_reply
-from server.cshr.celery.send_email import send_email_for_vacation_request
 from server.cshr.api.response import CustomResponse
+from server.cshr.utils.email_messages_templates import (
+    get_vacation_request_email_template,
+    get_vacation_reply_email_template,
+)
+from server.cshr.celery.send_email import send_email_for_request
+from server.cshr.celery.send_email import send_email_for_reply
 
 
 class VacationsApiView(ViewSet, GenericAPIView):
@@ -30,12 +34,13 @@ class VacationsApiView(ViewSet, GenericAPIView):
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
-            send_email_for_vacation_request(current_user, serializer.data)
-            return CustomResponse.success(
-                data=serializer.data,
-                message="vacation request is created successfully",
-                status_code=201,
+            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
+            # to send email async just add .delay after function name as the line below
+            # send_email_for_request.delay(current_user.id, serializer.data)
+            msg = get_vacation_request_email_template(
+                current_user, serializer.data, url
             )
+            return send_email_for_request(current_user.id, msg, "Vacation request")
         return CustomResponse.bad_request(
             error=serializer.errors, message="vacation request creation failed"
         )
@@ -73,7 +78,7 @@ class VacationsApiView(ViewSet, GenericAPIView):
 
 class VacationsUpdateApiView(ViewSet, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
-    permission_classes = [IsAdmin]
+    permission_classes = [IsSupervisor]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
@@ -83,9 +88,12 @@ class VacationsUpdateApiView(ViewSet, GenericAPIView):
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
-            send_email_for_vacation_reply(current_user, serializer.data)
-            return CustomResponse.success(
-                data=serializer.data, status_code=202, message="vacation updated"
+            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
+            # to send email async just add .delay after function name as the line below
+            # send_email_for_reply.delay(current_user.id, serializer.data)
+            msg = get_vacation_reply_email_template(current_user, serializer.data, url)
+            return send_email_for_reply(
+                current_user.id, serializer.data, msg, "Vacation reply"
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="vacation failed to update"

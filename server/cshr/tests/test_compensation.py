@@ -160,7 +160,7 @@ class CompensationTests(APITestCase):
             "end_date": "2022-08-23",
         }
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -196,7 +196,7 @@ class CompensationTests(APITestCase):
             "end_date": "2022-08-23",
         }
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

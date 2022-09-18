@@ -217,7 +217,7 @@ class VacationsTests(APITestCase):
             "change_log": 123,
         }
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -255,7 +255,7 @@ class VacationsTests(APITestCase):
             "change_log": 123,
         }
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
