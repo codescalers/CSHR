@@ -40,13 +40,7 @@ class VacationsApiView(ViewSet, GenericAPIView):
             msg = get_vacation_request_email_template(
                 current_user, serializer.data, url
             )
-            send_email_for_request(current_user.id, msg, "Vacation request")
-
-            return CustomResponse.success(
-                data=serializer.data,
-                message="vacation request is created successfully",
-                status_code=201,
-            )
+            return send_email_for_request(current_user.id, msg, "Vacation request")
         return CustomResponse.bad_request(
             error=serializer.errors, message="vacation request creation failed"
         )

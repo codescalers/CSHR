@@ -3,7 +3,6 @@ from server.cshr.models.users import USER_TYPE
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from server.cshr.services.users import get_user_by_id
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def get_admins_emails():
@@ -21,8 +20,6 @@ def get_supervisor_emails(user: User):
     supervisor_emails = []
     for super in supervisors:
         supervisor = get_user_by_id(super.id)
-        if supervisor is None:
-            raise ObjectDoesNotExist("Invalid supervisor ID")
         supervisor_emails.append(supervisor.email)
     return supervisor_emails
 
