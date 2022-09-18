@@ -43,12 +43,7 @@ class HrLetterApiView(ViewSet, GenericAPIView):
             msg = get_hr_letter_request_email_template(
                 current_user, serializer.data, url
             )
-            send_email_for_request(current_user.id, msg, "Hr Letter request")
-            return CustomResponse.success(
-                data=serializer.data,
-                message="Hr letter is created successfully",
-                status_code=201,
-            )
+            return send_email_for_request(current_user.id, msg, "Hr Letter request")
         return CustomResponse.bad_request(
             error=serializer.errors, message="Hr letter creation failed"
         )
@@ -100,11 +95,8 @@ class HrLetterUpdateApiView(ViewSet, GenericAPIView):
             # to send email async just add .delay after function name as the line below
             # send_email_for_reply.delay(current_user.id, serializer.data)
             msg = get_hr_letter_reply_email_template(current_user, serializer.data, url)
-            send_email_for_reply(
+            return send_email_for_reply(
                 current_user.id, serializer.data, msg, "Hr Letter reply"
-            )
-            return CustomResponse.success(
-                data=serializer.data, status_code=202, message="HR Letter updated"
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="HR Letter failed to update"

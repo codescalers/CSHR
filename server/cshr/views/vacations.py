@@ -92,11 +92,8 @@ class VacationsUpdateApiView(ViewSet, GenericAPIView):
             # to send email async just add .delay after function name as the line below
             # send_email_for_reply.delay(current_user.id, serializer.data)
             msg = get_vacation_reply_email_template(current_user, serializer.data, url)
-            send_email_for_reply(
+            return send_email_for_reply(
                 current_user.id, serializer.data, msg, "Vacation reply"
-            )
-            return CustomResponse.success(
-                data=serializer.data, status_code=202, message="vacation updated"
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="vacation failed to update"

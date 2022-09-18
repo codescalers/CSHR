@@ -80,12 +80,7 @@ class CompensationApiView(ViewSet, GenericAPIView):
             msg = get_compensation_request_email_template(
                 current_user, serializer.data, url
             )
-            send_email_for_request(current_user.id, msg, "Compensation request")
-            return CustomResponse.success(
-                data=serializer.data,
-                message="Compensation is created successfully",
-                status_code=201,
-            )
+            return send_email_for_request(current_user.id, msg, "Compensation request")
         return CustomResponse.bad_request(
             error=serializer.errors, message="Compensation creation failed"
         )
@@ -110,11 +105,8 @@ class CompensationUpdateApiView(ViewSet, GenericAPIView):
             msg = get_compensation_reply_email_template(
                 current_user, serializer.data, url
             )
-            send_email_for_reply(
+            return send_email_for_reply(
                 current_user.id, serializer.data, msg, "Compensation reply"
-            )
-            return CustomResponse.success(
-                data=serializer.data, status_code=202, message="compensation updated"
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="compensation failed to update"
