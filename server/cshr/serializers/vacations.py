@@ -26,7 +26,6 @@ class VacationsCommentsSerializer(ModelSerializer):
     class Meta:
         model = Vacation
         fields = ""
-        # read_only_fields = ("applying_user", "approval_user", "type", "status","from_date","end_date")
 
 
 class LandingPageVacationsSerializer(ModelSerializer):
