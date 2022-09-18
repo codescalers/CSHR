@@ -6,7 +6,6 @@ from celery.schedules import crontab
 import datetime
 from django.core.mail import send_mail
 from celery import shared_task
-
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -142,6 +141,6 @@ def send_email_for_reply(approving_user_id, data, msg, mail_title):
     if approving_user is None:
         raise ObjectDoesNotExist("No user is found with this id")
     applying_user_id = data["applying_user"]
-    applying_user = User.objects.get(pk=applying_user_id)
+    applying_user = get_user_by_id(applying_user_id)
     recievers: array[str] = get_email_recievers(applying_user)
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)

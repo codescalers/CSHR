@@ -2,6 +2,7 @@ from server.cshr.models.users import User
 from server.cshr.models.users import USER_TYPE
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from server.cshr.services.users import get_user_by_id
 
 
 def get_admins_emails():
@@ -18,7 +19,7 @@ def get_supervisor_emails(user: User):
     supervisors = user.reporting_to.all()
     supervisor_emails = []
     for super in supervisors:
-        supervisor = User.objects.get(pk=super.id)
+        supervisor = get_user_by_id(super.id)
         supervisor_emails.append(supervisor.email)
     return supervisor_emails
 
