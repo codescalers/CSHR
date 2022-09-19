@@ -3,6 +3,8 @@
   import { onMount } from "svelte";
   import Footer from "../footer/Footer.svelte";
   import { UserStore, NotificationStore } from "../../stores";
+  import LoadingComponent from "../loader/LoadingComponent.svelte";
+  import ErrorComponent from "../error/ErrorComponent.svelte";
 
   onMount(() => {
     const showNavbar = (
@@ -46,6 +48,9 @@
 
     // Your code to run since DOM is loaded and ready
   });
+
+  export let isLoading = false;
+  export let isError: boolean | null = null;
 </script>
 
 <div id="body-pd">
@@ -56,27 +61,24 @@
     </div>
     <div class="d-flex flex-row gap-4">
       <div>
-        <Link
-          to="/notifications"
-          class="position-relative"
-        >
-        <p class="mt-2">
-          <i class="bi bi-bell notification-btn" />
-          {#if $NotificationStore.length > 0}
-            <span
-              style="background: var(--primary-color); "
-              class="position-absolute top-5 start-100 translate-middle badge rounded-pill"
-            >
-              +{$NotificationStore.length}
-              <span class="visually-hidden  bg-primary">unread messages</span>
-            </span>
-          {/if}
-        </p>
+        <Link to="/notifications" class="position-relative">
+          <p class="mt-2">
+            <i class="bi bi-bell notification-btn" />
+            {#if $NotificationStore.length > 0}
+              <span
+                style="background: var(--primary-color); "
+                class="position-absolute top-5 start-100 translate-middle badge rounded-pill"
+              >
+                +{$NotificationStore.length}
+                <span class="visually-hidden  bg-primary">unread messages</span>
+              </span>
+            {/if}
+          </p>
         </Link>
       </div>
       <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
       <div class="header_img">
-        <Link to="/profile">
+        <Link to={"/profile/" + $UserStore.id}>
           <div
             class={`circular_img`}
             style={`background-image:url(${
@@ -170,7 +172,15 @@
     </nav>
   </div>
   <div class="height-100 bg-light d-flex flex-column justify-content-between">
-    <slot name="content" />
+    {#if isError}
+      <ErrorComponent
+        errorMessage="please try to reload page and raise an issues"
+      />
+    {:else if isLoading}
+      <LoadingComponent />
+    {:else}
+      <slot name="content" {isError} {isLoading} />
+    {/if}
     <Footer />
   </div>
 </div>
@@ -178,7 +188,7 @@
 <style>
   .notification-btn {
     color: var(--primary-color);
-    border: 1px solid var(--primary-color) ;
+    border: 1px solid var(--primary-color);
     cursor: pointer;
     border-radius: 50%;
     padding: 0.75rem;
@@ -186,6 +196,6 @@
   }
   .notification-btn:hover {
     background-color: var(--secondary-color);
-    border: 1px solid var(--secondary-color) ;
+    border: 1px solid var(--secondary-color);
   }
 </style>

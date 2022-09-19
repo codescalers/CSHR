@@ -20,8 +20,8 @@ export interface UserInterface {
     DeletedAt?: string;
     job_title: string;
     telegram_link: string,
-    skills: number[],
-    user_certificates: number[],
+    skills: SkillType[],
+    user_certificates: CertificateType[],
     reporting_to: number[],
 
 }
@@ -63,28 +63,24 @@ export type NotificationType = {
 
 export type TeamType = {
     id: number,
-    name: string,
-    office: number,
-    members: number[],
-    managers: number[],
-    CreatedAt?: string,
-    UpdatedAt?: string,
-    DeletedAt?: string,
+    full_name: string,
+    image: string,
+    team: string,
+    job_title: string,
+    user_type: string
 }
 
 export type SkillType = {
     id: number,
     name: string,
-    CreatedAt?: string,
-    UpdatedAt?: string,
-    DeletedAt?: string,
 }
 
 export type CertificateType = {
     id: number,
-    name: string,
-    CreatedAt?: string,
-    UpdatedAt?: string,
-    DeletedAt?: string,
+    user: number,
+    name: String,
+    certificate_link: String,
+    created_at?: Date,
+    modified_at?: Date,
 }
 

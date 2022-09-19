@@ -1,7 +1,9 @@
+import type { PaginatedInterface, TeamType } from './../../../types';
 import http from "../http-common";
+
 class TeamDataService {
     errorMessage: string = "Error in Team Data Service: ";
-    public async get(): Promise<{ results: any[], count: number, next: string, previous: string }> {
+    public async get(): Promise<PaginatedInterface<TeamType>> {
         try {
             const { data, status, statusText } = (await http.get(`/users/teams/`));
             if (status !== 200) {

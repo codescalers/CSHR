@@ -1,5 +1,5 @@
 import { Writable, writable } from "svelte/store";
-import type { SettingsInterface, UserInterface, OfficeInterface ,NotificationInterface} from "./types";
+import type { SettingsInterface, UserInterface, OfficeType, NotificationType, TeamType, PaginatedInterface } from "./types";
 
 
 
@@ -17,17 +17,14 @@ export const UserStore: Writable<UserInterface> = writable({
     address: "Rua dos Bobos, 0",
     job_title: "Software Engineer Lead",
     birthday: "2022-09-13",
-    gender:"Male",
-    telegram_link:"link",
-    skills:[1],
-    user_certificates:[1],
-    reporting_to:[1],
-
-
-
-
-
+    gender: "Male",
+    telegram_link: "link",
+    skills: [1],
+    user_certificates: [1],
+    reporting_to: [1],
 })
 
-export const OfficeStore: Writable<OfficeInterface[]> = writable([])
-export const NotificationStore: Writable<NotificationInterface[]> = writable([{id:1}])
+export const OfficeStore: Writable<OfficeType[]> = writable([])
+export const NotificationStore: Writable<NotificationType[]> = writable([{ id: 1 }])
+
+export const TeamStore: Writable<PaginatedInterface<TeamType>> = writable();

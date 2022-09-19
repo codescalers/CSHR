@@ -52,7 +52,8 @@
     <Route path="input" primary={false}><InputExample /></Route>
     <Route path="requests/" primary={false}><Requests /></Route>
     <Route path="users/" primary={false}><Users /></Route>
-    <Route path="profile/" primary={false}><UserProfile /></Route>
+    <Route path="profile/:id" component={UserProfile} />
+    <Route path="profile/" component={UserProfile} />
     <Route path="team/" primary={false}><Team /></Route>
 
     <Route>
