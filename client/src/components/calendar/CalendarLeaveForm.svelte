@@ -51,6 +51,7 @@
           isLoading = false;
           leaveReasonValue = "";
         }
+        return isError;
       }}
       disabled={submitDisabled}
     />

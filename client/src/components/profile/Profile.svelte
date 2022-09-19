@@ -175,6 +175,7 @@
                     <a
                       class="btn btn-primary my-0"
                       href={Certificate.certificate_link + ""}
+                      rel="noopener noreferrer" target="_blank"
                     >
                       check certificate
                     </a>

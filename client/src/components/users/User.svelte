@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Link } from "svelte-navigator";
+
   import type { UserInterface } from "../../types";
   export let user: UserInterface;
 </script>
@@ -27,7 +29,9 @@
       </small>
       <br />
       <small>
-        <cite title="Address">
+        <cite
+          title="Address"
+        >
           <i class="bi bi-geo" />
           {user.address}</cite
         >
@@ -40,7 +44,9 @@
     </blockquote>
     <div class=" d-flex flex-row justify-content-center gap-3 my-3">
       <a href="#" class="btn btn-primary">send email</a>
-      <a href="#" class="btn btn-outline-primary">visit profile</a>
+      <Link to={`../profile/${user.id}`} class="btn btn-outline-primary"
+        >visit profile</Link
+      >
     </div>
   </div>
 </div>
