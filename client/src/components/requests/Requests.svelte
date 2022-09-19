@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { RequestInterface } from "../../types";
-  import Request from "./Request.svelte";
-  let requests: RequestInterface[];
+  import type { RequestInterface } from '../../types'
+  import Request from './Request.svelte'
+  let requests: RequestInterface[]
 </script>
 
 <div class="container">

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Link } from "svelte-navigator";
+  import { Link } from 'svelte-navigator'
 
-  import type { UserInterface } from "../../types";
-  export let user: UserInterface;
+  import type { UserInterface } from '../../types'
+  export let user: UserInterface
 </script>
 
 <div class="card rounded bg-light shadow">
@@ -13,12 +13,12 @@
         style={`background-image:url(${
           process.env.APP_BASE_API_URL + user.image
         });background-color:${
-          user.gender === "Male" ? "#2986cc" : "#FB5858"
+          user.gender === 'Male' ? '#2986cc' : '#FB5858'
         };border:1.5px solid ${
-          user.gender === "Male" ? "var(--secondary-color)" : "pink"
+          user.gender === 'Male' ? 'var(--secondary-color)' : 'pink'
         }`}
         data-bs-toggle="tooltip"
-        title={user.full_name + " #" + user.team}
+        title={user.full_name + ' #' + user.team}
       />
       <div class="text-center my-4 mx-3">{user.full_name}</div>
     </h5>
@@ -29,9 +29,7 @@
       </small>
       <br />
       <small>
-        <cite
-          title="Address"
-        >
+        <cite title="Address">
           <i class="bi bi-geo" />
           {user.address}</cite
         >

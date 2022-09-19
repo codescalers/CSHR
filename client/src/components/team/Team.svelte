@@ -1,31 +1,31 @@
 <script lang="ts">
-  import Members from "./Members.svelte";
-  import Supervisors from "./Supervisors.svelte";
+  import Members from './Members.svelte'
+  import Supervisors from './Supervisors.svelte'
 
-  import { onMount } from "svelte";
-  import { TeamStore } from "../../stores";
-  import teamDataService from "../../services/axios/team/TeamDataService";
-  import type { PaginatedInterface, TeamType } from "../../types";
+  import { onMount } from 'svelte'
+  import { TeamStore } from '../../stores'
+  import teamDataService from '../../services/axios/team/TeamDataService'
+  import type { PaginatedInterface, TeamType } from '../../types'
 
-  export let isLoading = false;
-  export let isError: boolean | null = null;
+  export let isLoading = false
+  export let isError: boolean | null = null
 
   onMount(async () => {
-    isLoading = true;
+    isLoading = true
     try {
       if ($TeamStore === undefined || $TeamStore.results.length === 0) {
-        const team: PaginatedInterface<TeamType> = await teamDataService.get();
+        const team: PaginatedInterface<TeamType> = await teamDataService.get()
         if ($TeamStore === undefined) {
-          $TeamStore = team;
+          $TeamStore = team
         } else {
-          TeamStore.set(team);
+          TeamStore.set(team)
         }
       }
     } catch (error) {
-      isError = true;
+      isError = true
     }
-    isLoading = false;
-  });
+    isLoading = false
+  })
 </script>
 
 <div class="container">

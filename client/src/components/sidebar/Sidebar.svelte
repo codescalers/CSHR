@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Router, Link } from "svelte-navigator";
-  import { onMount } from "svelte";
-  import Footer from "../footer/Footer.svelte";
-  import { UserStore, NotificationStore } from "../../stores";
-  import LoadingComponent from "../loader/LoadingComponent.svelte";
-  import ErrorComponent from "../error/ErrorComponent.svelte";
+  import { Router, Link } from 'svelte-navigator'
+  import { onMount } from 'svelte'
+  import Footer from '../footer/Footer.svelte'
+  import { UserStore, NotificationStore } from '../../stores'
+  import LoadingComponent from '../loader/LoadingComponent.svelte'
+  import ErrorComponent from '../error/ErrorComponent.svelte'
 
   onMount(() => {
     const showNavbar = (
@@ -16,41 +16,41 @@
       const toggle = document.getElementById(toggleId),
         nav = document.getElementById(navId),
         bodypd = document.getElementById(bodyId),
-        headerpd = document.getElementById(headerId);
+        headerpd = document.getElementById(headerId)
 
       // Validate that all variables exist
       if (toggle && nav && bodypd && headerpd) {
-        toggle.addEventListener("click", () => {
+        toggle.addEventListener('click', () => {
           // show navbar
-          nav.classList.toggle("show");
+          nav.classList.toggle('show')
           // change icon
-          toggle.classList.toggle("bx-x");
+          toggle.classList.toggle('bx-x')
           // add padding to body
-          bodypd.classList.toggle("body-pd");
+          bodypd.classList.toggle('body-pd')
           // add padding to header
-          headerpd.classList.toggle("body-pd");
-        });
+          headerpd.classList.toggle('body-pd')
+        })
       }
-    };
+    }
 
-    showNavbar("header-toggle", "nav-bar", "body-pd", "header");
+    showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
 
     /*===== LINK ACTIVE =====*/
-    const linkColor = document.querySelectorAll(".nav_link");
+    const linkColor = document.querySelectorAll('.nav_link')
 
     function colorLink(this: any) {
       if (linkColor) {
-        linkColor.forEach((l) => l.classList.remove("active"));
-        this.classList.add("active");
+        linkColor.forEach((l) => l.classList.remove('active'))
+        this.classList.add('active')
       }
     }
-    linkColor.forEach((l) => l.addEventListener("click", colorLink));
+    linkColor.forEach((l) => l.addEventListener('click', colorLink))
 
     // Your code to run since DOM is loaded and ready
-  });
+  })
 
-  export let isLoading = false;
-  export let isError: boolean | null = null;
+  export let isLoading = false
+  export let isError: boolean | null = null
 </script>
 
 <div id="body-pd">
@@ -78,18 +78,18 @@
       </div>
       <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
       <div class="header_img">
-        <Link to={"/profile/" + $UserStore.id}>
+        <Link to={'/profile/' + $UserStore.id}>
           <div
             class={`circular_img`}
             style={`background-image:url(${
               process.env.APP_BASE_API_URL + $UserStore.image
             });background-color:${
-              $UserStore.gender === "Male" ? "#2986cc" : "#FB5858"
+              $UserStore.gender === 'Male' ? '#2986cc' : '#FB5858'
             };border:1.5px solid ${
-              $UserStore.gender === "Male" ? "var(--secondary-color)" : "pink"
+              $UserStore.gender === 'Male' ? 'var(--secondary-color)' : 'pink'
             }`}
             data-bs-toggle="tooltip"
-            title={$UserStore.full_name + " #" + $UserStore.team}
+            title={$UserStore.full_name + ' #' + $UserStore.team}
           />
         </Link>
       </div>
@@ -172,7 +172,7 @@
     </nav>
   </div>
   <div class="height-100 bg-light d-flex flex-column justify-content-between">
-    <section class="fluid-container mt-5 content" >
+    <section class="fluid-container mt-5 content">
       {#if isError}
         <ErrorComponent
           errorMessage="please try to reload page and raise an issues"

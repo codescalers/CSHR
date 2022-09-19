@@ -1,9 +1,9 @@
 <script lang="ts">
-  export let disabled = false;
-  export let className = "";
-  export let label = "";
-  export let onClick: () => void;
-  export let modalID: number;
+  export let disabled = false
+  export let className = ''
+  export let label = ''
+  export let onClick: () => void
+  export let modalID: number
 </script>
 
 <button
@@ -11,7 +11,7 @@
   data-bs-dismiss="modal"
   data-bs-target={`#modal${modalID}`}
   aria-label="Close"
-  class={`btn ${className.length !== 0 ? className : "submit"}`}
+  class={`btn ${className.length !== 0 ? className : 'submit'}`}
   on:click|preventDefault={onClick}
   {disabled}>{label}</button
 >

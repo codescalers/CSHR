@@ -1,37 +1,37 @@
 <script lang="ts">
-  import type { UserInterface } from "../../types";
-  import usersDataService from "../../services/axios/users/UsersDataService";
-  import { onMount } from "svelte";
-  import { AllUsersStore, UserStore } from "../../stores";
-  import PeopleSlot from "./PeopleSlot.svelte";
-  import MultiSelect from "svelte-multiselect";
-  export let selected: number[] = [];
-  export let placeholder = `Select Users`;
-  export let removeAllTitle = "Remove all users";
-  export let isLoading = false;
-  export let isError: boolean | null = null;
+  import type { UserInterface } from '../../types'
+  import usersDataService from '../../services/axios/users/UsersDataService'
+  import { onMount } from 'svelte'
+  import { AllUsersStore, UserStore } from '../../stores'
+  import PeopleSlot from './PeopleSlot.svelte'
+  import MultiSelect from 'svelte-multiselect'
+  export let selected: number[] = []
+  export let placeholder = `Select Users`
+  export let removeAllTitle = 'Remove all users'
+  export let isLoading = false
+  export let isError: boolean | null = null
   // user ids
-  let options: string[] = [];
+  let options: string[] = []
 
   onMount(async () => {
-    isLoading = true;
+    isLoading = true
     try {
       if ($AllUsersStore === undefined || $AllUsersStore.length === 0) {
-        const users = await usersDataService.getAll();
+        const users = await usersDataService.getAll()
         if ($AllUsersStore === undefined) {
-          $AllUsersStore = users;
+          $AllUsersStore = users
         } else {
-          AllUsersStore.set(users);
+          AllUsersStore.set(users)
         }
       }
       $AllUsersStore.forEach((user: UserInterface) => {
-        if (user.id !== $UserStore.id) options.push(user.id + "");
-      });
+        if (user.id !== $UserStore.id) options.push(user.id + '')
+      })
     } catch (e) {
-      isError = true;
+      isError = true
     }
-    isLoading = false;
-  });
+    isLoading = false
+  })
 </script>
 
 {#if isError}

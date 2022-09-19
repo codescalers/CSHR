@@ -1,11 +1,11 @@
 <script lang="ts">
-  import MultiSelect from "svelte-multiselect";
-  export let options: string[] = [];
-  export let selected: number[] = [];
-  export let placeholder = `Select Users`;
-  export let removeAllTitle = "Remove all users";
-  export let isLoading = false;
-  export let isError: boolean | null = null;
+  import MultiSelect from 'svelte-multiselect'
+  export let options: string[] = []
+  export let selected: number[] = []
+  export let placeholder = `Select Users`
+  export let removeAllTitle = 'Remove all users'
+  export let isLoading = false
+  export let isError: boolean | null = null
 </script>
 
 {#if isError}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from 'svelte'
   export let id: string,
     isDelete: boolean,
     deleteText: string,
@@ -7,14 +7,14 @@
     doneText: string,
     isFooter: boolean = true,
     isClose = true,
-    closeText = "Close";
+    closeText = 'Close'
 
-  let dispatch = createEventDispatcher();
+  let dispatch = createEventDispatcher()
   function onDelete() {
-    dispatch("onDelete", { id: id });
+    dispatch('onDelete', { id: id })
   }
   function onDone() {
-    dispatch("onDone", { id: id });
+    dispatch('onDone', { id: id })
   }
 </script>
 

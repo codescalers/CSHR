@@ -1,34 +1,34 @@
 <script lang="ts">
-  import { UserStore } from "../../stores";
-  import { onMount } from "svelte";
-  import { useParams } from "svelte-navigator";
-  import usersDataService from "../../services/axios/users/UsersDataService";
-  import type { UserInterface } from "../../types";
+  import { UserStore } from '../../stores'
+  import { onMount } from 'svelte'
+  import { useParams } from 'svelte-navigator'
+  import usersDataService from '../../services/axios/users/UsersDataService'
+  import type { UserInterface } from '../../types'
 
-  const params = useParams();
-  let id: number = Number($params.id);
-  export let isLoading = false;
-  export let isError: boolean | null = null;
-  let user: UserInterface;
+  const params = useParams()
+  let id: number = Number($params.id)
+  export let isLoading = false
+  export let isError: boolean | null = null
+  let user: UserInterface
   onMount(async () => {
-    isLoading = true;
+    isLoading = true
     try {
       if ($UserStore.id !== id) {
-        user = await usersDataService.getById(id);
+        user = await usersDataService.getById(id)
       } else if ($UserStore.id === id) {
         if ($UserStore === undefined) {
-          alert($UserStore);
-          user = await usersDataService.getById(id);
-          $UserStore = user;
+          alert($UserStore)
+          user = await usersDataService.getById(id)
+          $UserStore = user
         } else {
-          user = $UserStore;
+          user = $UserStore
         }
       }
     } catch (error) {
-      isError = true;
+      isError = true
     }
-    isLoading = false;
-  });
+    isLoading = false
+  })
 </script>
 
 {#if !isError && !isLoading && user}
@@ -42,12 +42,12 @@
               style={`background-image:url(${
                 process.env.APP_BASE_API_URL + user.image
               });background-color:${
-                user.gender === "Male" ? "#2986cc" : "#FB5858"
+                user.gender === 'Male' ? '#2986cc' : '#FB5858'
               };border:1.5px solid ${
-                user.gender === "Male" ? "var(--secondary-color)" : "pink"
+                user.gender === 'Male' ? 'var(--secondary-color)' : 'pink'
               }`}
               data-bs-toggle="tooltip"
-              title={user.full_name + " #" + user.team}
+              title={user.full_name + ' #' + user.team}
             />
 
             <h5 class="my-3">{user.full_name}</h5>
@@ -174,8 +174,9 @@
                     </p>
                     <a
                       class="btn btn-primary my-0"
-                      href={Certificate.certificate_link + ""}
-                      rel="noopener noreferrer" target="_blank"
+                      href={Certificate.certificate_link + ''}
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
                       check certificate
                     </a>
