@@ -172,15 +172,17 @@
     </nav>
   </div>
   <div class="height-100 bg-light d-flex flex-column justify-content-between">
-    {#if isError}
-      <ErrorComponent
-        errorMessage="please try to reload page and raise an issues"
-      />
-    {:else if isLoading}
-      <LoadingComponent />
-    {:else}
-      <slot name="content" {isError} {isLoading} />
-    {/if}
+    <section class="fluid-container mt-5 content" >
+      {#if isError}
+        <ErrorComponent
+          errorMessage="please try to reload page and raise an issues"
+        />
+      {:else if isLoading}
+        <LoadingComponent />
+      {:else}
+        <slot name="content" {isError} {isLoading} />
+      {/if}
+    </section>
     <Footer />
   </div>
 </div>
@@ -197,5 +199,8 @@
   .notification-btn:hover {
     background-color: var(--secondary-color);
     border: 1px solid var(--secondary-color);
+  }
+  .content {
+    height: fit-content;
   }
 </style>

@@ -21,7 +21,7 @@ class UsersDataService {
     }
     public async getById(id: number): Promise<UserInterface> {
         try {
-            const { data, status, statusText } = (await http.get(`/users?id=${id}`));
+            const { data, status, statusText } = (await http.get(`/users/${id}/`));
             if (status === 404) {
                 throw new Error("User not found");
             }

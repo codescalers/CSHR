@@ -16,13 +16,13 @@
       if ($UserStore.id !== id) {
         user = await usersDataService.getById(id);
       } else if ($UserStore.id === id) {
-        if (!$UserStore) {
+        if ($UserStore === undefined) {
+          alert($UserStore);
           user = await usersDataService.getById(id);
           $UserStore = user;
         } else {
           user = $UserStore;
         }
-        user = await usersDataService.getById(id);
       }
     } catch (error) {
       isError = true;
@@ -152,65 +152,9 @@
                   >
                   Skills
                 </p>
-                <p class="mb-1" style="font-size: .77rem;">Web Design</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 80%"
-                    aria-valuenow="80"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">
-                  Website Markup
-                </p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 72%"
-                    aria-valuenow="72"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 89%"
-                    aria-valuenow="89"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">
-                  Mobile Template
-                </p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 55%"
-                    aria-valuenow="55"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
-                <div class="progress rounded mb-2" style="height: 5px;">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 66%"
-                    aria-valuenow="66"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
-                </div>
+                {#each user.skills as skill, index (index)}
+                  <p class="my-2 name">{skill.name}</p>
+                {/each}
               </div>
             </div>
           </div>
@@ -223,65 +167,19 @@
                   >
                   Certificates
                 </p>
-                <p class="mb-1" style="font-size: .77rem;">Web Design</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 80%"
-                    aria-valuenow={"80"}
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">
-                  Website Markup
-                </p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 72%"
-                    aria-valuenow="72"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 89%"
-                    aria-valuenow="89"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">
-                  Mobile Template
-                </p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 55%"
-                    aria-valuenow="55"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
-                <div class="progress rounded mb-2" style="height: 5px;">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 66%"
-                    aria-valuenow="66"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
-                </div>
+                {#each user.user_certificates as Certificate, index (index)}
+                  <div class="d-flex flex-row justify-content-between">
+                    <p class="my-2 name" >
+                      {Certificate.name}
+                    </p>
+                    <a
+                      class="btn btn-primary my-0"
+                      href={Certificate.certificate_link + ""}
+                    >
+                      check certificate
+                    </a>
+                  </div>
+                {/each}
               </div>
             </div>
           </div>
@@ -294,5 +192,8 @@
 <style>
   .icon {
     font-size: 1.4rem;
+  }
+  .name{
+    font-size: 1rem;
   }
 </style>

@@ -3,7 +3,7 @@
   export let loadingMessage: string = "Please wait .";
 </script>
 
-<div class="alert alert-info" role="alert">
+<div class="container alert alert-info" role="alert">
   <strong> {loadingHeader}</strong>
   {loadingMessage}
 </div>

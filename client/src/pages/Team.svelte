@@ -5,13 +5,8 @@
 
 <Sidebar>
   <span slot="page-name">Team</span>
-  <section class="fluid-container mt-5 content" slot="content">
+  <div slot="content">
     <Team />
-  </section>
+  </div>
 </Sidebar>
 
-<style>
-  .content {
-    height: fit-content;
-  }
-</style>

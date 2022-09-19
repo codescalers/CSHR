@@ -19,9 +19,10 @@ export const UserStore: Writable<UserInterface> = writable({
     birthday: "2022-09-13",
     gender: "Male",
     telegram_link: "link",
-    skills: [1],
-    user_certificates: [1],
+    skills: [{ id: 1, name: "frontend" }],
+    user_certificates: [{ id: 1, name: "frontend", certificate_link: 'ssssss' }],
     reporting_to: [1],
+
 })
 
 export const OfficeStore: Writable<OfficeType[]> = writable([])

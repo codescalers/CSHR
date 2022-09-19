@@ -4,7 +4,7 @@
     "Change a few things up and try submitting again.";
 </script>
 
-<div class="alert alert-danger" role="alert">
+<div class="container alert alert-danger" role="alert">
   <strong>{errorHeader}</strong>
   {errorMessage}
 </div>
