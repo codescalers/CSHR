@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0041_alter_hrletters_date'),
-        ('cshr', '0044_user_background_color_alter_user_image'),
+        ("cshr", "0041_alter_hrletters_date"),
+        ("cshr", "0044_user_background_color_alter_user_image"),
     ]
 
-    operations = [
-    ]
+    operations = []
