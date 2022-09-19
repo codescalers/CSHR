@@ -61,21 +61,21 @@ class CompensationTests(APITestCase):
         url = f'{"/api/auth/login/"}'
         data = {"email": "ahmed@gmail.com", "password": "ahmedpass"}
         response = self.client.post(url, data, format="json")
-        return response.results["results"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "andrew@gmail.com", "password": "andrewpass"}
         response = self.client.post(url, data, format="json")
-        return response.results["results"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "helmy@gmail.com", "password": "helmypass"}
         response = self.client.post(url, data, format="json")
-        return response.results["results"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def test_create_compensation(self) -> Compensation:
         url = "/api/compensation/"

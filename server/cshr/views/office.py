@@ -1,8 +1,7 @@
-from rest_framework.generics import GenericAPIView , ListAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from server.cshr.models.office import Office
-from rest_framework.viewsets import ViewSet
 from ..serializers.office import OfficeSerializer
 from ..api.response import CustomResponse
 from server.cshr.api.permission import (
@@ -16,10 +15,9 @@ from server.cshr.services.office import get_office_by_id
 
 
 class BaseOfficeApiView(ListAPIView, GenericAPIView):
-    #queryset = Office.objects.all()
+    queryset = Office.objects.all()
     permission_classes = [UserIsAuthenticated | IsUser | IsAdmin | IsSupervisor]
     serializer_class = OfficeSerializer
-
 
     def get(self, request: Request) -> Response:
         offices = self.get_queryset()
@@ -27,7 +25,6 @@ class BaseOfficeApiView(ListAPIView, GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="Offices found", status_code=200
         )
-
 
     def post(self, request: Request) -> Response:
         has_permission = CustomPermissions.admin(request.user)
@@ -45,11 +42,11 @@ class BaseOfficeApiView(ListAPIView, GenericAPIView):
             error=serializer.errors, message="Office creation failed"
         )
 
+
 class OfficeApiView(ListAPIView, GenericAPIView):
-    #queryset = Office.objects.all()
     permission_classes = [UserIsAuthenticated | IsUser | IsAdmin | IsSupervisor]
     serializer_class = OfficeSerializer
-    
+
     def get(self, request: Request, id: str, format=None) -> Response:
         office = get_office_by_id(id)
         if office is None:
@@ -70,7 +67,7 @@ class OfficeApiView(ListAPIView, GenericAPIView):
             office.delete()
             return CustomResponse.success(message="Office deleted", status_code=204)
         return CustomResponse.not_found(message="Office not found to delete")
-    
+
     def put(self, request: Request, id: str, format=None) -> Response:
         """To update an office"""
         has_permission = CustomPermissions.admin_or_supervisor(request.user)

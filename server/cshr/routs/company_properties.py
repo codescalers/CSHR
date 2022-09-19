@@ -1,5 +1,8 @@
 from django.urls import path
-from server.cshr.views.company_properties import CompanyPropertiesApiView , BaseCompanyPropertiesApiView
+from server.cshr.views.company_properties import (
+    CompanyPropertiesApiView,
+    BaseCompanyPropertiesApiView,
+)
 
 urlpatterns = [
     path("", BaseCompanyPropertiesApiView.as_view()),

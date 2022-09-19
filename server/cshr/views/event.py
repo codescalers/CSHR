@@ -9,7 +9,6 @@ from server.cshr.api.response import CustomResponse
 from server.cshr.utils.parse_date import CSHRDate
 
 
-
 class BaseEventsAPIView(ListAPIView, GenericAPIView):
     serializer_class = EventSerializer
     permission_classes = (UserIsAuthenticated,)
@@ -39,6 +38,7 @@ class BaseEventsAPIView(ListAPIView, GenericAPIView):
 
     def get_queryset(self) -> Response:
         return get_all_events()
+
 
 class EventApiView(GenericAPIView):
     """Class Event_APIVIEW to create a new event into database"""

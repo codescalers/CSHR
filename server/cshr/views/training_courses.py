@@ -1,8 +1,6 @@
-from rest_framework.generics import GenericAPIView , ListAPIView
-from server.cshr.services.event import get_all_events, get_event_by_id
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
 from ..serializers.training_courses import TrainingCoursesSerializer
 from ..api.response import CustomResponse
 
@@ -25,6 +23,7 @@ class BaseTrainingCoursesApiView(ListAPIView, GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="Training courses found", status_code=200
         )
+
     """method to create a new Training course"""
 
     def post(self, request: Request) -> Response:
@@ -43,6 +42,7 @@ class BaseTrainingCoursesApiView(ListAPIView, GenericAPIView):
         return CustomResponse.bad_request(
             error=serializer.errors, message="Training course creation failed"
         )
+
 
 class TrainingCoursesApiView(ListAPIView, GenericAPIView):
     serializer_class = TrainingCoursesSerializer
@@ -98,4 +98,3 @@ class TrainingCoursesApiView(ListAPIView, GenericAPIView):
         return CustomResponse.success(
             message="Training course deleted", status_code=204
         )
-        

@@ -5,9 +5,8 @@ from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.hr_letters import get_all_hrLetters, get_hrLetter_by_id
-from rest_framework.generics import GenericAPIView , ListAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
-from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from server.cshr.celery.send_email import send_email_for_hr_letter_reply
 from server.cshr.celery.send_email import send_email_for_hr_letter_request
@@ -48,16 +47,12 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
             data=serializer.data, message="Hr letters found", status_code=200
         )
 
-       
-
-
 
 class HrLetterApiView(ListAPIView, GenericAPIView):
-    
+
     serializer_class = HrLetterSerializer
     permission_classes = (UserIsAuthenticated,)
-    
-    
+
     def get(self, request: Request, id: str, format=None) -> Response:
         """method to get a single HR Letter by id"""
         hr_letter = get_hrLetter_by_id(id=id)
@@ -78,7 +73,8 @@ class HrLetterApiView(ListAPIView, GenericAPIView):
             hr_letter.delete()
             return CustomResponse.success(message="Hr Letter deleted", status_code=204)
         return CustomResponse.not_found(message="Hr Letter not found", status_code=404)
-    
+
+
 class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = HrLetterUpdateSerializer
     permission_classes = [IsAdmin]

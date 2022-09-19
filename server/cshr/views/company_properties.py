@@ -1,7 +1,6 @@
-from rest_framework.generics import GenericAPIView , ListAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
 from ..serializers.company_properties import CompanyPropertiesSerializer
 from ..api.response import CustomResponse
 from server.cshr.models.users import User
@@ -15,6 +14,7 @@ from server.cshr.services.company_properties import (
 
 class BaseCompanyPropertiesApiView(ListAPIView, GenericAPIView):
     """method to get all Company properties"""
+
     serializer_class = CompanyPropertiesSerializer
     permission_class = UserIsAuthenticated
 
@@ -41,12 +41,12 @@ class BaseCompanyPropertiesApiView(ListAPIView, GenericAPIView):
         return CustomResponse.bad_request(
             error=serializer.errors, message="Company properties creation failed"
         )
-        
-        
+
+
 class CompanyPropertiesApiView(ListAPIView, GenericAPIView):
     serializer_class = CompanyPropertiesSerializer
     permission_class = UserIsAuthenticated
-    
+
     """method to update a Company properties by id"""
 
     def put(self, request: Request, id: str, format=None) -> Response:
@@ -75,7 +75,7 @@ class CompanyPropertiesApiView(ListAPIView, GenericAPIView):
             return CustomResponse.not_found(message="Company properties not found")
         company_properties.delete()
         return CustomResponse.success(message="User deleted", status_code=204)
-    
+
     def get(self, request: Request, id: str, format=None) -> Response:
         """method to get Company properties by id"""
         company_property = get_company_properties_by_id(id=id)

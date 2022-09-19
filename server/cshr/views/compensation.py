@@ -1,7 +1,6 @@
-from rest_framework.generics import GenericAPIView , ListAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
 from ..serializers.compensation import (
     CompensationSerializer,
     CompensationUpdateSerializer,
@@ -56,11 +55,12 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
             error=serializer.errors, message="Compensation creation failed"
         )
 
+
 class CompensationApiView(ListAPIView, GenericAPIView):
 
     serializer_class = CompensationSerializer
     permission_class = UserIsAuthenticated
-    
+
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete a Compensation by id"""
         compensation = get_compensation_by_id(id=id)
@@ -81,7 +81,8 @@ class CompensationApiView(ListAPIView, GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="Compensation found", status_code=200
         )
-    
+
+
 class CompensationUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = CompensationUpdateSerializer
     permission_classes = [IsAdmin]

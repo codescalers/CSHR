@@ -95,7 +95,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 15, #Hint: if you want to test pagenation try to change it to lower number then test.
+    "PAGE_SIZE": 15,  # Hint: if you want to test pagenation try to change it to lower number then test.
 }
 
 SIMPLE_JWT = {

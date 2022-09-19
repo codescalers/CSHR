@@ -4,9 +4,8 @@ from server.cshr.models.users import User
 from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.meetings import get_all_meetings, get_meeting_by_id
-from rest_framework.generics import GenericAPIView , ListAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
-from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from server.cshr.api.response import CustomResponse
 
@@ -38,7 +37,7 @@ class BaseMeetingsApiView(ListAPIView, GenericAPIView):
             error=serializer.errors, message="meeting creation failed"
         )
 
-    def get_all(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         meetings = get_all_meetings()
         serializer = MeetingsSerializer(meetings, many=True)
         return CustomResponse.success(
@@ -46,13 +45,11 @@ class BaseMeetingsApiView(ListAPIView, GenericAPIView):
         )
 
 
-
-
 class MeetingsApiView(ListAPIView, GenericAPIView):
     serializer_class = MeetingsSerializer
     permission_classes = (UserIsAuthenticated,)
-    
-    def get_one(self, request: Request, id: str, format=None) -> Response:
+
+    def get(self, request: Request, id: str, format=None) -> Response:
         """method to get a single meeting by id"""
         meeting = get_meeting_by_id(id=id)
         if meeting is None:

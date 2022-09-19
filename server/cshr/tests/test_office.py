@@ -1,5 +1,4 @@
 from rest_framework.test import APITestCase
-from django.urls import reverse
 from ..models.office import Office
 from rest_framework import status
 from server.cshr.models.users import User
@@ -64,27 +63,27 @@ class OfficeTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "user1@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.results["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "user2@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.results["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "user3@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.results["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     """test post method"""
 
     def test_create_office_by_admin(self):
         """test ability of creating a new office by admin"""
-        url = reverse("office")
+        url = "/api/office/"
         data = {"name": "testCase", "country": "testCase"}
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.post(url, data, format="json")
@@ -93,7 +92,7 @@ class OfficeTests(APITestCase):
 
     def test_create_office_by_supervisor(self):
         """test unauthorized  office creation by supervisor"""
-        url = reverse("office")
+        url = "/api/office/"
         data = {"name": "testCase1", "country": "testCase1"}
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
@@ -103,7 +102,7 @@ class OfficeTests(APITestCase):
 
     def test_create_office_by_user(self):
         """test unauthorized  office creation by user"""
-        url = reverse("office")
+        url = "/api/office/"
         data = {"name": "testCase2", "country": "testCase2"}
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.post(url, data, format="json")
@@ -111,7 +110,7 @@ class OfficeTests(APITestCase):
 
     def test_create_office_by_unauthenticated_user(self):
         """test unauthorized  office creation by unauthenticated user"""
-        url = reverse("office")
+        url = "/api/office/"
         data = {"name": "testCase2", "country": "testCase2"}
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -122,45 +121,45 @@ class OfficeTests(APITestCase):
         """test list offices by admin"""
         createTmp()
         """create a new record"""
-        url = reverse("office")
+        url = "/api/office/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.results["message"], "Offices found")
+        self.assertEqual(response.data["message"], "Offices found")
 
     def test_get_all_office_by_supervisor(self):
         """test list offices by supervisor"""
         createTmp()
         """create a new record"""
-        url = reverse("office")
+        url = "/api/office/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.results["message"], "Offices found")
+        self.assertEqual(response.data["message"], "Offices found")
 
     def test_get_all_office_by_user(self):
         """test list offices by user"""
         createTmp()
         """create a new record"""
-        url = reverse("office")
+        url = "/api/office/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.results["message"], "Offices found")
+        self.assertEqual(response.data["message"], "Offices found")
 
     def test_get_all_office_by_unauthenticated_user(self):
         """test list offices by unauthenticated user"""
         createTmp()
         """create a new record"""
-        url = reverse("office")
+        url = "/api/office/"
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_office_empty_list(self):
         """test ability to return empty list if database is empty"""
-        url = reverse("office")
+        url = "/api/office/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
