@@ -140,7 +140,7 @@ class UserEvaluationTests(APITestCase):
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_user_evaluation_by_unauthenticated_user(self):
         """test unauthorized  evaluation creation by unauthenticated user"""
@@ -152,7 +152,7 @@ class UserEvaluationTests(APITestCase):
             "score": 40,
         }
         response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     """test get method"""
 
@@ -164,6 +164,7 @@ class UserEvaluationTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], "user evaluations found")
 
     def test_get_all_user_evaluation_by_supervisor(self):
         """test list evaluations by supervisor"""
@@ -176,6 +177,7 @@ class UserEvaluationTests(APITestCase):
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], "user evaluations found")
 
     def test_get_all_user_evaluation_by_user(self):
         """test list evaluations by user"""
@@ -185,7 +187,7 @@ class UserEvaluationTests(APITestCase):
         url = "/api/evaluation/user/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_all_user_evaluation_by_unauthenticated_user(self):
         """test list evaluations by unauthenticated user"""
@@ -194,7 +196,7 @@ class UserEvaluationTests(APITestCase):
         """create a new record"""
         url = "/api/evaluation/user/"
         response = self.client.get(url, format="json")
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_user_evaluation_empty_list(self):
         """test ability to return empty list if database is empty"""
@@ -454,7 +456,7 @@ class UserEvaluationTests(APITestCase):
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.delete(delete_url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(UserEvaluations.objects.count(), count)
 
     def test_user_delete_user_evaluation(self):
@@ -466,7 +468,7 @@ class UserEvaluationTests(APITestCase):
         delete_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.delete(delete_url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(UserEvaluations.objects.count(), count)
 
     def test_unauthenticated_delete_user_evaluation(self):
@@ -894,7 +896,7 @@ class EvaluationsTest(APITestCase):
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.delete(delete_url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Evaluations.objects.count(), count)
 
     def test_user_delete_evaluation(self):
@@ -906,7 +908,7 @@ class EvaluationsTest(APITestCase):
         delete_url = f"/api/evaluation/{Evaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.delete(delete_url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Evaluations.objects.count(), count)
 
     def test_unauthenticated_delete_evaluation(self):
