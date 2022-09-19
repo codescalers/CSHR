@@ -40,7 +40,10 @@ class Vacation(Requests):
 
 
 class PublicHolidays(models.Model):
-    date = models.DateField()
+    date = models.DateField(unique=True)
+
+    def __str__(self):
+        return str(self.date)
 
 
 class VacationBalance(models.Model):
@@ -56,3 +59,6 @@ class VacationBalance(models.Model):
     public_holidays = models.ManyToManyField(PublicHolidays)
     date = models.DateField(auto_now=True)
     old_balance = models.JSONField(default=dict, null=True)
+
+    def __str__(self):
+        return str(self.user.email)
