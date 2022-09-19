@@ -1,6 +1,8 @@
+from typing import List
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
+from server.cshr.models.users import User
 from server.cshr.api.permission import (
     IsAdmin,
     IsSupervisor,
@@ -20,6 +22,8 @@ from server.cshr.services.users import (
     get_or_create_skill_by_name,
     get_all_of_users,
 )
+from server.cshr.services.users import get_user_team_leader_and_members
+from server.cshr.serializers.users import TeamSerializer
 
 
 class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):
@@ -33,6 +37,19 @@ class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="show all users", status_code=200
         )
+
+
+class TeamAPIView(ListAPIView):
+    permission_classes = [UserIsAuthenticated]
+    serializer_class = TeamSerializer
+
+    def get_queryset(self) -> Response:
+        """
+        Get all team information, Team leaders and team members
+        """
+        user: User = self.request.user
+        query_set: List[User] = get_user_team_leader_and_members(user)
+        return query_set
 
 
 class GeneralUserAPIView(ListAPIView, GenericAPIView):
