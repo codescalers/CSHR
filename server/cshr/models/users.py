@@ -53,6 +53,7 @@ class CshrBaseUserManger(BaseUserManager):
             email=self.normalize_email(email),
             birthday=datetime.datetime.now(),
             location=office,
+            user_type=USER_TYPE.ADMIN,
         )
         user.set_password(password)
         user.save(using=self._db)

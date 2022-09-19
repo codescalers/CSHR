@@ -37,7 +37,7 @@ class BaseEventsAPIView(ListAPIView, GenericAPIView):
         )
 
     def get_queryset(self) -> Response:
-        return get_all_events()
+        return get_all_events().order_by("-created_at")
 
 
 class EventApiView(GenericAPIView):
