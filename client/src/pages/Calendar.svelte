@@ -1,28 +1,35 @@
 <script lang="ts">
-    import type { eventNameType } from "../services/axios/home/types";
+  import type { eventNameType } from "../services/axios/home/types";
 
   import Calendar from "../components/calendar/Calendar.svelte";
   import CalendarEventForm from "../components/calendar/CalendarForm.svelte";
   import CalendarDetails from "../components/calendar/CalendarDetails.svelte";
   import Sidebar from "../components/sidebar/Sidebar.svelte";
-  let eventNames: Set<eventNameType> = new Set(["events", "vacations", "meetings", "birthdates"]);
+  let eventNames: Set<eventNameType> = new Set([
+    "events",
+    "vacations",
+    "meetings",
+    "birthdates",
+  ]);
+  let isLoading = false;
+  let isError: boolean | null = null;
 </script>
 
-<Sidebar>
+<Sidebar bind:isLoading bind:isError>
   <span slot="page-name">Calendar</span>
-  <section class="fluid-container mt-5 content" slot="content">
+  <div slot="content">
     <div>
       <div
         class="d-flex flex-column-reverse align-items-sm-center flex-xl-row gap-sm-4 gap-xl-1 content"
       >
         <div class="mb-5 mb-xl-0 d-flex flex-lg-column flex-row-reverse mx-5 ">
-          <CalendarDetails bind:eventNames />
+          <CalendarDetails bind:eventNames bind:isLoading bind:isError/>
           <CalendarEventForm />
         </div>
-        <Calendar bind:eventNames />
+        <Calendar bind:eventNames bind:isLoading bind:isError/>
       </div>
     </div>
-  </section>
+  </div>
 </Sidebar>
 
 <style>

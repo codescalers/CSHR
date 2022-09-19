@@ -169,7 +169,7 @@
                 </p>
                 {#each user.user_certificates as Certificate, index (index)}
                   <div class="d-flex flex-row justify-content-between">
-                    <p class="my-2 name" >
+                    <p class="my-2 name">
                       {Certificate.name}
                     </p>
                     <a
@@ -193,7 +193,7 @@
   .icon {
     font-size: 1.4rem;
   }
-  .name{
+  .name {
     font-size: 1rem;
   }
 </style>

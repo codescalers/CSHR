@@ -4,8 +4,6 @@
 
   import { onMount } from "svelte";
   import { TeamStore } from "../../stores";
-  import LoadingComponent from "../loader/LoadingComponent.svelte";
-  import ErrorComponent from "../error/ErrorComponent.svelte";
   import teamDataService from "../../services/axios/team/TeamDataService";
   import type { PaginatedInterface, TeamType } from "../../types";
 
@@ -15,10 +13,14 @@
   onMount(async () => {
     isLoading = true;
     try {
-      if ($TeamStore.results.length === 0) {
-        const team:PaginatedInterface<TeamType>  = await teamDataService.get();
-        TeamStore.set(team);
+      if ($TeamStore === undefined || $TeamStore.results.length === 0) {
+        const team: PaginatedInterface<TeamType> = await teamDataService.get();
+        if ($TeamStore === undefined) {
+          $TeamStore = team;
+        } else {
+          TeamStore.set(team);
         }
+      }
     } catch (error) {
       isError = true;
     }
@@ -27,28 +29,20 @@
 </script>
 
 <div class="container">
-  {#if isError}
-    <ErrorComponent
-      errorMessage="please try to reload page and raise an issues"
-    />
-  {:else if isLoading}
-    <LoadingComponent />
-  {:else}
-    <div class="row">
-      <div class="col-12">
-        <h4>Supervisors</h4>
-      </div>
-      <div class="col-12">
-        <Supervisors />
-      </div>
+  <div class="row">
+    <div class="col-12">
+      <h4>Supervisors</h4>
     </div>
-    <div class="row">
-      <div class="col-12">
-        <h4>Members</h4>
-      </div>
-      <div class="col-12">
-        <Members />
-      </div>
+    <div class="col-12">
+      <Supervisors />
     </div>
-  {/if}
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <h4>Members</h4>
+    </div>
+    <div class="col-12">
+      <Members />
+    </div>
+  </div>
 </div>

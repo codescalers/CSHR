@@ -77,9 +77,9 @@ export type SkillType = {
 
 export type CertificateType = {
     id: number,
-    user: number,
     name: String,
     certificate_link: String,
+    user?: number,
     created_at?: Date,
     modified_at?: Date,
 }

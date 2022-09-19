@@ -2,14 +2,14 @@
   // page index value
   export let value: number;
   // number of pages
-  export let length: number;
+  export let length: number = 5;
   let pages = Array.from({ length: length }, (_, i) => i);
 
   $: selectedPages = pages.filter(
     (_, index) =>
-      index > Number(value) - 2 &&
+      index > Number(value) - 3 &&
       index <= Number(value) + 1 &&
-      Number(value) <= Number(length) - 1
+      Number(value) <= Number(length) + 1
   );
 
   $: isPrevDisabled = value === 1;

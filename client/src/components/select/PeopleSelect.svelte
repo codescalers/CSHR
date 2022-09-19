@@ -16,9 +16,13 @@
   onMount(async () => {
     isLoading = true;
     try {
-      if ($AllUsersStore.length === 0) {
-        const users = (await usersDataService.getAll());
-        AllUsersStore.set(users);
+      if ($AllUsersStore === undefined || $AllUsersStore.length === 0) {
+        const users = await usersDataService.getAll();
+        if ($AllUsersStore === undefined) {
+          $AllUsersStore = users;
+        } else {
+          AllUsersStore.set(users);
+        }
       }
       $AllUsersStore.forEach((user: UserInterface) => {
         if (user.id !== $UserStore.id) options.push(user.id + "");

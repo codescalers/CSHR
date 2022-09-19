@@ -11,6 +11,9 @@
       eventNames = new Set([...eventNames]);
     }
   }
+
+  export let isLoading = false;
+  export let isError: boolean | null = null;
 </script>
 
 <div class="container d-flex flex-column gap-3 px-4 my-5">

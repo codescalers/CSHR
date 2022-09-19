@@ -5,15 +5,16 @@
     vacationItemType,
     birthDateItemType,
     calendarItemsType,
-    eventNameType
+    eventNameType,
   } from "../../services/axios/home/types";
 
   import Calendar from "./CalendarLayout.svelte";
   import { onMount } from "svelte";
   import calendarDataService from "../../services/axios/home/CalendarDataService";
 
-  //export let user;
   export let isLoading = false;
+  export let isError: boolean | null = null;
+  //export let user;
   //	The Calendar Component just displays stuff in a row & column. It has no knowledge of dates.
   //	The items[] below are placed (by you) in a specified row & column of the calendar.
   //	You need to call findRowCol() to calc the rsow/col based on each items start date. Each date box has a Date() property.
@@ -23,18 +24,23 @@
 
   let items: any[] | undefined;
   onMount(async () => {
-    isLoading = false;
-    calendarItems = await calendarDataService.initCalendar();
-    console.log("k", calendarItems);
-
-    let [meetings, events, vacations, birthdates] = calendarItems;
-    items = [
-      ...(vacations.vacations as unknown as vacationItemType[]),
-      ...(meetings.meetings as unknown as meetingItemType[]),
-      ...(events.events as unknown as eventItemType[]),
-      ...(birthdates.birthdates as unknown as birthDateItemType[]),
-    ];
     isLoading = true;
+    try {
+      const calendar: calendarItemsType =
+        await calendarDataService.initCalendar();
+      calendarItems = calendar;
+      let [meetings, events, vacations, birthdates] = calendarItems;
+      items = [
+        ...(vacations.vacations as unknown as vacationItemType[]),
+        ...(meetings.meetings as unknown as meetingItemType[]),
+        ...(events.events as unknown as eventItemType[]),
+        ...(birthdates.birthdates as unknown as birthDateItemType[]),
+      ];
+    } catch (error) {
+      isError = true;
+    }
+
+    isLoading = false;
   });
   let monthNames = [
     "January",
@@ -247,7 +253,7 @@
   </div>
 
   <Calendar
-  bind:eventNames
+    bind:eventNames
     {headers}
     {days}
     bind:items

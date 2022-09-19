@@ -22,7 +22,6 @@ export const UserStore: Writable<UserInterface> = writable({
     skills: [{ id: 1, name: "frontend" }],
     user_certificates: [{ id: 1, name: "frontend", certificate_link: 'ssssss' }],
     reporting_to: [1],
-
 })
 
 export const OfficeStore: Writable<OfficeType[]> = writable([])

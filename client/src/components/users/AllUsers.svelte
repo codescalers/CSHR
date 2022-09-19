@@ -4,8 +4,7 @@
   import User from "./User.svelte";
   import { AllUsersStore } from "../../stores";
   import usersDataService from "../../services/axios/users/UsersDataService";
-  import LoadingComponent from "../loader/LoadingComponent.svelte";
-  import ErrorComponent from "../error/ErrorComponent.svelte";
+
   import Pagination from "../pagination/Pagination.svelte";
 
   export let isLoading = false;
@@ -14,51 +13,65 @@
   onMount(async () => {
     isLoading = true;
     try {
-      if ($AllUsersStore.length === 0) {
+      if ($AllUsersStore === undefined || $AllUsersStore.length === 0) {
         const users: UserInterface[] = await usersDataService.getAll();
-        AllUsersStore.set(users);
+        if ($AllUsersStore === undefined) {
+          $AllUsersStore = users;
+        } else {
+          AllUsersStore.set(users);
+        }
       }
-    } catch (e) {
+    } catch (error) {
       isError = true;
     }
     isLoading = false;
   });
 
-  let value = 1;
+  let pageValue = 1;
   let users: UserInterface[] = [];
 
-  $: users = $AllUsersStore.filter(
-    (_, index) => index < value * 10 && index >= (value - 1) * 10
-  );
-  $: length = Math.ceil($AllUsersStore.length / parseFloat(20 + ""));
+  $: if ($AllUsersStore !== undefined) {
+    users = $AllUsersStore.filter(
+      (_, index) =>
+        index < pageValue * parseFloat(process.env.PAGE_SIZE + "") &&
+        index >= (pageValue - 1) * parseFloat(process.env.PAGE_SIZE + "")
+    );
+  }
 
+  let length =
+    $AllUsersStore !== undefined
+      ? Math.ceil(
+          $AllUsersStore.length / parseFloat(process.env.PAGE_SIZE + "")
+        )
+      : 0;
 </script>
 
-<div class="container">
-  {#if isError}
-    <ErrorComponent errorMessage="please try to reload page and raise an issues" />
-  {:else if isLoading}
-    <LoadingComponent />
-  {:else}
-    <div class="input-group rounded d-flex flex-row my-2">
-      <input
-        type="search"
-        class="form-control rounded"
-        placeholder="Search"
-        aria-label="Search"
-        aria-describedby="search-addon"
-      />
-      <span class="input-group-text border-0" id="search-addon">
-        <i class="fas fa-search" />
-      </span>
-    </div>
-    <div class="row justify-content-between">
-      {#each users as user (user.id)}
-        <div class="col-12 col-md-6 col-lg-4 my-4">
-          <User bind:user />
+{#if !isLoading && !isError && users}
+  <div class="container">
+    <div class="d-flex flex-column justify-content-between">
+      <div>
+        <div class="input-group rounded d-flex flex-row my-2">
+          <input
+            type="search"
+            class="form-control rounded"
+            placeholder="Search"
+            aria-label="Search"
+            aria-describedby="search-addon"
+          />
+          <span class="input-group-text border-0" id="search-addon">
+            <i class="fas fa-search" />
+          </span>
         </div>
-      {/each}
+
+        <div class="row justify-content-between">
+          {#each users as user (user.id)}
+            <div class="col-12 col-md-6 col-lg-4 my-4">
+              <User bind:user />
+            </div>
+          {/each}
+        </div>
+      </div>
+      <Pagination bind:length bind:value={pageValue} />
     </div>
-    <Pagination bind:length bind:value />
-  {/if}
-</div>
+  </div>
+{/if}
