@@ -26,6 +26,12 @@ export interface UserInterface {
 
 }
 
+export interface PaginatedInterface<T> {
+    results: T[];
+    count: number;
+    next: string;
+    previous: string;
+}
 export interface SettingsInterface {
     "primary-color": string;
     "secondary-color": string;
@@ -44,15 +50,41 @@ export interface RequestInterface {
 }
 
 
-export type OfficeInterface = {
+export type OfficeType = {
     id: number,
     name: string,
     country: string,
 }
 
-export type NotificationInterface = {
+export type NotificationType = {
     id: number,
 }
 
 
+export type TeamType = {
+    id: number,
+    name: string,
+    office: number,
+    members: number[],
+    managers: number[],
+    CreatedAt?: string,
+    UpdatedAt?: string,
+    DeletedAt?: string,
+}
+
+export type SkillType = {
+    id: number,
+    name: string,
+    CreatedAt?: string,
+    UpdatedAt?: string,
+    DeletedAt?: string,
+}
+
+export type CertificateType = {
+    id: number,
+    name: string,
+    CreatedAt?: string,
+    UpdatedAt?: string,
+    DeletedAt?: string,
+}
 

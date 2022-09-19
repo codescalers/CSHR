@@ -1,6 +1,6 @@
 import http from "../http-common";
 class UsersDataService {
-    errorMessage: string = "Error in User Data Service: ";
+    errorMessage: string = "Error in Users Data Service: ";
     public async getAll() {
         try {
             const { data, status, statusText } = (await http.get(`/users/`));
