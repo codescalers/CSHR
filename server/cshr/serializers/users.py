@@ -262,3 +262,16 @@ class BaseUserSerializer(ModelSerializer):
     def get_user_certificates(self, obj):
         training_courses = get_training_courses_for_a_user(obj.id)
         return TrainingCoursesSerializer(training_courses, many=True).data
+
+
+class TeamSerializer(ModelSerializer):
+    """Class team serilaizer to return user team leaders and team members."""
+
+    image = SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["id", "full_name", "image", "team", "job_title", "user_type"]
+
+    def get_image(self, obj):
+        return obj.image.url if obj.image else obj.background_color

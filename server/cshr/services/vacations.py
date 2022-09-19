@@ -26,3 +26,8 @@ def get_vacation_by_id(id: str) -> Vacation:
 def get_all_vacations() -> Vacation:
     """Return all vacations"""
     return Vacation.objects.all()
+
+
+def get_vacations_by_user(id: str) -> Vacation:
+    "Return all vacations for certain user"
+    return Vacation.objects.filter(applying_user=id)

@@ -5,6 +5,7 @@ from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.hr_letters import get_all_hrLetters, get_hrLetter_by_id
+from server.cshr.services.hr_letters import get_hr_letter_by_user
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -80,6 +81,24 @@ class HrLetterApiView(ListAPIView, GenericAPIView):
             hr_letter.delete()
             return CustomResponse.success(message="Hr Letter deleted", status_code=204)
         return CustomResponse.not_found(message="Hr Letter not found", status_code=404)
+
+
+class HrLetterUserApiView(ListAPIView, GenericAPIView):
+    serializer_class = HrLetterUpdateSerializer
+    permission_classes = [UserIsAuthenticated]
+
+    def get(self, request: Request) -> Response:
+        """method to get all Hr Letters for certain user"""
+        current_user: User = get_user_by_id(request.user.id)
+        if current_user is None:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
+        hr_letters = get_hr_letter_by_user(current_user.id)
+        serializer = HrLetterSerializer(hr_letters, many=True)
+        return CustomResponse.success(
+            data=serializer.data, message="hr letter requests found", status_code=200
+        )
 
 
 class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
