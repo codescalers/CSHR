@@ -8,8 +8,7 @@
 <style>
 
   footer {
-    position: fixed;
-    bottom: 0;
+
     width: 90%;
     margin: 0 auto;
     text-align: center;

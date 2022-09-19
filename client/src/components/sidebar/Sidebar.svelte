@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Router, Link } from "svelte-navigator";
   import { onMount } from "svelte";
-  import Image from "../image/Image.svelte";
   import Footer from "../footer/Footer.svelte";
   import { UserStore, NotificationStore } from "../../stores";
 
@@ -57,34 +56,39 @@
     </div>
     <div class="d-flex flex-row gap-4">
       <div>
-        <Link to="/notifications" class="btn position-relative">
-          <i class="bi bi-bell" />
+        <Link
+          to="/notifications"
+          class="position-relative"
+        >
+        <p class="mt-2">
+          <i class="bi bi-bell notification-btn" />
           {#if $NotificationStore.length > 0}
             <span
               style="background: var(--primary-color); "
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+              class="position-absolute top-5 start-100 translate-middle badge rounded-pill"
             >
               +{$NotificationStore.length}
               <span class="visually-hidden  bg-primary">unread messages</span>
             </span>
           {/if}
+        </p>
         </Link>
       </div>
       <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
       <div class="header_img">
         <Link to="/profile">
           <div
-          class={`circular_img`}
-          style={`background-image:url(${
-            process.env.APP_BASE_API_URL + $UserStore.image
-          });background-color:${
-            $UserStore.gender === "Male" ? "#2986cc" : "#FB5858"
-          };border:1.5px solid ${
-            $UserStore.gender === "Male" ? "var(--secondary-color)" : "pink"
-          }`}
-          data-bs-toggle="tooltip"
-          title={$UserStore.full_name + " #" + $UserStore.team}
-        />
+            class={`circular_img`}
+            style={`background-image:url(${
+              process.env.APP_BASE_API_URL + $UserStore.image
+            });background-color:${
+              $UserStore.gender === "Male" ? "#2986cc" : "#FB5858"
+            };border:1.5px solid ${
+              $UserStore.gender === "Male" ? "var(--secondary-color)" : "pink"
+            }`}
+            data-bs-toggle="tooltip"
+            title={$UserStore.full_name + " #" + $UserStore.team}
+          />
         </Link>
       </div>
     </div>
@@ -165,8 +169,23 @@
       </Router>
     </nav>
   </div>
-  <div class="height-100 bg-light">
+  <div class="height-100 bg-light d-flex flex-column justify-content-between">
     <slot name="content" />
     <Footer />
   </div>
 </div>
+
+<style>
+  .notification-btn {
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color) ;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 0.75rem;
+    transition: all 0.2s ease-in-out;
+  }
+  .notification-btn:hover {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--secondary-color) ;
+  }
+</style>
