@@ -8,10 +8,12 @@ class UsersDataService {
             if (status !== 200) {
                 throw new Error("Error in getting users with status " + status + " wtih status text : " + statusText);
             }
-            return data;
+            return data.results;
 
         } catch (err) {
             console.error(this.errorMessage + err);
+            throw new Error(err);
+
         }
     }
     public async getById(id: number) {
@@ -19,6 +21,7 @@ class UsersDataService {
             return await (await http.get(`/users?id=${id}`)).data;
         } catch (err) {
             console.error(this.errorMessage + err);
+            throw new Error(err);
         }
     }
 }

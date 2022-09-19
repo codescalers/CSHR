@@ -17,7 +17,7 @@
     isLoading = true;
     try {
       if ($AllUsersStore.length === 0) {
-        const users = (await usersDataService.getAll()).data;
+        const users = (await usersDataService.getAll());
         AllUsersStore.set(users);
       }
       $AllUsersStore.forEach((user: UserInterface) => {

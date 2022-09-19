@@ -15,7 +15,7 @@
     isLoading = true;
     try {
       if ($OfficeStore.length === 0) {
-        const offices = (await officeDataService.getAll()).data;
+        const offices = await officeDataService.getAll();
         OfficeStore.set(offices);
         options = offices.map((office: OfficeInterface) => office.id + "");
       }

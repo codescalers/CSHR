@@ -7,9 +7,11 @@ class OfficeDataService {
             if (status !== 200) {
                 throw new Error("Error in getting offices with status " + status + " wtih status text : " + statusText);
             }
-            return data;
+            return data.results;
         } catch (err) {
             console.error(this.errorMessage + err);
+            throw new Error(err);
+
         }
     }
     public async getById(id: number) {
@@ -21,6 +23,7 @@ class OfficeDataService {
             return data;
         } catch (err) {
             console.error(this.errorMessage + err);
+            throw new Error(err);
         }
     }
 }
