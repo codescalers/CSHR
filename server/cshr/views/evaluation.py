@@ -21,17 +21,14 @@ from server.cshr.services.evaluation import (
 
 class BaseUserEvaluationsAPIView(ListAPIView, GenericAPIView):
     serializer_class = UserEvaluationSerializer
-    permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
+    permission_classes = [IsAdmin | IsSupervisor]
 
-    def get(self, request: Request) -> Response:
-        has_permission = CustomPermissions.admin_or_supervisor(request.user)
-        if not has_permission:
-            return CustomResponse.unauthorized()
-        evaluations = all_user_evaluations()
-        serializer = UserEvaluationSerializer(evaluations, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="user evaluations found", status_code=200
-        )
+    def get_queryset(self) -> Response:
+        # has_permission = CustomPermissions.admin_or_supervisor(request.user)
+        # if not has_permission:
+        #     return CustomResponse.unauthorized()
+        query_set = all_user_evaluations()
+        return query_set
 
     def post(self, request: Request) -> Response:
         """To post new user evaluation"""
@@ -60,7 +57,7 @@ class UserEvaluationsAPIView(ListAPIView, GenericAPIView):
 
         has_permission = CustomPermissions.admin(request.user)
         if not has_permission:
-            return CustomResponse.unauthorized()
+            return CustomResponse.unauthorized(status_code=403)
         evaluation = get_user_evaluation_by_id(id)
         if evaluation is not None:
             evaluation.delete()
@@ -110,12 +107,9 @@ class BaseEvaluationsAPIView(ListAPIView, GenericAPIView):
     serializer_class = EvaluationSerializer
     permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
 
-    def get(self, request: Request) -> Response:
-        evaluations = all_user_evaluations()
-        serializer = EvaluationSerializer(evaluations, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="evaluations found", status_code=200
-        )
+    def get_queryset(self) -> Response:
+        query_set = all_user_evaluations()
+        return query_set
 
     def post(self, request: Request) -> Response:
         """To post new evaluation"""
@@ -144,7 +138,7 @@ class EvaluationsAPIView(ListAPIView, GenericAPIView):
 
         has_permission = CustomPermissions.admin(request.user)
         if not has_permission:
-            return CustomResponse.unauthorized()
+            return CustomResponse.unauthorized(status_code=403)
         evaluation = get_evaluation_by_id(id)
         if evaluation is not None:
             evaluation.delete()

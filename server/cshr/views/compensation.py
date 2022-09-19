@@ -30,14 +30,10 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
     serializer_class = CompensationSerializer
     permission_class = UserIsAuthenticated
 
-    def get(self, request: Request) -> Response:
+    def get_queryset(self) -> Response:
 
-        compensation = get_all_compensations()
-
-        serializer = CompensationSerializer(compensation, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="Compensation found", status_code=200
-        )
+        query_set = get_all_compensations()
+        return query_set
 
     """method to create a new Compensation"""
 

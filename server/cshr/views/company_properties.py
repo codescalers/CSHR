@@ -18,12 +18,10 @@ class BaseCompanyPropertiesApiView(ListAPIView, GenericAPIView):
     serializer_class = CompanyPropertiesSerializer
     permission_class = UserIsAuthenticated
 
-    def get(self, request: Request) -> Response:
-        company_properties = get_all_comopany_properties()
-        serializer = CompanyPropertiesSerializer(company_properties, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="Company properties found", status_code=200
-        )
+    def get_queryset(self) -> Response:
+        query_set = get_all_comopany_properties()
+
+        return query_set
 
     """method to create a new Company properties"""
 

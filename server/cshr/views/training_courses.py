@@ -17,12 +17,9 @@ class BaseTrainingCoursesApiView(ListAPIView, GenericAPIView):
     serializer_class = TrainingCoursesSerializer
     permission_class = UserIsAuthenticated
 
-    def get(self, request: Request) -> Response:
-        training_courses = get_all_training_courses()
-        serializer = TrainingCoursesSerializer(training_courses, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="Training courses found", status_code=200
-        )
+    def get_queryset(self) -> Response:
+        query_set = get_all_training_courses()
+        return query_set
 
     """method to create a new Training course"""
 
