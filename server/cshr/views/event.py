@@ -2,17 +2,14 @@ import datetime
 from server.cshr.serializers.event import EventSerializer
 from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.services.event import get_all_events, get_event_by_id
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
-from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from server.cshr.api.response import CustomResponse
 from server.cshr.utils.parse_date import CSHRDate
 
 
-class EventApiView(ViewSet, GenericAPIView):
-    """Class Event_APIVIEW to create a new event into database"""
-
+class BaseEventsAPIView(ListAPIView, GenericAPIView):
     serializer_class = EventSerializer
     permission_classes = (UserIsAuthenticated,)
 
@@ -39,14 +36,17 @@ class EventApiView(ViewSet, GenericAPIView):
             error=serializer.errors, message="event creation failed"
         )
 
-    def get_all(self, request: Request) -> Response:
-        events = get_all_events()
-        serializer = EventSerializer(events, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="events found", status_code=200
-        )
+    def get_queryset(self) -> Response:
+        return get_all_events()
 
-    def get_one(self, request: Request, id: str, format=None) -> Response:
+
+class EventApiView(GenericAPIView):
+    """Class Event_APIVIEW to create a new event into database"""
+
+    serializer_class = EventSerializer
+    permission_classes = (UserIsAuthenticated,)
+
+    def get(self, request: Request, id: str, format=None) -> Response:
         """method to get a single event by id"""
         event = get_event_by_id(id=id)
         if event is None:

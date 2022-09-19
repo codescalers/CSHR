@@ -2,7 +2,7 @@ from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
     TokenRefreshSerializer,
 )
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.state import token_backend
 from rest_framework_simplejwt.settings import api_settings
@@ -26,7 +26,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["mobile_number"] = user.mobile_number
         token["team"] = user.team
         token["user_type"] = user.user_type
-        token["image"] = user.image.url
+        token["image"] = user.image.url if user.image else user.background_color
         return token
 
     def validate(self, attrs: Any) -> Dict[str, Any]:
@@ -87,6 +87,8 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
 class RegisterSerializer(ModelSerializer):
     """class RegisterSerializer to serialize the user obj"""
 
+    image = SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
@@ -104,6 +106,9 @@ class RegisterSerializer(ModelSerializer):
             "reporting_to",
             "image",
         )
+
+    def get_image(self, obj: User) -> str:
+        return obj.image.url if obj.image else obj.background_color
 
     def create(self, validated_data):
         password = validated_data.pop("password", None)

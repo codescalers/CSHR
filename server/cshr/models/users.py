@@ -7,6 +7,7 @@ from typing import Any, Union
 
 from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.office import Office
+from server.cshr.utils.generate import generate_random_color
 
 
 class TEAM(models.TextChoices):
@@ -80,6 +81,7 @@ class User(AbstractBaseUser, TimeStamp):
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
     image = models.ImageField(upload_to="profile_image/", null=True, blank=True)
+    background_color = models.CharField(max_length=10, default=generate_random_color)
     email = models.EmailField(max_length=45, unique=True)
     mobile_number = models.CharField(max_length=15)
     telegram_link = models.CharField(max_length=100)
