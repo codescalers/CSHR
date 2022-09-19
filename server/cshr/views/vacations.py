@@ -138,7 +138,7 @@ class VacationApprovalAPIView(GenericAPIView):
 
 
 class VacationCommentsAPIView(GenericAPIView):
-    """Use this class endpoint to add a comment as a user."""
+    """Use this endpoint to add a comment as a user."""
 
     permission_classes = [UserIsAuthenticated]
     serializer_class = VacationsCommentsSerializer
