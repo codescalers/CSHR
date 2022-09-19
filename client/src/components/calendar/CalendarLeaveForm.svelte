@@ -36,6 +36,8 @@
   <div class="my-4">
     <Submit
       label="Submit"
+      successMessage="Leave Submitted "
+      errorMessage="Leave Submission Failed"
       onClick={async () => {
         isLoading = true;
         try {
@@ -45,7 +47,7 @@
             reason: leaveReasonValue,
             applyingUserId: $UserStore.id,
           });
-        } catch (e) {
+        } catch (error) {
           isError = true;
         } finally {
           isLoading = false;

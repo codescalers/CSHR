@@ -5,8 +5,8 @@
   export let className = "";
   export let label = "";
   export let onClick: () => boolean | Promise<boolean>;
-  export let successMessage = "A vacation request has been sent";
-  export let errorMessage = "Error Occured";
+  export let successMessage: string;
+  export let errorMessage: string;
   export let id = uuidv4();
   export let success: Promise<boolean> | boolean = true;
   export let show = false;
@@ -49,7 +49,7 @@
     <div class="toast-header">
       <strong
         class={`me-auto text-${
-          !success ? "success success-bg" : "danger danger-bg"
+          success ? "success success-bg" : "danger danger-bg"
         } text-uppercase fw-bold `}
         >{success ? "SuccessFully Submitted" : "Error Occurred"}</strong
       >
@@ -63,7 +63,7 @@
     </div>
     <div
       class={`toast-body text-${
-        !success ? "success success-bg" : "danger danger-bg"
+        success ? "success success-bg" : "danger danger-bg"
       } text-uppercase fw-bold `}
     >
       {success ? successMessage : errorMessage}

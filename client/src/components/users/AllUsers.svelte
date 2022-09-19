@@ -32,7 +32,7 @@
 
   $: if ($AllUsersStore !== undefined) {
     users = $AllUsersStore.filter(
-      (_, index) =>
+      (_:any, index:number) =>
         index < pageValue * parseFloat(process.env.PAGE_SIZE + "") &&
         index >= (pageValue - 1) * parseFloat(process.env.PAGE_SIZE + "")
     );
