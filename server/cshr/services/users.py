@@ -82,7 +82,9 @@ def get_or_create_skill_by_name(name: str) -> UserSkills or bool:
 
 def get_user_team_leader_and_members(user: User) -> List[User]:
     """Return a list of members and team leaders"""
-    team_leaders: List[User] = get_user_by_id(user.id).reporting_to.all().order_by('-created_at')
-    members: List[User] = User.objects.filter(team=user.team).order_by('-created_at')
+    team_leaders: List[User] = (
+        get_user_by_id(user.id).reporting_to.all().order_by("-created_at")
+    )
+    members: List[User] = User.objects.filter(team=user.team).order_by("-created_at")
     objects: Union[List[Any], None] = list(chain(team_leaders, members))
     return objects
