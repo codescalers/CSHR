@@ -12,3 +12,8 @@ def get_hrLetter_by_id(id: str) -> HrLetters:
 def get_all_hrLetters() -> HrLetters:
     """Return all hr letters"""
     return HrLetters.objects.all()
+
+
+def get_hr_letter_by_user(id: str) -> HrLetters:
+    "Return all Hr Letters for certain user"
+    return HrLetters.objects.filter(applying_user=id)

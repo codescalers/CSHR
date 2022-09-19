@@ -15,6 +15,7 @@ from server.cshr.utils.email_messages_templates import (
 )
 from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
+from server.cshr.services.vacations import get_vacations_by_user
 
 
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
@@ -79,6 +80,24 @@ class VacationsApiView(ListAPIView, GenericAPIView):
             vacation.delete()
             return CustomResponse.success(message="Hr Letter deleted", status_code=204)
         return CustomResponse.not_found(message="Hr Letter not found", status_code=404)
+
+
+class VacationUserApiView(ListAPIView, GenericAPIView):
+    serializer_class = VacationsUpdateSerializer
+    permission_classes = [UserIsAuthenticated]
+
+    def get(self, request: Request) -> Response:
+        """method to get all vacations for certain user"""
+        current_user: User = get_user_by_id(request.user.id)
+        if current_user is None:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
+        vacations = get_vacations_by_user(current_user.id)
+        serializer = VacationsSerializer(vacations, many=True)
+        return CustomResponse.success(
+            data=serializer.data, message="vacation requests found", status_code=200
+        )
 
 
 class VacationsUpdateApiView(ListAPIView, GenericAPIView):
