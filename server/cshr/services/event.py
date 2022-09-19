@@ -21,6 +21,6 @@ def filter_events_by_month_and_year(month: str, year: str) -> Event:
     This function will filter all of events based on its yesr, month.
     """
     events: List[Event] = Event.objects.filter(
-        created_at__month=month, created_at__year=year
+        from_date__month=month, from_date__year=year
     )
     return events

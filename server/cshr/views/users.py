@@ -1,7 +1,6 @@
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
 from server.cshr.api.permission import (
     IsAdmin,
     IsSupervisor,
@@ -23,11 +22,11 @@ from server.cshr.services.users import (
 )
 
 
-class GeneralUserAPIView(ViewSet, GenericAPIView):
+class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = GeneralUserSerializer
 
-    def get_all(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         """get all users in the system for a normal user"""
         users = get_all_of_users()
         serializer = self.get_serializer(users, many=True)
@@ -35,7 +34,12 @@ class GeneralUserAPIView(ViewSet, GenericAPIView):
             data=serializer.data, message="show all users", status_code=200
         )
 
-    def get_one(self, request: Request, id: str) -> Response:
+
+class GeneralUserAPIView(ListAPIView, GenericAPIView):
+    permission_classes = [UserIsAuthenticated]
+    serializer_class = GeneralUserSerializer
+
+    def get(self, request: Request, id: str) -> Response:
         """To get a user by id"""
         user = get_user_by_id(id)
         if user is not None:
@@ -47,11 +51,11 @@ class GeneralUserAPIView(ViewSet, GenericAPIView):
         return CustomResponse.not_found(message="User not found", status_code=404)
 
 
-class SupervisorUserAPIView(ViewSet, GenericAPIView):
+class BaseSupervisorUserAPIView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
     serializer_class = SupervisorUserSerializer
 
-    def get_all(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         """get all users in the system for a supervisor"""
         users = get_all_of_users()
         serializer = self.get_serializer(users, many=True)
@@ -59,7 +63,12 @@ class SupervisorUserAPIView(ViewSet, GenericAPIView):
             data=serializer.data, message="show all users", status_code=200
         )
 
-    def get_one(self, request: Request, id: str) -> Response:
+
+class SupervisorUserAPIView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+    serializer_class = SupervisorUserSerializer
+
+    def get(self, request: Request, id: str) -> Response:
         """To get a user by id"""
         user = get_user_by_id(id)
         if user is not None:
@@ -71,7 +80,7 @@ class SupervisorUserAPIView(ViewSet, GenericAPIView):
         return CustomResponse.not_found(message="User not found", status_code=404)
 
 
-class AdminUserAPIView(ViewSet, GenericAPIView):
+class BaseAdminUserAPIView(ListAPIView, GenericAPIView):
     """
     admin have full control over a user account
     """
@@ -79,7 +88,7 @@ class AdminUserAPIView(ViewSet, GenericAPIView):
     permission_classes = [IsAdmin]
     serializer_class = AdminUserSerializer
 
-    def get_all(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         """get all users in the system for an admin"""
         users = get_all_of_users()
         serializer = self.get_serializer(users, many=True)
@@ -87,16 +96,14 @@ class AdminUserAPIView(ViewSet, GenericAPIView):
             data=serializer.data, message="show all users", status_code=200
         )
 
-    def get_one(self, request: Request, id: str) -> Response:
-        """To get a user by id"""
-        user = get_user_by_id(id)
-        if user is not None:
-            return CustomResponse.success(
-                data=self.get_serializer(user).data,
-                message="User found",
-                status_code=200,
-            )
-        return CustomResponse.not_found(message="User not found", status_code=404)
+
+class AdminUserAPIView(ListAPIView, GenericAPIView):
+    """
+    admin have full control over a user account
+    """
+
+    permission_classes = [IsAdmin]
+    serializer_class = AdminUserSerializer
 
     def put(self, request: Request, id: str, format=None) -> Response:
         """To update a user"""
@@ -121,15 +128,24 @@ class AdminUserAPIView(ViewSet, GenericAPIView):
             return CustomResponse.success(message="User deleted", status_code=204)
         return CustomResponse.not_found(status_code=404, message="User not found")
 
+    def get(self, request: Request, id: str) -> Response:
+        """To get a user by id"""
+        user = get_user_by_id(id)
+        if user is not None:
+            return CustomResponse.success(
+                data=self.get_serializer(user).data,
+                message="User found",
+                status_code=200,
+            )
+        return CustomResponse.not_found(message="User not found", status_code=404)
 
-class SelfUserAPIView(ViewSet, GenericAPIView):
+
+class SelfUserAPIView(ListAPIView, GenericAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = SelfUserSerializer
 
-    def get_one(self, request: Request) -> Response:
-
+    def get(self, request: Request) -> Response:
         """To get a user by id"""
-
         user = self.request.user
         if user is not None:
             return CustomResponse.success(

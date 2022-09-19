@@ -1,7 +1,6 @@
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
 from ..serializers.compensation import (
     CompensationSerializer,
     CompensationUpdateSerializer,
@@ -9,23 +8,29 @@ from ..serializers.compensation import (
 from ..api.response import CustomResponse
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import UserIsAuthenticated, IsAdmin
+from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.compensation import (
     get_all_compensations,
     get_compensation_by_id,
 )
-from server.cshr.celery.send_email import send_email_for_compensation_request
-from server.cshr.celery.send_email import send_email_for_compensation_reply
+from server.cshr.celery.send_email import send_email_for_request
+from server.cshr.celery.send_email import send_email_for_reply
+from server.cshr.utils.email_messages_templates import (
+    get_compensation_reply_email_template,
+)
+from server.cshr.utils.email_messages_templates import (
+    get_compensation_request_email_template,
+)
 
 
-class CompensationApiView(ViewSet, GenericAPIView):
+class BaseCompensationApiView(ListAPIView, GenericAPIView):
     """method to get all Compensation"""
 
     serializer_class = CompensationSerializer
     permission_class = UserIsAuthenticated
 
-    def get_all(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
 
         compensation = get_all_compensations()
 
@@ -33,28 +38,6 @@ class CompensationApiView(ViewSet, GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="Compensation found", status_code=200
         )
-
-    """method to get a single Compensation by id"""
-
-    def get(self, request: Request, id: str, format=None) -> Response:
-        compensation = get_compensation_by_id(id=id)
-        if compensation is None:
-            return CustomResponse.not_found(
-                message="Compensation not found", status_code=404
-            )
-        serializer = CompensationSerializer(compensation)
-        return CustomResponse.success(
-            data=serializer.data, message="Compensation found", status_code=200
-        )
-
-    def delete(self, request: Request, id, format=None) -> Response:
-        """method to delete a Compensation by id"""
-        compensation = get_compensation_by_id(id=id)
-        if compensation is None:
-            return CustomResponse.not_found(message="Compensation not found")
-
-        compensation.delete()
-        return CustomResponse.success(message="User deleted", status_code=204)
 
     """method to create a new Compensation"""
 
@@ -68,20 +51,48 @@ class CompensationApiView(ViewSet, GenericAPIView):
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
-            send_email_for_compensation_request(current_user, serializer.data)
-            return CustomResponse.success(
-                data=serializer.data,
-                message="Compensation is created successfully",
-                status_code=201,
+            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
+            # to send email async just add .delay after function name as the line below
+            # send_email_for_request.delay(current_user.id, serializer.data)
+            msg = get_compensation_request_email_template(
+                current_user, serializer.data, url
             )
+            return send_email_for_request(current_user.id, msg, "Compensation request")
         return CustomResponse.bad_request(
             error=serializer.errors, message="Compensation creation failed"
         )
 
 
-class CompensationUpdateApiView(ViewSet, GenericAPIView):
+class CompensationApiView(ListAPIView, GenericAPIView):
+
+    serializer_class = CompensationSerializer
+    permission_class = UserIsAuthenticated
+
+    def delete(self, request: Request, id, format=None) -> Response:
+        """method to delete a Compensation by id"""
+        compensation = get_compensation_by_id(id=id)
+        if compensation is None:
+            return CustomResponse.not_found(message="Compensation not found")
+
+        compensation.delete()
+        return CustomResponse.success(message="User deleted", status_code=204)
+        """method to get a single Compensation by id"""
+
+    def get(self, request: Request, id: str, format=None) -> Response:
+        compensation = get_compensation_by_id(id=id)
+        if compensation is None:
+            return CustomResponse.not_found(
+                message="Compensation not found", status_code=404
+            )
+        serializer = CompensationSerializer(compensation)
+        return CustomResponse.success(
+            data=serializer.data, message="Compensation found", status_code=200
+        )
+
+
+class CompensationUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = CompensationUpdateSerializer
-    permission_classes = [IsAdmin]
+    permission_classes = [IsSupervisor]
     """method to update a Compensation by id"""
 
     def put(self, request: Request, id: str, format=None) -> Response:
@@ -92,9 +103,14 @@ class CompensationUpdateApiView(ViewSet, GenericAPIView):
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
-            send_email_for_compensation_reply(current_user, serializer.data)
-            return CustomResponse.success(
-                data=serializer.data, status_code=202, message="compensation updated"
+            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
+            # to send email async just add .delay after function name as the line below
+            # send_email_for_reply.delay(current_user.id, serializer.data)
+            msg = get_compensation_reply_email_template(
+                current_user, serializer.data, url
+            )
+            return send_email_for_reply(
+                current_user.id, serializer.data, msg, "Compensation reply"
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="compensation failed to update"

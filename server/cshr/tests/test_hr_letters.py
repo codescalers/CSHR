@@ -61,21 +61,21 @@ class HrLetterTests(APITestCase):
         url = f'{"/api/auth/login/"}'
         data = {"email": "ahmed@gmail.com", "password": "ahmedpass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "andrew@gmail.com", "password": "andrewpass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "helmy@gmail.com", "password": "helmypass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def test_create_hr_letter(self) -> HrLetters:
         url = "/api/hrletter/"
@@ -165,7 +165,7 @@ class HrLetterTests(APITestCase):
         url = "/api/hrletter/"
         data = {"addresses": "testing addr"}
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -194,7 +194,7 @@ class HrLetterTests(APITestCase):
         data = {"addresses": "testing addr"}
         response = client.post(url, data, format="json")
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/hrletter/edit/1/"

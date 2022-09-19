@@ -3,6 +3,7 @@ from server.cshr.models.event import Event
 from server.cshr.models.meetings import Meetings
 from server.cshr.models.users import User
 from server.cshr.models.vacations import Vacation
+from server.cshr.models.requests import TYPE_CHOICES
 from server.cshr.serializers.event import EventSerializer
 from server.cshr.serializers.meetings import MeetingsSerializer
 from server.cshr.serializers.users import BaseUserSerializer
@@ -33,15 +34,10 @@ def landing_page_calendar_functionality(month: str, year: str):
         if hasattr(obj, "birthday"):
             # Thats mean user table
             response[obj.birthday.day] = {}
-        elif hasattr(obj, "date") and not response.get(obj.date.day):
+        elif hasattr(obj, "meeting_link") and not response.get(obj.date.day):
             # Thats mean meetings, events table
             response[obj.date.day] = {}
-        elif (
-            hasattr(obj, "from_date")
-            and hasattr(obj, "end_date")
-            and not response.get(obj.from_date.day)
-            or not response.get(obj.end_date.day)
-        ):
+        elif hasattr(obj, "type") and obj.type == TYPE_CHOICES.VACATIONS:
             # vacations
             response[obj.from_date.day] = {}
         else:

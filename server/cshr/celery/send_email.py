@@ -1,4 +1,4 @@
-from typing import Dict
+from array import array
 from django.conf import settings
 from celery import Celery
 from server.components import config
@@ -6,11 +6,12 @@ from celery.schedules import crontab
 import datetime
 from django.core.mail import send_mail
 from celery import shared_task
-from server.cshr.models.users import User
-from server.cshr.utils.send_email import get_admins_emails
-from server.cshr.utils.send_email import get_supervisor_dict
-from server.cshr.utils.send_email import get_supervisor_emails
+from django.core.exceptions import ImproperlyConfigured
+from rest_framework.response import Response
 
+
+if config("REDIS_HOST") is None:
+    raise ImproperlyConfigured("REDIS_HOST is not defined")
 app = Celery("tasks", broker=config("REDIS_HOST"))
 
 app.autodiscover_tasks()
@@ -111,176 +112,46 @@ def send_email():
 
 
 @shared_task()
-def send_email_for_vacation_request(user, data):
+def send_email_for_request(user_id, msg, mail_title) -> Response:
     from django.core.mail import send_mail
+    from server.cshr.models.users import User
+    from server.cshr.utils.send_email import get_email_recievers
+    from server.cshr.services.users import get_user_by_id
+    from server.cshr.utils.send_email import check_email_configuration
+    from server.cshr.api.response import CustomResponse
 
-    admins_emails = get_admins_emails()
-    supervisor_emails = get_supervisor_emails(user)
-    user_email = user.email
-    msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
-            Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
-            Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
-    mail_title = "vacation request"
-    recievers = admins_emails + supervisor_emails
-    recievers.append(user_email)
+    check_email_configuration()
+    user: User = get_user_by_id(user_id)
+    if user is None:
+        return CustomResponse.not_found(message="user is not found", status_code=404)
+    recievers: array[str] = get_email_recievers(user)
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
-
-
-@shared_task
-def send_email_for_hr_letter_request(user: User, data):
-    from django.core.mail import send_mail
-
-    admins_emails = get_admins_emails()
-    # supervisor_dict: Dict = get_supervisor_dict(user)
-    supervisor_emails = get_supervisor_emails(user)
-    user_email = user.email
-    msg = "Request information: \n Applying user: {user_fname} {user_lname} \n \
-        Addresses : {addresses} \n  \
-        Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        addresses=data["addresses"],
-        status=data["status"],
-        request_url="dummyurl.com",
+    return CustomResponse.success(
+        message="email is sent successfully",
+        status_code=201,
     )
-    mail_title = "Hr Letter request"
-    recievers = admins_emails + supervisor_emails
-    recievers.append(user_email)
 
+
+@shared_task()
+def send_email_for_reply(approving_user_id, data, msg, mail_title) -> Response:
+    from django.core.mail import send_mail
+    from server.cshr.models.users import User
+    from server.cshr.utils.send_email import get_email_recievers
+    from server.cshr.services.users import get_user_by_id
+    from server.cshr.utils.send_email import check_email_configuration
+    from server.cshr.api.response import CustomResponse
+
+    check_email_configuration()
+    approving_user: User = get_user_by_id(approving_user_id)
+    if approving_user is None:
+        return CustomResponse.not_found(message="user is not found", status_code=404)
+    applying_user_id = data["applying_user"]
+    applying_user = get_user_by_id(applying_user_id)
+    if applying_user is None:
+        return CustomResponse.not_found(message="user is not found", status_code=404)
+    recievers: array[str] = get_email_recievers(applying_user)
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
-
-
-@shared_task()
-def send_email_for_compensation_request(user, data):
-    from django.core.mail import send_mail
-
-    admins_emails = get_admins_emails()
-    supervisor_emails = get_supervisor_emails(user)
-    user_email = user.email
-    msg = " Request information: \n Applying user: {user_fname} {user_lname} \n \
-            Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
-            Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
-    mail_title = "Compensation request"
-    recievers = admins_emails + supervisor_emails
-    recievers.append(user_email)
-
-    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
-
-
-@shared_task()
-def send_email_for_vacation_reply(user, data):
-    from django.core.mail import send_mail
-
-    admins_emails = get_admins_emails()
-    supervisor_dict: Dict = get_supervisor_dict(user)
-    user_email = user.email
-    msg = "Request information: \n Approval user: {user_fname} {user_lname} \n \
-            Approving user: {supervisor_fname} {supervisor_lname}\n \
-            Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
-            Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        supervisor_fname=supervisor_dict["fname"],
-        supervisor_lname=supervisor_dict["lname"],
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
-    mail_title = "Vacation reply"
-
-    send_mail(
-        mail_title, msg, settings.EMAIL_HOST_USER, admins_emails, fail_silently=False
-    )
-    send_mail(
-        mail_title,
-        msg,
-        settings.EMAIL_HOST_USER,
-        [user_email, supervisor_dict["email"]],
-        fail_silently=False,
-    )
-
-
-@shared_task()
-def send_email_for_hr_letter_reply(user, data):
-    from django.core.mail import send_mail
-
-    admins_emails = get_admins_emails()
-    supervisor_dict: Dict = get_supervisor_dict(user)
-    user_email = user.email
-    msg = " Reply information: \n Applying user: {user_fname} {user_lname} \n \
-            Approving user: {supervisor_fname} {supervisor_lname} \n \
-            Addresses : {addresses} \n \
-            Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        supervisor_fname=supervisor_dict["fname"],
-        supervisor_lname=supervisor_dict["lname"],
-        addresses=data["addresses"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
-    mail_title = "Hr Letter reply"
-
-    send_mail(
-        mail_title, msg, settings.EMAIL_HOST_USER, admins_emails, fail_silently=False
-    )
-    send_mail(
-        mail_title,
-        msg,
-        settings.EMAIL_HOST_USER,
-        [user_email, supervisor_dict["email"]],
-        fail_silently=False,
-    )
-
-
-@shared_task()
-def send_email_for_compensation_reply(user, data):
-    from django.core.mail import send_mail
-
-    admins_emails = get_admins_emails()
-    supervisor_dict: Dict = get_supervisor_dict(user)
-    user_email = user.email
-    msg = "Reply information: \n Applying user: {user_fname} {user_lname} \n \
-            Approving user: {supervisor_fname} {supervisor_lname} \n \
-            Reason: {reason} \n Start date : {start_date} \n End Date : {end_date} \n \
-            Status :{status} \n Request Url: {request_url}".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        supervisor_fname=supervisor_dict["fname"],
-        supervisor_lname=supervisor_dict["lname"],
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
-        request_url="dummyurl.com",
-    )
-    mail_title = "Compensation reply"
-
-    send_mail(
-        mail_title, msg, settings.EMAIL_HOST_USER, admins_emails, fail_silently=False
-    )
-    send_mail(
-        mail_title,
-        msg,
-        settings.EMAIL_HOST_USER,
-        [user_email, supervisor_dict["email"]],
-        fail_silently=False,
+    return CustomResponse.success(
+        message="email is sent successfully",
+        status_code=202,
     )

@@ -1,12 +1,15 @@
 
 CMD:=poetry run
+client:=cd client
 up:
 	docker-compose up --build -d
 install:
 	poetry install
 	poetry check
-run:
+runserver:
 	$(CMD) python3 manage.py runserver
+runclient:
+	$(client) && npm install && npm run dev
 test:
 	$(CMD) python3 manage.py test
 lint:
@@ -17,5 +20,3 @@ migrate:
 user:
 	$(CMD) python3 manage.py createsuperuser
 	$(CMD) python3 manage.py sqlmigrate cshr 0006
-	
-

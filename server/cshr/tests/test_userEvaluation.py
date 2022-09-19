@@ -1,5 +1,4 @@
 from rest_framework.test import APITestCase
-from django.urls import reverse
 from server.cshr.models.evaluations import (
     UserEvaluations,
     EVALUATION_FORM_TYPE,
@@ -83,27 +82,27 @@ class UserEvaluationTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "user1@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "user2@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "user3@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     """test post method"""
 
     def test_create_user_evaluation_by_admin(self):
         """test ability of creating a new evaluation by admin"""
-        url = reverse("UserEvaluation")
+        url = "/api/evaluation/user/"
         data = {
             "link": "testCase",
             "user": 1,
@@ -117,7 +116,7 @@ class UserEvaluationTests(APITestCase):
 
     def test_create_user_evaluation_by_supervisor(self):
         """test unauthorized  evaluation creation by supervisor"""
-        url = reverse("UserEvaluation")
+        url = "/api/evaluation/user/"
         data = {
             "link": "testCase",
             "user": 1,
@@ -132,7 +131,7 @@ class UserEvaluationTests(APITestCase):
 
     def test_create_user_evaluation_by_user(self):
         """test unauthorized  evaluation creation by user"""
-        url = reverse("UserEvaluation")
+        url = "/api/evaluation/user/"
         data = {
             "link": "testCase",
             "user": 1,
@@ -145,7 +144,7 @@ class UserEvaluationTests(APITestCase):
 
     def test_create_user_evaluation_by_unauthenticated_user(self):
         """test unauthorized  evaluation creation by unauthenticated user"""
-        url = reverse("UserEvaluation")
+        url = "/api/evaluation/user/"
         data = {
             "link": "testCase",
             "user": 1,
@@ -161,7 +160,7 @@ class UserEvaluationTests(APITestCase):
         """test list evaluations by admin"""
         createUserEvalTmp()
         """create a new record"""
-        url = reverse("UserEvaluation")
+        url = "/api/evaluation/user/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -172,7 +171,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        url = reverse("UserEvaluation")
+        url = "/api/evaluation/user/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -185,7 +184,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        url = reverse("UserEvaluation")
+        url = "/api/evaluation/user/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -195,13 +194,13 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        url = reverse("UserEvaluation")
+        url = "/api/evaluation/user/"
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_user_evaluation_empty_list(self):
         """test ability to return empty list if database is empty"""
-        url = reverse("UserEvaluation")
+        url = "/api/evaluation/user/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -536,27 +535,27 @@ class EvaluationsTest(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "user1@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "user2@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "user3@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     """test post method"""
 
     def test_create_evaluation_by_admin(self):
         """test ability of creating a new evaluation by admin"""
-        url = reverse("evaluation")
+        url = "/api/evaluation/"
         data = {
             "link": "testCase",
             "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
@@ -570,7 +569,7 @@ class EvaluationsTest(APITestCase):
 
     def test_create_evaluation_by_supervisor(self):
         """test unauthorized  evaluation creation by supervisor"""
-        url = reverse("evaluation")
+        url = "/api/evaluation/"
         data = {
             "link": "testCase",
             "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
@@ -584,7 +583,7 @@ class EvaluationsTest(APITestCase):
 
     def test_create_evaluation_by_user(self):
         """test unauthorized  evaluation creation by user"""
-        url = reverse("evaluation")
+        url = "/api/evaluation/"
         data = {
             "link": "testCase",
             "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
@@ -596,7 +595,7 @@ class EvaluationsTest(APITestCase):
 
     def test_create_evaluation_by_unauthenticated_user(self):
         """test unauthorized  evaluation creation by unauthenticated user"""
-        url = reverse("evaluation")
+        url = "/api/evaluation/"
         data = {
             "link": "testCase",
             "form": EVALUATION_FORM_TYPE.PEER_2_PEER_FORM,
@@ -611,7 +610,7 @@ class EvaluationsTest(APITestCase):
         """test list evaluations by admin"""
         createEvalTmp()
         """create a new record"""
-        url = reverse("evaluation")
+        url = "/api/evaluation/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -622,7 +621,7 @@ class EvaluationsTest(APITestCase):
 
         createEvalTmp()
         """create a new record"""
-        url = reverse("evaluation")
+        url = "/api/evaluation/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -635,7 +634,7 @@ class EvaluationsTest(APITestCase):
 
         createEvalTmp()
         """create a new record"""
-        url = reverse("evaluation")
+        url = "/api/evaluation/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -646,13 +645,13 @@ class EvaluationsTest(APITestCase):
 
         createEvalTmp()
         """create a new record"""
-        url = reverse("evaluation")
+        url = "/api/evaluation/"
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_evaluation_empty_list(self):
         """test ability to return empty list if database is empty"""
-        url = reverse("evaluation")
+        url = "/api/evaluation/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

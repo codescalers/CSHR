@@ -1,5 +1,4 @@
 """This file will containes all user serializers."""
-import random
 from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
@@ -26,6 +25,7 @@ class UserSkillsSerializer(ModelSerializer):
     class Meta:
         model = UserSkills
         fields = [
+            "id",
             "name",
         ]
 
@@ -37,12 +37,16 @@ class GeneralUserSerializer(ModelSerializer):
 
     user_certificates = SerializerMethodField()
     image = SerializerMethodField()
+    skills = SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
             "id",
             "full_name",
+            "email",
+            "gender",
+            "team",
             "email",
             "gender",
             "team",
@@ -54,6 +58,8 @@ class GeneralUserSerializer(ModelSerializer):
             "user_certificates",
             "reporting_to",
             "created_at",
+            "job_title",
+            "address",
         ]
 
     def get_user_certificates(self, obj):
@@ -61,16 +67,10 @@ class GeneralUserSerializer(ModelSerializer):
         return TrainingCoursesSerializer(training_courses, many=True).data
 
     def get_image(self, obj):
-        if obj.image == "":
-            return self.random_color()
-        else:
-            return f"/{obj.image}"
+        return obj.image.url if obj.image else obj.background_color
 
-    def random_color(self):
-        color: str = ""
-        for i in range(0, 3):
-            color += str(random.randint(1, 5))
-        return f"#{color}"
+    def get_skills(self, obj):
+        return UserSkillsSerializer(obj.skills.all(), many=True).data
 
 
 class SupervisorUserSerializer(ModelSerializer):
@@ -81,6 +81,8 @@ class SupervisorUserSerializer(ModelSerializer):
     user_certificates = SerializerMethodField()
     user_company_properties = SerializerMethodField()
     user_evaluation = SerializerMethodField()
+    image = SerializerMethodField()
+    skills = SerializerMethodField()
 
     class Meta:
         model = User
@@ -114,6 +116,12 @@ class SupervisorUserSerializer(ModelSerializer):
         evaluations = get_evaluations_for_a_user(obj.id)
         return UserEvaluationSerializer(evaluations, many=True).data
 
+    def get_image(self, obj):
+        return obj.image.url if obj.image else obj.background_color
+
+    def get_skills(self, obj):
+        return UserSkillsSerializer(obj.skills.all(), many=True).data
+
 
 class AdminUserSerializer(ModelSerializer):
     """
@@ -123,6 +131,8 @@ class AdminUserSerializer(ModelSerializer):
     user_certificates = SerializerMethodField()
     user_company_properties = SerializerMethodField()
     user_evaluation = SerializerMethodField()
+    image = SerializerMethodField()
+    skills = SerializerMethodField()
 
     class Meta:
         model = User
@@ -157,6 +167,12 @@ class AdminUserSerializer(ModelSerializer):
         evaluations = get_evaluations_for_a_user(obj.id)
         return UserEvaluationSerializer(evaluations, many=True).data
 
+    def get_image(self, obj):
+        return obj.image.url if obj.image else obj.background_color
+
+    def get_skills(self, obj):
+        return UserSkillsSerializer(obj.skills.all(), many=True).data
+
 
 class SelfUserSerializer(ModelSerializer):
     """
@@ -170,6 +186,8 @@ class SelfUserSerializer(ModelSerializer):
     created_at = DateTimeField(read_only=True)
     team = CharField(read_only=True)
     salary = JSONField(read_only=True)
+    image = SerializerMethodField()
+    skills = SerializerMethodField()
 
     class Meta:
         model = User
@@ -208,10 +226,39 @@ class SelfUserSerializer(ModelSerializer):
         reporting_to = obj.reporting_to.all()
         return BaseUserSerializer(reporting_to, many=True).data
 
+    def get_image(self, obj):
+        return obj.image.url if obj.image else obj.background_color
+
+    def get_skills(self, obj):
+        return UserSkillsSerializer(obj.skills.all(), many=True).data
+
 
 class BaseUserSerializer(ModelSerializer):
     """Implemented to be standered class for multiple usecases."""
 
+    image = SerializerMethodField()
+    skills = SerializerMethodField()
+    user_certificates = SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ["id", "full_name", "email", "image", "team", "gender"]
+        fields = [
+            "id",
+            "full_name",
+            "email",
+            "image",
+            "team",
+            "gender",
+            "skills",
+            "user_certificates",
+        ]
+
+    def get_image(self, obj):
+        return obj.image.url if obj.image else obj.background_color
+
+    def get_skills(self, obj):
+        return UserSkillsSerializer(obj.skills.all(), many=True).data
+
+    def get_user_certificates(self, obj):
+        training_courses = get_training_courses_for_a_user(obj.id)
+        return TrainingCoursesSerializer(training_courses, many=True).data
