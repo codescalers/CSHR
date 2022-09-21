@@ -37,12 +37,9 @@ class BaseMeetingsApiView(ListAPIView, GenericAPIView):
             error=serializer.errors, message="meeting creation failed"
         )
 
-    def get(self, request: Request) -> Response:
-        meetings = get_all_meetings()
-        serializer = MeetingsSerializer(meetings, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="meetings found", status_code=200
-        )
+    def get_queryset(self) -> Response:
+        query_set = get_all_meetings()
+        return query_set
 
 
 class MeetingsApiView(ListAPIView, GenericAPIView):

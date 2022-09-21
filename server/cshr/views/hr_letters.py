@@ -48,12 +48,9 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
             error=serializer.errors, message="Hr letter creation failed"
         )
 
-    def get(self, request: Request) -> Response:
-        hrLetters = get_all_hrLetters()
-        serializer = HrLetterSerializer(hrLetters, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="Hr letters found", status_code=200
-        )
+    def get_queryset(self) -> Response:
+        query_set = get_all_hrLetters()
+        return query_set
 
 
 class HrLetterApiView(ListAPIView, GenericAPIView):

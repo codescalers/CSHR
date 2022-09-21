@@ -1,3 +1,4 @@
+from typing import List
 from server.cshr.serializers.vacations import VacationsSerializer
 from server.cshr.serializers.vacations import VacationsUpdateSerializer
 from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
@@ -15,6 +16,7 @@ from server.cshr.utils.email_messages_templates import (
 )
 from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
+from server.cshr.models.vacations import Vacation
 from server.cshr.services.vacations import get_vacations_by_user
 
 
@@ -45,14 +47,10 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             error=serializer.errors, message="vacation request creation failed"
         )
 
-    def get(self, request: Request) -> Response:
-
+    def get_queryset(self) -> Response:
         """method to get all vacations"""
-        vacations = get_all_vacations()
-        serializer = VacationsSerializer(vacations, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="vacation requests found", status_code=200
-        )
+        query_set: List[Vacation] = get_all_vacations()
+        return query_set
 
 
 class VacationsApiView(ListAPIView, GenericAPIView):

@@ -30,13 +30,10 @@ class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = GeneralUserSerializer
 
-    def get(self, request: Request) -> Response:
+    def get_queryset(self) -> Response:
         """get all users in the system for a normal user"""
-        users = get_all_of_users()
-        serializer = self.get_serializer(users, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="show all users", status_code=200
-        )
+        query_set = get_all_of_users()
+        return query_set
 
 
 class TeamAPIView(ListAPIView):
@@ -72,13 +69,10 @@ class BaseSupervisorUserAPIView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
     serializer_class = SupervisorUserSerializer
 
-    def get(self, request: Request) -> Response:
+    def get_queryset(self) -> Response:
         """get all users in the system for a supervisor"""
-        users = get_all_of_users()
-        serializer = self.get_serializer(users, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="show all users", status_code=200
-        )
+        query_set = get_all_of_users()
+        return query_set
 
 
 class SupervisorUserAPIView(ListAPIView, GenericAPIView):
@@ -105,13 +99,10 @@ class BaseAdminUserAPIView(ListAPIView, GenericAPIView):
     permission_classes = [IsAdmin]
     serializer_class = AdminUserSerializer
 
-    def get(self, request: Request) -> Response:
+    def get_queryset(self) -> Response:
         """get all users in the system for an admin"""
-        users = get_all_of_users()
-        serializer = self.get_serializer(users, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="show all users", status_code=200
-        )
+        query_set = get_all_of_users()
+        return query_set
 
 
 class AdminUserAPIView(ListAPIView, GenericAPIView):

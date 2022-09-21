@@ -110,12 +110,9 @@ class BaseEvaluationsAPIView(ListAPIView, GenericAPIView):
     serializer_class = EvaluationSerializer
     permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
 
-    def get(self, request: Request) -> Response:
-        evaluations = all_user_evaluations()
-        serializer = EvaluationSerializer(evaluations, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="evaluations found", status_code=200
-        )
+    def get_queryset(self) -> Response:
+        query_set = all_user_evaluations()
+        return query_set
 
     def post(self, request: Request) -> Response:
         """To post new evaluation"""
