@@ -1,14 +1,9 @@
 <script lang="ts">
+  import type { SelectOptionType } from './types';
   import { v4 as uuidv4 } from 'uuid';
 
-  type SelectOption = {
-    label: any;
-    value: any;
-    extraData?: any;
-  };
-
-  export let options: SelectOption[] = [],
-    selected: SelectOption[] = [],
+  export let options: SelectOptionType[] = [],
+    selected: SelectOptionType[] = [],
     label: string = 'choose',
     placeholder = `Select`,
     removeAllTitle = 'Remove all',
@@ -20,10 +15,12 @@
     isTop: boolean = true,
     className: string = '',
     isError: boolean | null = null,
-    show: boolean = true;
+    isLabel: boolean = false,
+    show: boolean = false;
+
   let id: string = uuidv4();
 
-  function select(e: any, option: SelectOption) {
+  function select(e: any, option: SelectOptionType) {
     e.stopPropagation();
     if (multiple) {
       if (selected.includes(option)) {
@@ -85,11 +82,11 @@
       tabIndex="0"
       class="select-container select"
     >
-      <span class="value">
+      <div class="value">
         {#if selected.length > 0}
           {#each selected as option, index (index)}
             <button
-              class="selected-value option-badge"
+              class="option-badge"
               on:click={(e) => {
                 e.stopPropagation();
                 selected = selected.filter((o) => o.value !== option.value);
@@ -103,7 +100,7 @@
         {:else}
           <span class="placeholder bg-white"> {placeholder}</span>
         {/if}
-      </span>
+      </div>
       <button
         class="clear-btn"
         type="button"
@@ -126,10 +123,13 @@
             on:mouseenter={() => (highlightedIndex = index)}
             on:click={(e) => select(e, option)}
           >
-            <div class="d-flex flex-row justify-content-between">
-              <span class="label">{option.label} </span><span
-                class="remove-label">&times;</span
-              >
+            <div class="">
+              <div>
+                {isLabel ? option.label + '' : ''}
+
+                <slot id={uuidv4()} name="option" {option} />
+              </div>
+              <span class="remove-label">&times;</span>
             </div>
           </li>
         {/each}
@@ -180,7 +180,8 @@
     border-radius: 0.25em;
     padding: 0.15em 0.5em;
     gap: 0.25em;
-    background: none;
+    background-color: var(--primary-color);
+    color: var(--text-light);
     outline: none;
     cursor: pointer;
   }
@@ -188,6 +189,7 @@
   .option-badge:focus {
     background-color: hsl(0, 100%, 90%);
     border-color: hsl(0, 100%, 50%);
+    color: var(--primary-color);
   }
 
   .option-badge > .remove-btn {
@@ -261,6 +263,7 @@
     padding: 0.25em 0.5em;
     transition: all 0.2s ease-in-out;
     font-size: 1.2em;
+    position: relative;
   }
 
   .option.selected:nth-child(n-2) {
@@ -277,7 +280,12 @@
     color: white !important;
   }
   .remove-label {
-    align-self: flex-start;
+    width: 0.15em;
+    height: 0.1em;
+    position: absolute;
+    right: 0.5em;
+    top: -0.15em;
+    cursor: pointer;
     display: none;
   }
   .option.selected:hover,

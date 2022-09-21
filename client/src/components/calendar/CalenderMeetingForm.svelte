@@ -3,7 +3,7 @@
   import ModalOpenButton from '../modal/ModalOpenButton.svelte';
   import ModalCloseButton from '../modal/ModalCloseButton.svelte';
   import Modal from '../modal/Modal.svelte';
-  import PeopleSelect from '../select/PeopleSelect.svelte';
+  import PeopleSelect from '../select/PeopleSelectNotWorking.svelte';
   import CalendarDataService from '../../services/axios/home/CalendarDataService';
   import { UserStore } from '../../stores';
 

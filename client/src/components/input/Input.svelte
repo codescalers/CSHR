@@ -1,8 +1,14 @@
 <script lang="ts">
   import { v4 as uuidv4 } from 'uuid';
 
-  export let type: 'time' | 'email' | 'text' | 'password' | 'number' | 'url' |'date'=
-    'text';
+  export let type:
+    | 'time'
+    | 'email'
+    | 'text'
+    | 'password'
+    | 'number'
+    | 'url'
+    | 'date' = 'text';
   export let id: string = uuidv4(); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
   export let value: any;
   export let name: string = id;

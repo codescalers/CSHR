@@ -1,7 +1,8 @@
 <script lang="ts">
   import Input from '../components/input/Input.svelte';
   import MultiSelect from '../components/select/MultiSelect.svelte';
-  import Select from '../components/select/PeopleSelect.svelte';
+  import Select from '../components/select/PeopleSelectNotWorking.svelte';
+  import PeopleSelect2 from '../components/select/PeopleSelect.svelte';
 
   import Sidebar from '../components/sidebar/Sidebar.svelte';
   const handleInput = (e: any): boolean => {
@@ -37,6 +38,7 @@
         { label: 'third', value: '3' },
       ]}
     />
+    <PeopleSelect2 />
     <!--     <Select />
  -->
   </section>

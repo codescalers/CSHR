@@ -6,7 +6,6 @@ class Event {
 	public eventsItems(
 		eventName: eventNameType,
 		events: any,
-		date: Date
 	): eventItemType[] {
 		let items: eventItemType[] = [];
 		for (const event of events) {
@@ -21,11 +20,6 @@ class Event {
 		);
 		return lastDay;
 	}
-
-	// start 5amees
-	// end 7ad
-	// length 3
-
 	// to create the event item
 	private eventItem(eventName: eventNameType, event: any): eventItemType[] {
 		const {
@@ -60,6 +54,7 @@ class Event {
 		const lastDay = this.lastDayOFWeek(clone_from_date);
 		let items: eventItemType[] = [];
 		let length = 0;
+		// eslint-disable-next-line no-constant-condition
 		for (; true === true; ) {
 			if (
 				incremental_from_date.getDate() < end_date.getDate() &&
