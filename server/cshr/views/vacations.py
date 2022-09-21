@@ -20,7 +20,6 @@ from server.cshr.models.vacations import Vacation
 from server.cshr.services.vacations import get_vacations_by_user
 
 
-
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
     """Class Vacations_APIView to create a new vacation into database or get all"""
 
