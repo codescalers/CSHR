@@ -1,7 +1,10 @@
+from server.cshr.serializers.vacations import (
+    VacationsCommentsSerializer,
+    VacationsSerializer,
+)
 from typing import List
-from server.cshr.serializers.vacations import VacationsSerializer
 from server.cshr.serializers.vacations import VacationsUpdateSerializer
-from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
+from server.cshr.api.permission import IsSupervisor, UserIsAuthenticated, IsAdmin
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.services.users import get_user_by_id
@@ -10,6 +13,12 @@ from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from server.cshr.api.response import CustomResponse
+from datetime import datetime
+
+from server.cshr.utils.update_change_log import (
+    update_vacation_change_log,
+    update_vacation_comment_log,
+)
 from server.cshr.utils.email_messages_templates import (
     get_vacation_request_email_template,
     get_vacation_reply_email_template,
@@ -108,7 +117,9 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             return CustomResponse.not_found(message="Hr Letter not found")
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
         current_user: User = get_user_by_id(request.user.id)
+
         if serializer.is_valid():
+
             serializer.save(approval_user=current_user)
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             # to send email async just add .delay after function name as the line below
@@ -119,4 +130,44 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="vacation failed to update"
+        )
+
+
+class VacationApprovalAPIView(GenericAPIView):
+    """Use this class endpoint to change approved user value."""
+
+    serializer_class = VacationsSerializer
+    permission_classes = [IsAdmin | IsSupervisor]
+
+    def put(self, request: Request, id: str) -> Request:
+        """Use this endpoint to approve request."""
+        vacation = get_vacation_by_id(id=id)
+        vacation.approval_user = request.user
+        vacation.status = request.data["status"]
+        comment = request.data.get("comment")
+        comment_ = {"user": request.user.id, "comment": comment}
+        update_vacation_change_log(vacation, str(datetime.today()), comment_)
+        return CustomResponse.success(
+            data=VacationsSerializer(vacation).data,
+            status_code=202,
+            message="vacation change log and status updated",
+        )
+
+
+class VacationCommentsAPIView(GenericAPIView):
+    """Use this endpoint to add a comment as a user."""
+
+    permission_classes = [UserIsAuthenticated]
+    serializer_class = VacationsCommentsSerializer
+
+    def put(self, request: Request, id: str) -> Request:
+        """Use this endpoint to approve request."""
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
+            return CustomResponse.bad_request(status_code=404)
+        comment = request.data.get("comment")
+        comment_ = {"user": request.user.id, "comment": comment}
+        update_vacation_comment_log(vacation, comment_)
+        return CustomResponse.success(
+            data=comment_, status_code=202, message="vacation comment added"
         )
