@@ -13,6 +13,7 @@ from server.cshr.services.users import get_user_by_id
 from server.cshr.services.compensation import (
     get_all_compensations,
     get_compensation_by_id,
+    get_compensations_by_user,
 )
 from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
@@ -83,6 +84,24 @@ class CompensationApiView(ListAPIView, GenericAPIView):
         serializer = CompensationSerializer(compensation)
         return CustomResponse.success(
             data=serializer.data, message="Compensation found", status_code=200
+        )
+
+
+class CompensationUserApiView(ListAPIView, GenericAPIView):
+    serializer_class = CompensationUpdateSerializer
+    permission_classes = [UserIsAuthenticated]
+
+    def get(self, request: Request) -> Response:
+        """method to get all compensations for certain user"""
+        current_user: User = get_user_by_id(request.user.id)
+        if current_user is None:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
+        compensations = get_compensations_by_user(current_user.id)
+        serializer = CompensationSerializer(compensations, many=True)
+        return CustomResponse.success(
+            data=serializer.data, message="compensation requests found", status_code=200
         )
 
 

@@ -1,26 +1,23 @@
 <script lang="ts">
-  import type {
-    eventItemType,
-    userType,
-  } from "../../services/axios/home/types";
-  import { UserStore } from "../../stores";
-  import Modal from "../modal/Modal.svelte";
-  import StackedImages from "../image/StackedImages.svelte";
+  import type { eventItemType, userType } from '../../services/axios/home/types'
+  import { UserStore } from '../../stores'
+  import Modal from '../modal/Modal.svelte'
+  import StackedImages from '../image/StackedImages.svelte'
 
-  export let item: eventItemType;
-  let itemIndex: number = 0;
-  let clickedUser: userType;
-  $: clickedUser = item.people[itemIndex];
+  export let item: eventItemType
+  let itemIndex: number = 0
+  let clickedUser: userType
+  $: clickedUser = item.people[itemIndex]
 </script>
 
 <Modal
   bind:id={item.id}
   isDelete={false}
   isDone={false}
-  doneText={""}
+  doneText={''}
   on:onDelete
   on:onDone
-  deleteText={""}
+  deleteText={''}
   isFooter={true}
 >
   <header slot="header">
@@ -31,7 +28,7 @@
   <div slot="body">
     <h6 class="modal-title" id="exampleModalLongTitle">
       <div class="d-flex flex-row justify-content-between gap-2">
-        <div>{""}</div>
+        <div>{''}</div>
         <div class="d-flex flex-column justify-content-between gap-2">
           <div class="d-flex flex-row justify-content-between gap-2">
             <span>

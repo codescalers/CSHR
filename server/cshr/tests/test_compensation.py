@@ -204,3 +204,28 @@ class CompensationTests(APITestCase):
         data = {"applying_user": -1}
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_get_compensations_for_user_with_data(self) -> Compensation:
+        """add compensation request"""
+        url = "/api/compensation/"
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/compensation/user/"
+        response = client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_compensations_for_user_withot_data(self) -> Compensation:
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
+        url = "/api/compensation/user/"
+        response = client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -1,34 +1,34 @@
 <script lang="ts">
-  import Input from "../input/Input.svelte";
-  import ModalOpenButton from "../modal/ModalOpenButton.svelte";
-  import ModalCloseButton from "../modal/ModalCloseButton.svelte";
-  import Modal from "../modal/Modal.svelte";
-  import PeopleSelect from "../select/PeopleSelect.svelte";
-  import CalendarDataService from "../../services/axios/home/CalendarDataService";
+  import Input from '../input/Input.svelte'
+  import ModalOpenButton from '../modal/ModalOpenButton.svelte'
+  import ModalCloseButton from '../modal/ModalCloseButton.svelte'
+  import Modal from '../modal/Modal.svelte'
+  import PeopleSelect from '../select/PeopleSelect.svelte'
+  import CalendarDataService from '../../services/axios/home/CalendarDataService'
 
-  export let startDate: string;
-  export let endDate: string;
-  export let datePickerDisabled = false;
-  let modalID = 11988731;
-  let eventLocationValue: string;
-  let eventNameValue: string;
-  let eventDescriptionValue: string;
-  let eventFromTimeValue: string;
-  let eventEndTimeValue: string;
-  let eventNameIsError: boolean | null = null;
-  let eventDescriptionIsError: boolean | null = null;
-  let eventFromTimeIsError: boolean | null = null;
-  let eventEndTimeIsError: boolean | null = null;
-  let eventPeopleIsError: boolean | null = null;
+  export let startDate: string
+  export let endDate: string
+  export let datePickerDisabled = false
+  let modalID = 11988731
+  let eventLocationValue: string
+  let eventNameValue: string
+  let eventDescriptionValue: string
+  let eventFromTimeValue: string
+  let eventEndTimeValue: string
+  let eventNameIsError: boolean | null = null
+  let eventDescriptionIsError: boolean | null = null
+  let eventFromTimeIsError: boolean | null = null
+  let eventEndTimeIsError: boolean | null = null
+  let eventPeopleIsError: boolean | null = null
 
-  let peopleSelected: number[] = [];
-  let isLoading: boolean = false;
-  let isError: boolean = false;
+  let peopleSelected: number[] = []
+  let isLoading: boolean = false
+  let isError: boolean = false
 
   // if true the disable submit button
-  let locationIsError: boolean | null = null;
+  let locationIsError: boolean | null = null
   $: fillDisabled =
-    locationIsError === null || locationIsError === true || datePickerDisabled;
+    locationIsError === null || locationIsError === true || datePickerDisabled
   $: submitDisabled =
     fillDisabled === true ||
     eventNameIsError === null ||
@@ -40,33 +40,33 @@
     datePickerDisabled ||
     eventEndTimeIsError === null ||
     eventEndTimeIsError === true ||
-    peopleSelected.length === 0;
+    peopleSelected.length === 0
 </script>
 
 <div>
   <Input
     type="text"
-    label={"Location"}
+    label={'Location'}
     bind:value={eventLocationValue}
     handleInput={() => {
-      return false;
+      return false
     }}
     size={20}
     errorMessage="location is invalid"
-    hint={"please write proper location"}
-    placeholder={"write event location"}
+    hint={'please write proper location'}
+    placeholder={'write event location'}
     bind:isError={locationIsError}
   />
   <ModalOpenButton label="Fill" disabled={fillDisabled} {modalID} />
 </div>
 
 <Modal
-  id={modalID + ""}
+  id={modalID + ''}
   isDelete={false}
   isDone={false}
   isFooter={true}
-  doneText={"Done"}
-  deleteText={"Delete"}
+  doneText={'Done'}
+  deleteText={'Delete'}
 >
   <header slot="header">
     <h6>🎉 Event Form</h6>
@@ -84,28 +84,28 @@
     {:else}
       <Input
         type="text"
-        label={"Event Name"}
+        label={'Event Name'}
         bind:value={eventNameValue}
         handleInput={() => {
-          return false;
+          return false
         }}
         size={20}
         errorMessage="name is invalid"
-        hint={"please write proper name"}
-        placeholder={"write event name"}
+        hint={'please write proper name'}
+        placeholder={'write event name'}
         bind:isError={eventNameIsError}
       />
       <Input
         type="text"
-        label={"Event Description"}
+        label={'Event Description'}
         bind:value={eventDescriptionValue}
         handleInput={() => {
-          return false;
+          return false
         }}
         size={20}
         errorMessage="Description is invalid"
-        hint={"please write proper description"}
-        placeholder={"write event description"}
+        hint={'please write proper description'}
+        placeholder={'write event description'}
         bind:isError={eventDescriptionIsError}
       />
       <div class="form-group row">
@@ -121,28 +121,28 @@
       </div>
       <Input
         type="time"
-        label={"Event From Time"}
+        label={'Event From Time'}
         bind:value={eventFromTimeValue}
         handleInput={() => {
-          return false;
+          return false
         }}
         size={20}
         errorMessage="Time is invalid"
-        hint={"please write proper Time"}
-        placeholder={"write event time"}
+        hint={'please write proper Time'}
+        placeholder={'write event time'}
         bind:isError={eventFromTimeIsError}
       />
       <Input
         type="time"
-        label={"Event End Time"}
+        label={'Event End Time'}
         bind:value={eventEndTimeValue}
         handleInput={() => {
-          return false;
+          return false
         }}
         size={20}
         errorMessage="Time is invalid"
-        hint={"please write proper Time"}
-        placeholder={"write event time"}
+        hint={'please write proper Time'}
+        placeholder={'write event time'}
         bind:isError={eventEndTimeIsError}
       />
     {/if}
@@ -152,7 +152,7 @@
       {modalID}
       label="Submit"
       onClick={async () => {
-        isLoading = true;
+        isLoading = true
         try {
           await CalendarDataService.postEvent({
             description: eventDescriptionValue,
@@ -163,15 +163,15 @@
             end_date: endDate,
             from_date: startDate,
             from_time: eventFromTimeValue,
-          });
+          })
         } catch (e) {
-          isError = true;
+          isError = true
         } finally {
-          isLoading = false;
-          eventDescriptionValue = "";
-          eventEndTimeValue = "";
-          eventLocationValue = "";
-          peopleSelected = [];
+          isLoading = false
+          eventDescriptionValue = ''
+          eventEndTimeValue = ''
+          eventLocationValue = ''
+          peopleSelected = []
         }
       }}
       className="btn btn-primary"

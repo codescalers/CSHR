@@ -1,5 +1,4 @@
 <script lang="ts">
 </script>
-<div>
-    login
-</div>
+
+<div>login</div>
