@@ -30,8 +30,6 @@ def update_vacation_comment_log(vacation: Vacation, comment: List[Dict]):
     if vacation.approval_user is not None:
         change["approved_user"] = vacation.approval_user.id
 
-    print(vacation.approval_user)
-
     if vacation.change_log.__contains__("comments"):
 
         change["comments"].append(comment)
