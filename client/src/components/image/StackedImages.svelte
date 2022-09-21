@@ -1,15 +1,15 @@
 <script lang="ts">
   type stackedImageType = {
-    image: string;
-    full_name?: string;
-    gender?: string;
-    team?: string;
-  };
+    image: string
+    full_name?: string
+    gender?: string
+    team?: string
+  }
 
-  export let stackedImages: stackedImageType[];
-  export let itemIndex: number = 0;
+  export let stackedImages: stackedImageType[]
+  export let itemIndex: number = 0
 
-  let extra: number = 0;
+  let extra: number = 0
   //let width: number = 0;
   /* let images: stackedImageType[] = stackedImages;
   let numberOfImages = stackedImages.length;
@@ -22,24 +22,24 @@
   {#each stackedImages as image, index (index)}
     <div
       class={`stacked_img my-2 ${
-        itemIndex === index && stackedImages.length !== 1 ? "activate" : ""
+        itemIndex === index && stackedImages.length !== 1 ? 'activate' : ''
       }`}
       style={`background-image:url(${
         process.env.APP_BASE_API_URL + image.image
       });background-color:${
-        image.gender === "Male" ? "#2986cc" : "#FB5858"
+        image.gender === 'Male' ? '#2986cc' : '#FB5858'
       };z-index:${100 - index};border:1.5px solid ${
-        image.gender === "Male" ? "var(--secondary-color)" : "pink"
+        image.gender === 'Male' ? 'var(--secondary-color)' : 'pink'
       }`}
       data-bs-toggle="tooltip"
-      title={image.full_name + " #" + image.team}
+      title={image.full_name + ' #' + image.team}
       on:click={() => (itemIndex = index)}
     >
       {#if image.full_name}
         <span class="text">
-          {image.full_name?.split(" ")[0].charAt(0).toUpperCase() +
-            "" +
-            (image.full_name?.split(" ")[1].charAt(0) + "").toUpperCase()}
+          {image.full_name?.split(' ')[0].charAt(0).toUpperCase() +
+            '' +
+            (image.full_name?.split(' ')[1].charAt(0) + '').toUpperCase()}
         </span>
       {/if}
     </div>
@@ -49,7 +49,7 @@
       class="stacked_img"
       style="background-image:url('https://i.imgur.com/9LDfN2H.png')"
     >
-      <span class="extra">{"+" + extra}</span>
+      <span class="extra">{'+' + extra}</span>
     </div>
   {/if}
 </div>

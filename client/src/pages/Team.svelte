@@ -1,17 +1,14 @@
 <script lang="ts">
-  import Sidebar from "../components/sidebar/Sidebar.svelte";
-  import Team from "../components/team/Team.svelte";
+  import Sidebar from '../components/sidebar/Sidebar.svelte'
+  import Team from '../components/team/Team.svelte'
+
+  export let isLoading = false
+  export let isError: boolean | null = null
 </script>
 
-<Sidebar>
+<Sidebar bind:isLoading bind:isError>
   <span slot="page-name">Team</span>
-  <section class="fluid-container mt-5 content" slot="content">
-    <Team />
-  </section>
+  <div slot="content">
+    <Team bind:isLoading bind:isError />
+  </div>
 </Sidebar>
-
-<style>
-  .content {
-    height: fit-content;
-  }
-</style>

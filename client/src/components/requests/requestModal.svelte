@@ -1,19 +1,18 @@
 <script lang="ts">
-  import Modal from "../modal/Modal.svelte";
-  export let index = 3;
-  export let request: any;
+  import Modal from '../modal/Modal.svelte'
+  export let index = 3
+  export let request: any
 </script>
 
 <Modal
-  id={index + ""}
+  id={index + ''}
   isDelete={false}
   isDone={false}
   isFooter={true}
-  doneText={"Done"}
-  deleteText={"Delete"}
+  doneText={'Done'}
+  deleteText={'Delete'}
   isClose={false}
 >
-
   <header slot="header">
     <h6 class="modal-title" id="exampleModalLongTitle">
       {request.type} Details

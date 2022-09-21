@@ -6,13 +6,10 @@
 </footer>
 
 <style>
-
   footer {
-
     width: 90%;
     margin: 0 auto;
     text-align: center;
     color: var(--primary-color) !important;
-
   }
 </style>

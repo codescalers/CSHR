@@ -1,36 +1,36 @@
 <script lang="ts">
-  import type { eventNameType } from "../../services/axios/home/types";
+  import type { eventNameType } from '../../services/axios/home/types'
 
-  import { createEventDispatcher } from "svelte";
-  import CalendarModalData from "./CalendarModalData.svelte";
-  export var headers: string[] = [];
-  export let days: any[] = [];
-  export let items: any[] = [];
-  export let eventNames: Set<eventNameType>;
+  import { createEventDispatcher } from 'svelte'
+  import CalendarModalData from './CalendarModalData.svelte'
+  export var headers: string[] = []
+  export let days: any[] = []
+  export let items: any[] = []
+  export let eventNames: Set<eventNameType>
 
-  let dispatch = createEventDispatcher();
+  let dispatch = createEventDispatcher()
   function onDelete(event: { detail: { id: any } }) {
-    dispatch("onDelete", { id: event.detail.id });
+    dispatch('onDelete', { id: event.detail.id })
   }
   function onDone(event: { detail: { id: any } }) {
-    dispatch("onDone", { id: event.detail.id });
+    dispatch('onDone', { id: event.detail.id })
   }
 </script>
 
 <div class="calendar table-responsive table-responsive">
   {#each headers as header, index (index)}
-    <span class="day-name" on:click={() => dispatch("headerClick", header)}
+    <span class="day-name" on:click={() => dispatch('headerClick', header)}
       >{header}</span
     >
   {/each}
 
   {#each days as day, index (index)}
     {#if day.enabled}
-      <span class="day" on:click={() => dispatch("dayClick", day)}
+      <span class="day" on:click={() => dispatch('dayClick', day)}
         >{day.name}</span
       >
     {:else}
-      <span class="day day-disabled" on:click={() => dispatch("dayClick", day)}
+      <span class="day day-disabled" on:click={() => dispatch('dayClick', day)}
         >{day.name}</span
       >
     {/if}
@@ -39,7 +39,7 @@
   {#each items as item (item.id)}
     {#if eventNames.has(item.eventName)}
       <section
-        on:click={() => dispatch("itemClick", item)}
+        on:click={() => dispatch('itemClick', item)}
         style="grid-column: {item.startCol} / span {item.len};      
         grid-row: {item.startRow};  
         align-self: {item.isBottom ? 'end' : item.isStart ? 'start' : 'center'};
@@ -53,7 +53,7 @@
           data-bs-toggle="modal"
           data-bs-target={`#modal${item.id}`}
         >
-          {item.title + ""}
+          {item.title + ''}
         </button>
 
         {#if item.detailHeader}
@@ -229,7 +229,7 @@
     bottom: 100%;
     left: 30%;
     border: solid transparent;
-    content: " ";
+    content: ' ';
     height: 0;
     width: 0;
     position: absolute;

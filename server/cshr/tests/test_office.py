@@ -125,7 +125,6 @@ class OfficeTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "Offices found")
 
     def test_get_all_office_by_supervisor(self):
         """test list offices by supervisor"""
@@ -137,7 +136,6 @@ class OfficeTests(APITestCase):
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "Offices found")
 
     def test_get_all_office_by_user(self):
         """test list offices by user"""
@@ -147,7 +145,6 @@ class OfficeTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "Offices found")
 
     def test_get_all_office_by_unauthenticated_user(self):
         """test list offices by unauthenticated user"""

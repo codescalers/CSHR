@@ -1,19 +1,19 @@
 <script lang="ts">
-  import type { vacationItemType } from "../../services/axios/home/types";
-  import { UserStore } from "../../stores";
-  import Modal from "../modal/Modal.svelte";
+  import type { vacationItemType } from '../../services/axios/home/types'
+  import { UserStore } from '../../stores'
+  import Modal from '../modal/Modal.svelte'
 
-  export let item: vacationItemType;
+  export let item: vacationItemType
 </script>
 
 <Modal
   bind:id={item.id}
   isDelete={false}
   isDone={false}
-  doneText={""}
+  doneText={''}
   on:onDelete
   on:onDone
-  deleteText={""}
+  deleteText={''}
   isFooter={true}
 >
   <header slot="header">
@@ -24,7 +24,7 @@
   <div slot="body">
     <h6 class="modal-title" id="exampleModalLongTitle">
       <div class="d-flex flex-row justify-content-between gap-2">
-        <div>{""}</div>
+        <div>{''}</div>
         <div class="d-flex flex-row justify-content-between gap-2">
           <span>
             {`${item.from_date}`}

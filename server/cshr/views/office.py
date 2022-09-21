@@ -15,16 +15,12 @@ from server.cshr.services.office import get_office_by_id
 
 
 class BaseOfficeApiView(ListAPIView, GenericAPIView):
-    queryset = Office.objects.all()
     permission_classes = [UserIsAuthenticated | IsUser | IsAdmin | IsSupervisor]
     serializer_class = OfficeSerializer
 
-    def get(self, request: Request) -> Response:
-        offices = self.get_queryset()
-        serializer = OfficeSerializer(offices, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="Offices found", status_code=200
-        )
+    def get_queryset(self) -> Response:
+        query_set = Office.objects.all()
+        return query_set
 
     def post(self, request: Request) -> Response:
         has_permission = CustomPermissions.admin(request.user)
