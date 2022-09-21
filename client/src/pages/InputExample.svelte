@@ -1,14 +1,14 @@
 <script lang="ts">
-  import Input from "../components/input/Input.svelte";
-  import Select from "../components/select/PeopleSelect.svelte";
+  import Input from '../components/input/Input.svelte'
+  import Select from '../components/select/PeopleSelect.svelte'
 
-  import Sidebar from "../components/sidebar/Sidebar.svelte";
+  import Sidebar from '../components/sidebar/Sidebar.svelte'
   const handleInput = (e: any): boolean => {
-    if (e.target.value !== "omar") return true;
-    return false;
-  };
-  let inputValue = "";
-  let isError: null | boolean = null;
+    if (e.target.value !== 'omar') return true
+    return false
+  }
+  let inputValue = ''
+  let isError: null | boolean = null
 </script>
 
 <Sidebar>
@@ -16,13 +16,13 @@
   <section class="fluid-container mt-5 content" slot="content">
     <Input
       type="text"
-      label={"name"}
+      label={'name'}
       bind:value={inputValue}
       {handleInput}
       size={255}
       errorMessage="Name is invalid"
-      hint={"please write omar"}
-      placeholder={"please enter your name here"}
+      hint={'please write omar'}
+      placeholder={'please enter your name here'}
       bind:isError
     />
 

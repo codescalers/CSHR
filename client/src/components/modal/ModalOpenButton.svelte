@@ -1,15 +1,15 @@
 <script lang="ts">
-  export let disabled = false;
-  export let className = "";
-  export let label = "";
-  export let modalID: number;
+  export let disabled = false
+  export let className = ''
+  export let label = ''
+  export let modalID: number
 </script>
 
 <button
-  type={"button"}
-  class={`btn ${className.length !== 0 ? className : "submit"}`}
-  data-bs-toggle={"modal"}
-  data-bs-target={"#modal" + modalID}
+  type={'button'}
+  class={`btn ${className.length !== 0 ? className : 'submit'}`}
+  data-bs-toggle={'modal'}
+  data-bs-target={'#modal' + modalID}
   {disabled}>{label}</button
 >
 
