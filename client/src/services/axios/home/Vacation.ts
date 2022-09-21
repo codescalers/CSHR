@@ -46,7 +46,11 @@ class Vacation {
 			gender: vacation.approval_user.gender,
 		};
 		const [fromYear, fromMonth, fromDay] = vacation.from_date.split("-");
-		const original_from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
+		const original_from_date = new Date(
+			fromYear,
+			Number(fromMonth) - 1,
+			fromDay
+		);
 		const clone_from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
 		const incremental_from_date = new Date(
 			fromYear,

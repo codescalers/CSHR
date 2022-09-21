@@ -2,16 +2,16 @@
   import type {
     meetingItemType,
     userType,
-  } from '../../services/axios/home/types'
-  import { UserStore } from '../../stores'
-  import Modal from '../modal/Modal.svelte'
-  import StackedImages from '../image/StackedImages.svelte'
+  } from '../../services/axios/home/types';
+  import { UserStore } from '../../stores';
+  import Modal from '../modal/Modal.svelte';
+  import StackedImages from '../image/StackedImages.svelte';
 
-  export let item: meetingItemType
-  let clickedParticipantIndex: number = 0
+  export let item: meetingItemType;
+  let clickedParticipantIndex: number = 0;
   let clickedParticipantUser: userType =
-    item.invited_users[clickedParticipantIndex]
-  $: clickedParticipantUser = item.invited_users[clickedParticipantIndex]
+    item.invited_users[clickedParticipantIndex];
+  $: clickedParticipantUser = item.invited_users[clickedParticipantIndex];
 </script>
 
 <Modal

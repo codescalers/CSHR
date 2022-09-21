@@ -1,28 +1,32 @@
 <script lang="ts">
-  import { v4 as uuidv4 } from 'uuid'
+  import { v4 as uuidv4 } from 'uuid';
 
-  export let type: 'time' | 'email' | 'text' | 'password' | 'number' | 'url' =
-    'text'
-  export let id: string = uuidv4() // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
-  export let value: any
-  export let name: string = id
-  export let size: number = 255
-  export let label: string = 'label'
-  export let placeholder: string
-  export let className: string = ''
-  export let correctMessage: string = ''
-  export let errorMessage: string
-  export let hint: string = ''
+  export let type: 'time' | 'email' | 'text' | 'password' | 'number' | 'url' |'date'=
+    'text';
+  export let id: string = uuidv4(); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
+  export let value: any;
+  export let name: string = id;
+  export let size: number = 255;
+  export let label: string = 'label';
+  export let placeholder: string;
+  export let className: string = '';
+  export let correctMessage: string = '';
+  export let errorMessage: string;
+  export let hint: string = '';
   // if true the input is invalid && show error message
   // if false the input is valid && hide error message
   /// if null the input is not touched && hide error message
-  export let isError: boolean | null = null
-  export let isTop: boolean = true
+  export let isError: boolean | null = null;
+  export let isTop: boolean = true;
 
-  export let handleInput: (e: any) => boolean
+  export let handleInput: (e: any) => boolean;
   // for setting the error function
   const ref = (node: HTMLInputElement) => {
-    node.type = type
+    node.type = type;
+  };
+
+  $: if ((value + '').trim.length === 0) {
+    isError = null;
   }
 </script>
 
@@ -43,7 +47,7 @@
       } `}
       aria-describedby={id}
       on:input={(e) => {
-        isError = (value + '').length === 0 || handleInput(e)
+        isError = (value + '').length === 0 || handleInput(e);
       }}
       {id}
       {placeholder}

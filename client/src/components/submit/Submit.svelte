@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { v4 as uuidv4 } from 'uuid'
+  import { v4 as uuidv4 } from 'uuid';
 
-  export let disabled = false
-  export let className = ''
-  export let label = ''
-  export let onClick: () => boolean | Promise<boolean>
-  export let successMessage: string
-  export let errorMessage: string
-  export let id = uuidv4()
-  export let success: Promise<boolean> | boolean = true
-  export let show = false
-  let isLoading = false
+  export let disabled = false;
+  export let className = '';
+  export let label = '';
+  export let onClick: () => boolean | Promise<boolean>;
+  export let successMessage: string;
+  export let errorMessage: string;
+  export let id = uuidv4();
+  export let success: Promise<boolean> | boolean = true;
+  export let show = false;
+  let isLoading = false;
 </script>
 
 <button
@@ -18,10 +18,10 @@
   type="submit"
   class={`btn ${className.length !== 0 ? className : 'submit'}`}
   on:click|preventDefault={async () => {
-    isLoading = true
-    success = !(await onClick())
-    show = true
-    isLoading = false
+    isLoading = true;
+    success = !(await onClick());
+    show = true;
+    isLoading = false;
   }}
   {disabled}
 >

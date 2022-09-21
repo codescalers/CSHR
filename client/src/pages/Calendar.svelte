@@ -1,18 +1,18 @@
 <script lang="ts">
-  import type { eventNameType } from '../services/axios/home/types'
+  import type { eventNameType } from '../services/axios/home/types';
 
-  import Calendar from '../components/calendar/Calendar.svelte'
-  import CalendarEventForm from '../components/calendar/CalendarForm.svelte'
-  import CalendarDetails from '../components/calendar/CalendarDetails.svelte'
-  import Sidebar from '../components/sidebar/Sidebar.svelte'
+  import Calendar from '../components/calendar/Calendar.svelte';
+  import CalendarEventForm from '../components/calendar/CalendarForm.svelte';
+  import CalendarDetails from '../components/calendar/CalendarDetails.svelte';
+  import Sidebar from '../components/sidebar/Sidebar.svelte';
   let eventNames: Set<eventNameType> = new Set([
     'events',
     'vacations',
     'meetings',
     'birthdates',
-  ])
-  let isLoading = false
-  let isError: boolean | null = null
+  ]);
+  let isLoading = false;
+  let isError: boolean | null = null;
 </script>
 
 <Sidebar bind:isLoading bind:isError>

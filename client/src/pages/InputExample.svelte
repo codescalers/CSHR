@@ -1,20 +1,21 @@
 <script lang="ts">
-  import Input from '../components/input/Input.svelte'
-  import Select from '../components/select/PeopleSelect.svelte'
+  import Input from '../components/input/Input.svelte';
+  import MultiSelect from '../components/select/MultiSelect.svelte';
+  import Select from '../components/select/PeopleSelect.svelte';
 
-  import Sidebar from '../components/sidebar/Sidebar.svelte'
+  import Sidebar from '../components/sidebar/Sidebar.svelte';
   const handleInput = (e: any): boolean => {
-    if (e.target.value !== 'omar') return true
-    return false
-  }
-  let inputValue = ''
-  let isError: null | boolean = null
+    if (e.target.value !== 'omar') return true;
+    return false;
+  };
+  let inputValue = '';
+  let isError: null | boolean = null;
 </script>
 
 <Sidebar>
   <span slot="page-name">Calendar</span>
   <section class="fluid-container mt-5 content" slot="content">
-    <Input
+    <!--     <Input
       type="text"
       label={'name'}
       bind:value={inputValue}
@@ -24,9 +25,20 @@
       hint={'please write omar'}
       placeholder={'please enter your name here'}
       bind:isError
+    /> -->
+    <MultiSelect
+      options={[
+        { label: 'hell', value: 'hellboy' },
+        { label: 'gggg', value: 'gigg' },
+        { label: 'third', value: '3' },
+        { label: 'third', value: '3' },
+        { label: 'third', value: '3' },
+        { label: 'third', value: '3' },
+        { label: 'third', value: '3' },
+      ]}
     />
-
-    <Select />
+    <!--     <Select />
+ -->
   </section>
 </Sidebar>
 

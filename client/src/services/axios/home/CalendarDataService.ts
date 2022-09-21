@@ -25,12 +25,12 @@ class CalendarDataService {
 		}
 	}
 	public async postMeeting(e: {
-    hostedUserID: number
-    invitedUsers: number[]
-    time: string
-    meetingLink: string
-    date: string
-    location: string
+    hostedUserID: number;
+    invitedUsers: number[];
+    time: string;
+    meetingLink: string;
+    date: string;
+    location: string;
   }) {
 		try {
 			if (
@@ -75,14 +75,14 @@ class CalendarDataService {
 	}
 
 	public async postEvent(e: {
-    description: string
-    name: string
-    people: number[]
-    end_date: string
-    end_time: string
-    from_date: string
-    from_time: string
-    location: string
+    description: string;
+    name: string;
+    people: number[];
+    end_date: string;
+    end_time: string;
+    from_date: string;
+    from_time: string;
+    location: string;
   }) {
 		try {
 			if (
@@ -134,10 +134,10 @@ class CalendarDataService {
 	}
 
 	public async postLeave(e: {
-    applyingUserId: number
-    reason: string
-    end_date: string
-    from_date: string
+    applyingUserId: number;
+    reason: string;
+    end_date: string;
+    from_date: string;
   }) {
 		try {
 			if (!e.applyingUserId || !e.end_date) throw new Error("Invalid data");

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Link } from 'svelte-navigator'
+  import { Link } from 'svelte-navigator';
 
-  import type { UserInterface } from '../../types'
-  export let user: UserInterface
+  import type { UserInterface } from '../../types';
+  export let user: UserInterface;
 </script>
 
 <div class="card rounded bg-light shadow">

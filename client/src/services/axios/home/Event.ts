@@ -36,7 +36,11 @@ class Event {
 			minute: fromMinute,
 		} = event.from_date;
 
-		const original_from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
+		const original_from_date = new Date(
+			fromYear,
+			Number(fromMonth) - 1,
+			fromDay
+		);
 		const clone_from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
 		const incremental_from_date = new Date(
 			fromYear,

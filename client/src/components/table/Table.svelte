@@ -1,17 +1,17 @@
 <script lang="ts">
-  import Pagination from '../pagination/Pagination.svelte'
-  import { v4 as uuidv4 } from 'uuid'
+  import Pagination from '../pagination/Pagination.svelte';
+  import { v4 as uuidv4 } from 'uuid';
 
   // page value
-  export let pageIndex: number = 1
+  export let pageIndex: number = 1;
   // number of pages
-  export let length: number = 10
+  export let length: number = 10;
   // headers array
-  export let headers: string[]
+  export let headers: string[];
   // table class
-  export let tableClass: string = ''
+  export let tableClass: string = '';
   // table id
-  export let tableId: string = uuidv4()
+  export let tableId: string = uuidv4();
 </script>
 
 <div class="container d-flex flex-column justify-content-between">

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { vacationItemType } from '../../services/axios/home/types'
-  import { UserStore } from '../../stores'
-  import Modal from '../modal/Modal.svelte'
+  import type { vacationItemType } from '../../services/axios/home/types';
+  import { UserStore } from '../../stores';
+  import Modal from '../modal/Modal.svelte';
 
-  export let item: vacationItemType
+  export let item: vacationItemType;
 </script>
 
 <Modal

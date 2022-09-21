@@ -1,41 +1,41 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import type { UserInterface } from '../../types'
-  import User from './User.svelte'
-  import { AllUsersStore } from '../../stores'
-  import usersDataService from '../../services/axios/users/UsersDataService'
+  import { onMount } from 'svelte';
+  import type { UserInterface } from '../../types';
+  import User from './User.svelte';
+  import { AllUsersStore } from '../../stores';
+  import usersDataService from '../../services/axios/users/UsersDataService';
 
-  import Pagination from '../pagination/Pagination.svelte'
+  import Pagination from '../pagination/Pagination.svelte';
 
-  export let isLoading = false
-  export let isError: boolean | null = null
+  export let isLoading = false;
+  export let isError: boolean | null = null;
 
   onMount(async () => {
-    isLoading = true
+    isLoading = true;
     try {
       if ($AllUsersStore === undefined || $AllUsersStore.length === 0) {
-        const users: UserInterface[] = await usersDataService.getAll()
+        const users: UserInterface[] = await usersDataService.getAll();
         if ($AllUsersStore === undefined) {
-          $AllUsersStore = users
+          $AllUsersStore = users;
         } else {
-          AllUsersStore.set(users)
+          AllUsersStore.set(users);
         }
       }
     } catch (error) {
-      isError = true
+      isError = true;
     }
-    isLoading = false
-  })
+    isLoading = false;
+  });
 
-  let pageValue = 1
-  let users: UserInterface[] = []
+  let pageValue = 1;
+  let users: UserInterface[] = [];
 
   $: if ($AllUsersStore !== undefined) {
     users = $AllUsersStore.filter(
       (_: any, index: number) =>
         index < pageValue * parseFloat(process.env.PAGE_SIZE + '') &&
         index >= (pageValue - 1) * parseFloat(process.env.PAGE_SIZE + '')
-    )
+    );
   }
 
   let length =
@@ -43,7 +43,7 @@
       ? Math.ceil(
           $AllUsersStore.length / parseFloat(process.env.PAGE_SIZE + '')
         )
-      : 0
+      : 0;
 </script>
 
 {#if !isLoading && !isError && users}

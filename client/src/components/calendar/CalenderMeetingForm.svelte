@@ -1,38 +1,38 @@
 <script lang="ts">
-  import Input from '../input/Input.svelte'
-  import ModalOpenButton from '../modal/ModalOpenButton.svelte'
-  import ModalCloseButton from '../modal/ModalCloseButton.svelte'
-  import Modal from '../modal/Modal.svelte'
-  import PeopleSelect from '../select/PeopleSelect.svelte'
-  import CalendarDataService from '../../services/axios/home/CalendarDataService'
-  import { UserStore } from '../../stores'
+  import Input from '../input/Input.svelte';
+  import ModalOpenButton from '../modal/ModalOpenButton.svelte';
+  import ModalCloseButton from '../modal/ModalCloseButton.svelte';
+  import Modal from '../modal/Modal.svelte';
+  import PeopleSelect from '../select/PeopleSelect.svelte';
+  import CalendarDataService from '../../services/axios/home/CalendarDataService';
+  import { UserStore } from '../../stores';
 
-  export let startDate: string
-  export let endDate: string
+  export let startDate: string;
+  export let endDate: string;
 
   // if true the disable submit button
-  export let datePickerDisabled: boolean = false
-  let modalID = 129981
-  let meetingLocationValue: string
-  let meetingLocationIsError: boolean | null = null
-  let meetingLinkValue: string
-  let meetingLinkIsError: boolean | null = null
-  let meetingTimeValue: string
-  let meetingTimeIsError: boolean | null = null
+  export let datePickerDisabled: boolean = false;
+  let modalID = 129981;
+  let meetingLocationValue: string;
+  let meetingLocationIsError: boolean | null = null;
+  let meetingLinkValue: string;
+  let meetingLinkIsError: boolean | null = null;
+  let meetingTimeValue: string;
+  let meetingTimeIsError: boolean | null = null;
 
-  let meetingPeopleIsError: boolean | null = false
-  export let isLoading: boolean = false
-  export let isError: boolean = false
+  let meetingPeopleIsError: boolean | null = false;
+  export let isLoading: boolean = false;
+  export let isError: boolean = false;
 
-  let peopleSelected: number[] = []
+  let peopleSelected: number[] = [];
   $: fillDisabled =
     meetingLocationIsError === null ||
     meetingLocationIsError === true ||
     meetingPeopleIsError === null ||
     meetingPeopleIsError === true ||
     datePickerDisabled ||
-    peopleSelected.length === 0
-  let submitDisabled = true
+    peopleSelected.length === 0;
+  let submitDisabled = true;
   $: submitDisabled =
     fillDisabled ||
     meetingLinkIsError === null ||
@@ -40,7 +40,7 @@
     meetingTimeIsError === null ||
     meetingTimeIsError === true ||
     meetingTimeValue === undefined ||
-    peopleSelected.length === 0
+    peopleSelected.length === 0;
 </script>
 
 <form>
@@ -59,7 +59,7 @@
     label={'Location'}
     bind:value={meetingLocationValue}
     handleInput={() => {
-      return false
+      return false;
     }}
     size={20}
     errorMessage="location is invalid"
@@ -98,7 +98,7 @@
         label={'Meeting Link'}
         bind:value={meetingLinkValue}
         handleInput={() => {
-          return false
+          return false;
         }}
         size={20}
         errorMessage="Meeting Link is invalid"
@@ -111,7 +111,7 @@
         label={'Meeting Time'}
         bind:value={meetingTimeValue}
         handleInput={() => {
-          return false
+          return false;
         }}
         size={20}
         errorMessage="Meeting Time is invalid"
@@ -127,7 +127,7 @@
       {modalID}
       label="Submit"
       onClick={async () => {
-        isLoading = true
+        isLoading = true;
         try {
           await CalendarDataService.postMeeting({
             hostedUserID: $UserStore.id,
@@ -136,20 +136,20 @@
             location: meetingLocationValue,
             meetingLink: meetingLinkValue,
             time: meetingTimeValue,
-          })
-          isLoading = false
-          meetingLocationValue = ''
-          meetingTimeValue = ''
-          meetingLinkValue = ''
-          peopleSelected = []
+          });
+          isLoading = false;
+          meetingLocationValue = '';
+          meetingTimeValue = '';
+          meetingLinkValue = '';
+          peopleSelected = [];
         } catch (e) {
-          isError = true
+          isError = true;
         } finally {
-          isLoading = false
-          meetingLocationValue = ''
-          meetingTimeValue = ''
-          meetingLinkValue = ''
-          peopleSelected = []
+          isLoading = false;
+          meetingLocationValue = '';
+          meetingTimeValue = '';
+          meetingLinkValue = '';
+          peopleSelected = [];
         }
       }}
       className="btn btn-primary"

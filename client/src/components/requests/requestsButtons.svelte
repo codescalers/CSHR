@@ -1,69 +1,69 @@
 <script lang="ts">
-  import RequestModal from '../requests/requestModal.svelte'
-  import updateVacations from '../../services/axios/requests/vacations'
-  import updateLetters from '../../services/axios/requests/hr_letters'
-  import updateCompensation from '../../services/axios/requests/compensation'
-  import getRequests from '../../services/axios/requests/requests'
-  export let request: any, index: number, requests: any
+  import RequestModal from '../requests/requestModal.svelte';
+  import updateVacations from '../../services/axios/requests/vacations';
+  import updateLetters from '../../services/axios/requests/hr_letters';
+  import updateCompensation from '../../services/axios/requests/compensation';
+  import getRequests from '../../services/axios/requests/requests';
+  export let request: any, index: number, requests: any;
 
   async function approve_btn(element: any, index: number) {
-    document.getElementById(`approve-${index}`).style.cursor = 'wait'
-    document.getElementById(`reject-${index}`).style.cursor = 'wait'
+    document.getElementById(`approve-${index}`).style.cursor = 'wait';
+    document.getElementById(`reject-${index}`).style.cursor = 'wait';
     if (element.type == 'Vacation') {
       if (await updateVacations(element.id, { status: 'approved' })) {
-        document.getElementById(`approve-${index}`).style.cursor = 'defult'
-        document.getElementById(`approve-${index}`).disabled = true
-        document.getElementById(`reject-${index}`).style.display = 'none'
+        document.getElementById(`approve-${index}`).style.cursor = 'defult';
+        document.getElementById(`approve-${index}`).disabled = true;
+        document.getElementById(`reject-${index}`).style.display = 'none';
       }
     } else if (element.type == 'HR letters') {
-      document.getElementById(`approve-${index}`).style.cursor = 'wait'
-      document.getElementById(`reject-${index}`).style.cursor = 'wait'
+      document.getElementById(`approve-${index}`).style.cursor = 'wait';
+      document.getElementById(`reject-${index}`).style.cursor = 'wait';
       if (await updateLetters(element.id, { status: 'approved' })) {
-        document.getElementById(`approve-${index}`).style.cursor = 'defult'
-        document.getElementById(`approve-${index}`).disabled = true
-        document.getElementById(`reject-${index}`).style.display = 'none'
+        document.getElementById(`approve-${index}`).style.cursor = 'defult';
+        document.getElementById(`approve-${index}`).disabled = true;
+        document.getElementById(`reject-${index}`).style.display = 'none';
       }
     } else if (element.type == 'Compensation') {
-      document.getElementById(`approve-${index}`).style.cursor = 'wait'
-      document.getElementById(`reject-${index}`).style.cursor = 'wait'
+      document.getElementById(`approve-${index}`).style.cursor = 'wait';
+      document.getElementById(`reject-${index}`).style.cursor = 'wait';
       if (await updateCompensation(element.id, { status: 'approved' })) {
-        document.getElementById(`approve-${index}`).style.cursor = 'defult'
-        document.getElementById(`approve-${index}`).disabled = true
-        document.getElementById(`reject-${index}`).style.display = 'none'
+        document.getElementById(`approve-${index}`).style.cursor = 'defult';
+        document.getElementById(`approve-${index}`).disabled = true;
+        document.getElementById(`reject-${index}`).style.display = 'none';
       }
     }
-    document.body.style.cursor = 'defult'
+    document.body.style.cursor = 'defult';
   }
   async function reject_btn(element: any, index: number) {
-    document.body.style.cursor = 'wait'
+    document.body.style.cursor = 'wait';
     if (element.type == 'Vacation') {
-      document.getElementById(`approve-${index}`).style.cursor = 'wait'
-      document.getElementById(`reject-${index}`).style.cursor = 'wait'
+      document.getElementById(`approve-${index}`).style.cursor = 'wait';
+      document.getElementById(`reject-${index}`).style.cursor = 'wait';
       if (await updateVacations(element.id, { status: 'rejected' })) {
-        document.getElementById(`reject-${index}`).style.cursor = 'defult'
-        document.getElementById(`reject-${index}`).disabled = true
-        document.getElementById(`approve-${index}`).style.display = 'none'
+        document.getElementById(`reject-${index}`).style.cursor = 'defult';
+        document.getElementById(`reject-${index}`).disabled = true;
+        document.getElementById(`approve-${index}`).style.display = 'none';
       }
     } else if (element.type == 'HR letters') {
-      document.getElementById(`approve-${index}`).style.cursor = 'wait'
-      document.getElementById(`reject-${index}`).style.cursor = 'wait'
+      document.getElementById(`approve-${index}`).style.cursor = 'wait';
+      document.getElementById(`reject-${index}`).style.cursor = 'wait';
       if (await updateLetters(element.id, { status: 'rejected' })) {
-        document.getElementById(`reject-${index}`).style.cursor = 'defult'
-        document.getElementById(`reject-${index}`).disabled = true
-        document.getElementById(`approve-${index}`).style.display = 'none'
+        document.getElementById(`reject-${index}`).style.cursor = 'defult';
+        document.getElementById(`reject-${index}`).disabled = true;
+        document.getElementById(`approve-${index}`).style.display = 'none';
       }
     } else if (element.type == 'Compensation') {
-      document.getElementById(`approve-${index}`).style.cursor = 'wait'
-      document.getElementById(`reject-${index}`).style.cursor = 'wait'
+      document.getElementById(`approve-${index}`).style.cursor = 'wait';
+      document.getElementById(`reject-${index}`).style.cursor = 'wait';
       if (await updateCompensation(element.id, { status: 'rejected' })) {
-        document.getElementById(`reject-${index}`).style.cursor = 'defult'
-        document.getElementById(`reject-${index}`).disabled = true
-        document.getElementById(`approve-${index}`).style.display = 'none'
+        document.getElementById(`reject-${index}`).style.cursor = 'defult';
+        document.getElementById(`reject-${index}`).disabled = true;
+        document.getElementById(`approve-${index}`).style.display = 'none';
       }
     }
-    element = await getRequests()
-    document.body.style.cursor = 'default'
-    console.log(element.type, element.id)
+    element = await getRequests();
+    document.body.style.cursor = 'default';
+    console.log(element.type, element.id);
   }
 </script>
 

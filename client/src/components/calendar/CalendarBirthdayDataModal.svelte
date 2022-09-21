@@ -1,6 +1,6 @@
 <script lang="ts">
   //  import { ConfettiExplosion } from "svelte-confetti-explosion";
-  export let item: birthDateItemType
+  export let item: birthDateItemType;
 
   onMount(() => {
     /*  const confetti = new ConfettiExplosion({
@@ -12,24 +12,24 @@
     {
       confetti.start();
     } */
-  })
+  });
   import type {
     birthDateItemType,
     userType,
-  } from '../../services/axios/home/types'
-  import { UserStore } from '../../stores'
-  import Modal from '../modal/Modal.svelte'
-  import StackedImages from '../image/StackedImages.svelte'
-  import { onMount } from 'svelte'
+  } from '../../services/axios/home/types';
+  import { UserStore } from '../../stores';
+  import Modal from '../modal/Modal.svelte';
+  import StackedImages from '../image/StackedImages.svelte';
+  import { onMount } from 'svelte';
 
-  let itemIndex: number = 0
-  let clickedUser: userType
-  $: clickedUser = item.users[itemIndex]
+  let itemIndex: number = 0;
+  let clickedUser: userType;
+  $: clickedUser = item.users[itemIndex];
 
   let header =
     item.users.length > 1
       ? 'Wish them a Happy Birthday !'
-      : `Wish ${item.users[0].gender === 'Male' ? 'him' : 'her'} a BirthDay ! `
+      : `Wish ${item.users[0].gender === 'Male' ? 'him' : 'her'} a BirthDay ! `;
 </script>
 
 <Modal

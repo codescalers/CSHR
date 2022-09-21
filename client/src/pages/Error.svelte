@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Error404 from '../components/error/Error404.svelte'
-  import Sidebar from '../components/sidebar/Sidebar.svelte'
-  export let error: number
+  import Error404 from '../components/error/Error404.svelte';
+  import Sidebar from '../components/sidebar/Sidebar.svelte';
+  export let error: number;
 </script>
 
 <Sidebar>
