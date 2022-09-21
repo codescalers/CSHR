@@ -1,10 +1,12 @@
 <script lang="ts">
   import Input from '../input/Input.svelte';
   import ModalOpenButton from '../modal/ModalOpenButton.svelte';
-  import ModalCloseButton from '../modal/ModalCloseButton.svelte';
+  // import ModalCloseButton from '../modal/ModalCloseButton.svelte';
   import Modal from '../modal/Modal.svelte';
-  import PeopleSelect from '../select/PeopleSelectNotWorking.svelte';
+  import PeopleSelect from '../select/PeopleSelect.svelte';
+  import type { SelectOptionType } from '../select/types';
   import CalendarDataService from '../../services/axios/home/CalendarDataService';
+  import Submit from '../submit/Submit.svelte';
 
   export let startDate: string;
   export let endDate: string;
@@ -21,7 +23,7 @@
   let eventEndTimeIsError: boolean | null = null;
   let eventPeopleIsError: boolean | null = null;
 
-  let peopleSelected: number[] = [];
+  let peopleSelected: SelectOptionType[] = [];
   let isLoading: boolean = false;
   let isError: boolean = false;
 
@@ -41,6 +43,12 @@
     eventEndTimeIsError === null ||
     eventEndTimeIsError === true ||
     peopleSelected.length === 0;
+
+  const modalData = {
+    'data-bs-dismiss': 'modal',
+    'data-bs-target': `#modal${modalID}`,
+    'aria-label': 'Close',
+  };
 </script>
 
 <div>
@@ -108,17 +116,7 @@
         placeholder={'write event description'}
         bind:isError={eventDescriptionIsError}
       />
-      <div class="form-group row">
-        <label for="colFormLabel" class="col-sm-4 col-form-label py-3"
-          >People</label
-        >
-        <div class="col-sm-8">
-          <PeopleSelect
-            bind:isError={eventPeopleIsError}
-            bind:selected={peopleSelected}
-          />
-        </div>
-      </div>
+
       <Input
         type="time"
         label={'Event From Time'}
@@ -145,26 +143,33 @@
         placeholder={'write event time'}
         bind:isError={eventEndTimeIsError}
       />
+      <PeopleSelect
+        bind:isError={eventPeopleIsError}
+        bind:selected={peopleSelected}
+      />
     {/if}
   </form>
   <div slot="submit">
-    <ModalCloseButton
-      {modalID}
+    <Submit
+      successMessage={eventNameValue + ' Event Submitted'}
+      errorMessage={eventNameValue + ' Event Submission Failed'}
+      {modalData}
       label="Submit"
       onClick={async () => {
         isLoading = true;
         try {
+          let selected = peopleSelected.map((item) => Number(item.value));
           await CalendarDataService.postEvent({
             description: eventDescriptionValue,
             end_time: eventEndTimeValue,
             location: eventLocationValue,
             name: eventNameValue,
-            people: peopleSelected,
+            people: selected,
             end_date: endDate,
             from_date: startDate,
             from_time: eventFromTimeValue,
           });
-        } catch (e) {
+        } catch (error) {
           isError = true;
         } finally {
           isLoading = false;
@@ -173,6 +178,7 @@
           eventLocationValue = '';
           peopleSelected = [];
         }
+        return isError;
       }}
       className="btn btn-primary"
       disabled={submitDisabled}

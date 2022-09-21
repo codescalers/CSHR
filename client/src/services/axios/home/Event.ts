@@ -3,10 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 class Event {
 	// to create the events list
-	public eventsItems(
-		eventName: eventNameType,
-		events: any,
-	): eventItemType[] {
+	public eventsItems(eventName: eventNameType, events: any): eventItemType[] {
 		let items: eventItemType[] = [];
 		for (const event of events) {
 			items = [...items, ...this.eventItem(eventName, event)];

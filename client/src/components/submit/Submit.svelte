@@ -1,5 +1,6 @@
 <script lang="ts">
   import { v4 as uuidv4 } from 'uuid';
+  import Toast from '../popup/Toast.svelte';
 
   export let disabled = false;
   export let className = '';
@@ -10,6 +11,7 @@
   export let id = uuidv4();
   export let success: Promise<boolean> | boolean = true;
   export let show = false;
+  export let modalData: any = {};
   let isLoading = false;
 </script>
 
@@ -37,39 +39,7 @@
   {/if}
 </button>
 
-<div class="position-fixed bottom-0 end-0 p-3 " style="z-index: 1100">
-  <div
-    id="liveToast"
-    class="toast"
-    class:show
-    role="alert"
-    aria-live="assertive"
-    aria-atomic="true"
-  >
-    <div class="toast-header">
-      <strong
-        class={`me-auto text-${
-          success ? 'success success-bg' : 'danger danger-bg'
-        } text-uppercase fw-bold `}
-        >{success ? 'SuccessFully Submitted' : 'Error Occurred'}</strong
-      >
-      <small>1 sec ago</small>
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="toast"
-        aria-label="Close"
-      />
-    </div>
-    <div
-      class={`toast-body text-${
-        success ? 'success success-bg' : 'danger danger-bg'
-      } text-uppercase fw-bold `}
-    >
-      {success ? successMessage : errorMessage}
-    </div>
-  </div>
-</div>
+<Toast {modalData} {successMessage} {errorMessage} {success} {show} />
 
 <style>
   .submit:disabled {

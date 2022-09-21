@@ -3,7 +3,7 @@
   import usersDataService from '../../services/axios/users/UsersDataService';
   import { onMount } from 'svelte';
   import { AllUsersStore, UserStore } from '../../stores';
-  import PeopleSlot2 from './PeopleSlot.svelte';
+  import PeopleSlot from './PeopleSlot.svelte';
   import MultiSelect from './MultiSelect.svelte';
   import type { SelectOptionType } from './types';
   import ErrorComponent from '../error/ErrorComponent.svelte';
@@ -54,10 +54,11 @@
   <MultiSelect
     bind:options
     bind:selected
+    label="People"
     {placeholder}
     {removeAllTitle}
     isLabel={false}
   >
-    <PeopleSlot2 let:option {option} slot="option" />
+    <PeopleSlot let:option {option} slot="option" />
   </MultiSelect>
 {/if}

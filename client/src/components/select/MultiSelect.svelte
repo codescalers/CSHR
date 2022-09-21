@@ -98,7 +98,7 @@
             >
           {/each}
         {:else}
-          <span class="placeholder bg-white"> {placeholder}</span>
+          <span class="place"> {placeholder}</span>
         {/if}
       </div>
       <button
@@ -146,8 +146,8 @@
 <style>
   .select-container {
     position: relative;
-    width: 20em;
-    min-height: 1.5em;
+    width: 100%;
+    min-height: 0.9em;
     border: 0.05em solid #777;
     display: flex;
     align-items: center;
@@ -158,7 +158,14 @@
     font-size: 0.9rem;
     color: #333;
     cursor: pointer;
+    background-color: var(--secondary-color);
     transition: all 0.3s ease-in-out;
+  }
+  .place {
+    color: #777;
+    opacity: 0.8;
+    font-weight: 500;
+    background-color: var(--secondary-color) !important;
   }
 
   .select-container:focus {
