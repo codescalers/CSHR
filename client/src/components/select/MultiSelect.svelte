@@ -13,7 +13,7 @@
     placeholder = `Select`,
     removeAllTitle = 'Remove all',
     multiple: boolean = true,
-    errorMessage: string = 'Please select an option',
+    errorMessage: string = 'Please select atleast an option',
     hint: string = multiple
       ? 'you can choose multiple options'
       : 'you can choose only one option',
@@ -22,6 +22,55 @@
     isError: boolean | null = null,
     show: boolean = true;
   let id: string = uuidv4();
+
+  function select(e: any, option: SelectOption) {
+    e.stopPropagation();
+    if (multiple) {
+      if (selected.includes(option)) {
+        selected = selected.filter((item) => item.value !== option.value);
+
+        selected = selected.filter((item) => item.value !== option.value);
+      } else {
+        selected = [...selected, option];
+      }
+    } else {
+      selected = [option];
+    }
+  }
+
+  let highlightedIndex: number = 1;
+
+  const ref = (node: HTMLDivElement) => {
+    node.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.target !== node) return;
+
+      switch (e.code) {
+        case 'ArrowUp':
+          show = true;
+          e.preventDefault();
+          if (highlightedIndex === 0) {
+            highlightedIndex = options.length - 1;
+          } else {
+            highlightedIndex--;
+          }
+          break;
+        case 'ArrowDown':
+          show = true;
+          if (highlightedIndex === options.length - 1) {
+            highlightedIndex = 0;
+          } else {
+            highlightedIndex++;
+          }
+          break;
+        case 'Enter':
+        case 'Space':
+          select(e, options[highlightedIndex]);
+          e.preventDefault();
+          e.stopPropagation();
+          break;
+      }
+    });
+  };
 </script>
 
 <div class={`form-group row ${className}`}>
@@ -30,6 +79,7 @@
   >
   <div class={`${isTop ? 'col-sm-8' : 'col-sm-12'}`}>
     <div
+      use:ref
       on:blur={() => (show = false)}
       on:click={() => (show = !show)}
       tabIndex="0"
@@ -37,8 +87,18 @@
     >
       <span class="value">
         {#if selected.length > 0}
-          {#each selected as option}
-            <span class="selected-value">{option.label}</span>
+          {#each selected as option, index (index)}
+            <button
+              class="selected-value option-badge"
+              on:click={(e) => {
+                e.stopPropagation();
+                selected = selected.filter((o) => o.value !== option.value);
+              }}
+              >{option.label}
+              <span class="remove-btn" title={option.extraData?.title}
+                >&times;</span
+              ></button
+            >
           {/each}
         {:else}
           <span class="placeholder bg-white"> {placeholder}</span>
@@ -58,28 +118,19 @@
       <ul class="options" class:show>
         {#each options as option, index (index + +'' + option.value + '' + index)}
           <li
-            class={`option ${selected.includes(option) ? 'selected' : ''}`}
+            class={`option ${selected.includes(option) ? 'selected' : ''} ${
+              highlightedIndex === index ? 'highlighted' : ''
+            }`}
             data-value={option.value}
-            on:click={(e) => {
-              e.stopPropagation();
-              if (multiple) {
-                if (selected.includes(option)) {
-                  selected = selected.filter(
-                    (item) => item.value !== option.value
-                  );
-
-                  selected = selected.filter(
-                    (item) => item.value !== option.value
-                  );
-                } else {
-                  selected = [...selected, option];
-                }
-              } else {
-                selected = [option];
-              }
-            }}
+            data-index={index}
+            on:mouseenter={() => (highlightedIndex = index)}
+            on:click={(e) => select(e, option)}
           >
-            <span class="label">{option.label}</span>
+            <div class="d-flex flex-row justify-content-between">
+              <span class="label">{option.label} </span><span
+                class="remove-label">&times;</span
+              >
+            </div>
           </li>
         {/each}
       </ul>
@@ -118,6 +169,39 @@
   }
   .value {
     flex-grow: 1;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .option-badge {
+    display: flex;
+    align-items: center;
+    border: 0.05em solid #777;
+    border-radius: 0.25em;
+    padding: 0.15em 0.5em;
+    gap: 0.25em;
+    background: none;
+    outline: none;
+    cursor: pointer;
+  }
+  .option-badge:hover,
+  .option-badge:focus {
+    background-color: hsl(0, 100%, 90%);
+    border-color: hsl(0, 100%, 50%);
+  }
+
+  .option-badge > .remove-btn {
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: #777;
+    background: none;
+    border: none;
+    outline: none;
+  }
+  .option-badge:hover > .remove-btn,
+  .option-badge:focus > .remove-btn {
+    color: hsl(0, 100%, 50%);
+    transition: all 0.3s ease-in-out;
   }
   .clear-btn {
     background: none;
@@ -188,8 +272,22 @@
     background-color: hsl(200, 100%, 50%);
     color: white !important;
   }
-  .option.selected:hover {
+  .option.highlighted {
+    background-color: hsl(200, 100%, 50%);
+    color: white !important;
+  }
+  .remove-label {
+    align-self: flex-start;
+    display: none;
+  }
+  .option.selected:hover,
+  .option.selected.highlighted {
     background-color: var(--error-color) !important;
     color: white;
+  }
+
+  .option.selected:hover .remove-label,
+  .option.selected.highlighted .remove-label {
+    display: inline;
   }
 </style>
