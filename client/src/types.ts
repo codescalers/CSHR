@@ -2,16 +2,15 @@ export type buttonType = "success" | "warning" | "error" | "info";
 export type alertType = "success" | "warning" | "error" | "info";
 export type requestStatusType = "pending" | "approved" | "rejected";
 export type requestLabelType =
-  | "Vacationa"
+  | "Vacation"
   | "HR Letter"
   | "Compensation"
   | "Danger";
 
-export interface UserInterface {
+export interface GeneralUserInterface {
   id: number;
   full_name: string;
   email: string;
-  phone_number: string;
   team: string;
   password?: string;
   role: string;
@@ -27,6 +26,22 @@ export interface UserInterface {
   skills: SkillType[];
   user_certificates: CertificateType[];
   reporting_to: number[];
+}
+
+
+
+
+
+export interface SupervisorViewType extends GeneralUserInterface {
+  mobile_number: string;
+  social_insurance_number: string;
+  location: number;
+  user_evaluations: [];
+  user_company_properties: number[],
+}
+
+export interface AdminViewType extends SupervisorViewType {
+  salary: SalaryType;
 }
 
 export interface PaginatedInterface<T> {
@@ -84,3 +99,15 @@ export type CertificateType = {
   created_at?: Date;
   modified_at?: Date;
 };
+
+export type SalaryType =
+  {
+    current_salary: {
+      net: number[],
+      gross: number[]
+    },
+    joining_salary: {
+      net: number[],
+      gross: number[]
+    }
+  }
