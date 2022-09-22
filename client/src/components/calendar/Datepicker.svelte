@@ -13,24 +13,6 @@
 
 <script>
   import { onMount } from 'svelte';
-
-  /*   onMount(() => {
-    let items = document.querySelectorAll("td");
-    items.forEach((item) => {
-      item.addEventListener("mousedown", function (e) {
-        selectDate(item.getAttribute("data-date"),true);
-      
-      });
-
-      item.addEventListener("mouseup", function (e) {
-        selectDate(item.getAttribute("data-date"),false);
-      });
-    });
-  }); */
-  /*   onMount(() => {
-    let arrows = document.querySelectorAll(".arrow");
-  }); */
-
   export let days = 'Su|Mo|Tu|We|Th|Fr|Sa'.split('|');
   export let months = 'Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec'.split(
     '|'

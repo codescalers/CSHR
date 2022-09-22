@@ -1,18 +1,20 @@
 <script lang="ts">
   import Input from '../input/Input.svelte';
   import ModalOpenButton from '../modal/ModalOpenButton.svelte';
-  import ModalCloseButton from '../modal/ModalCloseButton.svelte';
+  import Submit from '../submit/Submit.svelte';
+  //import ModalCloseButton from '../modal/ModalCloseButton.svelte';
   import Modal from '../modal/Modal.svelte';
-  import PeopleSelect from '../select/PeopleSelectNotWorking.svelte';
+  import PeopleSelect from '../select/PeopleSelect.svelte';
   import CalendarDataService from '../../services/axios/home/CalendarDataService';
   import { UserStore } from '../../stores';
+  import type { SelectOptionType } from '../select/types';
 
   export let startDate: string;
-  export let endDate: string;
+  //export let endDate: string;
 
   // if true the disable submit button
   export let datePickerDisabled: boolean = false;
-  let modalID = 129981;
+  const modalID = 129981;
   let meetingLocationValue: string;
   let meetingLocationIsError: boolean | null = null;
   let meetingLinkValue: string;
@@ -24,7 +26,7 @@
   export let isLoading: boolean = false;
   export let isError: boolean = false;
 
-  let peopleSelected: number[] = [];
+  let peopleSelected: SelectOptionType[] = [];
   $: fillDisabled =
     meetingLocationIsError === null ||
     meetingLocationIsError === true ||
@@ -41,19 +43,18 @@
     meetingTimeIsError === true ||
     meetingTimeValue === undefined ||
     peopleSelected.length === 0;
+  const modalData = {
+    'data-bs-dismiss': 'modal',
+    'data-bs-target': `#modal${modalID}`,
+    'aria-label': 'Close',
+  };
 </script>
 
 <form>
-  <div class="form-group row">
-    <label for="colFormLabel" class="col-sm-4 col-form-label py-3">People</label
-    >
-    <div class="col-sm-8">
-      <PeopleSelect
-        bind:isError={meetingPeopleIsError}
-        bind:selected={peopleSelected}
-      />
-    </div>
-  </div>
+  <PeopleSelect
+    bind:isError={meetingPeopleIsError}
+    bind:selected={peopleSelected}
+  />
   <Input
     type="text"
     label={'Location'}
@@ -123,16 +124,21 @@
   </form>
 
   <div slot="submit">
-    <ModalCloseButton
-      {modalID}
+    <Submit
+      successMessage={'Meeting is Scheduled'}
+      errorMessage={' Meeting Submission Failed'}
+      {modalData}
       label="Submit"
       onClick={async () => {
         isLoading = true;
         try {
+          const invited_people = peopleSelected.map((person) =>
+            Number(person.value)
+          );
           await CalendarDataService.postMeeting({
             hostedUserID: $UserStore.id,
             date: startDate,
-            invitedUsers: peopleSelected,
+            invitedUsers: invited_people,
             location: meetingLocationValue,
             meetingLink: meetingLinkValue,
             time: meetingTimeValue,
@@ -142,7 +148,7 @@
           meetingTimeValue = '';
           meetingLinkValue = '';
           peopleSelected = [];
-        } catch (e) {
+        } catch (error) {
           isError = true;
         } finally {
           isLoading = false;
@@ -151,6 +157,7 @@
           meetingLinkValue = '';
           peopleSelected = [];
         }
+        return isError;
       }}
       className="btn btn-primary"
       bind:disabled={submitDisabled}
