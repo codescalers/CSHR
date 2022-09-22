@@ -2,17 +2,14 @@ import datetime
 from server.cshr.serializers.event import EventSerializer
 from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.services.event import get_all_events, get_event_by_id
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
-from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from server.cshr.api.response import CustomResponse
 from server.cshr.utils.parse_date import CSHRDate
 
 
-class EventApiView(ViewSet, GenericAPIView):
-    """Class Event_APIVIEW to create a new event into database"""
-
+class BaseEventsAPIView(ListAPIView, GenericAPIView):
     serializer_class = EventSerializer
     permission_classes = (UserIsAuthenticated,)
 
@@ -20,28 +17,36 @@ class EventApiView(ViewSet, GenericAPIView):
         """Method to create a new event"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            provided_date: CSHRDate = CSHRDate(request.data.get("date"))
-            parsing: datetime.datetime = provided_date.parse()
-            if type(parsing) == datetime.datetime:
-                serializer.save(date=parsing)
+            from_date: CSHRDate = CSHRDate(request.data.get("from_date"))
+            from_date_parsing: datetime.datetime = from_date.parse()
+            end_date: CSHRDate = CSHRDate(request.data.get("end_date"))
+            end_date_parsing: datetime.datetime = end_date.parse()
+            if (
+                type(from_date_parsing) == datetime.datetime
+                and type(end_date_parsing) == datetime.datetime
+            ):
+                serializer.save(from_date=from_date_parsing, end_date=end_date_parsing)
                 return CustomResponse.success(
                     data=serializer.data,
                     message="event is created successfully",
                     status_code=201,
                 )
-            return parsing
+            return from_date_parsing
         return CustomResponse.bad_request(
             error=serializer.errors, message="event creation failed"
         )
 
-    def get_all(self, request: Request) -> Response:
-        events = get_all_events()
-        serializer = EventSerializer(events, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="events found", status_code=200
-        )
+    def get_queryset(self) -> Response:
+        return get_all_events().order_by("-created_at")
 
-    def get_one(self, request: Request, id: str, format=None) -> Response:
+
+class EventApiView(GenericAPIView):
+    """Class Event_APIVIEW to create a new event into database"""
+
+    serializer_class = EventSerializer
+    permission_classes = (UserIsAuthenticated,)
+
+    def get(self, request: Request, id: str, format=None) -> Response:
         """method to get a single event by id"""
         event = get_event_by_id(id=id)
         if event is None:

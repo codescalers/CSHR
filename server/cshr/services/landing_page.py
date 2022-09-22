@@ -3,6 +3,7 @@ from server.cshr.models.event import Event
 from server.cshr.models.meetings import Meetings
 from server.cshr.models.users import User
 from server.cshr.models.vacations import Vacation
+from server.cshr.models.requests import TYPE_CHOICES
 from server.cshr.serializers.event import EventSerializer
 from server.cshr.serializers.meetings import MeetingsSerializer
 from server.cshr.serializers.users import BaseUserSerializer
@@ -15,7 +16,7 @@ from typing import Any, List, Dict, Union
 from itertools import chain
 
 
-def landinf_page_caliender_functionalty(month: str, year: str):
+def landing_page_calendar_functionality(month: str, year: str):
     """
     This function will filter all of events based on its yesr, month.
     """
@@ -33,15 +34,10 @@ def landinf_page_caliender_functionalty(month: str, year: str):
         if hasattr(obj, "birthday"):
             # Thats mean user table
             response[obj.birthday.day] = {}
-        elif hasattr(obj, "date") and not response.get(obj.date.day):
+        elif hasattr(obj, "meeting_link") and not response.get(obj.date.day):
             # Thats mean meetings, events table
             response[obj.date.day] = {}
-        elif (
-            hasattr(obj, "from_date")
-            and hasattr(obj, "end_date")
-            and not response.get(obj.from_date.day)
-            or not response.get(obj.end_date.day)
-        ):
+        elif hasattr(obj, "type") and obj.type == TYPE_CHOICES.VACATIONS:
             # vacations
             response[obj.from_date.day] = {}
         else:
@@ -55,15 +51,15 @@ def landinf_page_caliender_functionalty(month: str, year: str):
                     users_birthdates.filter(birthday__day=obj), many=True
                 ).data
 
-        for vaction in vacations:
+        for vacation in vacations:
             # vacations
-            if vaction.from_date.day == obj:
-                response[obj]["vactions"] = LandingPageVacationsSerializer(
-                    vacations.filter(from_date__day=vaction.from_date.day), many=True
+            if vacation.from_date.day == obj:
+                response[obj]["vacations"] = LandingPageVacationsSerializer(
+                    vacations.filter(from_date__day=vacation.from_date.day), many=True
                 ).data
-            elif vaction.end_date.day == obj:
-                response[obj]["vactions"] = LandingPageVacationsSerializer(
-                    vacations.filter(end_date__day=vaction.end_date.day), many=True
+            elif vacation.end_date.day == obj:
+                response[obj]["vacations"] = LandingPageVacationsSerializer(
+                    vacations.filter(end_date__day=vacation.end_date.day), many=True
                 ).data
 
         for meeting in meetings:
@@ -73,9 +69,13 @@ def landinf_page_caliender_functionalty(month: str, year: str):
 
         for event in events:
             # events
-            if event.date.day == obj:
+            if event.from_date.day == obj:
                 response[obj]["events"] = EventSerializer(
-                    events.filter(date__day=event.date.day), many=True
+                    events.filter(from_date__day=event.from_date.day), many=True
+                ).data
+            if event.end_date.day == obj:
+                response[obj]["events"] = EventSerializer(
+                    events.filter(end_date__day=event.end_date.day), many=True
                 ).data
 
     return response

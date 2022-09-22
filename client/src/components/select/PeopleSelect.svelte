@@ -1,0 +1,64 @@
+<script lang="ts">
+  import type { UserInterface } from '../../types';
+  import usersDataService from '../../services/axios/users/UsersDataService';
+  import { onMount } from 'svelte';
+  import { AllUsersStore, UserStore } from '../../stores';
+  import PeopleSlot from './PeopleSlot.svelte';
+  import MultiSelect from './MultiSelect.svelte';
+  import type { SelectOptionType } from './types';
+  import ErrorComponent from '../error/ErrorComponent.svelte';
+  import LoadingComponent from '../loader/LoadingComponent.svelte';
+  export let placeholder = `Select Users`;
+  export let removeAllTitle = 'Remove all users';
+  export let isLoading = false;
+  export let isError: boolean | null = null;
+
+  export let selected: SelectOptionType[] = [];
+  let options: SelectOptionType[] = [];
+
+  onMount(async () => {
+    isLoading = true;
+    try {
+      if ($AllUsersStore === undefined || $AllUsersStore.length === 0) {
+        const users = await usersDataService.getAll();
+        if ($AllUsersStore === undefined) {
+          $AllUsersStore = users;
+        } else {
+          AllUsersStore.set(users);
+        }
+      }
+      $AllUsersStore.forEach((user: UserInterface) => {
+        if (user.id !== $UserStore.id)
+          options.push({
+            value: user.id,
+            label: user.full_name,
+            extraData: {
+              full_name: user.full_name,
+              image: user.image,
+              team: user.team,
+            },
+          });
+      });
+    } catch (e) {
+      isError = true;
+    }
+    isLoading = false;
+  });
+</script>
+
+{#if isError}
+  <ErrorComponent />
+{:else if (isLoading && !isError) || $AllUsersStore === undefined}
+  <LoadingComponent />
+{:else if !isLoading && !isError}
+  <MultiSelect
+    bind:options
+    bind:selected
+    label="People"
+    {placeholder}
+    {removeAllTitle}
+    isLabel={false}
+  >
+    <PeopleSlot let:option {option} slot="option" />
+  </MultiSelect>
+{/if}

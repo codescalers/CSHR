@@ -61,21 +61,21 @@ class EventTests(APITestCase):
         url = f'{"/api/auth/login/"}'
         data = {"email": "ahmed@gmail.com", "password": "ahmedpass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "andrew@gmail.com", "password": "andrewpass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "helmy@gmail.com", "password": "helmypass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def test_create_event(self) -> Event:
         url = "/api/event/"
@@ -84,8 +84,10 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
+        # editted here
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
@@ -98,7 +100,8 @@ class EventTests(APITestCase):
             "name": "test event",
             "description": "our first test event",
             "people": [1, 2],
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -113,7 +116,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -130,7 +134,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -150,7 +155,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -170,7 +176,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -204,7 +211,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "people": [1, 2],
             "location": "Cairo Egypt",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -224,7 +232,8 @@ class EventTests(APITestCase):
             "description": "our first test event",
             "location": "Cairo Egypt",
             "people": [1],
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "from_date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
+            "end_date": {"year": 2022, "month": 9, "day": 9, "hour": 16, "minute": 24},
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user

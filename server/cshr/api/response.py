@@ -28,7 +28,7 @@ class CustomResponse:
         return Response(
             {
                 "message": message,
-                "data": data,
+                "results": data,
             },
             status=status_code,
         )
@@ -56,7 +56,7 @@ class CustomResponse:
             message = "Make sure you entered a valid data."
         return Response(
             {
-                "data": data,
+                "results": data,
                 "message": message,
                 "error": error,
             },

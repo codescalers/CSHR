@@ -1,7 +1,6 @@
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
 from ..serializers.training_courses import TrainingCoursesSerializer
 from ..api.response import CustomResponse
 
@@ -14,19 +13,37 @@ from server.cshr.services.training_courses import (
 )
 
 
-class TrainingCoursesApiView(ViewSet, GenericAPIView):
-    """method to get all Training courses"""
-
+class BaseTrainingCoursesApiView(ListAPIView, GenericAPIView):
     serializer_class = TrainingCoursesSerializer
-
     permission_class = UserIsAuthenticated
 
-    def get_all(self, request: Request) -> Response:
-        training_courses = get_all_training_courses()
-        serializer = TrainingCoursesSerializer(training_courses, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="Training courses found", status_code=200
+    def get_queryset(self) -> Response:
+        query_set = get_all_training_courses()
+        return query_set
+
+    """method to create a new Training course"""
+
+    def post(self, request: Request) -> Response:
+
+        """Method to create a Training course"""
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            current_user: User = get_user_by_id(request.user.id)
+            serializer.save(user=current_user)
+
+            return CustomResponse.success(
+                data=serializer.data,
+                message="Training course created successfully",
+                status_code=201,
+            )
+        return CustomResponse.bad_request(
+            error=serializer.errors, message="Training course creation failed"
         )
+
+
+class TrainingCoursesApiView(ListAPIView, GenericAPIView):
+    serializer_class = TrainingCoursesSerializer
+    permission_class = UserIsAuthenticated
 
     """method to get a single Training course by id"""
 
@@ -77,23 +94,4 @@ class TrainingCoursesApiView(ViewSet, GenericAPIView):
 
         return CustomResponse.success(
             message="Training course deleted", status_code=204
-        )
-
-    """method to create a new Training course"""
-
-    def post(self, request: Request) -> Response:
-
-        """Method to create a Training course"""
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            current_user: User = get_user_by_id(request.user.id)
-            serializer.save(user=current_user)
-
-            return CustomResponse.success(
-                data=serializer.data,
-                message="Training course created successfully",
-                status_code=201,
-            )
-        return CustomResponse.bad_request(
-            error=serializer.errors, message="Training course creation failed"
         )

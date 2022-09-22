@@ -7,6 +7,7 @@ from typing import Any, Union
 
 from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.office import Office
+from server.cshr.utils.generate import generate_random_color
 
 
 class TEAM(models.TextChoices):
@@ -31,6 +32,13 @@ class USER_TYPE(models.TextChoices):
     SUPERVISOR = "Supervisor", "supervisor"
 
 
+class GENDER_TYPE(models.TextChoices):
+    """gender of users"""
+
+    MALE = "Male", "male"
+    FEMALE = "Female", "female"
+
+
 class CshrBaseUserManger(BaseUserManager):
     """this is the main class for user manger"""
 
@@ -45,6 +53,7 @@ class CshrBaseUserManger(BaseUserManager):
             email=self.normalize_email(email),
             birthday=datetime.datetime.now(),
             location=office,
+            user_type=USER_TYPE.ADMIN,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -72,9 +81,8 @@ class User(AbstractBaseUser, TimeStamp):
 
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
-    image = models.ImageField(
-        upload_to="profile_image/", default="profile_image/default.png"
-    )
+    image = models.ImageField(upload_to="profile_image/", null=True, blank=True)
+    background_color = models.CharField(max_length=10, default=generate_random_color)
     email = models.EmailField(max_length=45, unique=True)
     mobile_number = models.CharField(max_length=15)
     telegram_link = models.CharField(max_length=100)
@@ -87,9 +95,12 @@ class User(AbstractBaseUser, TimeStamp):
         related_name="skills",
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
+    gender = models.CharField(max_length=20, choices=GENDER_TYPE.choices)
     social_insurance_number = models.CharField(max_length=45)
+    address = models.CharField(max_length=150)
+    job_title = models.CharField(max_length=150)
     USERNAME_FIELD = "email"
-    reporting_to = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
+    reporting_to = models.ManyToManyField("User", blank=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)

@@ -4,7 +4,7 @@ from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.api.response import CustomResponse
 from typing import Any
 
-from server.cshr.services.landing_page import landinf_page_caliender_functionalty
+from server.cshr.services.landing_page import landing_page_calendar_functionality
 
 
 class LandingPageApiView(GenericAPIView):
@@ -13,5 +13,5 @@ class LandingPageApiView(GenericAPIView):
     def get(self, request):
         month: str = request.query_params.get("month")
         year: str = request.query_params.get("year")
-        events: Any = landinf_page_caliender_functionalty(month, year)
+        events: Any = landing_page_calendar_functionality(month, year)
         return CustomResponse.success(data=events)

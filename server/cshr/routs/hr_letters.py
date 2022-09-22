@@ -1,16 +1,15 @@
 from django.urls import path
-from server.cshr.views.hr_letters import HrLetterApiView, HrLetterUpdateApiView
+from server.cshr.views.hr_letters import (
+    HrLetterApiView,
+    HrLetterUpdateApiView,
+    BaseHrLetterApiView,
+    HrLetterUserApiView,
+)
 
 
 urlpatterns = [
-    path("", HrLetterApiView.as_view({"get": "get_all", "post": "post"})),
-    path("<str:id>/", HrLetterApiView.as_view({"get": "get_one", "delete": "delete"})),
-    path(
-        "edit/<str:id>/",
-        HrLetterUpdateApiView.as_view(
-            {
-                "put": "put",
-            }
-        ),
-    ),
+    path("", BaseHrLetterApiView.as_view()),
+    path("user/", HrLetterUserApiView.as_view()),
+    path("edit/<str:id>/", HrLetterUpdateApiView.as_view()),
+    path("<str:id>/", HrLetterApiView.as_view()),
 ]

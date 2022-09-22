@@ -25,7 +25,7 @@ class RegisterationTests(APITestCase):
             image="profile_image/default.png",
         )
 
-        User.objects.create(
+        u1 = User.objects.create(
             first_name="John",
             last_name="Blake",
             telegram_link="@johnblake",
@@ -37,12 +37,16 @@ class RegisterationTests(APITestCase):
             team="Development",
             salary={"gross": 2000},
             user_type="User",
-            reporting_to=admin,
             social_insurance_number="046 454 286",
             image="profile_image/default.png",
         )
+        u1.reporting_to.set(
+            [
+                admin.id,
+            ]
+        )
 
-        User.objects.create(
+        u2 = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
             telegram_link="@sarahpoland",
@@ -54,9 +58,13 @@ class RegisterationTests(APITestCase):
             team="Development",
             salary={"gross": 2000},
             user_type="Supervisor",
-            reporting_to=admin,
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
+        )
+        u2.reporting_to.set(
+            [
+                admin.id,
+            ]
         )
 
         self.access_token_admin = self.get_token_admin()
@@ -68,21 +76,21 @@ class RegisterationTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "jane@gmail.com", "password": "adminpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "john@outlook.com", "password": "userpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def test_register_user_admin(self) -> User:
         """
@@ -101,7 +109,7 @@ class RegisterationTests(APITestCase):
             "team": "Development",
             "salary": {"gross": 1000},
             "user_type": "User",
-            "reporting_to": 1,
+            "reporting_to": [],
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.post(url, data, format="json")

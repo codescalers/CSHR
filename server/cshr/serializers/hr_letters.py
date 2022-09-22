@@ -28,10 +28,14 @@ class LandingPageHrLetterSerializer(ModelSerializer):
     class Meta:
         model = HrLetters
         fields = [
+            "id",
             "addresses",
             "status",
             "applying_user",
             "approval_user",
+            "with_date",
+            "date",
+            "created_at",
         ]
 
     def get_applying_user(self, obj: HrLetters) -> BaseUserSerializer:

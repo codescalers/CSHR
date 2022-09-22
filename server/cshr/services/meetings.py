@@ -21,6 +21,6 @@ def filter_meetings_by_month_and_year(month: str, year: str) -> Meetings:
     This function will filter all of meetings based on its yesr, month.
     """
     meetings: List[Meetings] = Meetings.objects.filter(
-        created_at__month=month, created_at__year=year
+        date__month=month, date__year=year
     )
     return meetings

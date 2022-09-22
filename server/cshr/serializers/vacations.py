@@ -20,6 +20,14 @@ class VacationsUpdateSerializer(ModelSerializer):
         exclude = ("approval_user",)
 
 
+class VacationsCommentsSerializer(ModelSerializer):
+    "For the users to leave a comment without updating other fields"
+
+    class Meta:
+        model = Vacation
+        fields = ""
+
+
 class LandingPageVacationsSerializer(ModelSerializer):
     """Implemented to return just custom vacation fields to landing page endpoint."""
 

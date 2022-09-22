@@ -1,10 +1,17 @@
+from array import array
 from django.conf import settings
 from celery import Celery
 from server.components import config
 from celery.schedules import crontab
 import datetime
 from django.core.mail import send_mail
+from celery import shared_task
+from django.core.exceptions import ImproperlyConfigured
+from rest_framework.response import Response
 
+
+if config("REDIS_HOST") is None:
+    raise ImproperlyConfigured("REDIS_HOST is not defined")
 app = Celery("tasks", broker=config("REDIS_HOST"))
 
 app.autodiscover_tasks()
@@ -102,3 +109,49 @@ def send_email():
             ],
         )
         send_mail(mail_title, msg, settings.EMAIL_HOST_USER, admins_emails)
+
+
+@shared_task()
+def send_email_for_request(user_id, msg, mail_title) -> Response:
+    from django.core.mail import send_mail
+    from server.cshr.models.users import User
+    from server.cshr.utils.send_email import get_email_recievers
+    from server.cshr.services.users import get_user_by_id
+    from server.cshr.utils.send_email import check_email_configuration
+    from server.cshr.api.response import CustomResponse
+
+    check_email_configuration()
+    user: User = get_user_by_id(user_id)
+    if user is None:
+        return CustomResponse.not_found(message="user is not found", status_code=404)
+    recievers: array[str] = get_email_recievers(user)
+    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
+    return CustomResponse.success(
+        message="email is sent successfully",
+        status_code=201,
+    )
+
+
+@shared_task()
+def send_email_for_reply(approving_user_id, data, msg, mail_title) -> Response:
+    from django.core.mail import send_mail
+    from server.cshr.models.users import User
+    from server.cshr.utils.send_email import get_email_recievers
+    from server.cshr.services.users import get_user_by_id
+    from server.cshr.utils.send_email import check_email_configuration
+    from server.cshr.api.response import CustomResponse
+
+    check_email_configuration()
+    approving_user: User = get_user_by_id(approving_user_id)
+    if approving_user is None:
+        return CustomResponse.not_found(message="user is not found", status_code=404)
+    applying_user_id = data["applying_user"]
+    applying_user = get_user_by_id(applying_user_id)
+    if applying_user is None:
+        return CustomResponse.not_found(message="user is not found", status_code=404)
+    recievers: array[str] = get_email_recievers(applying_user)
+    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
+    return CustomResponse.success(
+        message="email is sent successfully",
+        status_code=202,
+    )

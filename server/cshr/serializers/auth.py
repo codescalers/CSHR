@@ -2,7 +2,7 @@ from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
     TokenRefreshSerializer,
 )
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.state import token_backend
 from rest_framework_simplejwt.settings import api_settings
@@ -22,6 +22,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         if hasattr(user, "permission"):
             token["permission"] = user.permission
         token["email"] = user.email
+        token["full_name"] = user.full_name
+        token["mobile_number"] = user.mobile_number
+        token["team"] = user.team
+        token["user_type"] = user.user_type
+        token["image"] = user.image.url if user.image else user.background_color
         return token
 
     def validate(self, attrs: Any) -> Dict[str, Any]:
@@ -82,6 +87,8 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
 class RegisterSerializer(ModelSerializer):
     """class RegisterSerializer to serialize the user obj"""
 
+    image = SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
@@ -100,10 +107,16 @@ class RegisterSerializer(ModelSerializer):
             "image",
         )
 
+    def get_image(self, obj: User) -> str:
+        return obj.image.url if obj.image else obj.background_color
+
     def create(self, validated_data):
         password = validated_data.pop("password", None)
+        reporting_to = validated_data.pop("reporting_to", None)
         instance = self.Meta.model(**validated_data)
         if password is not None:
             instance.set_password(password)
         instance.save()
+        for user in reporting_to:
+            instance.reporting_to.add(user)
         return instance
