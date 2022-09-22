@@ -1,42 +1,42 @@
 <script lang="ts">
-  import DatePicker from './Datepicker.svelte'
-  import Input from '../input/Input.svelte'
-  export let startDate = '2022-03-01'
-  export let endDate = '2022-03-03'
-  export let errorMessage = ''
-  export let onlyStart = false
-  export let isLoading = false
-  export let datePickerDisabled = true
+  import DatePicker from './Datepicker.svelte';
+  import Input from '../input/Input.svelte';
+  export let startDate = '2022-03-01';
+  export let endDate = '2022-03-03';
+  export let errorMessage = '';
+  export let onlyStart = false;
+  export let isLoading = false;
+  export let datePickerDisabled = true;
 
   const locale: {
     en: {
-      days: string[]
-      months: string[]
-      start: number
-    }
+      days: string[];
+      months: string[];
+      start: number;
+    };
   } = {
     en: {
       days: 'Su|Mo|Tu|We|Th|Fr|Sa'.split('|'),
       months: 'Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec'.split('|'),
       start: 0,
     },
-  }
+  };
   function validateDate(date: string, error_name: string): boolean {
-    let check = Date.parse(date)
+    let check = Date.parse(date);
     if (!check) {
       //it is not a date with format YYYY-MM-DD
-      errorMessage = `${error_name} format is invalid message`
-      datePickerDisabled = true
-      return true
+      errorMessage = `${error_name} format is invalid message`;
+      datePickerDisabled = true;
+      return true;
     } else {
-      errorMessage = ''
-      datePickerDisabled = false
-      return false
+      errorMessage = '';
+      datePickerDisabled = false;
+      return false;
     }
     //it is a date with format YYYY-MM-DD
   }
-  $: validateDate(startDate, 'Start Date')
-  $: validateDate(endDate, 'End Date')
+  $: validateDate(startDate, 'Start Date');
+  $: validateDate(endDate, 'End Date');
 </script>
 
 <div class="container table-primary table-responsive">
@@ -71,7 +71,7 @@
           hint={'with this Format YYYY-MM-DD.'}
           errorMessage={'Please provide a valid Start Date'}
           handleInput={() => {
-            return validateDate(startDate, 'Start Date')
+            return validateDate(startDate, 'Start Date');
           }}
           size={20}
           placeholder={'start date'}
@@ -86,7 +86,7 @@
             hint={'with this Format YYYY-MM-DD.'}
             errorMessage={'Please provide a valid End Date'}
             handleInput={() => {
-              return validateDate(endDate, 'End Date')
+              return validateDate(endDate, 'End Date');
             }}
             size={20}
             placeholder={'end date'}

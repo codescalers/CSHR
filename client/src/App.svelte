@@ -1,23 +1,23 @@
 <script lang="ts">
-  import SettingsApi from './components/settings/SettingsApi'
-  import { onMount } from 'svelte'
-  import { SettingsStore } from './stores'
-  import Routes from './Routes.svelte'
+  import SettingsApi from './components/settings/SettingsApi';
+  import { onMount } from 'svelte';
+  import { SettingsStore } from './stores';
+  import Routes from './Routes.svelte';
   onMount(async function () {
-    $SettingsStore = await SettingsApi.getSettings()
-  })
-  let rootElement: HTMLDivElement
+    $SettingsStore = await SettingsApi.getSettings();
+  });
+  let rootElement: HTMLDivElement;
 
   $: rootElement &&
     rootElement.style.setProperty(
       '--primary-color',
       $SettingsStore['primary-color']
-    )
+    );
   $: rootElement &&
     rootElement.style.setProperty(
       '--secondary-color',
       $SettingsStore['secondary-color']
-    )
+    );
 </script>
 
 <div class="fluid-container all" bind:this={rootElement}>

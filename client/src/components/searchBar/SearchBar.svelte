@@ -1,8 +1,8 @@
 <script lang="ts">
-  let searchInput: HTMLInputElement
+  let searchInput: HTMLInputElement;
 
   async function searchFunction() {
-    const word = searchInput.value
+    const word = searchInput.value;
     if (word.length > 0) {
     } else {
     }

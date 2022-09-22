@@ -1,30 +1,30 @@
 <script lang="ts">
-  import getRequests from '../services/axios/requests/requests'
-  import ActionButton from '../components/requests/requestsButtons.svelte'
+  import getRequests from '../services/axios/requests/requests';
+  import ActionButton from '../components/requests/requestsButtons.svelte';
 
-  import { onMount } from 'svelte'
+  import { onMount } from 'svelte';
 
-  import Sidebar from '../components/sidebar/Sidebar.svelte'
+  import Sidebar from '../components/sidebar/Sidebar.svelte';
 
-  let pageCount = 0
-  let pageSize = 7
+  let pageCount = 0;
+  let pageSize = 7;
 
   function increment() {
     if (totalRequests - pageCount * 7 - pageSize > 0) {
-      pageCount++
+      pageCount++;
     }
   }
   function decrement() {
     if (pageCount > 0) {
-      pageCount--
+      pageCount--;
     }
   }
-  let requests: any = []
-  let totalRequests = 1
+  let requests: any = [];
+  let totalRequests = 1;
   onMount(async () => {
-    requests = await getRequests()
-    totalRequests = requests.length
-  })
+    requests = await getRequests();
+    totalRequests = requests.length;
+  });
 </script>
 
 <Sidebar>

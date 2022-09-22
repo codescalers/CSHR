@@ -1,34 +1,34 @@
 <script lang="ts">
-  import { UserStore } from '../../stores'
-  import { onMount } from 'svelte'
-  import { useParams } from 'svelte-navigator'
-  import usersDataService from '../../services/axios/users/UsersDataService'
-  import type { UserInterface } from '../../types'
+  import { UserStore } from '../../stores';
+  import { onMount } from 'svelte';
+  import { useParams } from 'svelte-navigator';
+  import usersDataService from '../../services/axios/users/UsersDataService';
+  import type { UserInterface } from '../../types';
 
-  const params = useParams()
-  let id: number = Number($params.id)
-  export let isLoading = false
-  export let isError: boolean | null = null
-  let user: UserInterface
+  const params = useParams();
+  let id: number = Number($params.id);
+  export let isLoading = false;
+  export let isError: boolean | null = null;
+  let user: UserInterface;
   onMount(async () => {
-    isLoading = true
+    isLoading = true;
     try {
       if ($UserStore.id !== id) {
-        user = await usersDataService.getById(id)
+        user = await usersDataService.getById(id);
       } else if ($UserStore.id === id) {
         if ($UserStore === undefined) {
-          alert($UserStore)
-          user = await usersDataService.getById(id)
-          $UserStore = user
+          alert($UserStore);
+          user = await usersDataService.getById(id);
+          $UserStore = user;
         } else {
-          user = $UserStore
+          user = $UserStore;
         }
       }
     } catch (error) {
-      isError = true
+      isError = true;
     }
-    isLoading = false
-  })
+    isLoading = false;
+  });
 </script>
 
 {#if !isError && !isLoading && user}

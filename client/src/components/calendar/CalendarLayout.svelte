@@ -1,19 +1,19 @@
 <script lang="ts">
-  import type { eventNameType } from '../../services/axios/home/types'
+  import type { eventNameType } from '../../services/axios/home/types';
 
-  import { createEventDispatcher } from 'svelte'
-  import CalendarModalData from './CalendarModalData.svelte'
-  export var headers: string[] = []
-  export let days: any[] = []
-  export let items: any[] = []
-  export let eventNames: Set<eventNameType>
+  import { createEventDispatcher } from 'svelte';
+  import CalendarModalData from './CalendarModalData.svelte';
+  export var headers: string[] = [];
+  export let days: any[] = [];
+  export let items: any[] = [];
+  export let eventNames: Set<eventNameType>;
 
-  let dispatch = createEventDispatcher()
+  let dispatch = createEventDispatcher();
   function onDelete(event: { detail: { id: any } }) {
-    dispatch('onDelete', { id: event.detail.id })
+    dispatch('onDelete', { id: event.detail.id });
   }
   function onDone(event: { detail: { id: any } }) {
-    dispatch('onDone', { id: event.detail.id })
+    dispatch('onDone', { id: event.detail.id });
   }
 </script>
 

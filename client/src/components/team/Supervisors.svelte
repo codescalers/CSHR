@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import Table from '../table/Table.svelte'
-  onMount(async () => {})
-  let pageIndex: number = 0
-  let length: number = 10
+  import { onMount } from 'svelte';
+  import Table from '../table/Table.svelte';
+  onMount(async () => {});
+  let pageIndex: number = 0;
+  let length: number = 10;
   let headers = [
     'Name',
     'Email',
@@ -12,7 +12,7 @@
     'Company',
     'Website',
     'Actions',
-  ]
+  ];
 </script>
 
 <div>

@@ -3,11 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 class Event {
 	// to create the events list
-	public eventsItems(
-		eventName: eventNameType,
-		events: any,
-		date: Date
-	): eventItemType[] {
+	public eventsItems(eventName: eventNameType, events: any): eventItemType[] {
 		let items: eventItemType[] = [];
 		for (const event of events) {
 			items = [...items, ...this.eventItem(eventName, event)];
@@ -21,11 +17,6 @@ class Event {
 		);
 		return lastDay;
 	}
-
-	// start 5amees
-	// end 7ad
-	// length 3
-
 	// to create the event item
 	private eventItem(eventName: eventNameType, event: any): eventItemType[] {
 		const {
@@ -36,7 +27,11 @@ class Event {
 			minute: fromMinute,
 		} = event.from_date;
 
-		const original_from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
+		const original_from_date = new Date(
+			fromYear,
+			Number(fromMonth) - 1,
+			fromDay
+		);
 		const clone_from_date = new Date(fromYear, Number(fromMonth) - 1, fromDay);
 		const incremental_from_date = new Date(
 			fromYear,
@@ -56,6 +51,7 @@ class Event {
 		const lastDay = this.lastDayOFWeek(clone_from_date);
 		let items: eventItemType[] = [];
 		let length = 0;
+		// eslint-disable-next-line no-constant-condition
 		for (; true === true; ) {
 			if (
 				incremental_from_date.getDate() < end_date.getDate() &&

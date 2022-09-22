@@ -1,22 +1,22 @@
 <script lang="ts">
-  import Submit from '../submit/Submit.svelte'
+  import Submit from '../submit/Submit.svelte';
 
-  import Input from '../input/Input.svelte'
-  import CalendarDataService from '../../services/axios/home/CalendarDataService'
-  import { UserStore } from '../../stores'
-  export let modalID = 1211112121121121
-  export let startDate: string
-  export let endDate: string
-  export let isLoading = false
-  export let isError = false
-  export let datePickerDisabled = false
+  import Input from '../input/Input.svelte';
+  import CalendarDataService from '../../services/axios/home/CalendarDataService';
+  import { UserStore } from '../../stores';
+  export let modalID = 1211112121121121;
+  export let startDate: string;
+  export let endDate: string;
+  export let isLoading = false;
+  export let isError = false;
+  export let datePickerDisabled = false;
 
-  let leaveReasonValue: string = ''
-  let leaveReasonIsError: boolean | null = null
+  let leaveReasonValue: string = '';
+  let leaveReasonIsError: boolean | null = null;
   $: submitDisabled =
     leaveReasonIsError === null ||
     leaveReasonIsError === true ||
-    datePickerDisabled
+    datePickerDisabled;
 </script>
 
 <form>
@@ -25,7 +25,7 @@
     label={'Reason'}
     bind:value={leaveReasonValue}
     handleInput={() => {
-      return false
+      return false;
     }}
     size={20}
     errorMessage="reason is invalid"
@@ -39,21 +39,21 @@
       successMessage="Leave Submitted "
       errorMessage="Leave Submission Failed"
       onClick={async () => {
-        isLoading = true
+        isLoading = true;
         try {
           await CalendarDataService.postLeave({
             end_date: endDate,
             from_date: startDate,
             reason: leaveReasonValue,
             applyingUserId: $UserStore.id,
-          })
+          });
         } catch (error) {
-          isError = true
+          isError = true;
         } finally {
-          isLoading = false
-          leaveReasonValue = ''
+          isLoading = false;
+          leaveReasonValue = '';
         }
-        return isError
+        return isError;
       }}
       disabled={submitDisabled}
     />
