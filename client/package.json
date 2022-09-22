@@ -10,7 +10,9 @@
         "start": "sirv public --single -p 8080",
         "check": "svelte-check --tsconfig ./tsconfig.json && npm-check",
         "fix": "npx eslint --fix \"{,!(node_modules|public)/**/}*.{ts,js,svelte}\"",
-        "format": "npx prettier --write \"{,!(node_modules|public)/**/}*.{ts,js,svelte}\""
+        "format": "npx prettier --write \"{,!(node_modules|public)/**/}*.{ts,js,svelte}\"",
+        "lint": "npm run fix && npm run format"
+
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "^17.0.0",
