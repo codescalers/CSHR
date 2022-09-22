@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import type { UserInterface } from '../../types';
   import usersDataService from '../../services/axios/users/UsersDataService';
   import { onMount } from 'svelte';
@@ -75,7 +75,7 @@
 <!--   https://www.npmjs.com/package/svelte-multiselect -->
 
 <!-- https://svelte-multiselect.netlify.app/#with-css-variables -->
-<style>
+<!-- <style>
   :global(.li-option:hover) {
     background-color: var(--secondary-color);
     color: var(--primary-color);
@@ -99,3 +99,4 @@
     margin: 0 auto;
   }
 </style>
+  -->

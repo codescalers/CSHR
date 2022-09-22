@@ -80,7 +80,7 @@
       on:blur={() => (show = false)}
       on:click={() => (show = !show)}
       tabIndex="0"
-      class="select-container select"
+      class="select-container my-2"
     >
       <div class="value">
         {#if selected.length > 0}

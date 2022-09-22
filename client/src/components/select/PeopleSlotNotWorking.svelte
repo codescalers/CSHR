@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import type { UserInterface } from '../../types';
 
   import { onMount } from 'svelte';
@@ -51,3 +51,4 @@
     text-align: right;
   }
 </style>
+ -->

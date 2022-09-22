@@ -16,6 +16,7 @@
   import Requests from './pages/Requests.svelte';
   import UserProfile from './pages/UserProfile.svelte';
   import Team from './pages/Team.svelte';
+  import Evaluation from './pages/Evaluation.svelte';
   const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
   /*   const config = {
@@ -55,6 +56,7 @@
     <Route path="profile/:id" component={UserProfile} />
     <Route path="profile/" component={UserProfile} />
     <Route path="team/" primary={false}><Team /></Route>
+    <Route path="evaluation/" primary={false}><Evaluation /></Route>
 
     <Route>
       <Error error={404} />
