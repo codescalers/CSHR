@@ -153,7 +153,6 @@
     <Submit
       successMessage={eventNameValue + ' Event Submitted'}
       errorMessage={eventNameValue + ' Event Submission Failed'}
-      
       {modalData}
       label="Submit"
       onClick={async () => {
