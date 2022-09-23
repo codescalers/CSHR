@@ -105,6 +105,8 @@ class RegisterSerializer(ModelSerializer):
             "user_type",
             "reporting_to",
             "image",
+            "gender",
+            "job_title",
         )
 
     def get_image(self, obj: User) -> str:
