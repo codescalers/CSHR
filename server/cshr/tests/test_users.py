@@ -165,13 +165,8 @@ class GeneralViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"][1]["birthday"], "2000-12-30")
         self.assertEqual(response.data["results"][1]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["results"][1]["email"], "john@outlook.com")
-        self.assertEqual(response.data["results"][1]["location"], 1)
-        self.assertEqual(
-            response.data["results"][1]["reporting_to"],
-            [
-                1,
-            ],
-        )
+        self.assertEqual(response.data["results"][1]["location"]["id"], 1)
+        self.assertEqual(response.data["results"][1]["reporting_to"][0]["id"], 1)
         self.assertEqual(
             response.data["results"][1]["skills"],
             [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
@@ -205,13 +200,8 @@ class GeneralViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"]["birthday"], "2000-12-30")
         self.assertEqual(response.data["results"]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["results"]["email"], "john@outlook.com")
-        self.assertEqual(response.data["results"]["location"], 1)
-        self.assertEqual(
-            response.data["results"]["reporting_to"],
-            [
-                1,
-            ],
-        )
+        self.assertEqual(response.data["results"]["location"]["id"], 1)
+        self.assertEqual(response.data["results"]["reporting_to"][0]["id"], 1)
         self.assertEqual(
             response.data["results"]["skills"],
             [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
@@ -391,13 +381,8 @@ class SupervisorViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"][1]["birthday"], "2000-12-30")
         self.assertEqual(response.data["results"][1]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["results"][1]["email"], "john@outlook.com")
-        self.assertEqual(response.data["results"][1]["location"], 1)
-        self.assertEqual(
-            response.data["results"][1]["reporting_to"],
-            [
-                1,
-            ],
-        )
+        self.assertEqual(response.data["results"][1]["location"]["id"], 1)
+        self.assertEqual(response.data["results"][1]["reporting_to"][0]["id"], 1)
         self.assertEqual(
             response.data["results"][1]["skills"],
             [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
@@ -433,13 +418,8 @@ class SupervisorViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"]["birthday"], "2000-12-30")
         self.assertEqual(response.data["results"]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["results"]["email"], "john@outlook.com")
-        self.assertEqual(response.data["results"]["location"], 1)
-        self.assertEqual(
-            response.data["results"]["reporting_to"],
-            [
-                1,
-            ],
-        )
+        self.assertEqual(response.data["results"]["location"]["id"], 1)
+        self.assertEqual(response.data["results"]["reporting_to"][0]["id"], 1)
         self.assertEqual(
             response.data["results"]["skills"],
             [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
@@ -649,13 +629,8 @@ class AdminViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"][1]["birthday"], "2000-12-30")
         self.assertEqual(response.data["results"][1]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["results"][1]["email"], "john@outlook.com")
-        self.assertEqual(response.data["results"][1]["location"], 1)
-        self.assertEqual(
-            response.data["results"][1]["reporting_to"],
-            [
-                1,
-            ],
-        )
+        self.assertEqual(response.data["results"][1]["location"]["id"], 1)
+        self.assertEqual(response.data["results"][1]["reporting_to"][0]["id"], 1)
         self.assertEqual(
             response.data["results"][1]["skills"],
             [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
@@ -689,13 +664,8 @@ class AdminViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"]["birthday"], "2000-12-30")
         self.assertEqual(response.data["results"]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["results"]["email"], "john@outlook.com")
-        self.assertEqual(response.data["results"]["location"], 1)
-        self.assertEqual(
-            response.data["results"]["reporting_to"],
-            [
-                1,
-            ],
-        )
+        self.assertEqual(response.data["results"]["location"]["id"], 1)
+        self.assertEqual(response.data["results"]["reporting_to"][0]["id"], 1)
         self.assertEqual(
             response.data["results"]["skills"],
             [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
@@ -734,9 +704,7 @@ class AdminViewUserProfileTests(APITestCase):
             "telegram_link": "@userexample",
             "birthday": "1981-08-31",
             "social_insurance_number": "123 456 789",
-            "location": 2,
             "team": "Marketing",
-            "reporting_to": [],
             "salary": {"gross": 9000},
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
@@ -749,9 +717,7 @@ class AdminViewUserProfileTests(APITestCase):
             response.data["results"]["social_insurance_number"], "123 456 789"
         )
         self.assertEqual(response.data["results"]["birthday"], "1981-08-31")
-        self.assertEqual(getresponse.data["results"]["reporting_to"], [])
         self.assertEqual(getresponse.data["results"]["team"], "Marketing")
-        self.assertEqual(getresponse.data["results"]["location"], 2)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_a_user(self):
@@ -785,7 +751,6 @@ class AdminViewUserProfileTests(APITestCase):
             "telegram_link": "@userexample",
             "birthday": "1981-08-31",
             "social_insurance_number": "123 456 789",
-            "location": 2,
             "team": "Marketing",
             "reporting_to": [],
             "salary": {"gross": 9000},
@@ -1000,7 +965,7 @@ class SelfViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"]["birthday"], "2000-12-30")
         self.assertEqual(response.data["results"]["telegram_link"], "@johnblake")
         self.assertEqual(response.data["results"]["email"], "john@outlook.com")
-        self.assertEqual(response.data["results"]["location"], 1)
+        self.assertEqual(response.data["results"]["location"]["id"], 1)
         self.assertEqual(
             response.data["results"]["reporting_to"][0]["email"], "jane@gmail.com"
         )
@@ -1046,7 +1011,7 @@ class SelfViewUserProfileTests(APITestCase):
             getresponse.data["results"]["telegram_link"], "@janjounexample"
         )
         self.assertEqual(getresponse.data["results"]["email"], "janjoun@example.com")
-        self.assertEqual(getresponse.data["results"]["location"], 1)
+        self.assertEqual(getresponse.data["results"]["location"]["id"], 1)
         self.assertEqual(
             getresponse.data["results"]["reporting_to"][0]["email"], "jane@gmail.com"
         )
