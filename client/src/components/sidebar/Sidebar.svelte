@@ -52,7 +52,7 @@
   export let isLoading = false;
   export let isError: boolean | null = null;
 </script>
-
+{#if $UserStore}
 <div id="body-pd">
   <header class="header" id="header">
     <div class="header_toggle">
@@ -186,7 +186,7 @@
     <Footer />
   </div>
 </div>
-
+{/if}
 <style>
   .notification-btn {
     color: var(--primary-color);
