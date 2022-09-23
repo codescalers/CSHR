@@ -1,16 +1,16 @@
 class Cookie {
-	storage: string;
+	private cookie: string;
 	constructor() {
-		this.storage = document.cookie;
+		this.cookie = document.cookie;
 	}
 	// to check if cookie exists
 	isFound(key: string) {
-		return this.storage.indexOf(key) !== -1;
+		return this.cookie.indexOf(key) !== -1;
 	}
 	// get cookie value by key name
 	get(key: string) {
 		if (this.isFound(key)) {
-			return this.storage.split(";").filter((item) => {
+			return this.cookie.split(";").filter((item) => {
 				return item.indexOf(key) !== -1;
 			}).join(";");
 		}
@@ -43,13 +43,37 @@ class Cookie {
 	// to remove cookie value
 	remove(key: string) {
 		if (this.isFound(key)) {
-			return this.storage.split(";").filter((item) => {
+			return this.cookie.split(";").filter((item) => {
 				return item !== key;
 			}).join(";");
 		}
 		else {
 			throw new Error("Cookie not found to be removed");
 		}
+	}
+
+	// to get cookie keys
+	getKeys() {
+		return this.cookie.split(";").map((item) => {
+			return item.split("=")[0];
+		});
+	}
+
+	// to get cookie values
+	getValues() {
+		return this.cookie.split(";").map((item) => {
+			return item.split("=")[1];
+		});
+	}
+
+	// to get all cookies
+	getAll() {
+		return this.cookie.split(";");
+	}
+
+	// to clear all cookies
+	clear() {
+		this.cookie = "";
 	}
 
 }
