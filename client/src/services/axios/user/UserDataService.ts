@@ -12,12 +12,14 @@ class UserDataService {
 		}
 	}
 
-	public async getMyProfile(){
+	public async getMyProfile() {
 		try {
-			return await(
+			const mydata = await http.get("myprofile/");
+
+			return await (
 				await http.get("myprofile/")
-			).data;
-		} catch (err){
+			).data.results;
+		} catch (err) {
 			console.error(this.errorMessage + err);
 		}
 	}

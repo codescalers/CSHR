@@ -11,7 +11,7 @@
         "check": "svelte-check --tsconfig ./tsconfig.json && npm-check",
         "fix": "npx eslint --fix \"{,!(node_modules|public)/**/}*.{ts,js,svelte}\"",
         "format": "npx prettier --write \"{,!(node_modules|public)/**/}*.{ts,js,svelte}\"",
-        "lint": "npm run fix && npm run format"
+        "lint": "npm run format && npm run fix"
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "^17.0.0",
