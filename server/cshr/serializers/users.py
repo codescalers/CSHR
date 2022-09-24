@@ -136,7 +136,7 @@ class SupervisorUserSerializer(ModelSerializer):
         return UserSkillsSerializer(obj.skills.all(), many=True).data
 
     def get_reporting_to(self, obj):
-        return BaseUserSerializer(obj.reporting_to.all(), many=True).data
+        return TeamSerializer(obj.reporting_to.all(), many=True).data
 
     def get_location(self, obj):
         return OfficeSerializer(obj.location).data
@@ -199,7 +199,7 @@ class AdminUserSerializer(ModelSerializer):
         return UserSkillsSerializer(obj.skills.all(), many=True).data
 
     def get_reporting_to(self, obj):
-        return BaseUserSerializer(obj.reporting_to.all(), many=True).data
+        return TeamSerializer(obj.reporting_to.all(), many=True).data
 
     def get_location(self, obj):
         return OfficeSerializer(obj.location).data
@@ -260,7 +260,7 @@ class SelfUserSerializer(ModelSerializer):
 
     def get_reporting_to(self, obj):
         reporting_to = obj.reporting_to.all()
-        return BaseUserSerializer(reporting_to, many=True).data
+        return TeamSerializer(reporting_to, many=True).data
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color
@@ -310,7 +310,7 @@ class TeamSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "full_name", "image", "team", "job_title", "user_type"]
+        fields = ["id", "full_name","email", "image", "team", "job_title", "user_type"]
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color
