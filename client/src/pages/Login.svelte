@@ -5,45 +5,46 @@
   import loginDataService from '../services/axios/login/loginDataService';
   import type { loggingData } from '../services/axios/login/types';
   import { authStore } from '../stores';
+  import { validateEmail } from '../services/utils/validators';
+  import Submit from '../components/submit/Submit.svelte';
 
   const handleMail = (e: any): boolean => {
-    if (
-      e.target.value
-        .toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        )
-    )
-      return false;
-    return true;
+    return !validateEmail(e.target.value);
   };
 
   let passwordValue = '';
   let emailValue = '';
   let isErrormail: null | boolean = null;
   let isErrorpass: null | boolean = null;
-  let formDisable = (isErrormail == null ||
-    isErrorpass == null ||
+  let formDisable = (isErrormail === null ||
+    isErrorpass === null ||
     isErrormail ||
     isErrorpass) as boolean;
-  $: formDisable = (isErrormail == null ||
-    isErrorpass == null ||
+  $: formDisable = (isErrormail === null ||
+    isErrorpass === null ||
     isErrormail ||
     isErrorpass) as boolean;
   let isLoading = false;
 
   const submit = async () => {
-    let myloggingData: loggingData = await loginDataService.login(
-      emailValue,
-      passwordValue
-    );
+    let isError=false;
+    try {
 
-    authStore.updateTokens(
-      myloggingData.access_token,
-      myloggingData.refresh_token
-    );
+      let myloggingData: loggingData = await loginDataService.login(
+        emailValue,
+        passwordValue
+      );
 
-    navigate('/', { replace: true });
+      authStore.updateTokens(
+        myloggingData.access_token,
+        myloggingData.refresh_token
+      );
+
+      navigate('/', { replace: true });
+    } catch (e) {
+      isError=true;
+    }
+    return isError;
   };
 </script>
 
@@ -86,13 +87,15 @@
         placeholder={'please enter your password here'}
         bind:isError={isErrorpass}
       />
-
-      <button
-        type="button"
-        class="btn submit my-5"
+      <div class="mt-5 pt-3">
+      <Submit
         disabled={formDisable}
-        on:click|preventDefault={submit}>Login</button
-      >
+        successMessage={'Welcome to HR System !'}
+        errorMessage={'Please check your credentials'}
+        label="Login"
+        onClick={submit}
+      />
+    </div>
     </fieldset>
   </div>
 </div>
