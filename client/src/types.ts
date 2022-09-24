@@ -22,22 +22,21 @@ export interface GeneralUserInterface {
   skills: SkillType[];
   user_certificates: CertificateType[];
   reporting_to: TeamType[];
-  location:OfficeType;
+  location: OfficeType;
   user_type: string;
 }
 
-
-
-
-
-export interface SupervisorViewType extends GeneralUserInterface {
+export interface SupervisorViewInterface extends GeneralUserInterface {
   mobile_number: string;
   social_insurance_number: string;
   user_evaluation: UserEvaluationType[];
-  user_company_properties: CompanyPropertiesType[],
+  user_company_properties: CompanyPropertiesType[];
 }
 
-export interface AdminViewType extends SupervisorViewType {
+export interface AdminViewInterface extends SupervisorViewInterface {
+  salary: SalaryType;
+}
+export interface UserInterface extends SupervisorViewInterface {
   salary: SalaryType;
 }
 
@@ -98,37 +97,32 @@ export type CertificateType = {
   modified_at?: Date;
 };
 
-export type SalaryType =
-  {
-    current_salary: {
-      net: number[],
-      gross: number[]
-    },
-    joining_salary: {
-      net: number[],
-      gross: number[]
-    },
-    net_salary_before_joining?:number[],
-    Benefits?:number[]
-
-
+export type SalaryType = {
+  current_salary: {
+    net: number[];
+    gross: number[];
   };
-  
+  joining_salary: {
+    net: number[];
+    gross: number[];
+  };
+  net_salary_before_joining?: number[];
+  Benefits?: number[];
+};
 
- 
-export type CompanyPropertiesType ={
+export type CompanyPropertiesType = {
   name: string;
-  image_of : string;
+  image_of: string;
   user_obj: TeamType;
-}
+};
 
 export type UserEvaluationType = {
   user: number;
   quarter: string;
   link: string;
   score: number;
-}
+};
 export interface IAuthStore {
-    token?: string;
-    refreshtoken?: string;
+  token?: string;
+  refreshtoken?: string;
 }

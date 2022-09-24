@@ -1,5 +1,5 @@
 export type SelectOptionType = {
-  label: any;
+  label: string;
   value: any;
   extraData?: any;
 };

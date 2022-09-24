@@ -12,12 +12,12 @@ class UserDataService {
 		}
 	}
 
-	public async getMyProfile(){
+	public async getMyProfile() {
 		try {
-			return await(
+			return await (
 				await http.get("myprofile/")
 			).data;
-		} catch (err){
+		} catch (err) {
 			console.error(this.errorMessage + err);
 		}
 	}

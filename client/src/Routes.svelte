@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {Router ,Route} from "svelte-routing";
+  import { Router, Route } from 'svelte-routing';
   import Register from './pages/Register.svelte';
   import Calendar from './pages/Calendar.svelte';
   import Notifications from './pages/Notifications.svelte';
@@ -7,10 +7,10 @@
   import InputExample from './pages/InputExample.svelte';
   import Logout from './pages/Logout.svelte';
   import Settings from './pages/Settings.svelte';
-  import LoggedRoute from  './routes/LoggedRoute.svelte';
+  import LoggedRoute from './routes/LoggedRoute.svelte';
   // import AdminRoute from "./routes/AdminRoute.svelte";
   // import Supervisor from './routes/Supervisor.svelte'
-  import Login from "./pages/Login.svelte";
+  import Login from './pages/Login.svelte';
   // import { setTheme } from './services/utils/theme';
   // import isAuthenticated from './services/authentication/IsAuthenticated';
   // import { onMount } from 'svelte';
@@ -20,7 +20,7 @@
   import UserProfile from './pages/UserProfile.svelte';
   import Team from './pages/Team.svelte';
   import Evaluation from './pages/Evaluation.svelte';
-  import Supervisor from "./routes/Supervisor.svelte";
+  import Supervisor from './routes/Supervisor.svelte';
   // const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
   /*   const config = {
@@ -47,19 +47,19 @@
 
 <main>
   <Router>
-    <LoggedRoute path={"/"} component={Calendar}> </LoggedRoute>
-    <Route path="/settings"  ><Settings /></Route>
-    <Route path={"/login"}  component={Login}></Route>
-    <Route path="notifications/"  ><Notifications /></Route>
-    <Route path="auth/register/" ><Register /></Route>
-    <Route path="auth/logout/"  ><Logout /></Route>
-    <Route path="input"  ><InputExample /></Route>
-    <Route path="requests/" ><Requests /></Route>
-    <Route path="users/"  ><Users /></Route>
+    <LoggedRoute path={'/'} component={Calendar} />
+    <Route path="/settings"><Settings /></Route>
+    <Route path={'/login'} component={Login} />
+    <Route path="notifications/"><Notifications /></Route>
+    <Route path="auth/register/"><Register /></Route>
+    <Route path="auth/logout/"><Logout /></Route>
+    <Route path="input"><InputExample /></Route>
+    <Route path="requests/"><Requests /></Route>
+    <Route path="users/"><Users /></Route>
     <Route path="profile/:id" component={UserProfile} />
     <Route path="profile/" component={UserProfile} />
-    <Route path="team/" ><Team /></Route>
-    <Route path="evaluation/" ><Evaluation /></Route>
+    <Route path="team/"><Team /></Route>
+    <Route path="evaluation/"><Evaluation /></Route>
 
     <Route>
       <Error error={404} />

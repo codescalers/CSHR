@@ -1,23 +1,17 @@
 <script>
-    import {Route} from "svelte-routing";
-    import isAuthenticated from '../services/authentication/IsAuthenticated';
-    import NotLoggedIn from "../pages/NotLoggedIn.svelte";
-    import { authStore } from "../stores";
- 
+  import { Route } from 'svelte-routing';
+  import isAuthenticated from '../services/authentication/IsAuthenticated';
+  import NotLoggedIn from '../pages/NotLoggedIn.svelte';
+  import { authStore } from '../stores';
 
-    export let path;
-    export let component;
+  export let path;
+  export let component;
 
-    $: isAuth = authStore.isAuth;
-    
- 
-
+  $: isAuth = authStore.isAuth;
 </script>
 
-{#if isAuth }
-   
-    <Route path={path} component={component} ></Route>
+{#if isAuth}
+  <Route {path} {component} />
 {:else}
-    <Route path={path} component={NotLoggedIn} ></Route>
+  <Route {path} component={NotLoggedIn} />
 {/if}
- 
