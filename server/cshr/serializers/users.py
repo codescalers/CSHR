@@ -61,7 +61,7 @@ class GeneralUserSerializer(ModelSerializer):
             "created_at",
             "job_title",
             "address",
-            "user_type"
+            "user_type",
         ]
 
     def get_user_certificates(self, obj):
@@ -116,7 +116,7 @@ class SupervisorUserSerializer(ModelSerializer):
             "user_evaluation",
             "job_title",
             "address",
-            "user_type"
+            "user_type",
         ]
 
     def get_user_certificates(self, obj):
@@ -180,7 +180,7 @@ class AdminUserSerializer(ModelSerializer):
             "user_evaluation",
             "job_title",
             "address",
-            "user_type"
+            "user_type",
         ]
 
     def get_user_certificates(self, obj):
@@ -247,7 +247,7 @@ class SelfUserSerializer(ModelSerializer):
             "user_evaluation",
             "job_title",
             "address",
-            "user_type"
+            "user_type",
         ]
 
     def get_user_certificates(self, obj):
@@ -314,7 +314,7 @@ class TeamSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "full_name","email", "image", "team", "job_title", "user_type"]
+        fields = ["id", "full_name", "email", "image", "team", "job_title", "user_type"]
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color
