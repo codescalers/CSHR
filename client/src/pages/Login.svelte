@@ -27,9 +27,8 @@
   let isLoading = false;
 
   const submit = async () => {
-    let isError=false;
+    let isError = false;
     try {
-
       let myloggingData: loggingData = await loginDataService.login(
         emailValue,
         passwordValue
@@ -42,7 +41,7 @@
 
       navigate('/', { replace: true });
     } catch (e) {
-      isError=true;
+      isError = true;
     }
     return isError;
   };
@@ -88,14 +87,14 @@
         bind:isError={isErrorpass}
       />
       <div class="mt-5 pt-3">
-      <Submit
-        disabled={formDisable}
-        successMessage={'Welcome to HR System !'}
-        errorMessage={'Please check your credentials'}
-        label="Login"
-        onClick={submit}
-      />
-    </div>
+        <Submit
+          disabled={formDisable}
+          successMessage={'Welcome to HR System !'}
+          errorMessage={'Please check your credentials'}
+          label="Login"
+          onClick={submit}
+        />
+      </div>
     </fieldset>
   </div>
 </div>
@@ -150,19 +149,6 @@
 
   :global(.myInput .py-3) {
     padding-bottom: 0rem !important;
-  }
-
-  .submit {
-    margin-top: 0.5cm;
-    font-size: 16px;
-    color: #2b515f;
-    background-color: #eff6ff;
-    width: 100%;
-    border: 1px solid #2b515f;
-  }
-  .submit:hover {
-    background-color: #2b515f;
-    color: #eee;
   }
 
   .card {

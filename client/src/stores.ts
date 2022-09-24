@@ -75,7 +75,6 @@ function createAuthStore() {
 						address: data.address,
 						user_type: data.user_type,
 					});
-
 				});
 				console.log("user", UserStore);
 			}
