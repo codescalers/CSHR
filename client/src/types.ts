@@ -11,21 +11,18 @@ export interface GeneralUserInterface {
   id: number;
   full_name: string;
   email: string;
-  team: string;
-  password?: string;
-  role: string;
-  image: string;
   gender: "Female" | "Male";
+  team: string;
+  image: string;
   address: string;
   birthday: string;
   CreatedAt?: string;
-  UpdatedAt?: string;
-  DeletedAt?: string;
   job_title: string;
   telegram_link: string;
   skills: SkillType[];
   user_certificates: CertificateType[];
-  reporting_to: number[];
+  reporting_to: BaseUserType[];
+  location:OfficeType
 }
 
 
@@ -35,7 +32,6 @@ export interface GeneralUserInterface {
 export interface SupervisorViewType extends GeneralUserInterface {
   mobile_number: string;
   social_insurance_number: string;
-  location: number;
   user_evaluations: [];
   user_company_properties: number[],
 }
@@ -112,6 +108,17 @@ export type SalaryType =
     }
   };
   
+
+export type BaseUserType = {
+  id: number;
+  full_name: string;
+  image:string;
+  team: string;
+  job_title:string;
+  user_type:string;
+
+
+}
 export interface IAuthStore {
     token?: string;
     refreshtoken?: string;
