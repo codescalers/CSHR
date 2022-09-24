@@ -3,16 +3,12 @@ export type  loginDataType={
     password: string
 }
 
-export type  loggingData={
+export type  loggingData = {
      refresh_token: string,
      access_token: string
-
-    
 }
 
 export type  refreshData={
     refresh : string,
     access : string
-
-   
 }

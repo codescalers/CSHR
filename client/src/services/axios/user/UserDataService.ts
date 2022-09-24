@@ -15,7 +15,7 @@ class UserDataService {
 	public async getMyProfile(){
 		try {
 			return await(
-				await http.get("myprofile")
+				await http.get("myprofile/")
 			).data;
 		} catch (err){
 			console.error(this.errorMessage + err);

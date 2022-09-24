@@ -1,11 +1,26 @@
-import axios from "axios";
+import axios  from "axios";
+import { authStore } from "../../stores";
 
-export default axios.create({
-	baseURL: process.env.APP_BASE_API_URL + "api/",
+const http = axios.create({
+	baseURL: process.env.APP_BASE_API_URL,
 	headers: {
 		"Content-type": "application/json",
-		Authorization: `Bearer ${
-			process.env.TEMP_TOKEN + "" || localStorage.getItem("token")
-		}`,
-	},
+         
+	}
+}
+);
+
+http.interceptors.request.use(config => {
+	console.log("tab ana kedda barra el if bas b intercept");
+	if (authStore.isAuth()) {
+		console.log("howa ana delwa2ty b intercept");
+		config.headers = {
+			...config.headers,
+			Authorization: `Bearer ${localStorage.getItem("accesstoken")}` 
+		};
+	}
+	return config;
 });
+
+
+export default http;

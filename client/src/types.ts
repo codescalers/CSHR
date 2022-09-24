@@ -16,12 +16,12 @@ export interface GeneralUserInterface {
   image: string;
   address: string;
   birthday: string;
-  CreatedAt?: string;
+  created_at: string;
   job_title: string;
   telegram_link: string;
   skills: SkillType[];
   user_certificates: CertificateType[];
-  reporting_to: BaseUserType[];
+  reporting_to: TeamType[];
   location:OfficeType
 }
 
@@ -32,8 +32,8 @@ export interface GeneralUserInterface {
 export interface SupervisorViewType extends GeneralUserInterface {
   mobile_number: string;
   social_insurance_number: string;
-  user_evaluations: [];
-  user_company_properties: number[],
+  user_evaluation: UserEvaluationType[];
+  user_company_properties: CompanyPropertiesType[],
 }
 
 export interface AdminViewType extends SupervisorViewType {
@@ -76,6 +76,7 @@ export type NotificationType = {
 export type TeamType = {
   id: number;
   full_name: string;
+  email: string;
   image: string;
   team: string;
   job_title: string;
@@ -105,19 +106,26 @@ export type SalaryType =
     joining_salary: {
       net: number[],
       gross: number[]
-    }
+    },
+    net_salary_before_joining?:number[],
+    Benefits?:number[]
+
+
   };
   
 
-export type BaseUserType = {
-  id: number;
-  full_name: string;
-  image:string;
-  team: string;
-  job_title:string;
-  user_type:string;
+ 
+export type CompanyPropertiesType ={
+  name: string;
+  image_of : string;
+  user_obj: TeamType;
+}
 
-
+export type UserEvaluationType = {
+  user: number;
+  quarter: string;
+  link: string;
+  score: number;
 }
 export interface IAuthStore {
     token?: string;

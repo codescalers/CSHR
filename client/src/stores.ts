@@ -1,6 +1,5 @@
 import { Writable, writable, get } from "svelte/store";
 import isAuthenticated from "./services/authentication/IsAuthenticated";
-import parseJwt from "./services/authentication/JWTPars";
 import userDataService from "./services/axios/user/UserDataService";
 import type {
 	SettingsInterface,
@@ -56,31 +55,32 @@ function createAuthStore() {
 		localStorage.setItem("refreshtoken", refresh);
 
 		if (token) {
-			if (UserStore === undefined){
-            userDataService.getMyProfile().then(data=>{
-				UserStore.set({
-				    full_name: string;
-                    email: string;
-                    mobile_number: string;
-                    team: string;
-                    password?: string;
-                    user_type:string;
-                    role: string;
-                    image: string;
-                    gender: "Female" | "Male";
-                    address: string;
-                    birthday: string;
-                    CreatedAt?: string;
-                    UpdatedAt?: string;
-                    DeletedAt?: string;
-                    job_title: string;
-                    telegram_link: string;
-                    skills: SkillType[];
-                    user_certificates: CertificateType[];
-                    reporting_to: number[];
-
-				});
-			})}
+			if (get(UserStore)== undefined){
+				userDataService.getMyProfile().then(data=>{
+					UserStore.set({
+						id: data.id,
+						gender: data.gender,
+						email: data.email,
+						full_name: data.full_name,
+						image: data.image,
+						telegram_link: data.telegram_link,
+						birthday: data.birthday,
+						location: data.location,  
+						skills: data.skills,
+						user_certificates: data.user_certificates,
+						reporting_to: data.reporting_to ,
+						created_at: data.created_at,
+						social_insurance_number: data.social_insurance_number,
+						team: data.team,
+						user_company_properties: data.user_company_properties,
+						salary: data.salary,
+						mobile_number: data.mobile_number,
+						user_evaluation: data.user_evaluation,
+						job_title: data.job_title,
+						address: data.address
+				    });
+			    });
+			}
 		}
 
 		return update(s => {
@@ -103,15 +103,15 @@ function createAuthStore() {
 			return !!token && !!refreshtoken;
 
 		},
-		isAdmin():boolean{
-			const { token, refreshtoken } = get(store);
-			return !!token && !!refreshtoken && user.user_type==="Admin";
-		},
+		// isAdmin():boolean{
+		// 	const { token, refreshtoken } = get(store);
+		// 	return !!token && !!refreshtoken && user.user_type==="Admin";
+		// },
 
-		isSupervisor():boolean{
-			const { token, refreshtoken } = get(store);
-			return !!token && !!refreshtoken && user.user_type==="Supervisor";
-		}
+		// isSupervisor():boolean{
+		// 	const { token, refreshtoken } = get(store);
+		// 	return !!token && !!refreshtoken && user.user_type==="Supervisor";
+		// }
 	};
 }
 

@@ -1,4 +1,4 @@
-import { json } from "stream/consumers"; import http from "../http-common";
+import http from "../http-common";
 import type {loginDataType} from "./types";
  
 
@@ -9,7 +9,7 @@ class LoginDataService {
        
        
 		try {
-			return await (await http.post("/auth/login/",loginData)).data.data;
+			return await (await http.post("auth/login/",loginData)).data.results;
             
 		}
 		catch (error) {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Router, Link } from 'svelte-navigator';
+  import { Router, Link } from 'svelte-routing';
   import { onMount } from 'svelte';
   import Footer from '../footer/Footer.svelte';
   import { UserStore, NotificationStore } from '../../stores';
@@ -52,7 +52,7 @@
   export let isLoading = false;
   export let isError: boolean | null = null;
 </script>
-{#if $UserStore}
+ {#if $UserStore}
 <div id="body-pd">
   <header class="header" id="header">
     <div class="header_toggle">
