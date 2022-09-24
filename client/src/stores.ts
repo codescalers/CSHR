@@ -55,7 +55,8 @@ function createAuthStore() {
 		localStorage.setItem("refreshtoken", refresh);
 
 		if (token) {
-			if (get(UserStore)== undefined){
+			 
+			if (get(UserStore) === undefined){
 				userDataService.getMyProfile().then(data=>{
 					UserStore.set({
 						id: data.id,
@@ -80,6 +81,7 @@ function createAuthStore() {
 						address: data.address,
 						user_type: data.user_type
 				    });
+					 
 			    });
 			}
 		}
@@ -101,6 +103,7 @@ function createAuthStore() {
 		updateTokens,
 		isAuth(): boolean {
 			const { token, refreshtoken } = get(store);
+			console.log(user.user_type);
 			return !!token && !!refreshtoken;
 
 		},
