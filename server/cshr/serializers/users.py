@@ -61,6 +61,7 @@ class GeneralUserSerializer(ModelSerializer):
             "created_at",
             "job_title",
             "address",
+            "user_type"
         ]
 
     def get_user_certificates(self, obj):
@@ -115,6 +116,7 @@ class SupervisorUserSerializer(ModelSerializer):
             "user_evaluation",
             "job_title",
             "address",
+            "user_type"
         ]
 
     def get_user_certificates(self, obj):
@@ -178,6 +180,7 @@ class AdminUserSerializer(ModelSerializer):
             "user_evaluation",
             "job_title",
             "address",
+            "user_type"
         ]
 
     def get_user_certificates(self, obj):
@@ -244,6 +247,7 @@ class SelfUserSerializer(ModelSerializer):
             "user_evaluation",
             "job_title",
             "address",
+            "user_type"
         ]
 
     def get_user_certificates(self, obj):
