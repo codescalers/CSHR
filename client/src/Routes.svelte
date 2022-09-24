@@ -8,6 +8,8 @@
   import Logout from './pages/Logout.svelte';
   import Settings from './pages/Settings.svelte';
   import LoggedRoute from  './routes/LoggedRoute.svelte';
+  // import AdminRoute from "./routes/AdminRoute.svelte";
+  // import Supervisor from './routes/Supervisor.svelte'
   import Login from "./pages/Login.svelte";
   // import { setTheme } from './services/utils/theme';
   // import isAuthenticated from './services/authentication/IsAuthenticated';
@@ -18,6 +20,7 @@
   import UserProfile from './pages/UserProfile.svelte';
   import Team from './pages/Team.svelte';
   import Evaluation from './pages/Evaluation.svelte';
+  import Supervisor from "./routes/Supervisor.svelte";
   // const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
   /*   const config = {

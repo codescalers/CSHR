@@ -3,16 +3,16 @@
     import isAuthenticated from '../services/authentication/IsAuthenticated';
     import Login from "../pages/Login.svelte"
   import parseJwt from "../services/authentication/JWTPars";
-  import { UserStore } from "../stores";
+  import { authStore } from "../stores";
   import NotAnAdmin from "../pages/NotAnAdmin.svelte";
  
 
     export let path;
     export let component;
-    const isAdmin = ($UserStore.user_type=="Admin")
+   
 
 
-    $: isAdminAuth  =  isAuthenticated() && isAdmin
+    $: isAdminAuth  =  authStore.isAdmin
     
 </script>
 

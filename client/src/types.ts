@@ -22,7 +22,8 @@ export interface GeneralUserInterface {
   skills: SkillType[];
   user_certificates: CertificateType[];
   reporting_to: TeamType[];
-  location:OfficeType
+  location:OfficeType;
+  user_type: string;
 }
 
 

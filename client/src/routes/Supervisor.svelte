@@ -3,17 +3,17 @@
     import isAuthenticated from '../services/authentication/IsAuthenticated';
     import Login from "../pages/Login.svelte"
   import parseJwt from "../services/authentication/JWTPars";
-  import { UserStore } from "../stores";
   import NotAnAdmin from "../pages/NotAnAdmin.svelte";
+  import { authStore } from "../stores";
  
 
     export let path;
     export let component;
-   
-    const isSuper = ($UserStore.user_type=="Supervisor")
+  
+     
 
 
-    $: isSuperAuth  =  isAuthenticated() && isSuper
+    $: isSuperAuth  =  authStore.isSupervisor
     
 </script>
 

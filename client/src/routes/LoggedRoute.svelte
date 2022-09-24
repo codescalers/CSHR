@@ -18,6 +18,6 @@
    
     <Route path={path} component={component} ></Route>
 {:else}
-<Route path={path} component={NotLoggedIn} />
+    <Route path={path} component={NotLoggedIn} ></Route>
 {/if}
  

@@ -77,7 +77,8 @@ function createAuthStore() {
 						mobile_number: data.mobile_number,
 						user_evaluation: data.user_evaluation,
 						job_title: data.job_title,
-						address: data.address
+						address: data.address,
+						user_type: data.user_type
 				    });
 			    });
 			}
@@ -103,15 +104,15 @@ function createAuthStore() {
 			return !!token && !!refreshtoken;
 
 		},
-		// isAdmin():boolean{
-		// 	const { token, refreshtoken } = get(store);
-		// 	return !!token && !!refreshtoken && user.user_type==="Admin";
-		// },
+		isAdmin(): boolean{
+			const { token, refreshtoken } = get(store);
+			return user&&!!token && !!refreshtoken && user.user_type==="Admin";
+		},
 
-		// isSupervisor():boolean{
-		// 	const { token, refreshtoken } = get(store);
-		// 	return !!token && !!refreshtoken && user.user_type==="Supervisor";
-		// }
+		isSupervisor(): boolean{
+			const { token, refreshtoken } = get(store);
+			return user&&!!token && !!refreshtoken && user.user_type==="Supervisor";
+		}
 	};
 }
 
