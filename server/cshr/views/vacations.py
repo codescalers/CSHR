@@ -171,3 +171,20 @@ class VacationCommentsAPIView(GenericAPIView):
         return CustomResponse.success(
             data=comment_, status_code=202, message="vacation comment added"
         )
+
+class UserVacationBalanceUpdate(ListAPIView, GenericAPIView):
+    serializer_class = UserVacationBalanceSerializer
+    permission_classes = [IsAdmin]
+
+    def put(self, request: Request):
+        yourdata= request.data
+        serializer = UserVacationBalanceSerializer(data=yourdata)
+        if serializer.is_valid():
+            v = VacationBalanceHelper()
+            v.bulk_write(dict(serializer.data))
+            return CustomResponse.success(
+                data=serializer.data, status_code=202, message="base balance updated"
+            )
+        return CustomResponse.bad_request(
+            data=serializer.error, message="failed to update base balance"
+        )
