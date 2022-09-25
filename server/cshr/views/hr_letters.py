@@ -19,6 +19,7 @@ from server.cshr.utils.email_messages_templates import (
 )
 
 from server.cshr.api.response import CustomResponse
+from server.cshr.utils.redis import set_notification_request_redis
 
 
 class BaseHrLetterApiView(ListAPIView, GenericAPIView):
@@ -43,6 +44,7 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
             msg = get_hr_letter_request_email_template(
                 current_user, serializer.data, url
             )
+            set_notification_request_redis(serializer.data, url)
             return send_email_for_request(current_user.id, msg, "Hr Letter request")
         return CustomResponse.bad_request(
             error=serializer.errors, message="Hr letter creation failed"

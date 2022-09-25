@@ -18,6 +18,7 @@ from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
 from server.cshr.models.vacations import Vacation
 from server.cshr.services.vacations import get_vacations_by_user
+from server.cshr.utils.redis import set_notification_request_redis
 
 
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
@@ -42,6 +43,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             msg = get_vacation_request_email_template(
                 current_user, serializer.data, url
             )
+            set_notification_request_redis(serializer.data, url)
             return send_email_for_request(current_user.id, msg, "Vacation request")
         return CustomResponse.bad_request(
             error=serializer.errors, message="vacation request creation failed"

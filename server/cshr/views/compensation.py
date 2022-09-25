@@ -23,6 +23,7 @@ from server.cshr.utils.email_messages_templates import (
 from server.cshr.utils.email_messages_templates import (
     get_compensation_request_email_template,
 )
+from server.cshr.utils.redis import set_notification_request_redis
 
 
 class BaseCompensationApiView(ListAPIView, GenericAPIView):
@@ -54,6 +55,7 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
             msg = get_compensation_request_email_template(
                 current_user, serializer.data, url
             )
+            set_notification_request_redis(serializer.data, url)
             return send_email_for_request(current_user.id, msg, "Compensation request")
         return CustomResponse.bad_request(
             error=serializer.errors, message="Compensation creation failed"
