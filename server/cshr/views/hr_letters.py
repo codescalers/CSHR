@@ -122,3 +122,33 @@ class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
         return CustomResponse.bad_request(
             data=serializer.errors, message="HR Letter failed to update"
         )
+
+class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        hr_letter = get_hrLetter_by_id(id=id)
+        if hr_letter is None:
+            return CustomResponse.not_found(message="Hr Letter not found")
+        current_user: User = get_user_by_id(request.user.id)
+        hr_letter.approval_user = current_user
+        hr_letter.status = STATUS_CHOICES.APPROVED
+        hr_letter.save()
+        #should send notification here
+        #should send email here
+        return CustomResponse.success()
+
+class HrLetterRejectApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        hr_letter = get_hrLetter_by_id(id=id)
+        if hr_letter is None:
+            return CustomResponse.not_found(message="Hr Letter not found")
+        current_user: User = get_user_by_id(request.user.id)
+        hr_letter.approval_user = current_user
+        hr_letter.status = STATUS_CHOICES.REJECTED
+        hr_letter.save()
+        #should send notification here
+        #should send email here
+        return CustomResponse.success()

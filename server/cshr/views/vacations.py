@@ -19,6 +19,7 @@ from server.cshr.celery.send_email import send_email_for_reply
 from server.cshr.models.vacations import Vacation
 from server.cshr.services.vacations import get_vacations_by_user
 from server.cshr.utils.redis import set_notification_request_redis
+from server.cshr.models.requests import STATUS_CHOICES
 
 
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
@@ -107,7 +108,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
-            return CustomResponse.not_found(message="Hr Letter not found")
+            return CustomResponse.not_found(message="Vacation not found")
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
@@ -122,3 +123,32 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
         return CustomResponse.bad_request(
             data=serializer.errors, message="vacation failed to update"
         )
+class VacationsAcceptApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
+            return CustomResponse.not_found(message="Vacation not found")
+        current_user: User = get_user_by_id(request.user.id)
+        vacation.approval_user = current_user
+        vacation.status = STATUS_CHOICES.APPROVED
+        vacation.save()
+        #should send notification here
+        #should send email here
+        return CustomResponse.success()
+
+class VacationsRejectApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
+            return CustomResponse.not_found(message="Vacation not found")
+        current_user: User = get_user_by_id(request.user.id)
+        vacation.approval_user = current_user
+        vacation.status = STATUS_CHOICES.REJECTED
+        vacation.save()
+        #should send notification here
+        #should send email here
+        return CustomResponse.success()

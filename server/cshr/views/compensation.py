@@ -132,3 +132,33 @@ class CompensationUpdateApiView(ListAPIView, GenericAPIView):
         return CustomResponse.bad_request(
             data=serializer.errors, message="compensation failed to update"
         )
+
+class CompensationAcceptApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        comopensation = get_compensation_by_id(id=id)
+        if  comopensation is None:
+            return CustomResponse.not_found(message="comopensation not found")
+        current_user: User = get_user_by_id(request.user.id)
+        comopensation.approval_user = current_user
+        comopensation.status = STATUS_CHOICES.APPROVED
+        comopensation.save()
+        #should send notification here
+        #should send email here
+        return CustomResponse.success()
+
+class CompensationRejectApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        comopensation = get_compensation_by_id(id=id)
+        if comopensation is None:
+            return CustomResponse.not_found(message="comopensation not found")
+        current_user: User = get_user_by_id(request.user.id)
+        comopensation.approval_user = current_user
+        comopensation.status = STATUS_CHOICES.REJECTED
+        comopensation.save()
+        #should send notification here
+        #should send email here
+        return CustomResponse.success()
