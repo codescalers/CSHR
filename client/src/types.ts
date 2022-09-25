@@ -97,6 +97,7 @@ export type CertificateType = {
   modified_at?: Date;
 };
 
+ 
 export type SalaryType = {
   current_salary: {
     net: number[];
@@ -125,4 +126,5 @@ export type UserEvaluationType = {
 export interface IAuthStore {
   token?: string;
   refreshtoken?: string;
-}
+};
+ 
