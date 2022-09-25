@@ -17,6 +17,6 @@ class CompanyPropertiesSerializer(ModelSerializer):
         fields = ["name", "image_of", "user_obj"]
 
     def get_user_obj(self, obj: CompanyProperties) -> User:
-        from server.cshr.serializers.users import GeneralUserSerializer
+        from server.cshr.serializers.users import TeamSerializer
 
-        return GeneralUserSerializer(obj.user).data
+        return TeamSerializer(obj.user).data

@@ -15,6 +15,7 @@ from server.cshr.services.company_properties import (
 )
 from server.cshr.services.evaluations import get_evaluations_for_a_user
 from server.cshr.serializers.userEvaluation import UserEvaluationSerializer
+from server.cshr.serializers.office import OfficeSerializer
 
 
 class UserSkillsSerializer(ModelSerializer):
@@ -38,15 +39,15 @@ class GeneralUserSerializer(ModelSerializer):
     user_certificates = SerializerMethodField()
     image = SerializerMethodField()
     skills = SerializerMethodField()
+    reporting_to = SerializerMethodField()
+    location = SerializerMethodField()
+    reporting_to = SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
             "id",
             "full_name",
-            "email",
-            "gender",
-            "team",
             "email",
             "gender",
             "team",
@@ -60,6 +61,7 @@ class GeneralUserSerializer(ModelSerializer):
             "created_at",
             "job_title",
             "address",
+            "user_type",
         ]
 
     def get_user_certificates(self, obj):
@@ -72,6 +74,12 @@ class GeneralUserSerializer(ModelSerializer):
     def get_skills(self, obj):
         return UserSkillsSerializer(obj.skills.all(), many=True).data
 
+    def get_reporting_to(self, obj):
+        return TeamSerializer(obj.reporting_to.all(), many=True).data
+
+    def get_location(self, obj):
+        return OfficeSerializer(obj.location).data
+
 
 class SupervisorUserSerializer(ModelSerializer):
     """
@@ -83,11 +91,15 @@ class SupervisorUserSerializer(ModelSerializer):
     user_evaluation = SerializerMethodField()
     image = SerializerMethodField()
     skills = SerializerMethodField()
+    location = SerializerMethodField()
+    reporting_to = SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
+            "id",
             "email",
+            "gender",
             "full_name",
             "image",
             "telegram_link",
@@ -102,6 +114,9 @@ class SupervisorUserSerializer(ModelSerializer):
             "user_company_properties",
             "mobile_number",
             "user_evaluation",
+            "job_title",
+            "address",
+            "user_type",
         ]
 
     def get_user_certificates(self, obj):
@@ -122,6 +137,12 @@ class SupervisorUserSerializer(ModelSerializer):
     def get_skills(self, obj):
         return UserSkillsSerializer(obj.skills.all(), many=True).data
 
+    def get_reporting_to(self, obj):
+        return TeamSerializer(obj.reporting_to.all(), many=True).data
+
+    def get_location(self, obj):
+        return OfficeSerializer(obj.location).data
+
 
 class AdminUserSerializer(ModelSerializer):
     """
@@ -133,10 +154,14 @@ class AdminUserSerializer(ModelSerializer):
     user_evaluation = SerializerMethodField()
     image = SerializerMethodField()
     skills = SerializerMethodField()
+    location = SerializerMethodField()
+    reporting_to = SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
+            "id",
+            "gender",
             "email",
             "full_name",
             "image",
@@ -153,6 +178,9 @@ class AdminUserSerializer(ModelSerializer):
             "salary",
             "mobile_number",
             "user_evaluation",
+            "job_title",
+            "address",
+            "user_type",
         ]
 
     def get_user_certificates(self, obj):
@@ -172,6 +200,12 @@ class AdminUserSerializer(ModelSerializer):
 
     def get_skills(self, obj):
         return UserSkillsSerializer(obj.skills.all(), many=True).data
+
+    def get_reporting_to(self, obj):
+        return TeamSerializer(obj.reporting_to.all(), many=True).data
+
+    def get_location(self, obj):
+        return OfficeSerializer(obj.location).data
 
 
 class SelfUserSerializer(ModelSerializer):
@@ -188,10 +222,13 @@ class SelfUserSerializer(ModelSerializer):
     salary = JSONField(read_only=True)
     image = SerializerMethodField()
     skills = SerializerMethodField()
+    location = SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
+            "id",
+            "gender",
             "email",
             "full_name",
             "image",
@@ -208,6 +245,9 @@ class SelfUserSerializer(ModelSerializer):
             "salary",
             "mobile_number",
             "user_evaluation",
+            "job_title",
+            "address",
+            "user_type",
         ]
 
     def get_user_certificates(self, obj):
@@ -224,13 +264,16 @@ class SelfUserSerializer(ModelSerializer):
 
     def get_reporting_to(self, obj):
         reporting_to = obj.reporting_to.all()
-        return BaseUserSerializer(reporting_to, many=True).data
+        return TeamSerializer(reporting_to, many=True).data
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color
 
     def get_skills(self, obj):
         return UserSkillsSerializer(obj.skills.all(), many=True).data
+
+    def get_location(self, obj):
+        return OfficeSerializer(obj.location).data
 
 
 class BaseUserSerializer(ModelSerializer):
@@ -271,7 +314,7 @@ class TeamSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "full_name", "image", "team", "job_title", "user_type"]
+        fields = ["id", "full_name", "email", "image", "team", "job_title", "user_type"]
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color

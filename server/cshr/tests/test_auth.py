@@ -110,6 +110,8 @@ class RegisterationTests(APITestCase):
             "salary": {"gross": 1000},
             "user_type": "User",
             "reporting_to": [],
+            "gender": "Male",
+            "job_title": "developer",
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.post(url, data, format="json")
