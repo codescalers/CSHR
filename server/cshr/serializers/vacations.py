@@ -5,7 +5,7 @@ from rest_framework.serializers import (
 )
 from server.cshr.models.vacations import Vacation
 from server.cshr.serializers.users import BaseUserSerializer
-
+from rest_framework import serializers
 
 class VacationsSerializer(ModelSerializer):
     class Meta:
@@ -57,3 +57,13 @@ class LandingPageVacationsSerializer(ModelSerializer):
         this function return request's approving user
         """
         return BaseUserSerializer(obj.approval_user).data
+
+class UserVacationBalanceSerializer(serializers.Serializer):
+    sick_leaves = serializers.FloatField()
+    compensation = serializers.FloatField()
+    unpaid = serializers.FloatField()
+    annual_leaves = serializers.FloatField()
+    emergencies = serializers.FloatField()
+    leave_execuses = serializers.FloatField()
+    public_holidays = serializers.JSONField(default=list)
+    year = serializers.IntegerField()
