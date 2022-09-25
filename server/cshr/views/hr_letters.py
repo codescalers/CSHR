@@ -19,7 +19,7 @@ from server.cshr.utils.email_messages_templates import (
 )
 
 from server.cshr.api.response import CustomResponse
-from server.cshr.utils.redis import set_notification_request_redis
+from server.cshr.utils.redis import set_notification_request_redis , set_notification_reply_redis
 
 
 class BaseHrLetterApiView(ListAPIView, GenericAPIView):
@@ -134,6 +134,9 @@ class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
         hr_letter.approval_user = current_user
         hr_letter.status = STATUS_CHOICES.APPROVED
         hr_letter.save()
+        url = request.build_absolute_uri()
+        #url.replace('accept/' , '')
+        set_notification_reply_redis(hr_letter ,"accepted" ,url )
         #should send notification here
         #should send email here
         return CustomResponse.success()
@@ -149,6 +152,9 @@ class HrLetterRejectApiView(ListAPIView, GenericAPIView):
         hr_letter.approval_user = current_user
         hr_letter.status = STATUS_CHOICES.REJECTED
         hr_letter.save()
+        url = request.build_absolute_uri()
+        #url.replace('accept/' , '')
+        set_notification_reply_redis(hr_letter ,"rejected" ,url )
         #should send notification here
         #should send email here
         return CustomResponse.success()

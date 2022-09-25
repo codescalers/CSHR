@@ -23,7 +23,7 @@ from server.cshr.utils.email_messages_templates import (
 from server.cshr.utils.email_messages_templates import (
     get_compensation_request_email_template,
 )
-from server.cshr.utils.redis import set_notification_request_redis
+from server.cshr.utils.redis import set_notification_request_redis , set_notification_reply_redis
 
 
 class BaseCompensationApiView(ListAPIView, GenericAPIView):
@@ -137,13 +137,16 @@ class CompensationAcceptApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
 
     def put(self, request: Request, id: str, format=None) -> Response:
-        comopensation = get_compensation_by_id(id=id)
-        if  comopensation is None:
+        compensation = get_compensation_by_id(id=id)
+        if  compensation is None:
             return CustomResponse.not_found(message="comopensation not found")
         current_user: User = get_user_by_id(request.user.id)
-        comopensation.approval_user = current_user
-        comopensation.status = STATUS_CHOICES.APPROVED
-        comopensation.save()
+        compensation.approval_user = current_user
+        compensation.status = STATUS_CHOICES.APPROVED
+        compensation.save()
+        url = request.build_absolute_uri()
+        #url.replace('accept/' , '')
+        set_notification_reply_redis(compensation ,"accepted" ,url )
         #should send notification here
         #should send email here
         return CustomResponse.success()
@@ -152,13 +155,16 @@ class CompensationRejectApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
 
     def put(self, request: Request, id: str, format=None) -> Response:
-        comopensation = get_compensation_by_id(id=id)
-        if comopensation is None:
+        compensation = get_compensation_by_id(id=id)
+        if compensation is None:
             return CustomResponse.not_found(message="comopensation not found")
         current_user: User = get_user_by_id(request.user.id)
-        comopensation.approval_user = current_user
-        comopensation.status = STATUS_CHOICES.REJECTED
-        comopensation.save()
+        compensation.approval_user = current_user
+        compensation.status = STATUS_CHOICES.REJECTED
+        compensation.save()
+        url = request.build_absolute_uri()
+        #url.replace('accept/' , '')
+        set_notification_reply_redis(compensation ,"rejected" ,url )
         #should send notification here
         #should send email here
         return CustomResponse.success()

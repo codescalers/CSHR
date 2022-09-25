@@ -18,7 +18,7 @@ from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
 from server.cshr.models.vacations import Vacation
 from server.cshr.services.vacations import get_vacations_by_user
-from server.cshr.utils.redis import set_notification_request_redis
+from server.cshr.utils.redis import set_notification_request_redis , set_notification_reply_redis
 from server.cshr.models.requests import STATUS_CHOICES
 
 
@@ -134,7 +134,9 @@ class VacationsAcceptApiView(ListAPIView, GenericAPIView):
         vacation.approval_user = current_user
         vacation.status = STATUS_CHOICES.APPROVED
         vacation.save()
-        #should send notification here
+        url = request.build_absolute_uri()
+        #url.replace('accept/' , '')
+        set_notification_reply_redis(vacation ,"accepted" ,url )
         #should send email here
         return CustomResponse.success()
 
@@ -149,6 +151,9 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         vacation.approval_user = current_user
         vacation.status = STATUS_CHOICES.REJECTED
         vacation.save()
+        url = request.build_absolute_uri()
+        #url.replace('accept/' , '')
+        set_notification_reply_redis(vacation ,"rejected" ,url )
         #should send notification here
         #should send email here
         return CustomResponse.success()
