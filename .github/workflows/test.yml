@@ -32,6 +32,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install poetry
+        pip install redis
         poetry install
     - name: Run Tests
       run: |
