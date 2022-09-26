@@ -1,4 +1,9 @@
-import type { AdminViewInterface, SupervisorViewInterface, UserInterface, UserType } from "../../../types";
+import type {
+	AdminViewInterface,
+	SupervisorViewInterface,
+	UserInterface,
+	UserType,
+} from "../../../types";
 import http from "../http-common";
 class UsersDataService {
 	errorMessage = "Error in Users Data Service:  with status ";
@@ -18,9 +23,16 @@ class UsersDataService {
 			throw new Error(error);
 		}
 	}
-	public async getById(id: number, user_type: UserType): Promise<UserInterface | AdminViewInterface | SupervisorViewInterface> {
+	public async getById(
+		id: number,
+		user_type: UserType
+	): Promise<UserInterface | AdminViewInterface | SupervisorViewInterface> {
 		try {
-			const { data, status, statusText } = await http.get(`/users/${user_type === "User" ? "" : user_type.toLowerCase() + "/"}${id}/`);
+			const { data, status, statusText } = await http.get(
+				`/users/${
+					user_type === "User" ? "" : user_type.toLowerCase() + "/"
+				}${id}/`
+			);
 			if (status === 404) {
 				throw new Error("User not found");
 			} else if (status !== 200) {

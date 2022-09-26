@@ -1,20 +1,22 @@
 <script lang="ts">
-  import type { UserType } from '../../types';
-  import { onMount } from 'svelte';
-  import { useParams } from 'svelte-navigator';
-  import { UserStore } from '../../stores';
-  import usersDataService from '../../services/axios/users/UsersDataService';
   import type {
     AdminViewInterface,
     SupervisorViewInterface,
     UserInterface,
   } from '../../types';
+  import { onMount } from 'svelte';
+  import { useParams } from 'svelte-navigator';
+  import { UserStore } from '../../stores';
+  import usersDataService from '../../services/axios/users/UsersDataService';
   import Skills from './Skills.svelte';
   import Certificates from './Certificates.svelte';
+  import UserData from './UserData.svelte';
+  import Evaluation from './Evaluation.svelte';
+  import Company from './Company.svelte';
+  import Salary from './Salary.svelte';
 
   const params = useParams();
   let id: number = Number($params.id);
-  let user_type: UserType = $params.user_type as UserType;
 
   export let isLoading = false;
   export let isError: boolean | null = null;
@@ -26,10 +28,10 @@
   onMount(async () => {
     isLoading = true;
     try {
-      if ($UserStore) {
+      if ($UserStore !== undefined && $UserStore.id === id) {
         user = $UserStore;
       } else {
-        user = await usersDataService.getById(id, user_type);
+        user = await usersDataService.getById(id, $UserStore.user_type);
       }
     } catch (error) {
       isError = true;
@@ -72,97 +74,38 @@
                 <i class="bi bi-telegram icon" style="color:#27A1E0;" />
                 <a class="mb-0" href={user.telegram_link}>telegram</a>
               </li>
-              <li
-                class="list-group-item d-flex justify-content-between align-items-center p-3"
-              >
-                <i class="bi bi-github icon" style="color: #333333;" />
-                <p class="mb-0">github</p>
-              </li>
-              <!--       <li
-              class="list-group-item d-flex justify-content-between align-items-center p-3"
-            >
-              <i class="fab fa-twitter fa-lg" style="color: #55acee;" />
-              <p class="mb-0">twitter</p>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center p-3"
-            >
-              <i class="fab fa-instagram fa-lg" style="color: #ac2bac;" />
-              <p class="mb-0">instagram</p>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center p-3"
-            >
-              <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;" />
-              <p class="mb-0">facebook</p> 
-            </li>-->
             </ul>
           </div>
         </div>
       </div>
       <div class="col-lg-8">
-        <div class="card mb-4">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Full Name</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0">{user.full_name}</p>
-              </div>
-            </div>
-            <hr />
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Email</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0">{user.email}</p>
-              </div>
-            </div>
-            <hr />
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Team</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0">{user.team}</p>
-              </div>
-            </div>
-            <hr />
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Phone Number</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0">{user.mobile_number}</p>
-              </div>
-            </div>
-            <hr />
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Address</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0">{user.address}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <UserData bind:user />
         <div class="row">
-          <Skills skills={user.skills} />
-          <Certificates certificates={user.user_certificates} />
+          <Skills bind:skills={user.skills} />
+          <Certificates bind:certificates={user.user_certificates} />
         </div>
+        {#if $UserStore.user_type === 'Admin' || $UserStore.user_type === 'Supervisor' || $UserStore.id === id}
+          <div class="row">
+            <Company bind:companies={user.user_company_properties} />
+            <Evaluation bind:evaluations={user.user_evaluation} />
+          </div>
+        {/if}
+
+        {#if $UserStore.user_type === 'Admin' || $UserStore.id === id}
+          <div class="row">
+            <Salary bind:salaries={user.salary} />
+          </div>
+        {/if}
       </div>
     </div>
   </div>
 {/if}
 
 <style>
-  .icon {
+  :global(.icon) {
     font-size: 1.4rem;
   }
-  .name {
+  :global(.name) {
     font-size: 1rem;
   }
 </style>

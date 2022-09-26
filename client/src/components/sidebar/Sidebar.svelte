@@ -6,14 +6,17 @@
   import LoadingComponent from '../loader/LoadingComponent.svelte';
   import ErrorComponent from '../error/ErrorComponent.svelte';
   import { authStore } from '../../stores';
+  import userDataService from '../../services/axios/user/UserDataService';
 
   const navigate = useNavigate();
-  onMount(() => {
-/*      if (authStore.isAuth() !== true) {
-      navigate('/login');
-    }  */
-    alert('authStore.isAuth()'+ authStore.isAuth());
-
+  onMount(async () => {
+    if (!authStore.isAuth() || $UserStore === undefined) {
+      try {
+        $UserStore = await userDataService.getMyProfile();
+      } catch (error) {
+        return navigate('/login');
+      }
+    }
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -86,7 +89,9 @@
             </p>
           </Link>
         </div>
-        <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
+        <Link to={'/profile/' + $UserStore.id}>
+          <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
+        </Link>
         <div class="header_img">
           <Link to={'/profile/' + $UserStore.id}>
             <div

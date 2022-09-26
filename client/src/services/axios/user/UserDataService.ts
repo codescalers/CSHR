@@ -14,8 +14,6 @@ class UserDataService {
 
 	public async getMyProfile() {
 		try {
-			const mydata = await http.get("myprofile/");
-
 			return await (
 				await http.get("myprofile/")
 			).data.results;
