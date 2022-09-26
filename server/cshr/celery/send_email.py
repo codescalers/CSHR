@@ -25,7 +25,7 @@ app.conf.beat_schedule = {
 app.conf.beat_schedule = {
     "quarter_evaluation": {
         "task": "send_quarter_evaluation_email",
-        "schedule": crontab(minute=0, hour=9),
+        "schedule": crontab(month_of_year="1,4,7,10", day_of_month=1, hour=8, minute=30),
     }
 }
 mail_title = "Probation period update"
