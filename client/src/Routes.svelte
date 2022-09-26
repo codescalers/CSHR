@@ -11,38 +11,19 @@
   // import AdminRoute from "./routes/AdminRoute.svelte";
   // import Supervisor from './routes/Supervisor.svelte'
   import Login from './pages/Login.svelte';
-  // import { setTheme } from './services/utils/theme';
-  // import isAuthenticated from './services/authentication/IsAuthenticated';
-  // import { onMount } from 'svelte';
+  import { setTheme } from './services/utils/theme';
+  import { onMount } from 'svelte';
   import Error from './pages/Error.svelte';
-  // import { UserStore } from './stores';
   import Requests from './pages/Requests.svelte';
   import UserProfile from './pages/UserProfile.svelte';
   import Team from './pages/Team.svelte';
   import Evaluation from './pages/Evaluation.svelte';
-  import Supervisor from './routes/Supervisor.svelte';
-  // const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
+  const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
-  /*   const config = {
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-  };
- */
-  // onMount(async () => {
-  //   if (mode) setTheme(mode);
-  //   isAuthenticated();
-
-  //   if (!$UserStore) {
-  //     return {
-  //       status: 302,
-  //       redirect: '/login',
-  //     };
-  //   } else {
-  //     return {
-  //       status: 200,
-  //       redirect: '/calendar',
-  //     };
-  //   }
-  // });
+   
+  onMount(async () => {
+     if (mode) setTheme(mode);
+  });
 </script>
 
 <main>
