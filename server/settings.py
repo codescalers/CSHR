@@ -8,7 +8,7 @@ SECRET_KEY = config("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG") == "ON"
 
-CELERY_IMPORTS = ("server.cshr.celery.send_email",)
+CELERY_IMPORTS = ("server.cshr.celery.send_email","server.cshr.celery.send_quarter_evaluation_email")
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
