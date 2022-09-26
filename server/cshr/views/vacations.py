@@ -3,7 +3,7 @@ from server.cshr.serializers.vacations import (
     VacationsSerializer,
 )
 from typing import List
-from server.cshr.serializers.vacations import VacationsUpdateSerializer, UserVacationBalanceSerializer
+from server.cshr.serializers.vacations import VacationsUpdateSerializer, UserVacationBalanceSerializer, UserBalanceUpdateSerializer
 from server.cshr.api.permission import IsSupervisor, UserIsAuthenticated, IsAdmin
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
@@ -173,7 +173,7 @@ class VacationCommentsAPIView(GenericAPIView):
             data=comment_, status_code=202, message="vacation comment added"
         )
 
-class UserVacationBalanceUpdate(ListAPIView, GenericAPIView):
+class UserVacationBalanceUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = UserVacationBalanceSerializer
     permission_classes = [IsAdmin]
 
@@ -188,4 +188,28 @@ class UserVacationBalanceUpdate(ListAPIView, GenericAPIView):
             )
         return CustomResponse.bad_request(
             data=serializer.error, message="failed to update base balance"
+        )
+
+class UserBalanceUpdateApiView(ListAPIView, GenericAPIView):
+    serializer_class = UserBalanceUpdateSerializer
+    permission_classes = [IsAdmin]
+
+    def put(self, request: Request):
+        yourdata= request.data
+        serializer = UserBalanceUpdateSerializer(data=yourdata)
+        if serializer.is_valid():
+            vh = VacationBalanceHelper()
+            ids = serializer.data["ids"]
+            type = serializer.data["type"]
+            new_value = serializer.data["new_value"]
+            for id in ids:
+                u = get_user_by_id(id=int(id))
+                vh.check(u)
+                v = u.vacationbalance
+                vh.update_balance(type, v, new_value)
+            return CustomResponse.success(
+                data=serializer.data, status_code=202, message="Users' balance updated"
+            )
+        return CustomResponse.bad_request(
+            data=serializer.error, message="failed to update balance"
         )

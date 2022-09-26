@@ -1,1 +1,1 @@
-{"annual_leaves": 15, "sick_leaves": 100, "compensation": 0, "unpaid": 0, "emergencies": 6, "leave_execuses": 3, "public_holidays": 0, "year": 2022}
+{"sick_leaves": 2.0, "compensation": 5.0, "unpaid": 4.0, "annual_leaves": 3.0, "emergencies": 1.0, "leave_execuses": 5.0, "public_holidays": ["2022-09-11 12:50:54.535463"], "year": 2022}

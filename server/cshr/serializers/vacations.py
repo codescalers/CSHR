@@ -1,4 +1,5 @@
 """This file will containes all vacation serializers."""
+from email.policy import default
 from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
@@ -67,3 +68,9 @@ class UserVacationBalanceSerializer(serializers.Serializer):
     leave_execuses = serializers.FloatField()
     public_holidays = serializers.JSONField(default=list)
     year = serializers.IntegerField()
+
+
+class UserBalanceUpdateSerializer(serializers.Serializer):
+    ids = serializers.JSONField(default=list)
+    type = serializers.CharField()
+    new_value = serializers.IntegerField()
