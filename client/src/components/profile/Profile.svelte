@@ -1,28 +1,35 @@
 <script lang="ts">
-  import { UserStore } from '../../stores';
+  import type { UserType } from '../../types';
   import { onMount } from 'svelte';
   import { useParams } from 'svelte-navigator';
+  import { UserStore } from '../../stores';
   import usersDataService from '../../services/axios/users/UsersDataService';
-  import type { UserInterface } from '../../types';
+  import type {
+    AdminViewInterface,
+    SupervisorViewInterface,
+    UserInterface,
+  } from '../../types';
+  import Skills from './Skills.svelte';
+  import Certificates from './Certificates.svelte';
 
   const params = useParams();
   let id: number = Number($params.id);
+  let user_type: UserType = $params.user_type as UserType;
+
   export let isLoading = false;
   export let isError: boolean | null = null;
-  let user: UserInterface;
+  let user:
+    | AdminViewInterface
+    | SupervisorViewInterface
+    | UserInterface
+    | null = null;
   onMount(async () => {
     isLoading = true;
     try {
-      if ($UserStore.id !== id) {
-        user = await usersDataService.getById(id);
-      } else if ($UserStore.id === id) {
-        if ($UserStore === undefined) {
-          alert($UserStore);
-          user = await usersDataService.getById(id);
-          $UserStore = user;
-        } else {
-          user = $UserStore;
-        }
+      if ($UserStore) {
+        user = $UserStore;
+      } else {
+        user = await usersDataService.getById(id, user_type);
       }
     } catch (error) {
       isError = true;
@@ -143,48 +150,8 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6">
-            <div class="card mb-4 mb-md-0">
-              <div class="card-body">
-                <p class="mb-4">
-                  <span class="text-primary font-italic me-1"
-                    ><i class="bi bi-tools icon" /></span
-                  >
-                  Skills
-                </p>
-                {#each user.skills as skill, index (index)}
-                  <p class="my-2 name">{skill.name}</p>
-                {/each}
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card mb-4 mb-md-0">
-              <div class="card-body">
-                <p class="mb-4">
-                  <span class="text-primary font-italic me-1"
-                    ><i class="bi bi-bookmark-fill icon" /></span
-                  >
-                  Certificates
-                </p>
-                {#each user.user_certificates as Certificate, index (index)}
-                  <div class="d-flex flex-row justify-content-between">
-                    <p class="my-2 name">
-                      {Certificate.name}
-                    </p>
-                    <a
-                      class="btn btn-primary my-0"
-                      href={Certificate.certificate_link + ''}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      check certificate
-                    </a>
-                  </div>
-                {/each}
-              </div>
-            </div>
-          </div>
+          <Skills skills={user.skills} />
+          <Certificates certificates={user.user_certificates} />
         </div>
       </div>
     </div>

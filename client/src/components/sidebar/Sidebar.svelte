@@ -9,9 +9,10 @@
 
   const navigate = useNavigate();
   onMount(() => {
-    if (authStore.isAuth() === false) {
+/*      if (authStore.isAuth() !== true) {
       navigate('/login');
-    }
+    }  */
+    alert('authStore.isAuth()'+ authStore.isAuth());
 
     const showNavbar = (
       toggleId: string,

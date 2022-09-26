@@ -36,6 +36,7 @@
     <Route path="input"><InputExample /></Route>
     <Route path="requests/"><Requests /></Route>
     <Route path="users/"><Users /></Route>
+    <Route path="profile/:user_type/:id" component={UserProfile} />
     <Route path="profile/:id" component={UserProfile} />
     <Route path="profile/" component={UserProfile} />
     <Route path="team/"><Team /></Route>

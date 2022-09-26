@@ -42,7 +42,7 @@
     </blockquote>
     <div class=" d-flex flex-row justify-content-center gap-3 my-3">
       <a href="#" class="btn btn-primary">send email</a>
-      <Link to={`../profile/${user.id}`} class="btn btn-outline-primary"
+      <Link to={`../profile/${user.user_type}/${user.id}`} class="btn btn-outline-primary"
         >visit profile</Link
       >
     </div>
