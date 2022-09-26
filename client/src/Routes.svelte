@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Router, Route } from 'svelte-routing';
+  import { Router, Route } from 'svelte-navigator';
   import Register from './pages/Register.svelte';
   import Calendar from './pages/Calendar.svelte';
   import Notifications from './pages/Notifications.svelte';
@@ -20,9 +20,8 @@
   import Evaluation from './pages/Evaluation.svelte';
   const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
-   
   onMount(async () => {
-     if (mode) setTheme(mode);
+    if (mode) setTheme(mode);
   });
 </script>
 

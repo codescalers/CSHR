@@ -1,5 +1,5 @@
 <script>
-  import { Route } from 'svelte-routing';
+  import { Route } from 'svelte-navigator';
   import isAuthenticated from '../services/authentication/IsAuthenticated';
   import Login from '../pages/Login.svelte';
   import parseJwt from '../services/authentication/JWTPars';

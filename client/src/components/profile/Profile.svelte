@@ -128,7 +128,7 @@
                 <p class="mb-0">Phone Number</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">{user.phone_number}</p>
+                <p class="text-muted mb-0">{user.mobile_number}</p>
               </div>
             </div>
             <hr />

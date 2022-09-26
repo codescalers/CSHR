@@ -1,5 +1,4 @@
 class Cookie {
-
 	// to check if cookie exists
 	isFound(key: string) {
 		return document.cookie.indexOf(key) !== -1;
@@ -7,11 +6,13 @@ class Cookie {
 	// get cookie value by key name
 	get(key: string) {
 		if (this.isFound(key)) {
-			return document.cookie.split(";").filter((item) => {
-				return item.indexOf(key) !== -1;
-			}).join(";");
-		}
-		else {
+			return document.cookie
+				.split(";")
+				.filter((item) => {
+					return item.indexOf(key) !== -1;
+				})
+				.join(";");
+		} else {
 			throw new Error("Cookie not found to be retrieved");
 		}
 	}
@@ -21,8 +22,7 @@ class Cookie {
 			const date = new Date();
 			date.setMonth(date.getMonth() + expiresMonth);
 			document.cookie = `${key}=${value};expires=${date.toUTCString()}`;
-		}
-		else {
+		} else {
 			throw new Error("Cookie already exists");
 		}
 	}
@@ -32,19 +32,20 @@ class Cookie {
 		if (this.isFound(key)) {
 			this.remove(key);
 			this.set(key, value, expiresMonth);
-		}
-		else {
+		} else {
 			throw new Error("Cookie not found to be updated");
 		}
 	}
 	// to remove cookie value
 	remove(key: string) {
 		if (this.isFound(key)) {
-			return document.cookie.split(";").filter((item) => {
-				return item !== key;
-			}).join(";");
-		}
-		else {
+			return document.cookie
+				.split(";")
+				.filter((item) => {
+					return item !== key;
+				})
+				.join(";");
+		} else {
 			throw new Error("Cookie not found to be removed");
 		}
 	}
@@ -72,7 +73,6 @@ class Cookie {
 	clear() {
 		document.cookie = "";
 	}
-
 }
 
 export default new Cookie();

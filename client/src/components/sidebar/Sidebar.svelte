@@ -1,12 +1,18 @@
 <script lang="ts">
-  import { Router, Link } from 'svelte-routing';
+  import { Router, Link, useNavigate } from 'svelte-navigator';
   import { onMount } from 'svelte';
   import Footer from '../footer/Footer.svelte';
   import { UserStore, NotificationStore } from '../../stores';
   import LoadingComponent from '../loader/LoadingComponent.svelte';
   import ErrorComponent from '../error/ErrorComponent.svelte';
+  import { authStore } from '../../stores';
 
+  const navigate = useNavigate();
   onMount(() => {
+    if (authStore.isAuth() === false) {
+      navigate('/login');
+    }
+
     const showNavbar = (
       toggleId: string,
       navId: string,
