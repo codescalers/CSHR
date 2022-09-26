@@ -13,6 +13,6 @@ urlpatterns = [
     path("user/", CompensationUserApiView.as_view()),
     path("edit/<str:id>/", CompensationUpdateApiView.as_view()),
     path("accept/<str:id>/", CompensationAcceptApiView.as_view()),
-    path("reject/<str:id>/", CompensationRejectApiView.as_view()) ,
+    path("reject/<str:id>/", CompensationRejectApiView.as_view()),
     path("<str:id>/", CompensationApiView.as_view()),
 ]

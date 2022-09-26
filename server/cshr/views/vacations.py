@@ -18,8 +18,10 @@ from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
 from server.cshr.models.vacations import Vacation
 from server.cshr.services.vacations import get_vacations_by_user
-from server.cshr.utils.redis import set_notification_request_redis , set_notification_reply_redis
-from server.cshr.models.requests import STATUS_CHOICES
+from server.cshr.utils.redis import (
+    set_notification_request_redis,
+    set_notification_reply_redis,
+)
 
 
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
@@ -116,13 +118,15 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             # to send email async just add .delay after function name as the line below
             # send_email_for_reply.delay(current_user.id, serializer.data)
-            msg = get_vacation_reply_email_template(current_user, serializer.data, url)
+            msg = get_vacation_reply_email_template(current_user, vacation, url)
             return send_email_for_reply(
-                current_user.id, serializer.data, msg, "Vacation reply"
+                current_user.id, vacation, msg, "Vacation reply"
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="vacation failed to update"
         )
+
+
 class VacationsAcceptApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
 
@@ -135,10 +139,12 @@ class VacationsAcceptApiView(ListAPIView, GenericAPIView):
         vacation.status = STATUS_CHOICES.APPROVED
         vacation.save()
         url = request.build_absolute_uri()
-        #url.replace('accept/' , '')
-        set_notification_reply_redis(vacation ,"accepted" ,url )
-        #should send email here
-        return CustomResponse.success()
+        set_notification_reply_redis(vacation, "accepted", url)
+        msg = get_vacation_reply_email_template(current_user, vacation, url)
+        # to send email async just add .delay after function name as the line below
+        # send_email_for_reply.delay(current_user.id, serializer.data)
+        return send_email_for_reply(current_user.id, vacation, msg, "Vacation reply")
+
 
 class VacationsRejectApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
@@ -152,8 +158,8 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         vacation.status = STATUS_CHOICES.REJECTED
         vacation.save()
         url = request.build_absolute_uri()
-        #url.replace('accept/' , '')
-        set_notification_reply_redis(vacation ,"rejected" ,url )
-        #should send notification here
-        #should send email here
-        return CustomResponse.success()
+        set_notification_reply_redis(vacation, "rejected", url)
+        msg = get_vacation_reply_email_template(current_user, vacation, url)
+        # to send email async just add .delay after function name as the line below
+        # send_email_for_reply.delay(current_user.id, serializer.data)
+        return send_email_for_reply(current_user.id, vacation, msg, "Vacation reply")

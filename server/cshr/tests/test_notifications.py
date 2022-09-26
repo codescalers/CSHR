@@ -76,12 +76,6 @@ class NotificationsTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
-    def test_get_notifications_non_authorized(self):
-        """get notifications"""
-        url = "/api/notifications/"
-        response = client.get(url, format="json")
-        self.assertEqual(response.status_code, 403)
-
     def test_get_notifications_user_authorized(self):
         """get notifications"""
         url = "/api/notifications/"

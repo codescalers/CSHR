@@ -23,7 +23,10 @@ from server.cshr.utils.email_messages_templates import (
 from server.cshr.utils.email_messages_templates import (
     get_compensation_request_email_template,
 )
-from server.cshr.utils.redis import set_notification_request_redis , set_notification_reply_redis
+from server.cshr.utils.redis import (
+    set_notification_request_redis,
+    set_notification_reply_redis,
+)
 
 
 class BaseCompensationApiView(ListAPIView, GenericAPIView):
@@ -123,33 +126,35 @@ class CompensationUpdateApiView(ListAPIView, GenericAPIView):
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             # to send email async just add .delay after function name as the line below
             # send_email_for_reply.delay(current_user.id, serializer.data)
-            msg = get_compensation_reply_email_template(
-                current_user, serializer.data, url
-            )
+            msg = get_compensation_reply_email_template(current_user, compensation, url)
             return send_email_for_reply(
-                current_user.id, serializer.data, msg, "Compensation reply"
+                current_user.id, compensation, msg, "Compensation reply"
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="compensation failed to update"
         )
+
 
 class CompensationAcceptApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         compensation = get_compensation_by_id(id=id)
-        if  compensation is None:
+        if compensation is None:
             return CustomResponse.not_found(message="comopensation not found")
         current_user: User = get_user_by_id(request.user.id)
         compensation.approval_user = current_user
         compensation.status = STATUS_CHOICES.APPROVED
         compensation.save()
         url = request.build_absolute_uri()
-        #url.replace('accept/' , '')
-        set_notification_reply_redis(compensation ,"accepted" ,url )
-        #should send notification here
-        #should send email here
-        return CustomResponse.success()
+        set_notification_reply_redis(compensation, "accepted", url)
+        msg = get_compensation_reply_email_template(current_user, compensation, url)
+        # to send email async just add .delay after function name as the line below
+        # send_email_for_reply.delay(current_user.id, serializer.data)
+        return send_email_for_reply(
+            current_user.id, compensation, msg, "Compensation reply"
+        )
+
 
 class CompensationRejectApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
@@ -163,8 +168,10 @@ class CompensationRejectApiView(ListAPIView, GenericAPIView):
         compensation.status = STATUS_CHOICES.REJECTED
         compensation.save()
         url = request.build_absolute_uri()
-        #url.replace('accept/' , '')
-        set_notification_reply_redis(compensation ,"rejected" ,url )
-        #should send notification here
-        #should send email here
-        return CustomResponse.success()
+        set_notification_reply_redis(compensation, "rejected", url)
+        msg = get_compensation_reply_email_template(current_user, compensation, url)
+        # to send email async just add .delay after function name as the line below
+        # send_email_for_reply.delay(current_user.id, serializer.data)
+        return send_email_for_reply(
+            current_user.id, compensation, msg, "Compensation reply"
+        )

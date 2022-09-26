@@ -145,8 +145,7 @@ def send_email_for_reply(approving_user_id, data, msg, mail_title) -> Response:
     approving_user: User = get_user_by_id(approving_user_id)
     if approving_user is None:
         return CustomResponse.not_found(message="user is not found", status_code=404)
-    applying_user_id = data["applying_user"]
-    applying_user = get_user_by_id(applying_user_id)
+    applying_user = data.applying_user
     if applying_user is None:
         return CustomResponse.not_found(message="user is not found", status_code=404)
     recievers: array[str] = get_email_recievers(applying_user)

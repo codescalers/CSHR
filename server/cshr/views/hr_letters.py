@@ -19,7 +19,10 @@ from server.cshr.utils.email_messages_templates import (
 )
 
 from server.cshr.api.response import CustomResponse
-from server.cshr.utils.redis import set_notification_request_redis , set_notification_reply_redis
+from server.cshr.utils.redis import (
+    set_notification_request_redis,
+    set_notification_reply_redis,
+)
 
 
 class BaseHrLetterApiView(ListAPIView, GenericAPIView):
@@ -115,13 +118,14 @@ class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             # to send email async just add .delay after function name as the line below
             # send_email_for_reply.delay(current_user.id, serializer.data)
-            msg = get_hr_letter_reply_email_template(current_user, serializer.data, url)
+            msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
             return send_email_for_reply(
-                current_user.id, serializer.data, msg, "Hr Letter reply"
+                current_user.id, hr_letter, msg, "Hr Letter reply"
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="HR Letter failed to update"
         )
+
 
 class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
@@ -135,11 +139,12 @@ class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
         hr_letter.status = STATUS_CHOICES.APPROVED
         hr_letter.save()
         url = request.build_absolute_uri()
-        #url.replace('accept/' , '')
-        set_notification_reply_redis(hr_letter ,"accepted" ,url )
-        #should send notification here
-        #should send email here
-        return CustomResponse.success()
+        set_notification_reply_redis(hr_letter, "accepted", url)
+        msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
+        # to send email async just add .delay after function name as the line below
+        # send_email_for_reply.delay(current_user.id, serializer.data)
+        return send_email_for_reply(current_user.id, hr_letter, msg, "Hr Letter reply")
+
 
 class HrLetterRejectApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
@@ -153,8 +158,8 @@ class HrLetterRejectApiView(ListAPIView, GenericAPIView):
         hr_letter.status = STATUS_CHOICES.REJECTED
         hr_letter.save()
         url = request.build_absolute_uri()
-        #url.replace('accept/' , '')
-        set_notification_reply_redis(hr_letter ,"rejected" ,url )
-        #should send notification here
-        #should send email here
-        return CustomResponse.success()
+        set_notification_reply_redis(hr_letter, "rejected", url)
+        msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
+        # to send email async just add .delay after function name as the line below
+        # send_email_for_reply.delay(current_user.id, serializer.data)
+        return send_email_for_reply(current_user.id, hr_letter, msg, "Hr Letter reply")

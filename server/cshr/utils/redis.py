@@ -30,19 +30,26 @@ def set_notification_request_redis(data, url):
         )
         redis_instance.hmset(hashname, dict)
 
-def set_notification_reply_redis(data ,state ,  url):
+
+def set_notification_reply_redis(data, state, url):
     """this function set accept notifications"""
     approving_user = data.approval_user
-    title = approving_user.first_name + " " + approving_user.last_name + " " + state + "your " + data.type + " request"
+    title = (
+        approving_user.first_name
+        + " "
+        + approving_user.last_name
+        + " "
+        + state
+        + "your "
+        + data.type
+        + " request"
+    )
     dict = {"title": title, "url": url}
     applying_user = data.applying_user
-    hashname = (
-            "user" + str(applying_user.id) + ":" + data.type + str(data.id)
-        )
+    hashname = "user" + str(applying_user.id) + ":" + data.type + str(data.id)
     redis_instance.hmset(hashname, dict)
-    
 
-    
+
 def get_notifications(user: User):
     """this function returns all notifications for certain user"""
     keys = redis_instance.keys("user" + str(user.id) + "*")
