@@ -19,7 +19,7 @@ from server.cshr.utils.email_messages_templates import (
 )
 
 from server.cshr.api.response import CustomResponse
-from server.cshr.utils.redis import (
+from server.cshr.utils.redis_functions import (
     set_notification_request_redis,
     set_notification_reply_redis,
 )

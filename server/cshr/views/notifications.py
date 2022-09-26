@@ -1,4 +1,4 @@
-from server.cshr.utils.redis import get_notifications
+from server.cshr.utils.redis_functions import get_notifications
 from rest_framework.generics import GenericAPIView, ListAPIView
 from server.cshr.api.permission import UserIsAuthenticated
 from rest_framework.response import Response

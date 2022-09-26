@@ -18,7 +18,7 @@ from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
 from server.cshr.models.vacations import Vacation
 from server.cshr.services.vacations import get_vacations_by_user
-from server.cshr.utils.redis import (
+from server.cshr.utils.redis_functions import (
     set_notification_request_redis,
     set_notification_reply_redis,
 )

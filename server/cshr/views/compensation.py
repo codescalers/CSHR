@@ -23,7 +23,7 @@ from server.cshr.utils.email_messages_templates import (
 from server.cshr.utils.email_messages_templates import (
     get_compensation_request_email_template,
 )
-from server.cshr.utils.redis import (
+from server.cshr.utils.redis_functions import (
     set_notification_request_redis,
     set_notification_reply_redis,
 )
