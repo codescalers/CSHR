@@ -6,7 +6,6 @@ import os
 import json
 import calendar
 import datetime
-import ast
 from django.db.models import Q
 from datetime import timedelta, date
 
@@ -46,7 +45,6 @@ class VacationBalanceHelper:
         if founded:
             self.file_content[key] = new_value
         return self.bulk_write(self.file_content)
-
 
     def calculate_public_holidays(self, public_holidays: List, created_at: datetime):
         """
@@ -124,7 +122,8 @@ class VacationBalanceHelper:
         calculated_values = {
             "annual_leaves": (self.file_content["annual_leaves"] / 12)
             * month_helper_constant,
-            "emergencies": (self.file_content["emergencies"] / 12) * month_helper_constant,
+            "emergencies": (self.file_content["emergencies"] / 12)
+            * month_helper_constant,
             "leave_execuses": (self.file_content["leave_execuses"] / 12)
             * month_helper_constant,
             "sick_leaves": self.file_content["sick_leaves"],
@@ -141,7 +140,7 @@ class VacationBalanceHelper:
             date(date.today().year, 1, 1)
         )
         users = User.objects.filter(~Q(created_at__year=self.read_file()["year"]))
-        
+
         for u in users:
             v = u.vacationbalance
             v.annual_leaves = round(calculated_values["annual_leaves"], 1)
@@ -162,7 +161,9 @@ class VacationBalanceHelper:
         vacation_days = self.get_difference_between_two_days(start_date, end_date)
         if hasattr(v, type):
             curr_balance = getattr(v, type)
+            print(user.vacationbalance.annual_leaves)
             if old_balance + curr_balance >= vacation_days:
+                print(vacation_days)
                 return True
             return f"You only have {old_balance+curr_balance} days left of type {type}"
 
@@ -171,11 +172,11 @@ class VacationBalanceHelper:
         This function simply checks if a user has a vacationbalance object
         if not it wiil create one and return it otherwise it will return it.
         """
-        
+
         try:
             return VacationBalance.objects.get(user=user)
         except VacationBalance.DoesNotExist:
-            
+
             return self.create(user)
 
     def create(self, user: User) -> VacationBalance:
@@ -188,13 +189,13 @@ class VacationBalanceHelper:
         calaculated_values = self.calculate_vacation_values(user.created_at)
         VacationBalance.objects.create(
             user=user,
-            annual_leaves=round(calaculated_values["annual_leaves"], 1),
-            compensation=round(calaculated_values["compensation"], 1),
-            sick_leaves=round(calaculated_values["sick_leaves"], 1),
-            emergencies=round(calaculated_values["emergencies"], 1),
-            public_holidays=round(calaculated_values["public_holidays"], 1),
-            leave_execuses=round(calaculated_values["leave_execuses"], 1),
-            unpaid=round(calaculated_values["unpaid"], 1),
+            annual_leaves=round(calaculated_values["annual_leaves"]),
+            compensation=round(calaculated_values["compensation"]),
+            sick_leaves=round(calaculated_values["sick_leaves"]),
+            emergencies=round(calaculated_values["emergencies"]),
+            public_holidays=round(calaculated_values["public_holidays"]),
+            leave_execuses=round(calaculated_values["leave_execuses"]),
+            unpaid=round(calaculated_values["unpaid"]),
         ),
 
         return VacationBalance.objects.get(user=user)
@@ -226,7 +227,7 @@ class VacationBalanceHelper:
     def calculate_public_and_official_holidays(
         self, user: User, start_date: datetime, vacation_days: int
     ):
-    
+
         public_holidays_count = 0
         official_holidays_count = 0
         official_holidays = user.location.official_holidays
@@ -281,4 +282,3 @@ class VacationBalanceHelper:
             self.update_json_format(user.vacationbalance, type, 0)
             if value > 0:
                 return self.calculate_balance(user.vacationbalance, value, type)
-

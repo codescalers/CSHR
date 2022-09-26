@@ -6,22 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0048_merge_20220921_1102'),
+        ("cshr", "0048_merge_20220921_1102"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='office',
-            name='official_holidays',
+            model_name="office",
+            name="official_holidays",
             field=models.JSONField(default=list, null=True, unique=True),
         ),
         migrations.RemoveField(
-            model_name='vacationbalance',
-            name='public_holidays',
+            model_name="vacationbalance",
+            name="public_holidays",
         ),
         migrations.AddField(
-            model_name='vacationbalance',
-            name='public_holidays',
+            model_name="vacationbalance",
+            name="public_holidays",
             field=models.IntegerField(default=2),
         ),
     ]

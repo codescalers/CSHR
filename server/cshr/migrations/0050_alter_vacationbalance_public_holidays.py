@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0049_office_official_holidays_and_more'),
+        ("cshr", "0049_office_official_holidays_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='vacationbalance',
-            name='public_holidays',
+            model_name="vacationbalance",
+            name="public_holidays",
             field=models.IntegerField(),
         ),
     ]

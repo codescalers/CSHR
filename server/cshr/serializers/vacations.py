@@ -1,5 +1,4 @@
 """This file will containes all vacation serializers."""
-from email.policy import default
 from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
@@ -7,6 +6,7 @@ from rest_framework.serializers import (
 from server.cshr.models.vacations import Vacation
 from server.cshr.serializers.users import BaseUserSerializer
 from rest_framework import serializers
+
 
 class VacationsSerializer(ModelSerializer):
     class Meta:
@@ -58,6 +58,7 @@ class LandingPageVacationsSerializer(ModelSerializer):
         this function return request's approving user
         """
         return BaseUserSerializer(obj.approval_user).data
+
 
 class UserVacationBalanceSerializer(serializers.Serializer):
     sick_leaves = serializers.FloatField()

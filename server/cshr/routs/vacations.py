@@ -7,7 +7,7 @@ from server.cshr.views.vacations import (
     VacationsUpdateApiView,
     VacationUserApiView,
     UserVacationBalanceUpdateApiView,
-    UserBalanceUpdateApiView
+    UserBalanceUpdateApiView,
 )
 
 urlpatterns = [
@@ -18,5 +18,5 @@ urlpatterns = [
     path("put/<str:id>/", VacationApprovalAPIView.as_view()),
     path("comment/<str:id>/", VacationCommentsAPIView.as_view()),
     path("updatebasebalance", UserVacationBalanceUpdateApiView.as_view()),
-    path("updateuserbalance", UserBalanceUpdateApiView.as_view())
+    path("updateuserbalance", UserBalanceUpdateApiView.as_view()),
 ]

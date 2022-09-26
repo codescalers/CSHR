@@ -3,7 +3,11 @@ from server.cshr.serializers.vacations import (
     VacationsSerializer,
 )
 from typing import List
-from server.cshr.serializers.vacations import VacationsUpdateSerializer, UserVacationBalanceSerializer, UserBalanceUpdateSerializer
+from server.cshr.serializers.vacations import (
+    VacationsUpdateSerializer,
+    UserVacationBalanceSerializer,
+    UserBalanceUpdateSerializer,
+)
 from server.cshr.api.permission import IsSupervisor, UserIsAuthenticated, IsAdmin
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
@@ -15,7 +19,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from server.cshr.api.response import CustomResponse
 from datetime import datetime
-
 from server.cshr.utils.update_change_log import (
     update_vacation_change_log,
     update_vacation_comment_log,
@@ -39,8 +42,18 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
     def post(self, request: Request) -> Response:
         """Method to create a new vacation request"""
         serializer = self.get_serializer(data=request.data)
+        v = VacationBalanceHelper()
         if serializer.is_valid():
             current_user: User = get_user_by_id(request.user.id)
+            start_date = request.data["from_date"]
+            end_date = request.data["end_date"]
+            type = request.data["reason"]
+            start = datetime.strptime(start_date, "%Y-%m-%d").date()
+            end = datetime.strptime(end_date, "%Y-%m-%d").date()
+            v.check(current_user)
+            err = v.check_balance(current_user, type, start, end)
+            if err is not True:
+                return CustomResponse.bad_request(message=err)
             serializer.save(
                 type=TYPE_CHOICES.VACATIONS,
                 status=STATUS_CHOICES.PENDING,
@@ -173,12 +186,13 @@ class VacationCommentsAPIView(GenericAPIView):
             data=comment_, status_code=202, message="vacation comment added"
         )
 
+
 class UserVacationBalanceUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = UserVacationBalanceSerializer
     permission_classes = [IsAdmin]
 
     def put(self, request: Request):
-        yourdata= request.data
+        yourdata = request.data
         serializer = UserVacationBalanceSerializer(data=yourdata)
         if serializer.is_valid():
             v = VacationBalanceHelper()
@@ -190,12 +204,13 @@ class UserVacationBalanceUpdateApiView(ListAPIView, GenericAPIView):
             data=serializer.error, message="failed to update base balance"
         )
 
+
 class UserBalanceUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = UserBalanceUpdateSerializer
     permission_classes = [IsAdmin]
 
     def put(self, request: Request):
-        yourdata= request.data
+        yourdata = request.data
         serializer = UserBalanceUpdateSerializer(data=yourdata)
         if serializer.is_valid():
             vh = VacationBalanceHelper()
@@ -203,7 +218,12 @@ class UserBalanceUpdateApiView(ListAPIView, GenericAPIView):
             type = serializer.data["type"]
             new_value = serializer.data["new_value"]
             for id in ids:
-                u = get_user_by_id(id=int(id))
+                try:
+                    u = get_user_by_id(id=int(id))
+                except User.DoesNotExist:
+                    return CustomResponse.bad_request(
+                        data=serializer.error, message="failed to update balance"
+                    )
                 vh.check(u)
                 v = u.vacationbalance
                 vh.update_balance(type, v, new_value)
