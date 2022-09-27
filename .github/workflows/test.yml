@@ -14,18 +14,16 @@ jobs:
         python-version: [ 3.8 ]
     steps:
     - uses: actions/checkout@v3
-#     - name: Create env file
-#       run: |
-#           touch .env
-#           echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
-#           echo DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }} >> .env
-#           echo EMAIL=${{ secrets.EMAIL }} >> .env
-#           echo EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} >> .env
-#           echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
-#           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
-#           echo REDIS_HOST_ONLY= 'localhost' >> .env
-#           echo REDIS_PORT= 6000 >> .env
-#           cat .env
+    - name: Create env file
+      run: |
+          touch .env
+          echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
+          echo DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }} >> .env
+          echo EMAIL=${{ secrets.EMAIL }} >> .env
+          echo EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} >> .env
+          echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
+          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
+          cat .env
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
