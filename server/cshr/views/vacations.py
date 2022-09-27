@@ -50,13 +50,14 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 applying_user=current_user,
             )
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_request.delay(current_user.id, serializer.data)
             msg = get_vacation_request_email_template(
                 current_user, serializer.data, url
             )
             bool1 = set_notification_request_redis(serializer.data, url)
-            bool2 = send_email_for_request(current_user.id, msg, "Vacation request")
+            bool2 = send_email_for_request.delay(
+                current_user.id, msg, "Vacation request"
+            )
+
             if bool1 and bool2:
                 return CustomResponse.success(
                     data=serializer.data,
@@ -137,11 +138,10 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
             serializer.save(approval_user=current_user)
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_reply.delay(current_user.id, serializer.data)
             msg = get_vacation_reply_email_template(current_user, vacation, url)
-            bool = send_email_for_reply(
-                current_user.id, vacation, msg, "Vacation reply"
+
+            bool = send_email_for_reply.delay(
+                current_user.id, vacation.applying_user.id, msg, "Vacation reply"
             )
             if bool:
                 return CustomResponse.success(
@@ -173,9 +173,9 @@ class VacationsAcceptApiView(ListAPIView, GenericAPIView):
         url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(vacation, "accepted", url)
         msg = get_vacation_reply_email_template(current_user, vacation, url)
-        # to send email async just add .delay after function name as the line below
-        # send_email_for_reply.delay(current_user.id, serializer.data)
-        bool2 = send_email_for_reply(current_user.id, vacation, msg, "Vacation reply")
+        bool2 = send_email_for_reply.delay(
+            current_user.id, vacation.applying_user.id, msg, "Vacation reply"
+        )
         if bool1 and bool2:
             return CustomResponse.success(
                 message="vacation request accepted", status_code=202
@@ -200,9 +200,9 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(vacation, "rejected", url)
         msg = get_vacation_reply_email_template(current_user, vacation, url)
-        # to send email async just add .delay after function name as the line below
-        # send_email_for_reply.delay(current_user.id, serializer.data)
-        bool2 = send_email_for_reply(current_user.id, vacation, msg, "Vacation reply")
+        bool2 = send_email_for_reply.delay(
+            current_user.id, vacation.applying_user.id, msg, "Vacation reply"
+        )
         if bool1 and bool2:
             return CustomResponse.success(
                 message="vacation request rejected", status_code=202

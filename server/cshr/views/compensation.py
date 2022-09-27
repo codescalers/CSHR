@@ -53,13 +53,13 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
                 applying_user=current_user,
             )
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_request.delay(current_user.id, serializer.data)
             msg = get_compensation_request_email_template(
                 current_user, serializer.data, url
             )
             bool1 = set_notification_request_redis(serializer.data, url)
-            bool2 = send_email_for_request(current_user.id, msg, "Compensation request")
+            bool2 = send_email_for_request.delay(
+                current_user.id, msg, "Compensation request"
+            )
             if bool1 and bool2:
                 return CustomResponse.success(
                     data=serializer.data,
@@ -134,11 +134,12 @@ class CompensationUpdateApiView(ListAPIView, GenericAPIView):
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_reply.delay(current_user.id, serializer.data)
             msg = get_compensation_reply_email_template(current_user, compensation, url)
-            bool = send_email_for_reply(
-                current_user.id, compensation, msg, "Compensation reply"
+            bool = send_email_for_reply.delay(
+                current_user.id,
+                compensation.applying_user.id,
+                msg,
+                "Compensation reply",
             )
             if bool:
                 return CustomResponse.success(
@@ -169,10 +170,8 @@ class CompensationAcceptApiView(ListAPIView, GenericAPIView):
         url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(compensation, "accepted", url)
         msg = get_compensation_reply_email_template(current_user, compensation, url)
-        # to send email async just add .delay after function name as the line below
-        # send_email_for_reply.delay(current_user.id, serializer.data)
-        bool2 = send_email_for_reply(
-            current_user.id, compensation, msg, "Compensation reply"
+        bool2 = send_email_for_reply.delay(
+            current_user.id, compensation.applying_user.id, msg, "Compensation reply"
         )
         if bool1 and bool2:
             return CustomResponse.success(
@@ -198,10 +197,8 @@ class CompensationRejectApiView(ListAPIView, GenericAPIView):
         url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(compensation, "rejected", url)
         msg = get_compensation_reply_email_template(current_user, compensation, url)
-        # to send email async just add .delay after function name as the line below
-        # send_email_for_reply.delay(current_user.id, serializer.data)
-        bool2 = send_email_for_reply(
-            current_user.id, compensation, msg, "Compensation reply"
+        bool2 = send_email_for_reply.delay(
+            current_user.id, compensation.applying_user.id, msg, "Compensation reply"
         )
         if bool1 and bool2:
             return CustomResponse.success(

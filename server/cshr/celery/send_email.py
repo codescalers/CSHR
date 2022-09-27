@@ -129,7 +129,9 @@ def send_email_for_request(user_id, msg, mail_title) -> Response:
 
 
 @shared_task()
-def send_email_for_reply(approving_user_id, data, msg, mail_title) -> Response:
+def send_email_for_reply(
+    approving_user_id, applying_user_id, msg, mail_title
+) -> Response:
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers
@@ -138,10 +140,8 @@ def send_email_for_reply(approving_user_id, data, msg, mail_title) -> Response:
 
     check_email_configuration()
     approving_user: User = get_user_by_id(approving_user_id)
-    if approving_user is None:
-        return False
-    applying_user = data.applying_user
-    if applying_user is None:
+    applying_user: User = get_user_by_id(applying_user_id)
+    if approving_user or applying_user is None:
         return False
     recievers: array[str] = get_email_recievers(applying_user)
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)

@@ -42,13 +42,13 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
                 applying_user=current_user,
             )
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_request.delay(current_user.id, serializer.data)
             msg = get_hr_letter_request_email_template(
                 current_user, serializer.data, url
             )
             bool1 = set_notification_request_redis(serializer.data, url)
-            bool2 = send_email_for_request(current_user.id, msg, "Hr Letter request")
+            bool2 = send_email_for_request.delay(
+                current_user.id, msg, "Hr Letter request"
+            )
             if bool1 and bool2:
                 return CustomResponse.success(
                     data=serializer.data,
@@ -126,11 +126,9 @@ class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_reply.delay(current_user.id, serializer.data)
             msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
-            bool = send_email_for_reply(
-                current_user.id, hr_letter, msg, "Hr Letter reply"
+            bool = send_email_for_reply.delay(
+                current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply"
             )
             if bool:
                 return CustomResponse.success(
@@ -161,9 +159,9 @@ class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
         url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(hr_letter, "accepted", url)
         msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
-        # to send email async just add .delay after function name as the line below
-        # send_email_for_reply.delay(current_user.id, serializer.data)
-        bool2 = send_email_for_reply(current_user.id, hr_letter, msg, "Hr Letter reply")
+        bool2 = send_email_for_reply.delay(
+            current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply"
+        )
         if bool1 and bool2:
             return CustomResponse.success(
                 message="hr letter request accepted", status_code=202
@@ -188,9 +186,9 @@ class HrLetterRejectApiView(ListAPIView, GenericAPIView):
         url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(hr_letter, "rejected", url)
         msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
-        # to send email async just add .delay after function name as the line below
-        # send_email_for_reply.delay(current_user.id, serializer.data)
-        bool2 = send_email_for_reply(current_user.id, hr_letter, msg, "Hr Letter reply")
+        bool2 = send_email_for_reply.delay(
+            current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply"
+        )
         if bool1 and bool2:
             return CustomResponse.success(
                 message="hr letter request rejected", status_code=202
