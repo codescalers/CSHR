@@ -1,13 +1,16 @@
 <script lang="ts">
-  import type { eventItemType, userType } from '../../services/axios/home/types'
-  import { UserStore } from '../../stores'
-  import Modal from '../modal/Modal.svelte'
-  import StackedImages from '../image/StackedImages.svelte'
+  import type {
+    eventItemType,
+    userType,
+  } from '../../services/axios/home/types';
+  import { UserStore } from '../../stores';
+  import Modal from '../modal/Modal.svelte';
+  import StackedImages from '../image/StackedImages.svelte';
 
-  export let item: eventItemType
-  let itemIndex: number = 0
-  let clickedUser: userType
-  $: clickedUser = item.people[itemIndex]
+  export let item: eventItemType;
+  let itemIndex: number = 0;
+  let clickedUser: userType;
+  $: clickedUser = item.people[itemIndex];
 </script>
 
 <Modal

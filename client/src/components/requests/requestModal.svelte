@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Modal from '../modal/Modal.svelte'
-  export let index = 3
-  export let request: any
+  import Modal from '../modal/Modal.svelte';
+  export let index = 3;
+  export let request: any;
 </script>
 
 <Modal

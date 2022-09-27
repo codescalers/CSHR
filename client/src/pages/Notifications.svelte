@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Sidebar from '../components/sidebar/Sidebar.svelte'
+  import Sidebar from '../components/sidebar/Sidebar.svelte';
 
-  let pageCount = 0
-  let pageSize = 3
+  let pageCount = 0;
+  let pageSize = 3;
   let requests = [
     {
       name: 'Marc',
@@ -52,18 +52,18 @@
       time: '6.33',
       classPill: 'primary',
     },
-  ]
+  ];
   function increment() {
     if (totalNotifications - pageCount * 3 - pageSize > 0) {
-      pageCount++
+      pageCount++;
     }
   }
   function decrement() {
     if (pageCount > 0) {
-      pageCount--
+      pageCount--;
     }
   }
-  let totalNotifications = requests.length
+  let totalNotifications = requests.length;
 </script>
 
 <Sidebar>

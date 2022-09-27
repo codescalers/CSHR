@@ -1,15 +1,15 @@
 <script lang="ts">
   type stackedImageType = {
-    image: string
-    full_name?: string
-    gender?: string
-    team?: string
-  }
+    image: string;
+    full_name?: string;
+    gender?: string;
+    team?: string;
+  };
 
-  export let stackedImages: stackedImageType[]
-  export let itemIndex: number = 0
+  export let stackedImages: stackedImageType[];
+  export let itemIndex: number = 0;
 
-  let extra: number = 0
+  let extra: number = 0;
   //let width: number = 0;
   /* let images: stackedImageType[] = stackedImages;
   let numberOfImages = stackedImages.length;

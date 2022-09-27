@@ -1,9 +1,9 @@
 <script lang="ts">
-  export let disabled = false
-  export let className = ''
-  export let label = ''
-  export let onClick: () => void
-  export let modalID: number
+  export let disabled = false;
+  export let className = '';
+  export let label = '';
+  export let onClick: () => void;
+  export let modalID: number;
 </script>
 
 <button

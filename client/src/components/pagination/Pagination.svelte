@@ -1,21 +1,21 @@
 <script lang="ts">
   // page index value
-  export let value: number
+  export let value: number;
   // number of pages
-  export let length: number = 5
-  let pages = Array.from({ length: length }, (_, i) => i)
+  export let length: number = 5;
+  let pages = Array.from({ length: length }, (_, i) => i);
 
   $: selectedPages = pages.filter(
     (_, index) =>
       index > Number(value) - 3 &&
       index <= Number(value) + 1 &&
       Number(value) <= Number(length) + 1
-  )
+  );
 
-  $: isPrevDisabled = value === 1
-  $: isNextDisabled = value === length
-  $: isPrevDots = value > 3
-  $: isNextDots = value < length - 2
+  $: isPrevDisabled = value === 1;
+  $: isNextDisabled = value === length;
+  $: isPrevDots = value > 3;
+  $: isNextDots = value < length - 2;
 </script>
 
 <!-- pagination bootstrap svelte-->

@@ -1,6 +1,7 @@
 :root {
     --primary-color: #2B515F;
     --secondary-color: #EDF2F9;
+    --error-color: #dc3545;
     --boxes-shadow: 0px 2px 6px #00000030;
     --text-color: #000;
     --text-muted: #757575;
