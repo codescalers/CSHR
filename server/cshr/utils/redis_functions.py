@@ -20,7 +20,7 @@ def set_notification_request_redis(data, url):
     """this function set requests notifications"""
     user = get_user_by_id(data["applying_user"])
     if user is None:
-        print("user is not founddd!!!!!!")
+        return False
     title = user.first_name + " " + user.last_name + " is applying for " + data["type"]
     dict = {"title": title, "url": url}
     approving_users = user.reporting_to.all()
@@ -29,6 +29,7 @@ def set_notification_request_redis(data, url):
             "user" + str(approving_user.id) + ":" + data["type"] + str(data["id"])
         )
         redis_instance.hmset(hashname, dict)
+    return True
 
 
 def set_notification_reply_redis(data, state, url):
@@ -48,6 +49,7 @@ def set_notification_reply_redis(data, state, url):
     applying_user = data.applying_user
     hashname = "user" + str(applying_user.id) + ":" + data.type + str(data.id)
     redis_instance.hmset(hashname, dict)
+    return True
 
 
 def get_notifications(user: User):

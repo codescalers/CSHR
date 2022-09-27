@@ -58,8 +58,18 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
             msg = get_compensation_request_email_template(
                 current_user, serializer.data, url
             )
-            set_notification_request_redis(serializer.data, url)
-            return send_email_for_request(current_user.id, msg, "Compensation request")
+            bool1 = set_notification_request_redis(serializer.data, url)
+            bool2 = send_email_for_request(current_user.id, msg, "Compensation request")
+            if bool1 and bool2:
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="compensation request created",
+                    status_code=201,
+                )
+            else:
+                return CustomResponse.not_found(
+                    message="user is not found", status_code=404
+                )
         return CustomResponse.bad_request(
             error=serializer.errors, message="Compensation creation failed"
         )
@@ -127,9 +137,19 @@ class CompensationUpdateApiView(ListAPIView, GenericAPIView):
             # to send email async just add .delay after function name as the line below
             # send_email_for_reply.delay(current_user.id, serializer.data)
             msg = get_compensation_reply_email_template(current_user, compensation, url)
-            return send_email_for_reply(
+            bool = send_email_for_reply(
                 current_user.id, compensation, msg, "Compensation reply"
             )
+            if bool:
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="compensation request updated",
+                    status_code=202,
+                )
+            else:
+                return CustomResponse.not_found(
+                    message="user is not found", status_code=404
+                )
         return CustomResponse.bad_request(
             data=serializer.errors, message="compensation failed to update"
         )
@@ -147,13 +167,21 @@ class CompensationAcceptApiView(ListAPIView, GenericAPIView):
         compensation.status = STATUS_CHOICES.APPROVED
         compensation.save()
         url = request.build_absolute_uri()
-        set_notification_reply_redis(compensation, "accepted", url)
+        bool1 = set_notification_reply_redis(compensation, "accepted", url)
         msg = get_compensation_reply_email_template(current_user, compensation, url)
         # to send email async just add .delay after function name as the line below
         # send_email_for_reply.delay(current_user.id, serializer.data)
-        return send_email_for_reply(
+        bool2 = send_email_for_reply(
             current_user.id, compensation, msg, "Compensation reply"
         )
+        if bool1 and bool2:
+            return CustomResponse.success(
+                message="compensation request accepted", status_code=202
+            )
+        else:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
 
 
 class CompensationRejectApiView(ListAPIView, GenericAPIView):
@@ -168,10 +196,18 @@ class CompensationRejectApiView(ListAPIView, GenericAPIView):
         compensation.status = STATUS_CHOICES.REJECTED
         compensation.save()
         url = request.build_absolute_uri()
-        set_notification_reply_redis(compensation, "rejected", url)
+        bool1 = set_notification_reply_redis(compensation, "rejected", url)
         msg = get_compensation_reply_email_template(current_user, compensation, url)
         # to send email async just add .delay after function name as the line below
         # send_email_for_reply.delay(current_user.id, serializer.data)
-        return send_email_for_reply(
+        bool2 = send_email_for_reply(
             current_user.id, compensation, msg, "Compensation reply"
         )
+        if bool1 and bool2:
+            return CustomResponse.success(
+                message="compensation request rejected", status_code=202
+            )
+        else:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )

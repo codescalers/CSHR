@@ -55,8 +55,18 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             msg = get_vacation_request_email_template(
                 current_user, serializer.data, url
             )
-            set_notification_request_redis(serializer.data, url)
-            return send_email_for_request(current_user.id, msg, "Vacation request")
+            bool1 = set_notification_request_redis(serializer.data, url)
+            bool2 = send_email_for_request(current_user.id, msg, "Vacation request")
+            if bool1 and bool2:
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="vacation request created",
+                    status_code=201,
+                )
+            else:
+                return CustomResponse.not_found(
+                    message="user is not found", status_code=404
+                )
         return CustomResponse.bad_request(
             error=serializer.errors, message="vacation request creation failed"
         )
@@ -130,9 +140,20 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             # to send email async just add .delay after function name as the line below
             # send_email_for_reply.delay(current_user.id, serializer.data)
             msg = get_vacation_reply_email_template(current_user, vacation, url)
-            return send_email_for_reply(
+            bool = send_email_for_reply(
                 current_user.id, vacation, msg, "Vacation reply"
             )
+            if bool:
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="vacation request updated",
+                    status_code=202,
+                )
+            else:
+                return CustomResponse.not_found(
+                    message="user is not found", status_code=404
+                )
+
         return CustomResponse.bad_request(
             data=serializer.errors, message="vacation failed to update"
         )
@@ -150,11 +171,19 @@ class VacationsAcceptApiView(ListAPIView, GenericAPIView):
         vacation.status = STATUS_CHOICES.APPROVED
         vacation.save()
         url = request.build_absolute_uri()
-        set_notification_reply_redis(vacation, "accepted", url)
+        bool1 = set_notification_reply_redis(vacation, "accepted", url)
         msg = get_vacation_reply_email_template(current_user, vacation, url)
         # to send email async just add .delay after function name as the line below
         # send_email_for_reply.delay(current_user.id, serializer.data)
-        return send_email_for_reply(current_user.id, vacation, msg, "Vacation reply")
+        bool2 = send_email_for_reply(current_user.id, vacation, msg, "Vacation reply")
+        if bool1 and bool2:
+            return CustomResponse.success(
+                message="vacation request accepted", status_code=202
+            )
+        else:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
 
 
 class VacationsRejectApiView(ListAPIView, GenericAPIView):
@@ -169,11 +198,19 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         vacation.status = STATUS_CHOICES.REJECTED
         vacation.save()
         url = request.build_absolute_uri()
-        set_notification_reply_redis(vacation, "rejected", url)
+        bool1 = set_notification_reply_redis(vacation, "rejected", url)
         msg = get_vacation_reply_email_template(current_user, vacation, url)
         # to send email async just add .delay after function name as the line below
         # send_email_for_reply.delay(current_user.id, serializer.data)
-        return send_email_for_reply(current_user.id, vacation, msg, "Vacation reply")
+        bool2 = send_email_for_reply(current_user.id, vacation, msg, "Vacation reply")
+        if bool1 and bool2:
+            return CustomResponse.success(
+                message="vacation request rejected", status_code=202
+            )
+        else:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
 
 
 class VacationApprovalAPIView(GenericAPIView):
