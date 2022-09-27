@@ -30,7 +30,7 @@ def set_notification_request_redis(data, url):
         )
 
         redis_instance.hmset(hashname, dict)
-        redis_instance.expire(hashname, 200)
+        redis_instance.expire(hashname, 30 * 3600 * 24)
     return True
 
 
