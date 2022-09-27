@@ -28,7 +28,9 @@ def set_notification_request_redis(data, url):
         hashname = (
             "user" + str(approving_user.id) + ":" + data["type"] + str(data["id"])
         )
+
         redis_instance.hmset(hashname, dict)
+        redis_instance.expire(hashname, 200)
     return True
 
 
