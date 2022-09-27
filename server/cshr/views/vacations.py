@@ -138,7 +138,6 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
         )
 
 
-
 class VacationsAcceptApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor]
 
@@ -175,6 +174,7 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         # to send email async just add .delay after function name as the line below
         # send_email_for_reply.delay(current_user.id, serializer.data)
         return send_email_for_reply(current_user.id, vacation, msg, "Vacation reply")
+
 
 class VacationApprovalAPIView(GenericAPIView):
     """Use this class endpoint to change approved user value."""
