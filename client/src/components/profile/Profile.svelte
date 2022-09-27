@@ -87,7 +87,7 @@
         {#if $UserStore.user_type === 'Admin' || $UserStore.user_type === 'Supervisor' || $UserStore.id === id}
           <div class="row">
             <Company bind:companies={user.user_company_properties} />
-            <Evaluation bind:evaluations={user.user_evaluation} />
+            <Evaluation />
           </div>
         {/if}
 

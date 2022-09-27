@@ -1,7 +1,13 @@
 <script lang="ts">
   import type { UserEvaluationType } from '../../types';
+  import {onMount} from "svelte";
+  import evaluationDataService from '../../services/axios/evaluation/EvaluationDataService';
+  let evaluations: UserEvaluationType[];
 
-  export let evaluations: UserEvaluationType[];
+  onMount(async ()=>{
+    evaluations=await evaluationDataService.getByAll();
+    console.log(evaluations+"sss")
+  });
 </script>
 
 <div class="col-md-12 my-2">
