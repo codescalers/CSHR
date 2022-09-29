@@ -1,6 +1,7 @@
 export type buttonType = "success" | "warning" | "error" | "info";
 export type alertType = "success" | "warning" | "error" | "info";
 export type requestStatusType = "pending" | "approved" | "rejected";
+export type UserType = "Admin" | "Supervisor" | "User";
 export type requestLabelType =
   | "Vacation"
   | "HR Letter"
@@ -11,36 +12,32 @@ export interface GeneralUserInterface {
   id: number;
   full_name: string;
   email: string;
-  team: string;
-  password?: string;
-  role: string;
-  image: string;
   gender: "Female" | "Male";
+  team: string;
+  image: string;
   address: string;
   birthday: string;
-  CreatedAt?: string;
-  UpdatedAt?: string;
-  DeletedAt?: string;
+  created_at: string;
   job_title: string;
   telegram_link: string;
   skills: SkillType[];
   user_certificates: CertificateType[];
-  reporting_to: number[];
+  reporting_to: TeamType[];
+  location: OfficeType;
+  user_type: UserType;
 }
 
-
-
-
-
-export interface SupervisorViewType extends GeneralUserInterface {
+export interface SupervisorViewInterface extends GeneralUserInterface {
   mobile_number: string;
   social_insurance_number: string;
-  location: number;
-  user_evaluations: [];
-  user_company_properties: number[],
+  user_evaluation: UserEvaluationType[];
+  user_company_properties: CompanyPropertiesType[];
 }
 
-export interface AdminViewType extends SupervisorViewType {
+export interface AdminViewInterface extends SupervisorViewInterface {
+  salary: SalaryType;
+}
+export interface UserInterface extends SupervisorViewInterface {
   salary: SalaryType;
 }
 
@@ -80,6 +77,7 @@ export type NotificationType = {
 export type TeamType = {
   id: number;
   full_name: string;
+  email: string;
   image: string;
   team: string;
   job_title: string;
@@ -100,14 +98,32 @@ export type CertificateType = {
   modified_at?: Date;
 };
 
-export type SalaryType =
-  {
-    current_salary: {
-      net: number[],
-      gross: number[]
-    },
-    joining_salary: {
-      net: number[],
-      gross: number[]
-    }
-  }
+export type SalaryType = {
+  current_salary: {
+    net: number[];
+    gross: number[];
+  };
+  joining_salary: {
+    net: number[];
+    gross: number[];
+  };
+  net_salary_before_joining?: number[];
+  Benefits?: number[];
+};
+
+export type CompanyPropertiesType = {
+  name: string;
+  image_of: string;
+  user_obj: TeamType;
+};
+
+export type UserEvaluationType = {
+  user: number;
+  quarter: string;
+  link: string;
+  score: number;
+};
+export interface IAuthStore {
+  token?: string;
+  refreshtoken?: string;
+}

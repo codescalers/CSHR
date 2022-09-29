@@ -8,6 +8,7 @@ import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 import replace from '@rollup/plugin-replace';
 import { config } from 'dotenv';
+import copy from "rollup-plugin-copy";
 
 const production = !process.env.ROLLUP_WATCH;
 const configToReplace = {};
@@ -52,6 +53,18 @@ export default {
     useVitePreprocess: true,
   },
   plugins: [
+    copy({
+      targets: [
+        {
+          src: "node_modules/bootstrap/dist/css/bootstrap.min.css",
+          dest: "public/vendor/bootstrap/css",
+        },
+        {
+          src: "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+          dest: "public/vendor/bootstrap/js",
+        },
+      ],
+    }),
     svelte({
       preprocess: sveltePreprocess({ sourceMap: !production }),
       compilerOptions: {

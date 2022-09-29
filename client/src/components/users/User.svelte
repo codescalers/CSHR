@@ -5,8 +5,8 @@
   export let user: UserInterface;
 </script>
 
-<div class="card rounded bg-light shadow">
-  <div class="card-body px-4">
+<Link class="card rounded bg-light shadow" to={`../profile/${user.id}`}>
+  <div class="card-body px-4 card-hover">
     <h5 class="card-title">
       <div
         class={`my-2  mx-auto card-img-top circular_img`}
@@ -40,14 +40,8 @@
         {user.job_title}
       </p>
     </blockquote>
-    <div class=" d-flex flex-row justify-content-center gap-3 my-3">
-      <a href="#" class="btn btn-primary">send email</a>
-      <Link to={`../profile/${user.id}`} class="btn btn-outline-primary"
-        >visit profile</Link
-      >
-    </div>
   </div>
-</div>
+</Link>
 
 <style>
   :global(.circular_img) {
@@ -62,5 +56,11 @@
     font-weight: 700;
     letter-spacing: -0.1rem;
     text-align: center;
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 0 0 0.3rem var(--secondary-color);
+    transform: scale(1.01);
+    border-radius: inherit;
   }
 </style>

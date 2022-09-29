@@ -66,7 +66,6 @@ class CalendarDataService {
 				throw new Error("Error while posting meeting with status " + status);
 			}
 		} catch (error) {
-			alert(error);
 			console.error(
 				`${this.errorMessage} Error while posting meeting data ${error}`
 			);
@@ -125,7 +124,6 @@ class CalendarDataService {
 				throw new Error("Error while posting event with status " + status);
 			}
 		} catch (error) {
-			alert(error);
 			console.error(
 				`${this.errorMessage} Error while posting event data ${error}`
 			);
@@ -156,7 +154,6 @@ class CalendarDataService {
 				throw new Error("Error while posting leave with status " + status);
 			}
 		} catch (error) {
-			alert(error);
 			console.error(
 				`${this.errorMessage} Error while leave event data ${error}`
 			);

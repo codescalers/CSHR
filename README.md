@@ -6,13 +6,7 @@ create .env file and define the environment variables [DJANGO_SECRET_KEY , DJANG
 - locally
 ```
 cd <repo name>
+redis-server --port <port>
 poetry install
 ./manage.py runserver 8000
-```
-
-- via docker
-```
-cd <repo name>
-docker build -t <image name> .
-docker run -p <the port you want to run the project on>:8000 <image name>
 ```
