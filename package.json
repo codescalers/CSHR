@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "bootstrap": "^5.2.1",
-    "rollup-plugin-copy": "^3.4.0"
-  }
-}
