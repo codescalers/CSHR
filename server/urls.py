@@ -46,6 +46,7 @@ urlpatterns = [
                     "company_properties/",
                     include("server.cshr.routs.company_properties"),
                 ),
+                path("notifications/", include("server.cshr.routs.notifications")),
             ]
         ),
     ),

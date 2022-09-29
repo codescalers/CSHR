@@ -19,6 +19,10 @@ from server.cshr.utils.email_messages_templates import (
 )
 
 from server.cshr.api.response import CustomResponse
+from server.cshr.utils.redis_functions import (
+    set_notification_request_redis,
+    set_notification_reply_redis,
+)
 
 
 class BaseHrLetterApiView(ListAPIView, GenericAPIView):
@@ -38,12 +42,23 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
                 applying_user=current_user,
             )
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_request.delay(current_user.id, serializer.data)
             msg = get_hr_letter_request_email_template(
                 current_user, serializer.data, url
             )
-            return send_email_for_request(current_user.id, msg, "Hr Letter request")
+            bool1 = set_notification_request_redis(serializer.data, url)
+            bool2 = send_email_for_request.delay(
+                current_user.id, msg, "Hr Letter request"
+            )
+            if bool1 and bool2:
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="hr letter request created",
+                    status_code=201,
+                )
+            else:
+                return CustomResponse.not_found(
+                    message="user is not found", status_code=404
+                )
         return CustomResponse.bad_request(
             error=serializer.errors, message="Hr letter creation failed"
         )
@@ -111,12 +126,74 @@ class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_reply.delay(current_user.id, serializer.data)
-            msg = get_hr_letter_reply_email_template(current_user, serializer.data, url)
-            return send_email_for_reply(
-                current_user.id, serializer.data, msg, "Hr Letter reply"
+            msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
+            bool = send_email_for_reply.delay(
+                current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply"
             )
+            if bool:
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="hr letter request updated",
+                    status_code=202,
+                )
+            else:
+                return CustomResponse.not_found(
+                    message="user is not found", status_code=404
+                )
         return CustomResponse.bad_request(
             data=serializer.errors, message="HR Letter failed to update"
         )
+
+
+class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        hr_letter = get_hrLetter_by_id(id=id)
+        if hr_letter is None:
+            return CustomResponse.not_found(message="Hr Letter not found")
+        current_user: User = get_user_by_id(request.user.id)
+        hr_letter.approval_user = current_user
+        hr_letter.status = STATUS_CHOICES.APPROVED
+        hr_letter.save()
+        url = request.build_absolute_uri()
+        bool1 = set_notification_reply_redis(hr_letter, "accepted", url)
+        msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
+        bool2 = send_email_for_reply.delay(
+            current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply"
+        )
+        if bool1 and bool2:
+            return CustomResponse.success(
+                message="hr letter request accepted", status_code=202
+            )
+        else:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
+
+
+class HrLetterRejectApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        hr_letter = get_hrLetter_by_id(id=id)
+        if hr_letter is None:
+            return CustomResponse.not_found(message="Hr Letter not found")
+        current_user: User = get_user_by_id(request.user.id)
+        hr_letter.approval_user = current_user
+        hr_letter.status = STATUS_CHOICES.REJECTED
+        hr_letter.save()
+        url = request.build_absolute_uri()
+        bool1 = set_notification_reply_redis(hr_letter, "rejected", url)
+        msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
+        bool2 = send_email_for_reply.delay(
+            current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply"
+        )
+        if bool1 and bool2:
+            return CustomResponse.success(
+                message="hr letter request rejected", status_code=202
+            )
+        else:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
