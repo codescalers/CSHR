@@ -1,11 +1,15 @@
-import { Writable, writable } from "svelte/store";
+import { Writable, writable, get } from "svelte/store";
+import isAuthenticated from "./services/authentication/IsAuthenticated";
+import userDataService from "./services/axios/user/UserDataService";
 import type {
 	SettingsInterface,
 	UserInterface,
+	GeneralUserInterface,
 	OfficeType,
 	NotificationType,
 	TeamType,
 	PaginatedInterface,
+	IAuthStore,
 } from "./types";
 
 export const SettingsStore: Writable<SettingsInterface> = writable({
@@ -13,25 +17,8 @@ export const SettingsStore: Writable<SettingsInterface> = writable({
 	"secondary-color": "#EDF2F9",
 	"background-image": "url('https://wallpaperaccess.com/full/2159209.jpg')",
 });
-export const AllUsersStore: Writable<UserInterface[]> = writable([]);
-export const UserStore: Writable<UserInterface> = writable({
-	id: 1,
-	full_name: "Tiago Vilas Boas",
-	phone_number: "11 972393003",
-	email: "tcarvalhovb@gmail.com",
-	image: "https://avatars.githubusercontent.com/u/11314585?v=4",
-	role: "admin",
-	team: "development",
-	password: "123456",
-	address: "Rua dos Bobos, 0",
-	job_title: "Software Engineer Lead",
-	birthday: "2022-09-13",
-	gender: "Male",
-	telegram_link: "link",
-	skills: [{ id: 1, name: "frontend" }],
-	user_certificates: [{ id: 1, name: "frontend", certificate_link: "ssssss" }],
-	reporting_to: [1],
-});
+export const AllUsersStore: Writable<GeneralUserInterface[]> = writable([]);
+export const UserStore: Writable<UserInterface> = writable();
 
 export const OfficeStore: Writable<OfficeType[]> = writable([]);
 export const NotificationStore: Writable<NotificationType[]> = writable([
@@ -39,3 +26,86 @@ export const NotificationStore: Writable<NotificationType[]> = writable([
 ]);
 
 export const TeamStore: Writable<PaginatedInterface<TeamType>> = writable();
+
+function createAuthStore() {
+	const store = writable<IAuthStore>({});
+	const user = get(UserStore);
+	const { subscribe, update } = store;
+
+	isAuthenticated().then((res) => {
+		if (res && res.token && res.refreshtoken) {
+			updateTokens(res.token, res.refreshtoken);
+		} else {
+			return update((s) => {
+				s.token = undefined;
+				s.refreshtoken = undefined;
+				return s;
+			});
+		}
+	});
+
+	function updateTokens(token: string, refresh: string): void {
+		localStorage.setItem("accesstoken", token);
+
+		localStorage.setItem("refreshtoken", refresh);
+
+		if (token) {
+			if (get(UserStore) === undefined) {
+				userDataService.getMyProfile().then((data) => {
+					UserStore.set({
+						id: data.id,
+						gender: data.gender,
+						email: data.email,
+						full_name: data.full_name,
+						image: data.image,
+						telegram_link: data.telegram_link,
+						birthday: data.birthday,
+						location: data.location,
+						skills: data.skills,
+						user_certificates: data.user_certificates,
+						reporting_to: data.reporting_to,
+						created_at: data.created_at,
+						social_insurance_number: data.social_insurance_number,
+						team: data.team,
+						user_company_properties: data.user_company_properties,
+						salary: data.salary,
+						mobile_number: data.mobile_number,
+						user_evaluation: data.user_evaluation,
+						job_title: data.job_title,
+						address: data.address,
+						user_type: data.user_type,
+					});
+				});
+			}
+		}
+
+		return update((s) => {
+			s.token = token;
+			s.refreshtoken = refresh;
+
+			return s;
+		});
+	}
+
+	return {
+		subscribe,
+		updateTokens,
+		isAuth(): boolean {
+			const { token, refreshtoken } = get(store);
+			return !!token && !!refreshtoken;
+		},
+		isAdmin(): boolean {
+			const { token, refreshtoken } = get(store);
+			return user && !!token && !!refreshtoken && user.user_type === "Admin";
+		},
+
+		isSupervisor(): boolean {
+			const { token, refreshtoken } = get(store);
+			return (
+				user && !!token && !!refreshtoken && user.user_type === "Supervisor"
+			);
+		},
+	};
+}
+
+export const authStore = createAuthStore();

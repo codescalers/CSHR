@@ -31,6 +31,10 @@ from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
 from server.cshr.models.vacations import Vacation
 from server.cshr.services.vacations import get_vacations_by_user
+from server.cshr.utils.redis_functions import (
+    set_notification_request_redis,
+    set_notification_reply_redis,
+)
 
 
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
@@ -60,12 +64,24 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 applying_user=current_user,
             )
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_request.delay(current_user.id, serializer.data)
             msg = get_vacation_request_email_template(
                 current_user, serializer.data, url
             )
-            return send_email_for_request(current_user.id, msg, "Vacation request")
+            bool1 = set_notification_request_redis(serializer.data, url)
+            bool2 = send_email_for_request.delay(
+                current_user.id, msg, "Vacation request"
+            )
+
+            if bool1 and bool2:
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="vacation request created",
+                    status_code=201,
+                )
+            else:
+                return CustomResponse.not_found(
+                    message="user is not found", status_code=404
+                )
         return CustomResponse.bad_request(
             error=serializer.errors, message="vacation request creation failed"
         )
@@ -128,7 +144,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
-            return CustomResponse.not_found(message="Hr Letter not found")
+            return CustomResponse.not_found(message="Vacation not found")
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
         current_user: User = get_user_by_id(request.user.id)
 
@@ -136,15 +152,79 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
             serializer.save(approval_user=current_user)
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_reply.delay(current_user.id, serializer.data)
-            msg = get_vacation_reply_email_template(current_user, serializer.data, url)
-            return send_email_for_reply(
-                current_user.id, serializer.data, msg, "Vacation reply"
+            msg = get_vacation_reply_email_template(current_user, vacation, url)
+
+            bool = send_email_for_reply.delay(
+                current_user.id, vacation.applying_user.id, msg, "Vacation reply"
             )
+            if bool:
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="vacation request updated",
+                    status_code=202,
+                )
+            else:
+                return CustomResponse.not_found(
+                    message="user is not found", status_code=404
+                )
+
         return CustomResponse.bad_request(
             data=serializer.errors, message="vacation failed to update"
         )
+
+
+class VacationsAcceptApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
+            return CustomResponse.not_found(message="Vacation not found")
+        current_user: User = get_user_by_id(request.user.id)
+        vacation.approval_user = current_user
+        vacation.status = STATUS_CHOICES.APPROVED
+        vacation.save()
+        url = request.build_absolute_uri()
+        bool1 = set_notification_reply_redis(vacation, "accepted", url)
+        msg = get_vacation_reply_email_template(current_user, vacation, url)
+        bool2 = send_email_for_reply.delay(
+            current_user.id, vacation.applying_user.id, msg, "Vacation reply"
+        )
+        if bool1 and bool2:
+            return CustomResponse.success(
+                message="vacation request accepted", status_code=202
+            )
+        else:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
+
+
+class VacationsRejectApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
+            return CustomResponse.not_found(message="Vacation not found")
+        current_user: User = get_user_by_id(request.user.id)
+        vacation.approval_user = current_user
+        vacation.status = STATUS_CHOICES.REJECTED
+        vacation.save()
+        url = request.build_absolute_uri()
+        bool1 = set_notification_reply_redis(vacation, "rejected", url)
+        msg = get_vacation_reply_email_template(current_user, vacation, url)
+        bool2 = send_email_for_reply.delay(
+            current_user.id, vacation.applying_user.id, msg, "Vacation reply"
+        )
+        if bool1 and bool2:
+            return CustomResponse.success(
+                message="vacation request rejected", status_code=202
+            )
+        else:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
 
 
 class VacationApprovalAPIView(GenericAPIView):

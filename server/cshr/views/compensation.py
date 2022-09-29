@@ -23,6 +23,10 @@ from server.cshr.utils.email_messages_templates import (
 from server.cshr.utils.email_messages_templates import (
     get_compensation_request_email_template,
 )
+from server.cshr.utils.redis_functions import (
+    set_notification_request_redis,
+    set_notification_reply_redis,
+)
 
 
 class BaseCompensationApiView(ListAPIView, GenericAPIView):
@@ -49,12 +53,23 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
                 applying_user=current_user,
             )
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_request.delay(current_user.id, serializer.data)
             msg = get_compensation_request_email_template(
                 current_user, serializer.data, url
             )
-            return send_email_for_request(current_user.id, msg, "Compensation request")
+            bool1 = set_notification_request_redis(serializer.data, url)
+            bool2 = send_email_for_request.delay(
+                current_user.id, msg, "Compensation request"
+            )
+            if bool1 and bool2:
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="compensation request created",
+                    status_code=201,
+                )
+            else:
+                return CustomResponse.not_found(
+                    message="user is not found", status_code=404
+                )
         return CustomResponse.bad_request(
             error=serializer.errors, message="Compensation creation failed"
         )
@@ -119,14 +134,77 @@ class CompensationUpdateApiView(ListAPIView, GenericAPIView):
         if serializer.is_valid():
             serializer.save(approval_user=current_user)
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            # to send email async just add .delay after function name as the line below
-            # send_email_for_reply.delay(current_user.id, serializer.data)
-            msg = get_compensation_reply_email_template(
-                current_user, serializer.data, url
+            msg = get_compensation_reply_email_template(current_user, compensation, url)
+            bool = send_email_for_reply.delay(
+                current_user.id,
+                compensation.applying_user.id,
+                msg,
+                "Compensation reply",
             )
-            return send_email_for_reply(
-                current_user.id, serializer.data, msg, "Compensation reply"
-            )
+            if bool:
+                return CustomResponse.success(
+                    data=serializer.data,
+                    message="compensation request updated",
+                    status_code=202,
+                )
+            else:
+                return CustomResponse.not_found(
+                    message="user is not found", status_code=404
+                )
         return CustomResponse.bad_request(
             data=serializer.errors, message="compensation failed to update"
         )
+
+
+class CompensationAcceptApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        compensation = get_compensation_by_id(id=id)
+        if compensation is None:
+            return CustomResponse.not_found(message="comopensation not found")
+        current_user: User = get_user_by_id(request.user.id)
+        compensation.approval_user = current_user
+        compensation.status = STATUS_CHOICES.APPROVED
+        compensation.save()
+        url = request.build_absolute_uri()
+        bool1 = set_notification_reply_redis(compensation, "accepted", url)
+        msg = get_compensation_reply_email_template(current_user, compensation, url)
+        bool2 = send_email_for_reply.delay(
+            current_user.id, compensation.applying_user.id, msg, "Compensation reply"
+        )
+        if bool1 and bool2:
+            return CustomResponse.success(
+                message="compensation request accepted", status_code=202
+            )
+        else:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )
+
+
+class CompensationRejectApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        compensation = get_compensation_by_id(id=id)
+        if compensation is None:
+            return CustomResponse.not_found(message="comopensation not found")
+        current_user: User = get_user_by_id(request.user.id)
+        compensation.approval_user = current_user
+        compensation.status = STATUS_CHOICES.REJECTED
+        compensation.save()
+        url = request.build_absolute_uri()
+        bool1 = set_notification_reply_redis(compensation, "rejected", url)
+        msg = get_compensation_reply_email_template(current_user, compensation, url)
+        bool2 = send_email_for_reply.delay(
+            current_user.id, compensation.applying_user.id, msg, "Compensation reply"
+        )
+        if bool1 and bool2:
+            return CustomResponse.success(
+                message="compensation request rejected", status_code=202
+            )
+        else:
+            return CustomResponse.not_found(
+                message="user is not found", status_code=404
+            )

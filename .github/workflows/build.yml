@@ -1,3 +1,4 @@
+# Test if working.
 name: Build and push a docker image and a flist.
 
 on:
@@ -20,9 +21,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/CSHR:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/cshr:latest
 
 
       - name: build and push flist
         run: | 
-          curl -f -X POST  -H "Authorization: bearer ${{secrets.FLIST_TOKEN}}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/CSHR:latest'
+          curl -f -X POST  -H "Authorization: bearer ${{ secrets.FLIST_TOKEN }}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/cshr:latest'

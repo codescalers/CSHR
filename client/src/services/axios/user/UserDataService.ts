@@ -11,6 +11,16 @@ class UserDataService {
 			console.error(this.errorMessage + err);
 		}
 	}
+
+	public async getMyProfile() {
+		try {
+			return await (
+				await http.get("myprofile/")
+			).data.results;
+		} catch (err) {
+			console.error(this.errorMessage + err);
+		}
+	}
 }
 
 const userDataService = new UserDataService();
