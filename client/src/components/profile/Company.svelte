@@ -22,7 +22,7 @@
         <span class="text-primary font-italic me-1"
           ><i class="bi bi-building" /></span
         >
-        Companies
+        Companies properties
       </p>
       {#if typeof companies === 'undefined' || !Array.isArray(companies) || companies.length === 0}
         <p class="my-2 name">No companies found</p>

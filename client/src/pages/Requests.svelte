@@ -5,6 +5,7 @@
   import { onMount } from 'svelte';
 
   import Sidebar from '../components/sidebar/Sidebar.svelte';
+  import ProfileImage from '../components/profile/ProfileImage.svelte';
 
   let pageCount = 0;
   let pageSize = 7;
@@ -52,13 +53,8 @@
             <tr>
               <td>
                 <div class="d-flex  align-items-center">
-                  <img
-                    src="https://mdbootstrap.com/img/new/avatars/8.jpg"
-                    alt=""
-                    style="width: 45px; height: 45px"
-                    class="rounded-circle"
-                  />
-                  <div class="ms-3">
+                  <ProfileImage user={request.applying_user}/>
+                  <div>
                     <p class="fw-bold mb-1">
                       {request.applying_user.full_name}
                     </p>
@@ -78,14 +74,20 @@
               </td>
               <td>
                 <p class="fw-bold mb-1">
-                  <span class="text-muted">Start: </span>{request.from_date
-                    ? request.from_date
-                    : '---'}
+                  <span class="text-muted">
+                    Start
+                  </span>
+                  <span class="float-right-span">
+                    {request.from_date ? request.from_date : '---'}
+                  </span>
                 </p>
                 <p class="text-muted mb-0">
-                  <span class="text-muted">End: </span>{request.end_date
-                    ? request.from_date
-                    : '---'}
+                  <span class="text-muted">
+                    End
+                  </span>
+                  <span class="text-muted float-right-span">
+                    {request.end_date ? request.from_date : '---'}
+                  </span>
                 </p>
               </td>
               <td>
@@ -101,7 +103,9 @@
 
     <div class="row justify-content-end mt-3">
       <div class="col-2 mr-5">
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="text-muted mb-0 ">Rows per page:</label>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="text-muted mb-0"
           >{pageCount + 1} of {Math.ceil(totalRequests / pageSize)}</label
         >
@@ -117,32 +121,24 @@
 </Sidebar>
 
 <style>
-  .page-body {
-    position: absolute;
-    height: 942px;
-    left: 285px;
-    right: 33px;
-    top: 128px;
-  }
-
-  .sort {
-    display: inline-block;
-    padding-left: 35cm;
-  }
   label {
     font-weight: 300;
-    font-size: larger;
-    padding-right: 0.5cm;
+    font-size: 16px;
+    padding-right: 0.3cm;
   }
   section {
     overflow: hidden;
   }
   .icon {
-    padding-right: 0.3cm;
+    font-size: 1rem;
   }
   .pagination-button {
     background: unset !important;
     border: unset !important;
     outline: unset !important;
+  }
+  .float-right-span{
+    float: right;
+    margin-right: 15px;
   }
 </style>

@@ -39,7 +39,7 @@
   $: validateDate(endDate, 'End Date');
 </script>
 
-<div class="container table-primary table-responsive">
+<div class="container table-responsive">
   <fieldset
     id="isloading"
     disabled={isLoading}

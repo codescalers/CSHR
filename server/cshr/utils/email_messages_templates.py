@@ -3,18 +3,17 @@ from server.cshr.models.users import User
 
 def get_vacation_request_email_template(user: User, data, url) -> str:
     msg = """Request information:
-   Applying user: {user_fname} {user_lname}
+   Applying user: {full_name}
    Reason: {reason}
    Start date : {start_date}
    End Date : {end_date}
    Status :{status}
    Request Url: {request_url}""".format(
-        user_fname=user.first_name,
-        user_lname=user.last_name,
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
+        full_name=user.full_name,
+        reason=data.get("reason"),
+        start_date=data.get("from_date"),
+        end_date=data.get("end_date"),
+        status=data.get("status"),
         request_url=url,
     )
     return msg

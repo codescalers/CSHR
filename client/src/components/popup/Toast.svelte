@@ -44,7 +44,6 @@
 <style>
   .submit:disabled {
     background-color: #e2e8f0;
-    color: #a0aec0;
   }
   .submit {
     font-size: 1rem;
@@ -55,7 +54,6 @@
   }
   .submit:hover {
     background-color: var(--primary-color);
-    color: var(--secondary-color);
   }
   .success-bg {
     background-color: #d4edda;

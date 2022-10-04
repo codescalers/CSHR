@@ -7,6 +7,7 @@
   import ErrorComponent from '../error/ErrorComponent.svelte';
   import { authStore } from '../../stores';
   import userDataService from '../../services/axios/user/UserDataService';
+  import ProfileImage from '../profile/ProfileImage.svelte';
 
   const navigate = useNavigate();
   onMount(async () => {
@@ -73,11 +74,10 @@
       <div class="d-flex flex-row gap-4">
         <div>
           <Link to="/notifications" class="position-relative">
-            <p class="mt-2">
               <i class="bi bi-bell notification-btn" />
               {#if $NotificationStore.length > 0}
                 <span
-                  style="background: var(--primary-color); "
+                  style="background: var(--primary-color); top: 10px;"
                   class="position-absolute top-5 start-100 translate-middle badge rounded-pill"
                 >
                   +{$NotificationStore.length}
@@ -86,14 +86,14 @@
                   >
                 </span>
               {/if}
-            </p>
           </Link>
         </div>
-        <Link to={'/profile/' + $UserStore.id}>
+        <!-- <Link to={'/profile/' + $UserStore.id}>
           <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
-        </Link>
-        <div class="header_img">
-          <Link to={'/profile/' + $UserStore.id}>
+        </Link> -->
+        <ProfileImage user={$UserStore}/>
+        <!-- <div class="header_img"> -->
+          <!-- <Link to={'/profile/' + $UserStore.id}>
             <div
               class={`circular_img`}
               style={`background-image:url(${
@@ -106,8 +106,8 @@
               data-bs-toggle="tooltip"
               title={$UserStore.full_name + ' #' + $UserStore.team}
             />
-          </Link>
-        </div>
+          </Link> -->
+        <!-- </div> -->
       </div>
     </header>
     <div class="l-navbar" id="nav-bar">
@@ -187,7 +187,7 @@
       </nav>
     </div>
     <div class="height-100 bg-light d-flex flex-column justify-content-between">
-      <section class="fluid-container mt-5 content">
+      <section class="fluid-container p-0 content">
         {#if isError}
           <ErrorComponent
             errorMessage="please try to reload page and raise an issues"
@@ -205,13 +205,15 @@
 
 <style>
   .notification-btn {
+    width: 50px;
+    height: 50px;
     color: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 50%;
-    padding: 0.75rem;
-    transition: all 0.2s ease-in-out;
-  }
+    box-shadow: 0px 0px 2px 1px var(--primary-color);
+}
   .notification-btn:hover {
     background-color: var(--secondary-color);
     border: 1px solid var(--secondary-color);

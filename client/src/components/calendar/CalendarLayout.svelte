@@ -181,6 +181,7 @@
   .task--primary,
   .task--warning {
     font-weight: 500;
+    margin-top: 500px;
   }
 
   .task-detail {

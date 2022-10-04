@@ -15,9 +15,13 @@
       {#if typeof skills === 'undefined' || !Array.isArray(skills) || skills.length === 0}
         <p class="my-2 name">No skills found</p>
       {:else}
-        {#each skills as skill, index (index)}
-          <p class="my-2 name">{skill.name}</p>
-        {/each}
+        <div class="row">
+          {#each skills as skill, index (index)}
+            <div class="col-3 my-2 name">
+              {skill.name}
+            </div>
+          {/each}
+        </div>
       {/if}
     </div>
   </div>
