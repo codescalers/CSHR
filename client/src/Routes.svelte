@@ -27,6 +27,7 @@
 
 <main>
   <Router>
+    <Route path={'/register'}><Register /></Route>
     <LoggedRoute path={'/'} component={Calendar} />
     <Route path="/settings"><Settings /></Route>
     <Route path={'/login'} component={Login} />

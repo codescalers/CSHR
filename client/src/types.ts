@@ -104,11 +104,11 @@ export type SalaryType = {
     gross: number[];
   };
   joining_salary: {
-    net: number[];
-    gross: number[];
+    net: number[]|[];
+    gross: number[]|[];
   };
-  net_salary_before_joining?: number[];
-  Benefits?: number[];
+  net_salary_before_joining: number[]|[];
+  Benefits: number[]|[];
 };
 
 export type CompanyPropertiesType = {
