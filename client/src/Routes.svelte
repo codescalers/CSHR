@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Router, Route } from 'svelte-routing';
+  import { Router, Route } from 'svelte-navigator';
   import Register from './pages/Register.svelte';
   import Calendar from './pages/Calendar.svelte';
   import Notifications from './pages/Notifications.svelte';
@@ -37,6 +37,7 @@
     <Route path="input"><InputExample /></Route>
     <Route path="requests/"><Requests /></Route>
     <Route path="users/"><Users /></Route>
+    <Route path="profile/:user_type/:id" component={UserProfile} />
     <Route path="profile/:id" component={UserProfile} />
     <Route path="profile/" component={UserProfile} />
     <Route path="team/"><Team /></Route>

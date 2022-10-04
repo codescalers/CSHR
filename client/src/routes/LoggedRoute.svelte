@@ -1,5 +1,5 @@
 <script>
-  import { Route } from 'svelte-routing';
+  import { Route } from 'svelte-navigator';
   import isAuthenticated from '../services/authentication/IsAuthenticated';
   import NotLoggedIn from '../pages/NotLoggedIn.svelte';
   import { authStore } from '../stores';

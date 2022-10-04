@@ -229,3 +229,105 @@ class CompensationTests(APITestCase):
         url = "/api/compensation/user/"
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_accept_compensation_for_unauthorized_user(self) -> Compensation:
+        """add compensation request"""
+        url = "/api/compensation/"
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/compensation/accept/1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_reject_compensation_for_unauthorized_user(self) -> Compensation:
+        """add compensation request"""
+        url = "/api/compensation/"
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/compensation/reject/1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_accept_compensation_for_supervisor_auth(self) -> Compensation:
+        """add compensation request"""
+        url = "/api/compensation/"
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/compensation/accept/1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+
+    def test_reject_compensation_for_supervisor_auth(self) -> Compensation:
+        """add compensation request"""
+        url = "/api/compensation/"
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/compensation/reject/1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+
+    def test_reject_invalid_compensation(self) -> Compensation:
+        """add compensation request"""
+        url = "/api/compensation/"
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/compensation/reject/-1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_accept_invalid_compensation(self) -> Compensation:
+        """add compensation request"""
+        url = "/api/compensation/"
+        data = {
+            "reason": "annual_leaves",
+            "from_date": "2022-08-23",
+            "end_date": "2022-08-23",
+        }
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/compensation/accept/-1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

@@ -222,3 +222,81 @@ class HrLetterTests(APITestCase):
         url = "/api/hrletter/user/"
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_accept_hr_letter_for_unauthorized_user(self) -> HrLetters:
+        """add hr letter request"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/hrletter/accept/1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_reject_hr_letter_for_unauthorized_user(self) -> HrLetters:
+        """add hr letter request"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/hrletter/reject/1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_accept_hr_letter_for_supervisor_auth(self) -> HrLetters:
+        """add hr letter request"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/hrletter/accept/1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+
+    def test_reject_hrletter_for_supervisor_auth(self) -> HrLetters:
+        """add hr letter request"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/hrletter/reject/1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+
+    def test_reject_invalid_hrletter(self) -> HrLetters:
+        """add hr letter request"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/hrletter/reject/-1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_accept_invalid_hr_letter(self) -> HrLetters:
+        """add hr letter request"""
+        url = "/api/hrletter/"
+        data = {"addresses": "testing addr"}
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
+        response = client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        url = "/api/hrletter/accept/-1/"
+        response = client.put(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

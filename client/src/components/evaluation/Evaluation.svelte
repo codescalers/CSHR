@@ -3,6 +3,7 @@
   import MultiSelect from '../select/MultiSelect.svelte';
   import Submit from '../submit/Submit.svelte';
   import Input from '../input/Input.svelte';
+  import evaluationDataService from '../../services/axios/evaluation/EvaluationDataService';
   export let isLoading: boolean = false;
   export let isError: boolean = false;
   let evaluation_form_options: SelectOptionType[] = [
@@ -35,6 +36,7 @@
     placeholder="Select Evaluation Form"
     removeAllTitle="Remove all Evaluation Form"
     label="Evaluation Form"
+    multiple={false}
   />
 
   <MultiSelect
@@ -44,10 +46,11 @@
     label="Evaluation Quartur"
     placeholder="Select Evaluation Quartur"
     removeAllTitle="Remove all Evaluation Quartur"
+    multiple={false}
   />
 
   <Input
-    type="text"
+    type="url"
     label={'Evaluation Link'}
     bind:value={evaluationLinkValue}
     handleInput={() => {
@@ -59,7 +62,7 @@
     bind:isError={evaluationLinkIsError}
     placeholder="Enter Evaluation Link"
   />
-  <div class="mt-5">
+  <div class="mt-5 col-3">
     <Submit
       successMessage={'Evaluation is Submitted'}
       errorMessage={' Evaluation Submission Failed'}
@@ -74,13 +77,19 @@
           location: meetingLocationValue,
           meetingLink: meetingLinkValue,
           time: meetingTimeValue,
+        
         }); */
+
+          await evaluationDataService.postEvaluation({
+            form: evaluation_form_selected[0].value,
+            quarter: evaluation_quartur_selected[0].value,
+            link: evaluationLinkValue,
+          });
         } catch (error) {
           isError = true;
         } finally {
           isLoading = false;
           evaluationLinkValue = '';
-
           evaluation_form_selected = [];
           evaluation_quartur_selected = [];
         }

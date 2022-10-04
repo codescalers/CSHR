@@ -64,10 +64,10 @@ def get_vacation_reply_email_template(approving_user: User, data, url) -> str:
    Request Url: {request_url}""".format(
         user_fname=approving_user.first_name,
         user_lname=approving_user.last_name,
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
+        reason=data.reason,
+        start_date=data.from_date,
+        end_date=data.end_date,
+        status=data.status,
         request_url=url,
     )
     return msg
@@ -81,8 +81,8 @@ def get_hr_letter_reply_email_template(approving_user: User, data, url) -> str:
     Request Url: {request_url}""".format(
         user_fname=approving_user.first_name,
         user_lname=approving_user.last_name,
-        addresses=data["addresses"],
-        status=data["status"],
+        addresses=data.addresses,
+        status=data.status,
         request_url=url,
     )
     return msg
@@ -98,10 +98,10 @@ def get_compensation_reply_email_template(approving_user: User, data, url) -> st
     Request Url: {request_url}""".format(
         user_fname=approving_user.first_name,
         user_lname=approving_user.last_name,
-        reason=data["reason"],
-        start_date=data["from_date"],
-        end_date=data["end_date"],
-        status=data["status"],
+        reason=data.reason,
+        start_date=data.from_date,
+        end_date=data.end_date,
+        status=data.status,
         request_url=url,
     )
     return msg

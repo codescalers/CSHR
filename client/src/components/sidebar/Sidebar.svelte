@@ -1,12 +1,22 @@
 <script lang="ts">
-  import { Router, Link } from 'svelte-routing';
+  import { Router, Link, useNavigate } from 'svelte-navigator';
   import { onMount } from 'svelte';
   import Footer from '../footer/Footer.svelte';
   import { UserStore, NotificationStore } from '../../stores';
   import LoadingComponent from '../loader/LoadingComponent.svelte';
   import ErrorComponent from '../error/ErrorComponent.svelte';
+  import { authStore } from '../../stores';
+  import userDataService from '../../services/axios/user/UserDataService';
 
-  onMount(() => {
+  const navigate = useNavigate();
+  onMount(async () => {
+    if (!authStore.isAuth() || $UserStore === undefined) {
+      try {
+        $UserStore = await userDataService.getMyProfile();
+      } catch (error) {
+        return navigate('/login');
+      }
+    }
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -79,7 +89,9 @@
             </p>
           </Link>
         </div>
-        <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
+        <Link to={'/profile/' + $UserStore.id}>
+          <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
+        </Link>
         <div class="header_img">
           <Link to={'/profile/' + $UserStore.id}>
             <div

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { navigate } from 'svelte-routing';
+  import { navigate } from 'svelte-navigator';
 
   import Input from '../components/input/Input.svelte';
   import loginDataService from '../services/axios/login/loginDataService';

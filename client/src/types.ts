@@ -1,6 +1,7 @@
 export type buttonType = "success" | "warning" | "error" | "info";
 export type alertType = "success" | "warning" | "error" | "info";
 export type requestStatusType = "pending" | "approved" | "rejected";
+export type UserType = "Admin" | "Supervisor" | "User";
 export type requestLabelType =
   | "Vacation"
   | "HR Letter"
@@ -23,7 +24,7 @@ export interface GeneralUserInterface {
   user_certificates: CertificateType[];
   reporting_to: TeamType[];
   location: OfficeType;
-  user_type: string;
+  user_type: UserType;
 }
 
 export interface SupervisorViewInterface extends GeneralUserInterface {
