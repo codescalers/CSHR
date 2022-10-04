@@ -20,14 +20,14 @@
   import Evaluation from './pages/Evaluation.svelte';
   const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
-   
   onMount(async () => {
-     if (mode) setTheme(mode);
+    if (mode) setTheme(mode);
   });
 </script>
 
 <main>
   <Router>
+    <Route path={'/register'}><Register /></Route>
     <LoggedRoute path={'/'} component={Calendar} />
     <Route path="/settings"><Settings /></Route>
     <Route path={'/login'} component={Login} />

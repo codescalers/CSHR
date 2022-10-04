@@ -301,10 +301,6 @@
       margin: calc(var(--header-height) + 1rem) 0 0 0;
       padding-left: calc(var(--nav-width) + 2rem);
     }
-    .header {
-      height: calc(var(--header-height) + 1rem);
-      padding: 0 2rem 0 calc(var(--nav-width) + 2rem);
-    }
     .header_img {
       width: 40px;
       height: 40px;

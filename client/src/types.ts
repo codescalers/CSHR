@@ -97,18 +97,17 @@ export type CertificateType = {
   modified_at?: Date;
 };
 
- 
 export type SalaryType = {
   current_salary: {
     net: number[];
     gross: number[];
   };
   joining_salary: {
-    net: number[];
-    gross: number[];
+    net: number[]|[];
+    gross: number[]|[];
   };
-  net_salary_before_joining?: number[];
-  Benefits?: number[];
+  net_salary_before_joining: number[]|[];
+  Benefits: number[]|[];
 };
 
 export type CompanyPropertiesType = {
@@ -126,5 +125,4 @@ export type UserEvaluationType = {
 export interface IAuthStore {
   token?: string;
   refreshtoken?: string;
-};
- 
+}
