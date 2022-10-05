@@ -92,6 +92,7 @@ function createAuthStore() {
 		updateTokens,
 		isAuth(): boolean {
 			const { token, refreshtoken } = get(store);
+			console.log(!!token && !!refreshtoken);
 			return !!token && !!refreshtoken;
 		},
 		isAdmin(): boolean {

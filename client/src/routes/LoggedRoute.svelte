@@ -1,17 +1,24 @@
 <script>
-  import { Route } from 'svelte-navigator';
+  import { Route , navigate} from 'svelte-navigator';
   import isAuthenticated from '../services/authentication/IsAuthenticated';
   import NotLoggedIn from '../pages/NotLoggedIn.svelte';
-  import { authStore } from '../stores';
+  import Login from '../pages/Login.svelte'
+  import {authStore} from '../stores';
+  import { UserStore } from '../stores';
+  
 
   export let path;
-  export let component;
-
-  $: isAuth = authStore.isAuth;
+  export let component; 
+  authStore.isAuth()
+  
+   
 </script>
 
-{#if isAuth}
-  <Route {path} {component} />
+{#if $UserStore !== undefined}
+ 
+ <Route {path} {component}  />
 {:else}
-  <Route {path} component={NotLoggedIn} />
+ 
+  <Route {path} component={Login} />
+ 
 {/if}
