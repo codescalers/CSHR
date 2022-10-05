@@ -302,7 +302,7 @@
     color: #d7e3f1;
     font-size: 1rem;
     cursor: pointer;
-    background-color: #fff;
+    background-color: rgb(43 81 95);
     font-weight: 600;
     border: #d7e3f1 1px solid;
     padding: 0.4rem 0.7rem;

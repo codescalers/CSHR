@@ -4,7 +4,7 @@
   import updateLetters from '../../services/axios/requests/hr_letters';
   import updateCompensation from '../../services/axios/requests/compensation';
   import getRequests from '../../services/axios/requests/requests';
-  export let request: any, index: number, requests: any;
+  export let request: any, index: number;
 
   async function approve_btn(element: any, index: number) {
     document.getElementById(`approve-${index}`).style.cursor = 'wait';

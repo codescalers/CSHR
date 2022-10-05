@@ -16,7 +16,6 @@
 <style>
   .submit:disabled {
     background-color: #e2e8f0;
-    color: #a0aec0;
   }
   .submit {
     margin-top: 0.5cm;
@@ -28,6 +27,5 @@
   }
   .submit:hover {
     background-color: var(--primary-color);
-    color: var(--secondary-color);
   }
 </style>

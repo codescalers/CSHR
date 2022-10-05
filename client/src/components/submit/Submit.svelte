@@ -44,18 +44,18 @@
 <style>
   .submit:disabled {
     background-color: #e2e8f0;
-    color: #a0aec0;
+    color: rgb(43 81 95);
   }
   .submit {
     font-size: 1rem;
-    color: var(--primary-color);
+    color: #000;
     background-color: var(--secondary-color);
     width: 100%;
     border: 1px solid var(--primary-color);
   }
   .submit:hover {
     background-color: var(--primary-color);
-    color: var(--secondary-color);
+    color: #fff;
   }
   .success-bg {
     background-color: #d4edda;

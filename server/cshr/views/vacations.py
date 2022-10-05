@@ -68,7 +68,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 current_user, serializer.data, url
             )
             bool1 = set_notification_request_redis(serializer.data, url)
-            bool2 = send_email_for_request.delay(
+            bool2 = send_email_for_request(
                 current_user.id, msg, "Vacation request"
             )
 
