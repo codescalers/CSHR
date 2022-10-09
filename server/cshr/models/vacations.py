@@ -12,8 +12,9 @@ class REASON_CHOICES(models.TextChoices):
 
     ANNUAL_LEAVES = "annual_leaves", "Annual Leaves"
     PUBLIC_HOLIDAYS = "public_holidays", "Public Holidays"
-    EMERGENCY_LEAVE = "emergency_leave", "Emergency Leave"
+    EMERGENCY_LEAVE = "emergency_leaves", "Emergency Leave"
     LEAVE_EXCUSES = "leave_excuses", "Leave Excuses"
+    SICK_LEAVES = "sick_leaves", "Sick Leave"
 
 
 class Vacation(Requests):
@@ -34,10 +35,6 @@ class Vacation(Requests):
     def ___str__(self):
         return self.reason
 
-    @property
-    def __name__(self):
-        return "vacations"
-
 
 class PublicHolidays(models.Model):
     date = models.DateField(unique=True)
@@ -54,7 +51,7 @@ class VacationBalance(models.Model):
     compensation = models.IntegerField()
     unpaid = models.IntegerField()
     annual_leaves = models.IntegerField()
-    emergencies = models.IntegerField()
+    emergency_leaves = models.IntegerField()
     leave_execuses = models.IntegerField()
     public_holidays = models.IntegerField()
     date = models.DateField(auto_now=True)

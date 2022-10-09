@@ -65,7 +65,7 @@ class UserVacationBalanceSerializer(serializers.Serializer):
     compensation = serializers.FloatField()
     unpaid = serializers.FloatField()
     annual_leaves = serializers.FloatField()
-    emergencies = serializers.FloatField()
+    emergency_leaves = serializers.FloatField()
     leave_execuses = serializers.FloatField()
     public_holidays = serializers.JSONField(default=list)
     year = serializers.IntegerField()

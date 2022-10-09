@@ -32,6 +32,19 @@ a {
     color: var(--text-color);
     text-decoration: none;
 }
+footer{
+    height: calc(var(--header-height) + 1rem);
+    padding: 0 2rem 0 calc(var(--nav-width) + 2rem);
+    display: flex;
+    align-items: center;
+
+}
+
+.footer-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .dark {
     transition: 0.3s;
@@ -83,9 +96,8 @@ a {
 }
 
 body {
+    padding: 0 !important;
     position: relative;
-    margin: var(--header-height) 0 0 0;
-    padding: 2rem;
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
     transition: .5s;
@@ -103,6 +115,20 @@ main section {
     -o-border-radius: 1%;
 }
 
+.show-content {
+    padding: 0 2rem 0 calc(var(--nav-width) + 11rem) !important;
+    transition: 0.5s;
+    padding-top: 1rem !important;
+    background-color: rgb(0 0 0 / 68%);
+    height: 100vh;
+}
+
+.main-container{
+    padding: 0 2rem 0 calc(var(--nav-width) + 2rem);
+    transition: 0.5s;
+    padding-top: 1rem;
+}
+
 a {
     text-decoration: none !important;
 }
@@ -116,28 +142,20 @@ a {
 /*======================== Navbar ========================================*/
 
 .header {
-    width: 100%;
-    height: var(--header-height);
-    position: fixed;
-    top: 0;
-    left: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 0.1rem;
-    background-color: var(--white-color);
-    z-index: var(--z-fixed);
-    transition: .5s;
-    -webkit-transition: .5s;
-    -moz-transition: .5s;
-    -ms-transition: .5s;
-    -o-transition: .5s;
+    background-color: rgb(235 235 235);
+    transition: 0.5s;
 }
 
-.header_toggle {
+.header_toggle button {
+    cursor: pointer;
     color: var(--first-color);
     font-size: 1.5rem;
-    cursor: pointer
+    border: 0;
+    background-color: transparent;
 }
 
 .header_img {
@@ -152,7 +170,7 @@ a {
     background-repeat: no-repeat;
 }
 
-.header_img>div {
+.header_img > div {
     object-fit: contain;
     background-size: contain;
     background-size: cover;
@@ -162,6 +180,16 @@ a {
 
 .header_img img {
     width: 40px
+}
+
+.body-content{
+    padding-left: 6rem;
+    transition: 0.5s;
+    height: 100vh;
+}
+
+.page-content{
+    padding-left: calc(10rem + 6rem);
 }
 
 .l-navbar {
@@ -234,6 +262,9 @@ a {
 
 .body-pd {
     padding-left: calc(var(--nav-width) + 1rem);
+    /* transition: 0.5s; */
+    /* transition: 0.5s; */
+
 }
 
 .active {
@@ -255,7 +286,6 @@ a {
 
 @media screen and (min-width: 768px) {
     body {
-        margin: calc(var(--header-height) + 1rem) 0 0 0;
         padding-left: calc(var(--nav-width) + 2rem)
     }
     .header {

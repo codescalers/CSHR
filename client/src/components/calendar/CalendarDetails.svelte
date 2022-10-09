@@ -16,16 +16,16 @@
   export let isError: boolean | null = null;
 </script>
 
-<div class="container d-flex flex-column gap-3 px-4 my-5 row">
-  <div class="col-3">
-    <div class="task--danger t  d-flex flex-row justify-content-between"
+<div class="row">
+  <div class="col-6">
+    <div class="task--danger t"
       on:click={() => {eventChanger('meetings');}}
     >
       <span> 💼 Meeting </span>
       <span> {eventNames.has('meetings') ? '✔️' : '❌'} </span>
     </div>
   </div>
-  <div class="col-3">
+  <div class="col-6">
     <div
       class="task--info t  d-flex flex-row justify-content-between"
       on:click={() => {

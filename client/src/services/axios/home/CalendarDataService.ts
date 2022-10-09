@@ -25,20 +25,20 @@ class CalendarDataService {
 		}
 	}
 	public async postMeeting(e: {
-    hostedUserID: number;
-    invitedUsers: number[];
-    time: string;
-    meetingLink: string;
-    date: string;
-    location: string;
-  }) {
+		hostedUserID: number;
+		invitedUsers: number[];
+		time: string;
+		meetingLink: string;
+		date: string;
+		location: string;
+	}) {
 		try {
 			if (
 				!e.hostedUserID ||
-        !e.invitedUsers ||
-        !e.meetingLink ||
-        !e.time ||
-        !e.date
+				!e.invitedUsers ||
+				!e.meetingLink ||
+				!e.time ||
+				!e.date
 			)
 				throw new Error("Invalid data");
 			if (e.invitedUsers.length === 0) throw new Error("No invited users");
@@ -74,24 +74,24 @@ class CalendarDataService {
 	}
 
 	public async postEvent(e: {
-    description: string;
-    name: string;
-    people: number[];
-    end_date: string;
-    end_time: string;
-    from_date: string;
-    from_time: string;
-    location: string;
-  }) {
+		description: string;
+		name: string;
+		people: number[];
+		end_date: string;
+		end_time: string;
+		from_date: string;
+		from_time: string;
+		location: string;
+	}) {
 		try {
 			if (
 				!e.name ||
-        !e.people ||
-        e.people.length === 0 ||
-        !e.end_date ||
-        !e.location ||
-        !e.end_time ||
-        !e.from_time
+				!e.people ||
+				e.people.length === 0 ||
+				!e.end_date ||
+				!e.location ||
+				!e.end_time ||
+				!e.from_time
 			)
 				throw new Error("Invalid data");
 			if (e.people.length === 0) throw new Error("No invited users");
@@ -132,11 +132,11 @@ class CalendarDataService {
 	}
 
 	public async postLeave(e: {
-    applyingUserId: number;
-    reason: string;
-    end_date: string;
-    from_date: string;
-  }) {
+		applyingUserId: number;
+		reason: string;
+		end_date: string;
+		from_date: string;
+	}) {
 		try {
 			if (!e.applyingUserId || !e.end_date) throw new Error("Invalid data");
 			const { status } = await http.post(
@@ -145,7 +145,7 @@ class CalendarDataService {
 					applying_user: e.applyingUserId,
 					from_date: e.from_date,
 					end_date: e.end_date,
-					reason: "emergency_leave",
+					reason: "emergency_leaves",
 					type: "vacations",
 					status: "pending",
 				})
@@ -181,44 +181,44 @@ class CalendarDataService {
 				eventName = eventName as eventNameType;
 				const eventArr = data[dayStr + ""][eventName];
 				switch (eventName) {
-				case "events":
-					events = [
-						...events,
-						...this.itemHandler.createEventsItems(eventName, eventArr, date),
-					];
-					break;
-				case "vacations":
-					vacations = [
-						...vacations,
-						...this.itemHandler.createVacationsItems(
-							eventName,
-							eventArr,
-							date
-						),
-					];
-					break;
-				case "birthdates":
-					birthdates = [
-						...birthdates,
-						...this.itemHandler.birthDate.birthDateItem(
-							eventName,
-							eventArr,
-							date
-						),
-					];
-					break;
-				case "meetings":
-					meetings = [
-						...meetings,
-						...this.itemHandler.meeting.meetingsItems(
-							eventName,
-							eventArr,
-							date
-						),
-					];
-					break;
-				default:
-					throw new Error(`Invalid event name in itemHandler ${eventName}`);
+					case "events":
+						events = [
+							...events,
+							...this.itemHandler.createEventsItems(eventName, eventArr, date),
+						];
+						break;
+					case "vacations":
+						vacations = [
+							...vacations,
+							...this.itemHandler.createVacationsItems(
+								eventName,
+								eventArr,
+								date
+							),
+						];
+						break;
+					case "birthdates":
+						birthdates = [
+							...birthdates,
+							...this.itemHandler.birthDate.birthDateItem(
+								eventName,
+								eventArr,
+								date
+							),
+						];
+						break;
+					case "meetings":
+						meetings = [
+							...meetings,
+							...this.itemHandler.meeting.meetingsItems(
+								eventName,
+								eventArr,
+								date
+							),
+						];
+						break;
+					default:
+						throw new Error(`Invalid event name in itemHandler ${eventName}`);
 				}
 			}
 		}
@@ -232,16 +232,16 @@ class CalendarDataService {
 
 	private cssClassMapping(eventName: eventNameType): string {
 		switch (eventName) {
-		case "events":
-			return "task--primary";
-		case "meetings":
-			return "task--primary";
-		case "vacations":
-			return "task--info";
-		case "birthdates":
-			return " .task--warning";
-		default:
-			throw new Error(`Invalid event name in itemHandler ${eventName}`);
+			case "events":
+				return "task--primary";
+			case "meetings":
+				return "task--primary";
+			case "vacations":
+				return "task--info";
+			case "birthdates":
+				return "task--warning";
+			default:
+				throw new Error(`Invalid event name in itemHandler ${eventName}`);
 		}
 
 		return "";

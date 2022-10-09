@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "rollup-plugin-copy": "^3.4.0",
+    "svelte-flatpickr": "^3.2.6"
+  }
+}

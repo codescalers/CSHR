@@ -34,9 +34,7 @@ class VacationBalanceTest(APITestCase):
         v.check(u)
 
     def create_user(self, month: int):
-        office = Office.objects.create(
-            name="CodeScalers", country="Egypt", official_holidays=["Friday"]
-        )
+        office = Office.objects.create(name="CodeScalers", country="Egypt", official_holidays=["Friday"])
         u = User.objects.create(
             first_name="Ahmed",
             last_name="Mohamed",
@@ -78,7 +76,7 @@ class VacationBalanceTest(APITestCase):
             "sick_leaves": 100,
             "compensation": 0,
             "unpaid": 0,
-            "emergencies": 4,
+            "emergency_leaves": 4,
             "leave_execuses": 5,
             "public_holidays": ["2022-10-12", "2022-10-14", "2022-10-13"],
             "year": 2022,
@@ -96,7 +94,7 @@ class VacationBalanceTest(APITestCase):
             "sick_leaves": 100,
             "compensation": 0,
             "unpaid": 0,
-            "emergencies": 4,
+            "emergency_leaves": 4,
             "leave_execuses": 5,
             "public_holidays": ["2022-10-12", "2022-10-14", "2022-10-13"],
             "year": 2022,
@@ -106,7 +104,7 @@ class VacationBalanceTest(APITestCase):
         v.bulk_write(content)
         self.assertEqual(u.vacationbalance.public_holidays, 3)
         self.assertEqual(u.vacationbalance.annual_leaves, 15)
-        self.assertEqual(u.vacationbalance.emergencies, 4)
+        self.assertEqual(u.vacationbalance.emergency_leaves, 4)
 
     def test_public_holidays_count(self):
         v = VacationBalanceHelper()
@@ -114,9 +112,7 @@ class VacationBalanceTest(APITestCase):
         v.write("public_holidays", public_holidays)
         public_holidays = v.read_file()["public_holidays"]
         u = User.objects.get(pk=1)
-        count = v.calculate_public_holidays(
-            public_holidays=public_holidays, created_at=u.created_at
-        )
+        count = v.calculate_public_holidays(public_holidays=public_holidays, created_at=u.created_at)
         self.assertEqual(count, 4)
 
     def test_reset_old_balance(self):
@@ -149,7 +145,7 @@ class VacationBalanceTest(APITestCase):
             "sick_leaves": 100,
             "compensation": 0,
             "unpaid": 0,
-            "emergencies": 4,
+            "emergency_leaves": 4,
             "leave_execuses": 5,
             "public_holidays": ["2022-10-10", "2022-10-24", "2022-10-23"],
             "year": 2022,
@@ -169,7 +165,7 @@ class VacationBalanceTest(APITestCase):
             "sick_leaves": 100,
             "compensation": 0,
             "unpaid": 0,
-            "emergencies": 4,
+            "emergency_leaves": 4,
             "leave_execuses": 5,
             "public_holidays": ["2022-10-12", "2022-10-14", "2022-10-13"],
             "year": 2022,
@@ -179,7 +175,7 @@ class VacationBalanceTest(APITestCase):
         self.create_user(5)
         u = User.objects.get(pk=2)
         self.assertEqual(u.vacationbalance.annual_leaves, 10)
-        self.assertEqual(u.vacationbalance.emergencies, 3)
+        self.assertEqual(u.vacationbalance.emergency_leaves, 3)
         self.assertEqual(u.vacationbalance.leave_execuses, 3)
 
     def test_check_balance(self):

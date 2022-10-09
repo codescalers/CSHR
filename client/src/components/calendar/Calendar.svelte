@@ -280,11 +280,10 @@
   .calendar-container {
     width: 90%;
     overflow: hidden;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    background: #fff;
-    max-width: 1200px;
-  }
+    background: rgb(255 255 255);
+    border: solid 0.5px rgb(43 81 95 / 19%);
+    border-radius: 6px;
+}
   .calendar-header {
     text-align: center;
     padding: 20px 0;

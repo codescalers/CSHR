@@ -134,7 +134,7 @@ class Migration(migrations.Migration):
                         choices=[
                             ("annual_leaves", "Annual Leaves"),
                             ("public_holidays", "Public Holidays"),
-                            ("emergency_leave", "Emergency Leave"),
+                            ("emergency_leaves", "Emergency Leave"),
                             ("leave_excuses", "Leave Excuses"),
                         ],
                         default="annual_leaves",

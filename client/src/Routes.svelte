@@ -18,6 +18,8 @@
   import UserProfile from './pages/UserProfile.svelte';
   import Team from './pages/Team.svelte';
   import Evaluation from './pages/Evaluation.svelte';
+  import VacationBalance from './pages/VacationBalance.svelte';
+
   const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
   onMount(async () => {
@@ -41,6 +43,7 @@
     <Route path="profile/" component={UserProfile} />
     <Route path="team/"><Team /></Route>
     <Route path="evaluation/"><Evaluation /></Route>
+    <Route path="vacation/balance/"><VacationBalance /></Route>
 
     <Route>
       <Error error={404} />

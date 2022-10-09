@@ -11,7 +11,7 @@ from server.cshr.serializers.vacations import (
 from server.cshr.api.permission import IsSupervisor, UserIsAuthenticated, IsAdmin
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
-from server.cshr.utils.vacation_balance_helper import VacationBalanceHelper
+from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.vacations import get_vacation_by_id, get_all_vacations
 from rest_framework.generics import GenericAPIView, ListAPIView
@@ -36,6 +36,14 @@ from server.cshr.utils.redis_functions import (
     set_notification_reply_redis,
 )
 
+class VacationBalance(GenericAPIView):
+    """Class VacationBalance to update or post vacation balance by only admin."""
+    serializer_class = VacationsSerializer
+    permission_classes = [IsAdmin]
+
+    def post(self, request: Request) -> Response:
+        pass
+
 
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
     """Class Vacations_APIView to create a new vacation into database or get all"""
@@ -46,45 +54,52 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
     def post(self, request: Request) -> Response:
         """Method to create a new vacation request"""
         serializer = self.get_serializer(data=request.data)
-        v = VacationBalanceHelper()
-        if serializer.is_valid():
-            current_user: User = get_user_by_id(request.user.id)
-            start_date = request.data["from_date"]
-            end_date = request.data["end_date"]
-            type = request.data["reason"]
-            start = datetime.strptime(start_date, "%Y-%m-%d").date()
-            end = datetime.strptime(end_date, "%Y-%m-%d").date()
-            v.check(current_user)
-            err = v.check_balance(current_user, type, start, end)
-            if err is not True:
-                return CustomResponse.bad_request(message=err)
-            serializer.save(
-                type=TYPE_CHOICES.VACATIONS,
-                status=STATUS_CHOICES.PENDING,
-                applying_user=current_user,
-            )
-            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            msg = get_vacation_request_email_template(
-                current_user, serializer.data, url
-            )
-            bool1 = set_notification_request_redis(serializer.data, url)
-            bool2 = send_email_for_request(
-                current_user.id, msg, "Vacation request"
-            )
+        return CustomResponse.success()
+        # v = VacationBalanceHelper()
+        # if type(request.data["from_date"]) == str and type(request.data["end_date"]) == str:
+        #     from_date: List[str] = request.data.get("from_date").split("-") # Year, month, day
+        #     end_date: List[str] = request.data.get("end_date").split("-") # Year, month, day
+        #     converted_from_date: datetime = datetime(year=int(from_date[0]), month=int(from_date[1]), day=int(from_date[2])).date()
+        #     converted_end_date: datetime = datetime(year=int(end_date[0]), month=int(end_date[1]), day=int(end_date[2])).date()
+        #     request.data["from_date"] = converted_from_date
+        #     request.data["end_date"] = converted_end_date
 
-            if bool1 and bool2:
-                return CustomResponse.success(
-                    data=serializer.data,
-                    message="vacation request created",
-                    status_code=201,
-                )
-            else:
-                return CustomResponse.not_found(
-                    message="user is not found", status_code=404
-                )
-        return CustomResponse.bad_request(
-            error=serializer.errors, message="vacation request creation failed"
-        )
+        # if serializer.is_valid():
+        #     err = v.check_balance(
+        #         user = request.user,
+        #         reason = serializer.validated_data.get("reason"),
+        #         start_date = serializer.validated_data.get("from_date"),
+        #         end_date = serializer.validated_data.get("end_date")
+        #     )
+        #     if err is not True:
+        #         return CustomResponse.bad_request(message=err)
+        #     serializer.save(
+        #         type=TYPE_CHOICES.VACATIONS,
+        #         status=STATUS_CHOICES.PENDING,
+        #         applying_user=request.user,
+        #     )
+        #     url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
+        #     msg = get_vacation_request_email_template(
+        #         request.user, serializer.data, url
+        #     )
+        #     bool1 = set_notification_request_redis(serializer.data, url)
+        #     bool2 = send_email_for_request(
+        #         request.user.id, msg, "Vacation request"
+        #     )
+
+        #     if bool1 and bool2:
+        #         return CustomResponse.success(
+        #             data=serializer.data,
+        #             message="vacation request created",
+        #             status_code=201,
+        #         )
+        #     else:
+        #         return CustomResponse.not_found(
+        #             message="user is not found", status_code=404
+        #         )
+        # return CustomResponse.bad_request(
+        #     error=serializer.errors, message="vacation request creation failed"
+        # )
 
     def get_queryset(self) -> Response:
         """method to get all vacations"""

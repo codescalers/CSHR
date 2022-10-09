@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ("compensation", models.IntegerField(default=0)),
                 ("unpaid", models.IntegerField(default=0)),
                 ("annual_leaves", models.IntegerField(default=10)),
-                ("emergencies", models.IntegerField(default=5)),
+                ("emergency_leavess", models.IntegerField(default=5)),
                 ("leave_execuses", models.IntegerField(default=4)),
                 ("public_holidays", models.IntegerField(default=5)),
             ],

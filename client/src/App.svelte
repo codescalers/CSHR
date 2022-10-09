@@ -20,7 +20,7 @@
     );
 </script>
 
-<div class="fluid-container all" bind:this={rootElement}>
+<div bind:this={rootElement}>
   <Routes />
 </div>
 
