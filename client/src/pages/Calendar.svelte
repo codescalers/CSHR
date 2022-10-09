@@ -19,7 +19,9 @@
   <div slot="content">
     <div class="row">
       <div class="col-4">
-        <CalendarDetails bind:eventNames bind:isLoading bind:isError />
+        <div class="mb-4">
+          <CalendarDetails bind:eventNames bind:isLoading bind:isError />
+        </div>
         <CalendarEventForm />
       </div>
       <div class="col-8">

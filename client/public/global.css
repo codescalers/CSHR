@@ -95,6 +95,11 @@ footer{
     box-sizing: border-box
 }
 
+h1, h2, h3, h4, h5, h6 {
+    outline: none;
+    border: none;
+}
+
 body {
     padding: 0 !important;
     position: relative;
