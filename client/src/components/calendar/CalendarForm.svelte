@@ -3,9 +3,11 @@
   import CalendarEventForm from './CalendarEventForm.svelte';
   import CalendarLeaveForm from './CalendarLeaveForm.svelte';
   import CalendarDatePicker from './CalendarDatePicker.svelte';
+
   let formToggle: number = 0;
-  let startDate = '2022-03-01';
-  let endDate = '2022-03-03';
+  let thisDate: Date = new Date();
+  let startDate = `2022-${thisDate.getMonth() + 1}-${thisDate.getDate()}`;
+  let endDate = `2022-${thisDate.getMonth() + 1}-${thisDate.getDate() + 2}`;
   let datePickerDisabled = false;
 </script>
 
