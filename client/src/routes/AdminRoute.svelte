@@ -5,14 +5,17 @@
   import parseJwt from '../services/authentication/JWTPars';
   import { authStore } from '../stores';
   import NotAnAdmin from '../pages/NotAnAdmin.svelte';
+  import { UserStore } from '../stores';
+  
 
   export let path;
   export let component;
+  authStore.isAuth();
 
-  $: isAdminAuth = authStore.isAdmin;
+   
 </script>
 
-{#if isAdminAuth}
+{#if $UserStore.user_type == "Admin"}
   <Route {path} {component} />
 {:else}
   <Route {path} component={NotAnAdmin} />

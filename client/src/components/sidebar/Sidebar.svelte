@@ -131,22 +131,25 @@
                 <i class="fa-solid fa-users nav_icon" />
                 <span class="nav_name">Requests</span>
               </Link>
-              <Link to="/employee-info" class="nav_link">
+              <Link to="/profile" class="nav_link">
                 <i class="fa-solid fa-lightbulb nav_icon" />
                 <span class="nav_name">Employment Info</span>
               </Link>
-              <Link to="/reports" class="nav_link">
-                <i class="fa-solid fa-id-card nav_icon" />
-                <span class="nav_name">Reports</span>
+              {#if $UserStore.user_type === "Admin"}
+              <Link to="/register" class="nav_link">
+                <i class="fa-solid fa-plus-circle nav_icon" />
+                <span class="nav_name">add a user</span>
               </Link>
-              <a href="/evaluation-form" class="nav_link">
+              {/if}
+              <a href="/evaluation" class="nav_link">
                 <i class="fa-solid fa-book nav_icon" />
                 <span class="nav_name">Evaluation Form</span>
               </a>
-              <a href="#submenu3" data-bs-toggle="collapse" class="nav_link">
+              <a href="/team" data-bs-toggle="collapse" class="nav_link">
                 <i class="fa-solid fa-gear nav_icon" />
                 <span class="nav_name">Settings</span>
               </a>
+
               <ul
                 class="collapse nav flex-column  ms-1"
                 id="submenu3"
@@ -176,10 +179,11 @@
                     <span class="nav_name">My Docs</span>
                   </Link>
                 </li>
+                
               </ul>
             </div>
           </div>
-          <Link to="/signout" class="nav_link">
+          <Link to="auth/logout/" class="nav_link">
             <i class="bx bx-log-out nav_icon" />
             <span class="nav_name">SignOut</span>
           </Link>

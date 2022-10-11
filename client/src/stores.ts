@@ -92,19 +92,9 @@ function createAuthStore() {
 		updateTokens,
 		isAuth(): boolean {
 			const { token, refreshtoken } = get(store);
+			console.log(!!token && !!refreshtoken);
 			return !!token && !!refreshtoken;
-		},
-		isAdmin(): boolean {
-			const { token, refreshtoken } = get(store);
-			return user && !!token && !!refreshtoken && user.user_type === "Admin";
-		},
-
-		isSupervisor(): boolean {
-			const { token, refreshtoken } = get(store);
-			return (
-				user && !!token && !!refreshtoken && user.user_type === "Supervisor"
-			);
-		},
+		}
 	};
 }
 
