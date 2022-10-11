@@ -213,18 +213,6 @@
     }
     return null;
   }
-
-  /*   function itemClick(e) {
-    eventText =
-      "itemClick " + JSON.stringify(e) + " localtime=" + e.date.toString();
-  }
-  function dayClick(e) {
-    eventText =
-      "onDayClick " + JSON.stringify(e) + " localtime=" + e.date.toString();
-  }
-  function headerClick(e) {
-    eventText = "onHheaderClick " + JSON.stringify(e);
-  } */
   function next() {
     month++;
     if (month == 12) {

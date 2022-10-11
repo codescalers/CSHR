@@ -1,11 +1,8 @@
 <script lang="ts">
     import { Link } from 'svelte-navigator';
-    import type {
-        AdminViewInterface,
-        SupervisorViewInterface,
-        UserInterface,
-    } from '../../types';
-    export let user: AdminViewInterface | SupervisorViewInterface | UserInterface;
+    import type { userType } from '../../services/axios/home/types';
+    export let user: userType;
+
     let username: string[] = user.full_name.split(' ')    
 </script>
 

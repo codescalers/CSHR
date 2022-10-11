@@ -18,6 +18,7 @@ export type userType = {
   image: string;
   team: string;
   gender: string;
+  job_title: string;
 };
 export type birthDateItemType = {
   id: string;

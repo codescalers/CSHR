@@ -310,3 +310,6 @@ a {
         padding-left: calc(var(--nav-width) + 188px)
     }
 }
+.show-side-bar{
+    width: calc(var(--nav-width) + 156px)
+}
