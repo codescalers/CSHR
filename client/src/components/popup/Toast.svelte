@@ -69,4 +69,7 @@
   strong.danger-bg {
     background-color: transparent;
   }
+  .show {
+    width: calc(var(--nav-width) + 266px);
+  }
 </style>

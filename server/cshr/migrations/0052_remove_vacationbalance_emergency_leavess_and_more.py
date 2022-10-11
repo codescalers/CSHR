@@ -6,17 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0051_alter_office_official_holidays'),
+        ("cshr", "0051_alter_office_official_holidays"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='vacationbalance',
-            name='emergency_leavess',
+            model_name="vacationbalance",
+            name="emergency_leavess",
         ),
         migrations.AlterField(
-            model_name='vacation',
-            name='reason',
-            field=models.CharField(choices=[('annual_leaves', 'Annual Leaves'), ('public_holidays', 'Public Holidays'), ('emergency_leaves', 'Emergency Leave'), ('leave_excuses', 'Leave Excuses'), ('sick_leaves', 'Sick Leave')], default='annual_leaves', max_length=20),
+            model_name="vacation",
+            name="reason",
+            field=models.CharField(
+                choices=[
+                    ("annual_leaves", "Annual Leaves"),
+                    ("public_holidays", "Public Holidays"),
+                    ("emergency_leaves", "Emergency Leave"),
+                    ("leave_excuses", "Leave Excuses"),
+                    ("sick_leaves", "Sick Leave"),
+                ],
+                default="annual_leaves",
+                max_length=20,
+            ),
         ),
     ]

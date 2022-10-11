@@ -34,7 +34,9 @@ class VacationBalanceTest(APITestCase):
         v.check(u)
 
     def create_user(self, month: int):
-        office = Office.objects.create(name="CodeScalers", country="Egypt", official_holidays=["Friday"])
+        office = Office.objects.create(
+            name="CodeScalers", country="Egypt", official_holidays=["Friday"]
+        )
         u = User.objects.create(
             first_name="Ahmed",
             last_name="Mohamed",
@@ -112,7 +114,9 @@ class VacationBalanceTest(APITestCase):
         v.write("public_holidays", public_holidays)
         public_holidays = v.read_file()["public_holidays"]
         u = User.objects.get(pk=1)
-        count = v.calculate_public_holidays(public_holidays=public_holidays, created_at=u.created_at)
+        count = v.calculate_public_holidays(
+            public_holidays=public_holidays, created_at=u.created_at
+        )
         self.assertEqual(count, 4)
 
     def test_reset_old_balance(self):

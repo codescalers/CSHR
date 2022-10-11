@@ -1,5 +1,6 @@
 """This file contains everything related to the Vacation model."""
-from server.cshr.models.vacations import Vacation
+from server.cshr.models.users import User
+from server.cshr.models.vacations import Vacation, VacationBalance
 from django.db.models import Q
 from typing import List
 
@@ -31,3 +32,10 @@ def get_all_vacations() -> Vacation:
 def get_vacations_by_user(id: str) -> Vacation:
     "Return all vacations for certain user"
     return Vacation.objects.filter(applying_user=id)
+
+
+def get_balance_by_user(user: User) -> VacationBalance:
+    try:
+        return VacationBalance.objects.get(user=user)
+    except:
+        return None

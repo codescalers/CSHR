@@ -1,17 +1,13 @@
 <script lang="ts">
   import { v4 as uuidv4 } from 'uuid';
-  import Toast from '../popup/Toast.svelte';
 
   export let disabled = false;
   export let className = '';
   export let label = '';
   export let onClick: () => boolean | Promise<boolean>;
-  export let successMessage: string;
-  export let errorMessage: string;
   export let id = uuidv4();
   export let success: Promise<boolean> | boolean = true;
   export let show = false;
-  export let modalData: any = {};
   let isLoading = false;
 </script>
 
@@ -39,8 +35,6 @@
   {/if}
 </button>
 
-<Toast {modalData} {successMessage} {errorMessage} {success} {show} />
-
 <style>
   .submit:disabled {
     background-color: #e2e8f0;
@@ -61,14 +55,8 @@
     background-color: #d4edda;
     color: #155724;
   }
-  strong.success-bg {
-    background-color: transparent;
-  }
   .danger-bg {
     background-color: #fcb8b8;
     color: red;
-  }
-  strong.danger-bg {
-    background-color: transparent;
   }
 </style>

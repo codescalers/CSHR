@@ -1,5 +1,5 @@
-<footer>
-    <div class="container footer-content">
+<footer class="bg-light">
+    <div class="container bg-light footer-content">
       Copyright Threefold ©
     </div>
 </footer>

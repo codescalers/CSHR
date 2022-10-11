@@ -68,7 +68,6 @@ class UserVacationBalanceSerializer(serializers.Serializer):
     emergency_leaves = serializers.FloatField()
     leave_execuses = serializers.FloatField()
     public_holidays = serializers.JSONField(default=list)
-    year = serializers.IntegerField()
 
 
 class UserBalanceUpdateSerializer(serializers.Serializer):

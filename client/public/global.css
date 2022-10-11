@@ -37,7 +37,6 @@ footer{
     padding: 0 2rem 0 calc(var(--nav-width) + 2rem);
     display: flex;
     align-items: center;
-
 }
 
 .footer-content{
@@ -111,7 +110,6 @@ body {
 }
 
 main section {
-    background-color: var(--whitish-color);
     padding: 2rem 0 2rem 0;
     border-radius: 1%;
     -webkit-border-radius: 1%;
@@ -307,9 +305,6 @@ a {
     .l-navbar {
         left: 0;
         padding: 1rem 1rem 0 0
-    }
-    .show {
-        width: calc(var(--nav-width) + 156px)
     }
     .body-pd {
         padding-left: calc(var(--nav-width) + 188px)

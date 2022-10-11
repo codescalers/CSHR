@@ -47,7 +47,9 @@ class CshrBaseUserManger(BaseUserManager):
         if not email:
             raise ValueError("Users must have an email address")
         office, created = Office.objects.get_or_create(
-            name="Codescalers", country="Egypt"
+            name="Codescalers",
+            country="Egypt",
+            official_holidays=["Friday", "Saturday"],
         )
         user = self.model(
             email=self.normalize_email(email),

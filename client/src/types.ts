@@ -1,5 +1,4 @@
 export type buttonType = "success" | "warning" | "error" | "info";
-export type alertType = "success" | "warning" | "error" | "info";
 export type requestStatusType = "pending" | "approved" | "rejected";
 export type UserType = "Admin" | "Supervisor" | "User";
 export type requestLabelType =
@@ -140,4 +139,8 @@ export interface IVacationBalance {
   leave_execuses: number;
   emergency_leaves: number;
   public_holidays: number[];
+}
+
+export type TLeaveReasons = {
+  [key: string]: any
 }

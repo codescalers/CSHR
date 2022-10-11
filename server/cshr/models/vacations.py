@@ -10,12 +10,13 @@ class REASON_CHOICES(models.TextChoices):
     enum for the vacation Reason
     """
 
-    ANNUAL_LEAVES = "annual_leaves", "Annual Leaves"
     PUBLIC_HOLIDAYS = "public_holidays", "Public Holidays"
     EMERGENCY_LEAVE = "emergency_leaves", "Emergency Leave"
-    LEAVE_EXCUSES = "leave_excuses", "Leave Excuses"
-    SICK_LEAVES = "sick_leaves", "Sick Leave"
-
+    ANNUAL_LEAVES   = "annual_leaves", "Annual Leaves"
+    LEAVE_EXCUSES   = "leave_excuses", "Leave Excuses"
+    SICK_LEAVES     = "sick_leaves", "Sick Leave"
+    UNPAID          = "unpaid", "unpaid"
+    COMPENSATION    = "compensation", "compensation"
 
 class Vacation(Requests):
     """
