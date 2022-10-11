@@ -6,7 +6,7 @@
   import {authStore} from '../stores';
   import { UserStore } from '../stores';
   
-
+ 
   export let path;
   export let component; 
   authStore.isAuth()
