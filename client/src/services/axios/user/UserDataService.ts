@@ -1,3 +1,4 @@
+import { IsAuthenticated } from "../../../main";
 import http from "../http-common";
 class UserDataService {
 	errorMessage = "Error in User Data Service: ";
@@ -6,7 +7,7 @@ class UserDataService {
 		try {
 			return await (
 				await http.get(`/users?id=${id}`)
-			).data;
+			).data.results;
 		} catch (err) {
 			console.error(this.errorMessage + err);
 		}
@@ -18,6 +19,7 @@ class UserDataService {
 				await http.get("myprofile/")
 			).data.results;
 		} catch (err) {
+			IsAuthenticated(err)
 			console.error(this.errorMessage + err);
 		}
 	}

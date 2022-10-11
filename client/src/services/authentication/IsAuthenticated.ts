@@ -23,7 +23,6 @@ export default async function isAuthenticated() {
 			const myloggingData: refreshData = await refreshDataService.refresh(
 				refreshtoken
 			);
-			console.log(myloggingData);
 			return (myAuth = {
 				token: myloggingData.access,
 				refreshtoken: myloggingData.refresh,

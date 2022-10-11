@@ -12,7 +12,7 @@
                 pagecontent = document.getElementById(pageContent)
             if(toggle && nav && bodypd && headerpd && pagecontent){
                 toggle.addEventListener('click', ()=>{
-                    nav.classList.toggle('show')
+                    nav.classList.toggle('show-sidebar')
                     toggle.querySelector('i').classList.toggle('bx-x')
                     bodypd.classList.toggle('body-pd')
                     headerpd.classList.toggle('body-pd')

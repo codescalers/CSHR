@@ -33,6 +33,7 @@ function createAuthStore() {
 	const { subscribe, update } = store;
 
 	isAuthenticated().then((res) => {
+		console.log(res)
 		if (res && res.token && res.refreshtoken) {
 			updateTokens(res.token, res.refreshtoken);
 		} else {
@@ -46,7 +47,6 @@ function createAuthStore() {
 
 	function updateTokens(token: string, refresh: string): void {
 		localStorage.setItem("accesstoken", token);
-
 		localStorage.setItem("refreshtoken", refresh);
 
 		if (token) {
@@ -107,5 +107,6 @@ function createAuthStore() {
 		},
 	};
 }
+
 
 export const authStore = createAuthStore();

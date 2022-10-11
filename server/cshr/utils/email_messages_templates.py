@@ -7,7 +7,7 @@ def get_vacation_request_email_template(user: User, data, url) -> str:
    Reason: {reason}
    Start date : {start_date}
    End Date : {end_date}
-   Status :{status}
+   Status : {status}
    Request Url: {request_url}""".format(
         full_name=user.full_name,
         reason=data.get("reason"),

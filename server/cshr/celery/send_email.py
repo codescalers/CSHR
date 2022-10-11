@@ -1,4 +1,4 @@
-from array import array
+from typing import List
 from django.conf import settings
 from celery import Celery
 from server.components import config
@@ -138,8 +138,8 @@ def send_quarter_evaluation_email():
     )
 
 
-@shared_task()
-def send_email_for_request(user_id, msg, mail_title) -> Response:
+@app.task(bind=True)
+def send_email_for_request(self, user_id: int, msg: str, mail_title: str) -> Response:
     from django.core.mail import send_mail
     from server.cshr.models.users import User
     from server.cshr.utils.send_email import get_email_recievers
@@ -150,9 +150,8 @@ def send_email_for_request(user_id, msg, mail_title) -> Response:
     user: User = get_user_by_id(user_id)
     if user is None:
         return False
-    recievers: array[str] = get_email_recievers(user)
-    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
-    return True
+    recievers: List[str] = list(get_email_recievers(user))
+    return send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
 
 
 @shared_task()
@@ -170,6 +169,6 @@ def send_email_for_reply(
     applying_user: User = get_user_by_id(applying_user_id)
     if approving_user or applying_user is None:
         return False
-    recievers: array[str] = get_email_recievers(applying_user)
+    recievers: List[str] = get_email_recievers(applying_user)
     send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
     return True

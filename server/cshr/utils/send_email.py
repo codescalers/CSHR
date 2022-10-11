@@ -25,11 +25,10 @@ def get_supervisor_emails(user: User):
 
 
 def get_email_recievers(user: User):
-    admins_emails = get_admins_emails()
-    supervisor_emails = get_supervisor_emails(user)
-    recievers = admins_emails + supervisor_emails
-    recievers.append(user.email)
-    return recievers
+    admins_emails = User.objects.filter(user_type=USER_TYPE.ADMIN)
+    supervisor_emails = user.reporting_to.all()
+    recievers = admins_emails | supervisor_emails
+    return recievers.values_list('email', flat=True)
 
 
 def check_email_configuration():
