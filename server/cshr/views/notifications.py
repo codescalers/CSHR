@@ -1,14 +1,13 @@
+from server.cshr.serializers.notifications import NotificationsSerializer
 from server.cshr.utils.redis_functions import get_notifications
-from rest_framework.generics import GenericAPIView, ListAPIView
+from rest_framework.generics import ListAPIView
 from server.cshr.api.permission import UserIsAuthenticated
-from rest_framework.response import Response
-from rest_framework.request import Request
-from server.cshr.api.response import CustomResponse
 
 
-class BaseNotificationApiView(ListAPIView, GenericAPIView):
+class BaseNotificationApiView(ListAPIView):
     permission_classes = (UserIsAuthenticated,)
+    serializer_class = NotificationsSerializer
+    # TODO: Create new serializer here.
 
-    def get(self, request: Request) -> Response:
-        res = get_notifications(request.user)
-        return CustomResponse.success(data=res)
+    def get_queryset(self):
+        return get_notifications(self.request.user)

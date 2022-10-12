@@ -22,7 +22,7 @@ def set_notification_request_redis(data, url):
     if user is None:
         return False
     title = user.first_name + " " + user.last_name + " is applying for " + data["type"]
-    dict = {"title": title, "url": url}
+    dict = {"title": title, "url": url, "user": user.full_name}
     approving_users = user.reporting_to.all()
     for approving_user in approving_users:
         hashname = (
@@ -64,3 +64,12 @@ def get_notifications(user: User):
         dval = dict((k.decode("utf8"), v.decode("utf8")) for k, v in val.items())
         notifications.append(dval)
     return notifications
+
+
+def delete_all_notifications(user: User):
+    """this function deletes all notifications"""
+    keys = redis_instance.keys("user" + str(user.id) + "*")
+    if len(keys) > 0:
+        for key in keys:
+            redis_instance.delete(key)
+    return get_notifications(user)

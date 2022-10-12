@@ -31,13 +31,16 @@ export interface SupervisorViewInterface extends GeneralUserInterface {
   social_insurance_number: string;
   user_evaluation: UserEvaluationType[];
   user_company_properties: CompanyPropertiesType[];
+  user_type: UserType;
 }
 
 export interface AdminViewInterface extends SupervisorViewInterface {
   salary: SalaryType;
+  user_type: UserType;
 }
 export interface UserInterface extends SupervisorViewInterface {
   salary: SalaryType;
+  user_type: UserType;
 }
 
 export interface PaginatedInterface<T> {

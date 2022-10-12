@@ -78,36 +78,21 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             )
             if balance is not True:
                 return CustomResponse.bad_request(message=balance)
+            serializer.save(
+                type=TYPE_CHOICES.VACATIONS,
+                status=STATUS_CHOICES.PENDING,
+                applying_user=request.user,
+            )
+            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
+            msg = get_vacation_request_email_template(
+                request.user, serializer.data, url
+            )
+            set_notification_request_redis(serializer.data, url)
+            send_email_for_request(
+                request.user.id, msg, "Vacation request"
+            )
             return CustomResponse.success(status_code=201, message="Successfully updated balance")
         return CustomResponse.bad_request(error=serializer.errors)
-
-        #     serializer.save(
-        #         type=TYPE_CHOICES.VACATIONS,
-        #         status=STATUS_CHOICES.PENDING,
-        #         applying_user=request.user,
-        #     )
-        #     url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-        #     msg = get_vacation_request_email_template(
-        #         request.user, serializer.data, url
-        #     )
-        #     bool1 = set_notification_request_redis(serializer.data, url)
-        #     bool2 = send_email_for_request(
-        #         request.user.id, msg, "Vacation request"
-        #     )
-
-        #     if bool1 and bool2:
-        #         return CustomResponse.success(
-        #             data=serializer.data,
-        #             message="vacation request created",
-        #             status_code=201,
-        #         )
-        #     else:
-        #         return CustomResponse.not_found(
-        #             message="user is not found", status_code=404
-        #         )
-        # return CustomResponse.bad_request(
-        #     error=serializer.errors, message="vacation request creation failed"
-        # )
 
     def get_queryset(self) -> Response:
         """method to get all vacations"""
