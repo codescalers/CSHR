@@ -2,6 +2,7 @@
   import { v4 as uuidv4 } from 'uuid';
   import Toast from '../popup/Toast.svelte';
 
+  export let showthis = true;
   export let disabled = false;
   export let className = '';
   export let label = '';
@@ -39,8 +40,9 @@
   {/if}
 </button>
 
-<Toast {modalData} {successMessage} {errorMessage} {success} {show} />
-
+{#if showthis}
+  <Toast {modalData} {successMessage} {errorMessage} {success} {show} />
+{/if}
 <style>
   .submit:disabled {
     background-color: #e2e8f0;

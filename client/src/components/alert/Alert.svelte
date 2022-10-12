@@ -5,5 +5,5 @@
 
 <div class={`alert alert-${type} alert-dismissible fade show`} role="alert">
   <span>{title}</span>,{message}
-  <button class="btn-close" data-bs-dismiss="alert" aria-label="close" />
+  <button type="submit" class="btn-close" data-bs-dismiss="alert" aria-label="close" />
 </div>
