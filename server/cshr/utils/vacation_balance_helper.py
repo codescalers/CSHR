@@ -129,6 +129,8 @@ class StanderdVacationBalance:
         vacation_days = self.get_difference_between_two_days(start_date, end_date)
         if hasattr(v, reason):
             curr_balance = getattr(v, reason)
+            if reason == "public_holidays":
+                return "You cannot apply for public holidays vacations, you take it automatically."
             if old_balance + curr_balance >= vacation_days:
                 new_value: int = curr_balance - vacation_days
                 return self.update_user_balance(user, reason, new_value)

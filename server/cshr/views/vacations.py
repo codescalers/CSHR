@@ -58,11 +58,12 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
     def post(self, request: Request) -> Response:
         """Method to create a new vacation request"""
-        serializer = self.get_serializer(data=request.data)
         v = StanderdVacationBalance()
         if (
-            type(request.data["end_date"]) == str
+            request.data.get("end_date")
             and type(request.data["end_date"]) == str
+            and request.data.get("from_date")
+            and type(request.data["from_date"]) == str
         ):
             from_date: List[str] = request.data.get("from_date").split(
                 "-"
@@ -78,6 +79,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             ).date()
             request.data["from_date"] = converted_from_date
             request.data["end_date"] = converted_end_date
+        serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
             balance = v.check_balance(
