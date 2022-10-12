@@ -199,8 +199,8 @@
     font-size: 1.9rem;
   }
   .rangeSelected {
-    background-color: #eff6ff;
-    border-radius: 10%;
+    background-color: rgb(43 81 95 / 24%);
+    border-radius: 50%;
   }
   .table-header {
     font-size: 1.2rem;
@@ -221,21 +221,15 @@
   }
   .go-btn {
     cursor: pointer;
-    color: #9cb2cd;
-    background-color: #fff;
-    border: 1px solid #9cb2cd;
-    text-align: center;
-    border-radius: 20%;
-    font-weight: 600;
-    width: 100%;
-    margin: 0.3rem;
+    color: rgb(255 255 255);
+    border-radius: 5px;
     font-size: 1rem;
-    padding: 0.5rem 0rem;
-  }
-  .go-btn:hover {
-    background-color: #2b515f;
-    color: #fff;
-    border: #d7e3f1 1px solid;
+    cursor: pointer;
+    background-color: rgb(43 81 95);
+    font-weight: 600;
+    border: rgb(215 227 241) 1px solid;
+    padding: 0.4rem 0.7rem;
+    margin-top: 8px;
   }
   .day {
     cursor: pointer;
