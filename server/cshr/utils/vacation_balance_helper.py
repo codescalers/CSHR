@@ -36,7 +36,9 @@ class StanderdVacationBalance:
 
     def bulk_write(self, content: Dict) -> Dict:
         if not type(content) == dict:
-            return CustomResponse.bad_request(message="Invalid type {}".format(type(content)))
+            return CustomResponse.bad_request(
+                message="Invalid type {}".format(type(content))
+            )
 
         with open(self.file_path, "w") as f:
             f.write(json.dumps(content))
@@ -67,7 +69,10 @@ class StanderdVacationBalance:
                 day=int(splited_day[2]),
             )
             if formated_day.year == today.year:
-                if formated_day.day >= user_joining_date.day and formated_day.month >= user_joining_date.month:
+                if (
+                    formated_day.day >= user_joining_date.day
+                    and formated_day.month >= user_joining_date.month
+                ):
                     response_public_holidays.append(formated_day.date())
         return response_public_holidays
 
@@ -77,7 +82,9 @@ class StanderdVacationBalance:
 
         annual_leaves: int = round(self.file_content["annual_leaves"] / 12 * month)
         leave_execuses: int = round(self.file_content["leave_execuses"] / 12 * month)
-        emergency_leaves: int = round(self.file_content["emergency_leaves"] / 12 * month)
+        emergency_leaves: int = round(
+            self.file_content["emergency_leaves"] / 12 * month
+        )
         calculated_values = {
             "annual_leaves": annual_leaves,
             "leave_execuses": leave_execuses,
@@ -125,9 +132,13 @@ class StanderdVacationBalance:
             if old_balance + curr_balance >= vacation_days:
                 new_value: int = curr_balance - vacation_days
                 return self.update_user_balance(user, reason, new_value)
-            return f"You only have {old_balance+curr_balance} days left of reason {reason}"
+            return (
+                f"You only have {old_balance+curr_balance} days left of reason {reason}"
+            )
 
-    def update_user_balance(self, user: User, reason: REASON_CHOICES, new_value: int) -> VacationBalance:
+    def update_user_balance(
+        self, user: User, reason: REASON_CHOICES, new_value: int
+    ) -> VacationBalance:
         """
         Set new value based on field name -> reason.
         user: Current user.
@@ -147,7 +158,10 @@ class StanderdVacationBalance:
         reason e.g "annual_leaves" in the given object's old balance field.
         if it's empty then it will return 0
         """
-        if user.vacationbalance.old_balance == {} or user.vacationbalance.old_balance[reason] == 0:
+        if (
+            user.vacationbalance.old_balance == {}
+            or user.vacationbalance.old_balance[reason] == 0
+        ):
             return 0
         else:
             return user.vacationbalance.old_balance[reason]
@@ -349,7 +363,7 @@ class StanderdVacationBalance:
 #     def update_balance(self, type: str, obj: VacationBalance, new_value: int) -> VacationBalance:
 #         """
 #         Set new value based on field name -> type.
-# type: one of 'VacationBalance' fields.
+# : one of 'VacationBalance' fields.
 #         obj: `VacationBalance` instance.
 #         new_value: the new value will adding to filed[type]
 #         """
