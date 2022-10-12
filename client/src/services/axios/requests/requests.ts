@@ -10,11 +10,6 @@ export default async function getRequests() {
 		request.push(value);
 	});
 
-	data.compensations.forEach(function (value: any) {
-		value.type = "Compensation";
-		request.push(value);
-	});
-
 	data.hr_letters.forEach(function (value: any) {
 		value.type = "HR letters";
 		request.push(value);

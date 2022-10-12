@@ -29,11 +29,10 @@
 </script>
 
 <Sidebar>
-  <span slot="page-name">Requests</span>
-  <section class=" container-fluid mt-5" slot="content">
+  <section slot="content">
     <div class="row">
-      <h4 class="child  mx-5">All Requests</h4>
-      <table class="table align-middle mb-0 mx-5 w-100">
+      <h4 class="child  mx-3">All Requests</h4>
+      <table class="table align-middle mb-0 mx-3 w-100">
         <colgroup>
           <col span="1" style="width: 25%;" />
           <col span="1" style="width: 35%;" />
@@ -49,13 +48,13 @@
           </tr>
         </thead>
         <tbody>
-          {#each requests.slice(pageCount * 7, pageCount * 7 + 7) as request, index (index)}
+          {#each requests as request}
             <tr>
               <td>
                 <div class="d-flex  align-items-center">
                   <ProfileImage user={request.applying_user}/>
-                  <div>
-                    <p class="fw-bold mb-1">
+                  <div class="mx-2">
+                    <p class="fw-bold mb-0">
                       {request.applying_user.full_name}
                     </p>
                     <p class="text-muted mb-0">
@@ -86,13 +85,13 @@
                     End
                   </span>
                   <span class="text-muted float-right-span">
-                    {request.end_date ? request.from_date : '---'}
+                    {request.end_date ? request.end_date : '---'}
                   </span>
                 </p>
               </td>
               <td>
                 <div class="container w-100 p-0">
-                  <ActionButton {request} {index} />
+                  <ActionButton {request}/>
                 </div>
               </td>
             </tr>

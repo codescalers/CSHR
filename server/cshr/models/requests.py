@@ -39,7 +39,7 @@ class Requests(TimeStamp):
         User, on_delete=models.SET_NULL, related_name="approve_user", null=True
     )
     type = models.CharField(max_length=20, choices=TYPE_CHOICES.choices)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES.choices)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES.choices, default=STATUS_CHOICES.PENDING)
 
     def __str__(self) -> str:
         return self.type

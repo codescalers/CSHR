@@ -2,8 +2,9 @@
 
 from django.urls import path
 
-from server.cshr.views.requests import RequestApiView
+from server.cshr.views.requests import RequestApiView, ApproveRequestApiView
 
 urlpatterns = [
     path("", RequestApiView.as_view()),
+    path("approve/<str:id>/", ApproveRequestApiView.as_view()),
 ]

@@ -1,4 +1,5 @@
 """This file contains everything related to the Vacation model."""
+from server.cshr.models.requests import STATUS_CHOICES, Requests
 from server.cshr.models.users import User
 from server.cshr.models.vacations import Vacation, VacationBalance
 from django.db.models import Q
@@ -28,6 +29,11 @@ def get_all_vacations() -> Vacation:
     """Return all vacations"""
     return Vacation.objects.all()
 
+def filter_vacations_by_pending_status() -> Vacation:
+    """Return all vacations that has pending status"""
+    return Vacation.objects.filter(
+        status = STATUS_CHOICES.PENDING
+    )
 
 def get_vacations_by_user(id: str) -> Vacation:
     "Return all vacations for certain user"
@@ -37,5 +43,16 @@ def get_vacations_by_user(id: str) -> Vacation:
 def get_balance_by_user(user: User) -> VacationBalance:
     try:
         return VacationBalance.objects.get(user=user)
+    except:
+        return None
+
+def get_vacation_based_on_request(request_: Requests):
+    """Returns vacation object who created at the sane time of request creation."""
+    try:
+        return Vacation.objects.get(
+            # created_at__day = request_.created_at.day,
+            applying_user__id = request_.applying_user.id,
+            approval_user__id = request_.approval_user.id
+        )
     except:
         return None

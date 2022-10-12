@@ -36,6 +36,7 @@ from server.cshr.celery.send_email import send_email_for_reply
 from server.cshr.models.vacations import Vacation, VacationBalance
 from server.cshr.services.vacations import get_vacations_by_user
 from server.cshr.utils.redis_functions import (
+    get_notifications,
     set_notification_request_redis,
     set_notification_reply_redis,
 )
@@ -88,6 +89,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 request.user, serializer.data, url
             )
             set_notification_request_redis(serializer.data, url)
+            print(get_notifications(request.user))
             send_email_for_request(
                 request.user.id, msg, "Vacation request"
             )

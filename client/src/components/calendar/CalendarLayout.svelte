@@ -64,7 +64,7 @@
         {/if}
       </section>
       <CalendarModalData
-        bind:item
+        item = {item}
         on:onDelete={onDelete}
         on:onDelete={onDelete}
         on:onDone={onDone}

@@ -7,10 +7,13 @@
   import { authStore } from '../stores';
   import { validateEmail } from '../services/utils/validators';
   import Submit from '../components/submit/Submit.svelte';
+  import Alert from '../components/alert/Alert.svelte';
 
   const handleMail = (e: any): boolean => {
     return !validateEmail(e.target.value);
   };
+
+  let alertMessage: string;
 
   let passwordValue = '';
   let emailValue = '';
@@ -33,7 +36,7 @@
         emailValue,
         passwordValue
       );
-
+      
       authStore.updateTokens(
         myloggingData.access_token,
         myloggingData.refresh_token
@@ -41,6 +44,7 @@
 
       navigate('/', { replace: true });
     } catch (e) {
+      alertMessage = e.message
       isError = true;
     }
     return isError;
@@ -86,7 +90,12 @@
         placeholder={'please enter your password here'}
         bind:isError={isErrorpass}
       />
-      <div class="mt-5 pt-3">
+      {#if alertMessage}
+        <div class="mt-3">
+          <Alert message={alertMessage} title={"Login Failed"} type={"danger"} />
+        </div>
+      {/if}
+      <div class="mt-5">
         <Submit
           disabled={formDisable}
           successMessage={'Welcome to HR System !'}
@@ -95,7 +104,7 @@
           onClick={submit}
         />
       </div>
-    </fieldset>
+      </fieldset>
   </div>
 </div>
 <svg
@@ -157,7 +166,6 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     padding: 20px 20px 20px 20px;
-    height: 480px;
     width: 400px;
   }
   .card:hover {

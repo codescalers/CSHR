@@ -32,11 +32,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name="vacationbalance",
-            name="emergency_leaves",
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name="vacationbalance",
             name="leave_execuses",
             field=models.IntegerField(),
         ),

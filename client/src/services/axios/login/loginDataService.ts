@@ -10,7 +10,7 @@ class LoginDataService {
 				await http.post("auth/login/", loginData)
 			).data.results;
 		} catch (error) {
-			throw new Error(`Error while logging in ${error}`);
+			throw new Error(error.response.data.detail);
 		}
 	}
 }

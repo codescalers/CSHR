@@ -11,7 +11,7 @@
 </script>
 
 {#if birthDayFlag}
-  <CalendarBirthdayModel bind:item />
+  <CalendarBirthdayModel item={item} />
 {/if}
 {#if meetingFlag}
   <CalendarMeetingModel bind:item />
