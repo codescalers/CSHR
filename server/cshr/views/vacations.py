@@ -60,16 +60,9 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
         """Method to create a new vacation request"""
         serializer = self.get_serializer(data=request.data)
         v = StanderdVacationBalance()
-        if (
-            type(request.data["from_date"]) == str
-            and type(request.data["end_date"]) == str
-        ):
-            from_date: List[str] = request.data.get("from_date").split(
-                "-"
-            )  # Year, month, day
-            end_date: List[str] = request.data.get("end_date").split(
-                "-"
-            )  # Year, month, day
+        if type(request.data["end_date"]) == str and type(request.data["end_date"]) == str:
+            from_date: List[str] = request.data.get("from_date").split("-")  # Year, month, day
+            end_date: List[str] = request.data.get("end_date").split("-")  # Year, month, day
             converted_from_date: datetime = datetime(
                 year=int(from_date[0]), month=int(from_date[1]), day=int(from_date[2])
             ).date()
@@ -94,14 +87,10 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 applying_user=request.user,
             )
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            msg = get_vacation_request_email_template(
-                request.user, serializer.data, url
-            )
+            msg = get_vacation_request_email_template(request.user, serializer.data, url)
             set_notification_request_redis(serializer.data, url)
             send_email_for_request(request.user.id, msg, "Vacation request")
-            return CustomResponse.success(
-                status_code=201, message="Successfully updated balance"
-            )
+            return CustomResponse.success(status_code=201, message="Successfully updated balance")
         return CustomResponse.bad_request(error=serializer.errors)
 
     def get_queryset(self) -> Response:
@@ -120,14 +109,10 @@ class VacationsHelpersApiView(ListAPIView, GenericAPIView):
         print(id)
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
-            return CustomResponse.not_found(
-                message="vacation is not found", status_code=404
-            )
+            return CustomResponse.not_found(message="vacation is not found", status_code=404)
 
         serializer = VacationsSerializer(vacation)
-        return CustomResponse.success(
-            data=serializer.data, message="vacation request found", status_code=200
-        )
+        return CustomResponse.success(data=serializer.data, message="vacation request found", status_code=200)
 
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete a vacation request by id"""
@@ -146,14 +131,10 @@ class VacationUserApiView(ListAPIView, GenericAPIView):
         """method to get all vacations for certain user"""
         current_user: User = get_user_by_id(request.user.id)
         if current_user is None:
-            return CustomResponse.not_found(
-                message="user is not found", status_code=404
-            )
+            return CustomResponse.not_found(message="user is not found", status_code=404)
         vacations = get_vacations_by_user(current_user.id)
         serializer = VacationsSerializer(vacations, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="vacation requests found", status_code=200
-        )
+        return CustomResponse.success(data=serializer.data, message="vacation requests found", status_code=200)
 
 
 class VacationsUpdateApiView(ListAPIView, GenericAPIView):
@@ -173,9 +154,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             msg = get_vacation_reply_email_template(current_user, vacation, url)
 
-            bool = send_email_for_reply.delay(
-                current_user.id, vacation.applying_user.id, msg, "Vacation reply"
-            )
+            bool = send_email_for_reply.delay(current_user.id, vacation.applying_user.id, msg, "Vacation reply")
             if bool:
                 return CustomResponse.success(
                     data=serializer.data,
@@ -183,13 +162,9 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
                     status_code=202,
                 )
             else:
-                return CustomResponse.not_found(
-                    message="user is not found", status_code=404
-                )
+                return CustomResponse.not_found(message="user is not found", status_code=404)
 
-        return CustomResponse.bad_request(
-            data=serializer.errors, message="vacation failed to update"
-        )
+        return CustomResponse.bad_request(data=serializer.errors, message="vacation failed to update")
 
 
 class VacationsAcceptApiView(ListAPIView, GenericAPIView):
@@ -206,17 +181,11 @@ class VacationsAcceptApiView(ListAPIView, GenericAPIView):
         url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(vacation, "accepted", url)
         msg = get_vacation_reply_email_template(current_user, vacation, url)
-        bool2 = send_email_for_reply.delay(
-            current_user.id, vacation.applying_user.id, msg, "Vacation reply"
-        )
+        bool2 = send_email_for_reply.delay(current_user.id, vacation.applying_user.id, msg, "Vacation reply")
         if bool1 and bool2:
-            return CustomResponse.success(
-                message="vacation request accepted", status_code=202
-            )
+            return CustomResponse.success(message="vacation request accepted", status_code=202)
         else:
-            return CustomResponse.not_found(
-                message="user is not found", status_code=404
-            )
+            return CustomResponse.not_found(message="user is not found", status_code=404)
 
 
 class VacationsRejectApiView(ListAPIView, GenericAPIView):
@@ -233,17 +202,11 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(vacation, "rejected", url)
         msg = get_vacation_reply_email_template(current_user, vacation, url)
-        bool2 = send_email_for_reply.delay(
-            current_user.id, vacation.applying_user.id, msg, "Vacation reply"
-        )
+        bool2 = send_email_for_reply.delay(current_user.id, vacation.applying_user.id, msg, "Vacation reply")
         if bool1 and bool2:
-            return CustomResponse.success(
-                message="vacation request rejected", status_code=202
-            )
+            return CustomResponse.success(message="vacation request rejected", status_code=202)
         else:
-            return CustomResponse.not_found(
-                message="user is not found", status_code=404
-            )
+            return CustomResponse.not_found(message="user is not found", status_code=404)
 
 
 class VacationApprovalAPIView(GenericAPIView):
@@ -281,9 +244,7 @@ class VacationCommentsAPIView(GenericAPIView):
         comment = request.data.get("comment")
         comment_ = {"user": request.user.id, "comment": comment}
         update_vacation_comment_log(vacation, comment_)
-        return CustomResponse.success(
-            data=comment_, status_code=202, message="vacation comment added"
-        )
+        return CustomResponse.success(data=comment_, status_code=202, message="vacation comment added")
 
 
 class UserVacationBalanceUpdateApiView(ListAPIView, GenericAPIView):
@@ -294,14 +255,10 @@ class UserVacationBalanceUpdateApiView(ListAPIView, GenericAPIView):
         yourdata = request.data
         serializer = UserVacationBalanceSerializer(data=yourdata)
         if serializer.is_valid():
-            # v = VacationBalanceHelper()
-            # v.bulk_write(dict(serializer.data))
-            return CustomResponse.success(
-                data=serializer.data, status_code=202, message="base balance updated"
-            )
-        return CustomResponse.bad_request(
-            data=serializer.error, message="failed to update base balance"
-        )
+            v = StanderdVacationBalance()
+            v.bulk_write(dict(serializer.data))
+            return CustomResponse.success(data=serializer.data, status_code=202, message="base balance updated")
+        return CustomResponse.bad_request(data=serializer.error, message="failed to update base balance")
 
 
 class UserBalanceUpdateApiView(ListAPIView, GenericAPIView):
@@ -312,27 +269,20 @@ class UserBalanceUpdateApiView(ListAPIView, GenericAPIView):
         yourdata = request.data
         serializer = UserBalanceUpdateSerializer(data=yourdata)
         if serializer.is_valid():
-            # vh = VacationBalanceHelper()
+            vh = StanderdVacationBalance()
             ids = serializer.data["ids"]
-            # type = serializer.data["type"]
-            # new_value = serializer.data["new_value"]
+            type = serializer.data["type"]
+            new_value = serializer.data["new_value"]
             for id in ids:
                 try:
-                    pass
-                    # u = get_user_by_id(id=int(id))
+                    u = get_user_by_id(id=int(id))
                 except User.DoesNotExist:
-                    return CustomResponse.bad_request(
-                        data=serializer.error, message="failed to update balance"
-                    )
-                # vh.check(u)
-                # v = u.vacationbalance
-                # vh.update_balance(type, v, new_value)
-            return CustomResponse.success(
-                data=serializer.data, status_code=202, message="Users' balance updated"
-            )
-        return CustomResponse.bad_request(
-            data=serializer.error, message="failed to update balance"
-        )
+                    return CustomResponse.bad_request(data=serializer.error, message="failed to update balance")
+                vh.check(u)
+                v = u.vacationbalance
+                vh.update_balance(type, v, new_value)
+            return CustomResponse.success(data=serializer.data, status_code=202, message="Users' balance updated")
+        return CustomResponse.bad_request(data=serializer.error, message="failed to update balance")
 
 
 class UserVacationBalanceApiView(GenericAPIView):
@@ -346,6 +296,4 @@ class UserVacationBalanceApiView(GenericAPIView):
         user: User = get_user_by_id(request.user.id)
         v: StanderdVacationBalance = StanderdVacationBalance()
         balance = v.check(user)
-        return CustomResponse.success(
-            message="Baance founded.", data=self.get_serializer(balance).data
-        )
+        return CustomResponse.success(message="Baance founded.", data=self.get_serializer(balance).data)
