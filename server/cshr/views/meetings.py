@@ -1,4 +1,5 @@
 import datetime
+from typing import List
 from server.cshr.serializers.meetings import MeetingsSerializer
 from server.cshr.models.users import User
 from server.cshr.api.permission import UserIsAuthenticated
@@ -21,12 +22,15 @@ class BaseMeetingsApiView(ListAPIView, GenericAPIView):
     def post(self, request: Request) -> Response:
         """Method to create a new meeting"""
         serializer = self.get_serializer(data=request.data)
+        invited_users: List[int] = request.data.get("invited_users")
         if serializer.is_valid():
             current_user: User = get_user_by_id(request.user.id)
             provided_date: CSHRDate = CSHRDate(request.data.get("date"))
             parsing: datetime.datetime = provided_date.parse()
             if type(parsing) == datetime.datetime:
-                serializer.save(host_user=current_user, date=parsing)
+                serializer.save(
+                    host_user=current_user, date=parsing, invited_users=invited_users
+                )
                 return CustomResponse.success(
                     data=serializer.data,
                     message="meeting is created successfully",

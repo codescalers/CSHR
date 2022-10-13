@@ -30,9 +30,15 @@ def get_all_vacations() -> Vacation:
     return Vacation.objects.all()
 
 
-def filter_vacations_by_pending_status() -> Vacation:
+def filter_vacations_by_pending_status(team_lead_user: User) -> Vacation:
     """Return all vacations that has pending status"""
-    return Vacation.objects.filter(status=STATUS_CHOICES.PENDING)
+    users_reporting_to_teemlead_ids: List[int] = User.objects.filter(
+        reporting_to=team_lead_user
+    ).values_list("id", flat=True)
+    return Vacation.objects.filter(
+        status=STATUS_CHOICES.PENDING,
+        applying_user__id__in=users_reporting_to_teemlead_ids,
+    )
 
 
 def get_vacations_by_user(id: str) -> Vacation:

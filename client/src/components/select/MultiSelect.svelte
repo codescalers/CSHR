@@ -191,6 +191,7 @@
     color: var(--text-light);
     outline: none;
     cursor: pointer;
+    color: white;
   }
   .option-badge:hover,
   .option-badge:focus {

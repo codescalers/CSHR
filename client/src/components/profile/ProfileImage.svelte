@@ -5,7 +5,7 @@
         SupervisorViewInterface,
         UserInterface,
     } from '../../types';
-    export let user: AdminViewInterface | SupervisorViewInterface | UserInterface;
+    export let user: AdminViewInterface | SupervisorViewInterface | UserInterface | userType;
     let username: string[] = user.full_name.split(' ')    
 </script>
 

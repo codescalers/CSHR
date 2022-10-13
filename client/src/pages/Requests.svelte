@@ -16,10 +16,9 @@
       if(request.id === sRequest.id){
         const index = requests.indexOf(request);
         requests.splice(index, 1);
-        requests =  requests;
+        requests = requests;
       }
     });
-    console.log(requests);
   }
 
   function increment() {

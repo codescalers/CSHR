@@ -7,7 +7,6 @@
 </script>
 
 <Sidebar bind:isLoading bind:isError>
-  <span slot="page-name">Team</span>
   <div slot="content">
     <Team bind:isLoading bind:isError />
   </div>

@@ -6,6 +6,7 @@
   import { UserStore } from '../../stores';
   import Modal from '../modal/Modal.svelte';
   import StackedImages from '../image/StackedImages.svelte';
+  import ProfileImage from '../profile/ProfileImage.svelte';
 
   export let item: meetingItemType;
   let clickedParticipantIndex: number = 0;
@@ -32,12 +33,12 @@
   <div slot="body">
     <div class="container d-flex flex-column gap-5 px-5 my-5">
       <h3 class="mx-auto text-muted">
-        <a href={item.meeting_link}>Meeting Link</a>
+        <a href={item.meeting_link} target="blank">Meeting Link</a>
       </h3>
       <div class="row">
         <h5>Organizer</h5>
       </div>
-      <StackedImages stackedImages={[item.host_user]} />
+      <ProfileImage user={item.host_user} />
 
       <div class="d-flex flex-column gap-2">
         <div class="d-flex flex-row gap-2">
@@ -49,25 +50,9 @@
           <div class="d-flex flex-column gap-1">
             <span>{item.host_user.full_name}</span>
             <span>{item.host_user.team}</span>
-            <span
-              ><a
-                href={`mailto:${item.host_user.email}?subject=Happy%20Birth%20Day%20ahmad&body=Dear%20${item.host_user.full_name}%2C%0D%0A%0D%0AI%20wish%20you%20a%20happy%20birthday%20${item.host_user.full_name}%F0%9F%8E%82%0D%0A%0D%0A%0D%0Ayour%20beloved%2C%0D%0A${$UserStore.full_name}`}
-                >{item.host_user.email}
-              </a></span
-            >
+            <span> {item.host_user.email} </span>
           </div>
         </div>
-        {#if Number($UserStore.id) !== Number(item.id)}
-          <div class="my-2 right">
-            <a
-              href={`mailto:${item.host_user.email}?subject=Happy%20Birth%20Day%20ahmad&body=Dear%20${item.host_user.full_name}%2C%0D%0A%0D%0AI%20wish%20you%20a%20happy%20birthday%20${item.host_user.full_name}%F0%9F%8E%82%0D%0A%0D%0A%0D%0Ayour%20beloved%2C%0D%0A${$UserStore.full_name}`}
-            >
-              <button class="btn btn-outline-primary">
-                send a message</button
-              ></a
-            >
-          </div>
-        {/if}
         <hr />
       </div>
       <div class="row">

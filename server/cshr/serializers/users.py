@@ -314,7 +314,17 @@ class TeamSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "full_name", "email", "image", "team", "job_title", "user_type"]
+        fields = [
+            "id",
+            "full_name",
+            "email",
+            "image",
+            "team",
+            "job_title",
+            "user_type",
+            "mobile_number",
+            "address",
+        ]
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color

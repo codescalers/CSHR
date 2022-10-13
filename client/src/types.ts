@@ -84,6 +84,16 @@ export type TeamType = {
   user_type: string;
 };
 
+export type SupervisorType = {
+  id: number;
+  full_name: string;
+  email: string;
+  image: string;
+  team: string;
+  job_title: string;
+  user_type: string;
+};
+
 export type SkillType = {
   id: number;
   name: string;

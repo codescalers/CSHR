@@ -221,7 +221,7 @@ class VacationsAcceptApiView(GenericAPIView):
 
 
 class VacationsRejectApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsSupervisor | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)

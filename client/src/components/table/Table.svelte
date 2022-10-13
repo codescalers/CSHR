@@ -28,9 +28,7 @@
           {/each}
         </tr>
       </thead>
-      <tbody>
-        <slot name="table-body" />
-      </tbody>
+      <slot name="table-body" />
     </table>
   </div>
   <div>

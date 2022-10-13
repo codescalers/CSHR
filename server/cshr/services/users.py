@@ -1,10 +1,9 @@
 """This file will containes everything related to User model."""
 from django.contrib.auth.hashers import check_password
 from django.db.models import Q
-from typing import Any, List, Union
-from itertools import chain
+from typing import List, Union
 
-from server.cshr.models.users import User, UserSkills
+from server.cshr.models.users import USER_TYPE, User, UserSkills
 
 
 def get_user_by_id(id: str) -> User:
@@ -80,11 +79,16 @@ def get_or_create_skill_by_name(name: str) -> UserSkills or bool:
     return UserSkills.objects.get_or_create(name=name.lower())
 
 
-def get_user_team_leader_and_members(user: User) -> List[User]:
+def get_user_team_members(user: User) -> List[User]:
     """Return a list of members and team leaders"""
+    members: List[User] = User.objects.filter(
+        team=user.team, user_type=USER_TYPE.USER
+    ).order_by("-created_at")
+    return members
+
+
+def get_user_team_leads(user: User) -> Union[List[User], List]:
     team_leaders: List[User] = (
         get_user_by_id(user.id).reporting_to.all().order_by("-created_at")
     )
-    members: List[User] = User.objects.filter(team=user.team).order_by("-created_at")
-    objects: Union[List[Any], None] = list(chain(team_leaders, members))
-    return objects
+    return team_leaders

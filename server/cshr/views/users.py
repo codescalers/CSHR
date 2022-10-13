@@ -21,8 +21,9 @@ from server.cshr.services.users import (
     get_user_by_id,
     get_or_create_skill_by_name,
     get_all_of_users,
+    get_user_team_leads,
+    get_user_team_members,
 )
-from server.cshr.services.users import get_user_team_leader_and_members
 from server.cshr.serializers.users import TeamSerializer
 
 
@@ -45,7 +46,20 @@ class TeamAPIView(ListAPIView):
         Get all team information, Team leaders and team members
         """
         user: User = self.request.user
-        query_set: List[User] = get_user_team_leader_and_members(user)
+        query_set: List[User] = get_user_team_members(user)
+        return query_set
+
+
+class SupervisorsAPIView(ListAPIView):
+    permission_classes = [UserIsAuthenticated]
+    serializer_class = TeamSerializer
+
+    def get_queryset(self) -> Response:
+        """
+        Get all team information, Team leaders and team members
+        """
+        user: User = self.request.user
+        query_set: List[User] = get_user_team_leads(user)
         return query_set
 
 

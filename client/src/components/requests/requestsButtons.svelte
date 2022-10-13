@@ -6,19 +6,25 @@
   export let request: any;
 
   const dispatch = createEventDispatcher();
-  let isLoading: boolean = false;
+  let isApproveLoading: boolean = false;
+  let isRejactLoading: boolean = false;
   
   async function approve_btn(request: any){
-    isLoading = true;
+    isApproveLoading = true;
     await Requests.approve(request, request.id);
     dispatch('message', {
 			text: {"status": RequestStatus.approved, "request": request}
 		});
-    isLoading = false;
+    isApproveLoading = false;
   };
   
-  const reject_btn = (request: any) => {
-    console.log(request);
+  async function reject_btn(request: any){
+    isRejactLoading = true;
+    await Requests.reject(request, request.id);
+    dispatch('message', {
+			text: {"status": RequestStatus.approved, "request": request}
+		});
+    isRejactLoading = false;
   };
 
 </script>
@@ -28,8 +34,8 @@
     <button
       type="button"
       on:click={() => approve_btn(request)}
-      class="btn btn-success btn-border btn-sm w-100 mb-1" disabled={isLoading}>
-      {#if isLoading}
+      class="btn btn-success btn-border btn-sm w-100 mb-1" disabled={isApproveLoading}>
+      {#if isApproveLoading}
         loading...
       {:else}
         Approve
@@ -38,7 +44,13 @@
     <button
       type="button"
       on:click={() => reject_btn(request)}
-      class="btn btn-danger btn-border btn-sm w-100">Reject</button
+      class="btn btn-danger btn-border btn-sm w-100" disabled={isRejactLoading}>
+      {#if isRejactLoading}
+        loading...
+      {:else}
+      Reject
+      {/if}
+      </button
     >
   </div>
   <div class="col pl-0">

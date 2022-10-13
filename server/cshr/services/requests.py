@@ -1,4 +1,5 @@
 """   this file will contain functions to make union for all request types """
+from server.cshr.models.users import User
 from server.cshr.services.hr_letters import get_all_hrLetters
 from server.cshr.services.vacations import filter_vacations_by_pending_status
 from server.cshr.services.compensation import get_all_compensations
@@ -11,10 +12,10 @@ from server.cshr.serializers.compensation import LandingPageCompensationSerializ
 from server.cshr.serializers.hr_letters import LandingPageHrLetterSerializer
 
 
-def requests_format_response() -> Dict:
+def requests_format_response(user: User) -> Dict:
     """will concatnate all objects and send back as obj"""
     vacations: List[Vacation] = LandingPageVacationsSerializer(
-        filter_vacations_by_pending_status(), many=True
+        filter_vacations_by_pending_status(user), many=True
     ).data
     hr_letters: List[HrLetters] = LandingPageHrLetterSerializer(
         get_all_hrLetters(), many=True
