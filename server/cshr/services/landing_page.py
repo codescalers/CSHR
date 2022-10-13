@@ -16,11 +16,11 @@ from typing import Any, List, Dict, Union
 from itertools import chain
 
 
-def landing_page_calendar_functionality(month: str, year: str):
+def landing_page_calendar_functionality(user: User, month: str, year: str):
     """
     This function will filter all of events based on its yesr, month.
     """
-    vacations: List[Vacation] = filter_vacations_by_month_and_year(month, year)
+    vacations: List[Vacation] = filter_vacations_by_month_and_year(user, month, year)
     meetings: List[Meetings] = filter_meetings_by_month_and_year(month, year)
     events: List[Event] = filter_events_by_month_and_year(month, year)
     users_birthdates: List[User] = filter_users_by_berithday_month(month)

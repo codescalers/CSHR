@@ -13,5 +13,5 @@ class LandingPageApiView(GenericAPIView):
     def get(self, request):
         month: str = request.query_params.get("month")
         year: str = request.query_params.get("year")
-        events: Any = landing_page_calendar_functionality(month, year)
+        events: Any = landing_page_calendar_functionality(request.user, month, year)
         return CustomResponse.success(data=events)

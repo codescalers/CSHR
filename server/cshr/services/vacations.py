@@ -6,7 +6,7 @@ from django.db.models import Q
 from typing import List
 
 
-def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
+def filter_vacations_by_month_and_year(user: User, month: str, year: str) -> Vacation:
     """
     This function will filter all of vacations based on its yesr, month.
     """
@@ -14,7 +14,7 @@ def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
         Q(from_date__month=month, from_date__year=year)
         | Q(end_date__month=month, end_date__year=year)
     )
-    return vacations
+    return vacations.filter(applying_user = user)
 
 
 def get_vacation_by_id(id: str) -> Vacation:
