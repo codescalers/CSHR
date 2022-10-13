@@ -119,7 +119,6 @@ class VacationsHelpersApiView(ListAPIView, GenericAPIView):
 
     def get(self, request: Request, id: str, format=None) -> Response:
         """method to get a single vacation by id"""
-        print(id)
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
             return CustomResponse.not_found(
@@ -194,8 +193,8 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
         )
 
 
-class VacationsAcceptApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsSupervisor]
+class VacationsAcceptApiView(GenericAPIView):
+    permission_classes = [IsSupervisor | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)

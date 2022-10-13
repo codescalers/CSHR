@@ -6,7 +6,7 @@
 </script>
 
 <tr in:scale out:fade={{ duration: 500 }}>
-  <td>{request.from_name}}</td>
+  <td>{request.from_name}</td>
   <td>{request.title}</td>
   <td>{request.description}</td>
   <td>

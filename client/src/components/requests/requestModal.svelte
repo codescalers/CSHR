@@ -1,11 +1,11 @@
 <script lang="ts">
   import Modal from '../modal/Modal.svelte';
   export let index = 3;
-  export let request: any;
+  export let request: any;  
 </script>
 
 <Modal
-  id={index + ''}
+  id={"this" + index}
   isDelete={false}
   isDone={false}
   isFooter={true}

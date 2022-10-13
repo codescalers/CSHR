@@ -78,7 +78,6 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
                 ).data
 
             if event.end_date.day == obj:
-                print("Nooooooo")
                 response[obj]["events"] = EventSerializer(
                     events.filter(end_date__day=event.end_date.day), many=True
                 ).data

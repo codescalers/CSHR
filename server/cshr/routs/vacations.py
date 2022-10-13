@@ -16,7 +16,7 @@ urlpatterns = [
     path("user/", VacationUserApiView.as_view()),
     path("balance/", UserVacationBalanceApiView.as_view()),
     path("edit/<str:id>/", VacationsUpdateApiView.as_view()),
-    path("accept/<str:id>/", VacationsAcceptApiView.as_view()),
+    path("approve/<str:id>/", VacationsAcceptApiView.as_view()),
     path("reject/<str:id>/", VacationsRejectApiView.as_view()),
     path("<str:id>/", VacationsHelpersApiView.as_view()),
     path("put/<str:id>/", VacationApprovalAPIView.as_view()),

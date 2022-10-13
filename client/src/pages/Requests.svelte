@@ -1,13 +1,26 @@
 <script lang="ts">
-  import getRequests from '../services/axios/requests/requests';
+  import Requests from '../services/axios/requests/requests';
   import ActionButton from '../components/requests/requestsButtons.svelte';
 
   import { onMount } from 'svelte';
 
   import Sidebar from '../components/sidebar/Sidebar.svelte';
+  import ProfileImage from '../components/profile/ProfileImage.svelte';
 
   let pageCount = 0;
   let pageSize = 7;
+
+  const handleActions = (event: { detail: { text: any; }; }) => {
+    const sRequest = event.detail.text.request
+    requests.forEach((request: any) => {
+      if(request.id === sRequest.id){
+        const index = requests.indexOf(request);
+        requests.splice(index, 1);
+        requests =  requests;
+      }
+    });
+    console.log(requests);
+  }
 
   function increment() {
     if (totalRequests - pageCount * 7 - pageSize > 0) {
@@ -21,18 +34,18 @@
   }
   let requests: any = [];
   let totalRequests = 1;
+
   onMount(async () => {
-    requests = await getRequests();
+    requests = await Requests.getRequests();
     totalRequests = requests.length;
   });
 </script>
 
 <Sidebar>
-  <span slot="page-name">Requests</span>
-  <section class=" container-fluid mt-5" slot="content">
+  <section slot="content">
     <div class="row">
-      <h4 class="child  mx-5">All Requests</h4>
-      <table class="table align-middle mb-0 mx-5 w-100">
+      <h4 class="child  mx-3">All Requests</h4>
+      <table class="table align-middle mb-0 mx-3 w-100">
         <colgroup>
           <col span="1" style="width: 25%;" />
           <col span="1" style="width: 35%;" />
@@ -48,18 +61,13 @@
           </tr>
         </thead>
         <tbody>
-          {#each requests.slice(pageCount * 7, pageCount * 7 + 7) as request, index (index)}
+          {#each requests as request}
             <tr>
               <td>
                 <div class="d-flex  align-items-center">
-                  <img
-                    src="https://mdbootstrap.com/img/new/avatars/8.jpg"
-                    alt=""
-                    style="width: 45px; height: 45px"
-                    class="rounded-circle"
-                  />
-                  <div class="ms-3">
-                    <p class="fw-bold mb-1">
+                  <ProfileImage user={request.applying_user}/>
+                  <div class="mx-2">
+                    <p class="fw-bold mb-0">
                       {request.applying_user.full_name}
                     </p>
                     <p class="text-muted mb-0">
@@ -78,19 +86,25 @@
               </td>
               <td>
                 <p class="fw-bold mb-1">
-                  <span class="text-muted">Start: </span>{request.from_date
-                    ? request.from_date
-                    : '---'}
+                  <span class="text-muted">
+                    Start
+                  </span>
+                  <span class="float-right-span">
+                    {request.from_date ? request.from_date : '---'}
+                  </span>
                 </p>
                 <p class="text-muted mb-0">
-                  <span class="text-muted">End: </span>{request.end_date
-                    ? request.from_date
-                    : '---'}
+                  <span class="text-muted">
+                    End
+                  </span>
+                  <span class="text-muted float-right-span">
+                    {request.end_date ? request.end_date : '---'}
+                  </span>
                 </p>
               </td>
               <td>
                 <div class="container w-100 p-0">
-                  <ActionButton {request} {index} />
+                  <ActionButton {request} on:message={handleActions}/>
                 </div>
               </td>
             </tr>
@@ -101,7 +115,9 @@
 
     <div class="row justify-content-end mt-3">
       <div class="col-2 mr-5">
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="text-muted mb-0 ">Rows per page:</label>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="text-muted mb-0"
           >{pageCount + 1} of {Math.ceil(totalRequests / pageSize)}</label
         >
@@ -117,32 +133,24 @@
 </Sidebar>
 
 <style>
-  .page-body {
-    position: absolute;
-    height: 942px;
-    left: 285px;
-    right: 33px;
-    top: 128px;
-  }
-
-  .sort {
-    display: inline-block;
-    padding-left: 35cm;
-  }
   label {
     font-weight: 300;
-    font-size: larger;
-    padding-right: 0.5cm;
+    font-size: 16px;
+    padding-right: 0.3cm;
   }
   section {
     overflow: hidden;
   }
   .icon {
-    padding-right: 0.3cm;
+    font-size: 1rem;
   }
   .pagination-button {
     background: unset !important;
     border: unset !important;
     outline: unset !important;
+  }
+  .float-right-span{
+    float: right;
+    margin-right: 15px;
   }
 </style>
