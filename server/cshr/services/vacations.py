@@ -14,7 +14,7 @@ def filter_vacations_by_month_and_year(user: User, month: str, year: str) -> Vac
         Q(from_date__month=month, from_date__year=year)
         | Q(end_date__month=month, end_date__year=year)
     )
-    return vacations.filter(applying_user = user)
+    return vacations.filter(applying_user=user)
 
 
 def get_vacation_by_id(id: str) -> Vacation:
