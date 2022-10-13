@@ -115,7 +115,14 @@ class VacationsTests(APITestCase):
 
     def test_create_vacation_with_no_from_date(self) -> Vacation:
         url = "/api/vacations/"
-        data = {"reason": "annual_leaves", "end_date": "2022-08-23", "change_log": 123}
+        data = {
+            "applying_user": 1,
+            "end_date": "2022-10-14",
+            "reason": "sick_leaves",
+            "status": "pending",
+            "type": "vacations",
+        }
+        # data = {"reason": "annual_leaves", "end_date": "2022-08-23", "change_log": 123}
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )

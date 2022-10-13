@@ -1,213 +1,73 @@
 <script lang="ts">
-  import { Router, Link, useNavigate } from 'svelte-navigator';
-  import { onMount } from 'svelte';
-  import Footer from '../footer/Footer.svelte';
-  import { UserStore, NotificationStore } from '../../stores';
-  import LoadingComponent from '../loader/LoadingComponent.svelte';
-  import ErrorComponent from '../error/ErrorComponent.svelte';
-  import { authStore } from '../../stores';
-  import userDataService from '../../services/axios/user/UserDataService';
+    import ProfileImage from "../profile/ProfileImage.svelte";
+    import NavBar from "./NavBar.svelte"
+    import { useNavigate } from 'svelte-navigator';
+    import { onMount } from 'svelte';
 
-  const navigate = useNavigate();
-  onMount(async () => {
-    if (!authStore.isAuth() || $UserStore === undefined) {
-      try {
-        $UserStore = await userDataService.getMyProfile();
-      } catch (error) {
-        return navigate('/login');
-      }
+    import userDataService from '../../services/axios/user/UserDataService';
+    import { UserStore } from '../../stores';
+    import { authStore } from '../../stores';
+  import PageFooter from "./PageFooter.svelte";
+    
+    let toggleId: HTMLElement, navId: HTMLElement, bodyId: HTMLElement, headerId: HTMLElement, pageContent: HTMLElement;
+
+    const changeSidebar = () => {
+        navId.classList.toggle("show-sidebar")
+        toggleId.classList.toggle('bx-x')
+        bodyId.classList.toggle('body-pd')
+        headerId.classList.toggle('body-pd')
+        pageContent.classList.toggle('page-content-open')
     }
-    const showNavbar = (
-      toggleId: string,
-      navId: string,
-      bodyId: string,
-      headerId: string
-    ) => {
-      const toggle = document.getElementById(toggleId),
-        nav = document.getElementById(navId),
-        bodypd = document.getElementById(bodyId),
-        headerpd = document.getElementById(headerId);
 
-      // Validate that all variables exist
-      if (toggle && nav && bodypd && headerpd) {
-        toggle.addEventListener('click', () => {
-          // show navbar
-          nav.classList.toggle('show');
-          // change icon
-          toggle.classList.toggle('bx-x');
-          // add padding to body
-          bodypd.classList.toggle('body-pd');
-          // add padding to header
-          headerpd.classList.toggle('body-pd');
-        });
-      }
-    };
 
-    showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header');
-
-    /*===== LINK ACTIVE =====*/
-    const linkColor = document.querySelectorAll('.nav_link');
-
-    function colorLink(this: any) {
-      if (linkColor) {
-        linkColor.forEach((l) => l.classList.remove('active'));
-        this.classList.add('active');
-      }
-    }
-    linkColor.forEach((l) => l.addEventListener('click', colorLink));
-
-    // Your code to run since DOM is loaded and ready
-  });
-
-  export let isLoading = false;
-  export let isError: boolean | null = null;
+    const navigate = useNavigate();
+    onMount(async () => {
+        if (!authStore.isAuth() || $UserStore === undefined) {
+            try {
+                $UserStore = await userDataService.getMyProfile();
+            } catch (error) {
+                return navigate('/login');
+            };
+        };
+    });
 </script>
 
-{#if $UserStore}
-  <div id="body-pd">
-    <header class="header" id="header">
-      <div class="header_toggle">
-        <i class="bx bx-menu" id="header-toggle" />
-        <slot name="page-name" />
-      </div>
-      <div class="d-flex flex-row gap-4">
-        <div>
-          <Link to="/notifications" class="position-relative">
-            <p class="mt-2">
-              <i class="bi bi-bell notification-btn" />
-              {#if $NotificationStore.length > 0}
-                <span
-                  style="background: var(--primary-color); "
-                  class="position-absolute top-5 start-100 translate-middle badge rounded-pill"
-                >
-                  +{$NotificationStore.length}
-                  <span class="visually-hidden  bg-primary"
-                    >unread messages</span
-                  >
-                </span>
-              {/if}
-            </p>
-          </Link>
-        </div>
-        <Link to={'/profile/' + $UserStore.id}>
-          <h6 class="py-2 text-muted">{$UserStore.full_name}</h6>
-        </Link>
-        <div class="header_img">
-          <Link to={'/profile/' + $UserStore.id}>
-            <div
-              class={`circular_img`}
-              style={`background-image:url(${
-                process.env.APP_BASE_API_URL + $UserStore.image
-              });background-color:${
-                $UserStore.gender === 'Male' ? '#2986cc' : '#FB5858'
-              };border:1.5px solid ${
-                $UserStore.gender === 'Male' ? 'var(--secondary-color)' : 'pink'
-              }`}
-              data-bs-toggle="tooltip"
-              title={$UserStore.full_name + ' #' + $UserStore.team}
-            />
-          </Link>
-        </div>
-      </div>
-    </header>
-    <div class="l-navbar" id="nav-bar">
-      <nav class="nav">
-        <Router>
-          <div>
-            <Link to="/" class="nav_logo">
-              <i class="bx bx-layer nav_logo-icon" />
-              <span class="nav_logo-name">Threefold</span>
-            </Link>
-            <div class="nav_list">
-              <Link to="/" class="nav_link">
-                <i class="fa-solid fa-calendar-days nav_icon" />
-                <span class="nav_name">Calendar</span>
-              </Link>
-              <Link to="/notifications" class="nav_link">
-                <i class="fa-solid fa-ticket nav_icon" />
-                <span class="nav_name">Notifications</span>
-              </Link>
-              <Link to="/requests" class="nav_link">
-                <i class="fa-solid fa-users nav_icon" />
-                <span class="nav_name">Requests</span>
-              </Link>
-              <Link to="/profile" class="nav_link">
-                <i class="fa-solid fa-lightbulb nav_icon" />
-                <span class="nav_name">Employment Info</span>
-              </Link>
-              {#if $UserStore.user_type === "Admin"}
-              <Link to="/register" class="nav_link">
-                <i class="fa-solid fa-plus-circle nav_icon" />
-                <span class="nav_name">add a user</span>
-              </Link>
-              {/if}
-              <a href="/evaluation" class="nav_link">
-                <i class="fa-solid fa-book nav_icon" />
-                <span class="nav_name">Evaluation Form</span>
-              </a>
-              <a href="/team" data-bs-toggle="collapse" class="nav_link">
-                <i class="fa-solid fa-gear nav_icon" />
-                <span class="nav_name">Settings</span>
-              </a>
-
-              <ul
-                class="collapse nav flex-column  ms-1"
-                id="submenu3"
-                data-bs-parent="#menu"
-              >
-                <li class="w-100">
-                  <Link to="/public-info" class="nav_link">
-                    <i class="fa-solid fa-id-badge nav_icon" />
-                    <span class="nav_name">Public info</span>
-                  </Link>
-                </li>
-                <li class="w-100">
-                  <Link to="/personal-info" class="nav_link">
-                    <i class="fa-solid fa-user-secret nav_icon" />
-                    <span class="nav_name">Personal info</span>
-                  </Link>
-                </li>
-                <li class="w-100">
-                  <Link to="/emergency-contacts" class="nav_link">
-                    <i class="fa-solid fa-address-book nav_icon" />
-                    <span class="nav_name">Emergency Contact</span>
-                  </Link>
-                </li>
-                <li class="w-100">
-                  <Link to="/my-docs" class="nav_link">
-                    <i class="fa-solid fa-file-lines nav_icon" />
-                    <span class="nav_name">My Docs</span>
-                  </Link>
-                </li>
-                
-              </ul>
+<div id="body-pd" bind:this={bodyId}>
+    <header class="header" id="header" bind:this={headerId}>
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <div class="header_toggle"> 
+                        <button id="btn header-toggle" bind:this={toggleId} on:click={changeSidebar}>
+                            <i class='bx bx-menu'></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-6 d-flex justify-content-end">
+                    {#if $UserStore}
+                        <ProfileImage user={$UserStore}/>
+                    {/if}
+                </div>
             </div>
-          </div>
-          <Link to="auth/logout/" class="nav_link">
-            <i class="bx bx-log-out nav_icon" />
-            <span class="nav_name">SignOut</span>
-          </Link>
-        </Router>
-      </nav>
+        </div>
+    </header>
+    
+    <div class="l-navbar" id="nav-bar" bind:this={navId}>
+        <NavBar />
     </div>
-    <div class="height-100 bg-light d-flex flex-column justify-content-between">
-      <section class="fluid-container mt-5 content">
-        {#if isError}
-          <ErrorComponent
-            errorMessage="please try to reload page and raise an issues"
-          />
-        {:else if isLoading}
-          <LoadingComponent />
-        {:else}
-          <slot name="content" {isError} {isLoading} />
-        {/if}
-      </section>
-      <Footer />
+
+    <div class="container-fluid page-content height-100" bind:this={pageContent}>
+        <slot name="content"></slot>
     </div>
-  </div>
-{/if}
+</div>
+<PageFooter />
 
 <style>
+  button{
+      outline: none;
+      border: none;
+      background: rgb(0 0 0 / 0%);
+  }
   .notification-btn {
     color: var(--primary-color);
     border: 1px solid var(--primary-color);

@@ -139,20 +139,18 @@ class CalendarDataService {
   }) {
 		try {
 			if (!e.applyingUserId || !e.end_date) throw new Error("Invalid data");
-			const { status } = await http.post(
+			const axios= await http.post(
 				"/vacations/",
 				JSON.stringify({
 					applying_user: e.applyingUserId,
 					from_date: e.from_date,
 					end_date: e.end_date,
-					reason: "emergency_leave",
+					reason: e.reason,
 					type: "vacations",
 					status: "pending",
 				})
 			);
-			if (status !== 201) {
-				throw new Error("Error while posting leave with status " + status);
-			}
+			return axios
 		} catch (error) {
 			console.error(
 				`${this.errorMessage} Error while leave event data ${error}`
@@ -243,8 +241,6 @@ class CalendarDataService {
 		default:
 			throw new Error(`Invalid event name in itemHandler ${eventName}`);
 		}
-
-		return "";
 	}
 }
 
