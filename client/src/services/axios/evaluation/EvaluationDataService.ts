@@ -12,7 +12,6 @@ class EvaluationDataService {
             statusText
 				);
 			}
-			console.log(data)
 			return data.results;
 		} catch (err) {
 			console.error(this.errorMessage + err);

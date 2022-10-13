@@ -9,9 +9,7 @@ const http = axios.create({
 });
 
 http.interceptors.request.use((config) => {
-	console.log("tab ana kedda barra el if bas b intercept");
 	if (authStore.isAuth()) {
-		console.log("howa ana delwa2ty b intercept");
 		config.headers = {
 			...config.headers,
 			Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,

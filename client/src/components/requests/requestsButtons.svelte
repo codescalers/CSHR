@@ -63,7 +63,6 @@
     }
     element = await getRequests();
     document.body.style.cursor = 'default';
-    console.log(element.type, element.id);
   }
 </script>
 

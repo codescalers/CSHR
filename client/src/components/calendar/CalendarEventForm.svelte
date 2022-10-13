@@ -181,7 +181,6 @@
         return isError;
       }}
       className="btn btn-primary"
-      disabled={submitDisabled}
     />
   </div>
 </Modal>

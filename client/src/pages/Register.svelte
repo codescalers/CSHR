@@ -25,22 +25,13 @@
     return true;
   };
 
-  // const handleImage = (e: any): boolean => {
-  //   if (
-  //     e.target.value.toLowerCase().match(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i)
-  //   )
-  //     return false;
-   
-  //   return true;
-  // };
-
   const handleName = (e: any): boolean => {
-    if (e.target.value.match(/\b([A-ZÀ-ÿ][a-z]+)$/)) return false;
+    if (e.target.value.match(/\b([A-Z-a-z]+)$/)) return false;
     return true;
   };
 
   const handleMobile = (e: any): boolean => {
-    if (e.target.value.match(/\b(\d{11})$/)) return false;
+    if (e.target.value.match(/\b(\d{10,15})$/)) return false;
     return true;
   };
 
@@ -92,22 +83,20 @@
   let isErrorJobTitle: null | boolean = null;
 
   let formDisable = (isErrormail === null ||
-    isErrorfName === null || isErrorlName===null || isErrorlName||isErrorlName||isErrorBenefits||
-    isErrorBenefits===null||isErrorBirthday||isErrorBirthday===null||isErrorGCSalary||
-    isErrorGCSalary===null||isErrorJSalary||isErrorJSalary===null||isErrorJobTitle||
-    isErrorJobTitle===null||isErrorLink===null|| isErrorLocation===null||isErrorMobile||isErrorMobile==null||
-    isErrormail ||isErrorNBSalary||isErrorNBSalary===null||isErrorNCSalary||isErrorNCSalary===null
-    ||isErrorSuper||isErrorSuper===null||
+    isErrorfName === null || isErrorlName===null || isErrorlName||isErrorlName||
+    isErrorBirthday||isErrorBirthday===null||isErrorGCSalary||
+    isErrorGCSalary===null||isErrorJobTitle||isErrorJobTitle===null||
+    isErrorLink===null|| isErrorLocation===null||isErrorMobile||isErrorMobile==null||
+    isErrormail||isErrorNCSalary||isErrorNCSalary===null||
     isErrorpass ||isErrorpass===null) as boolean;
 
     
   $: formDisable = (isErrormail === null ||
-    isErrorfName === null || isErrorlName===null || isErrorlName||isErrorlName||isErrorBenefits||
-    isErrorBenefits===null||isErrorBirthday||isErrorBirthday===null||isErrorGCSalary||
-    isErrorGCSalary===null||isErrorJSalary||isErrorJSalary===null||isErrorJobTitle||
+    isErrorfName === null || isErrorlName===null || isErrorlName||isErrorlName||
+    isErrorBirthday||isErrorBirthday===null||isErrorGCSalary||
+    isErrorGCSalary===null||isErrorJobTitle||
     isErrorJobTitle===null||isErrorLink===null|| isErrorLocation===null||isErrorMobile||isErrorMobile==null||
-    isErrormail ||isErrorNBSalary||isErrorNBSalary===null||isErrorNCSalary||isErrorNCSalary===null
-    ||isErrorSuper||isErrorSuper===null||
+    isErrormail ||isErrorNCSalary||isErrorNCSalary===null||
     isErrorpass ||isErrorpass===null) as boolean;
  
  
@@ -128,7 +117,7 @@
   if(count<2)
     showaddbutton = false;
    
-  };
+  };  
  
 //   let myregisteringData:registeringData={
 //     first_name : fNameValue,
@@ -159,7 +148,6 @@ let location:[];
 
 registeration.location=location[0].value
  
-console.log(JSON.stringify(registeration))
   
     
     try {
@@ -176,10 +164,8 @@ console.log(JSON.stringify(registeration))
 </script>
 
 <Sidebar>
-  <span slot="page-name" />
   <section class="fluid-container mt-5 content" slot="content">
     <div class="row">
-
       <div class =" col-5 ms-4">
         <Input
           isTop={false}
@@ -267,7 +253,7 @@ console.log(JSON.stringify(registeration))
   handleInput={handleMobile}
   size={150}
   errorMessage="Invalid Mobile Number"
-  hint={'please enter a valid Mobile Number'}
+  hint={'please enter a valid mobile number in range(10, 15) digits'}
   placeholder={'01234567890'}
   bind:isError={isErrorMobile}
 />
@@ -349,7 +335,7 @@ console.log(JSON.stringify(registeration))
   <label for=myselect1 class="ps-0 mb-2">Team</label>
     
 <select bind:value={registeration.team} class="custom-select" id="myselect1">
-   <option value="Development">Development</option>
+  <option value="Development">Development</option>
   <option value="Q&A">Q&A</option>
   <option value="Operations">Operations</option>
   <option value="Marketing">Marketing</option>
@@ -524,7 +510,6 @@ console.log(JSON.stringify(registeration))
     <button
       type="button"
       class="btn submit my-5"
-      disabled={formDisable}
       on:click|preventDefault={submit}>Create User</button> 
   </section>
 </Sidebar>

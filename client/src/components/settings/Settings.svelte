@@ -24,8 +24,6 @@
     }
 
     dialogs.prompt(inputs, promptOptions).then((settingsInputData) => {
-      console.log('before settingsInputDatCa', settingsInputData);
-      console.log('before settingstore', settingsInputData);
       const newSettings = {
         name: !SettingsApi.isName()
           ? settingsInputData[0] + '#' + uuidv4()
@@ -44,7 +42,6 @@
             ? $SettingsStore['background-image']
             : 'url(' + settingsInputData[4] + ')',
       };
-      console.log('after newSettings', newSettings);
 
       if (SettingsApi.isName() === true) {
         SettingsApi.setSettings(newSettings);
@@ -57,7 +54,6 @@
           };
         });
       }
-      console.log('after @settings.svelte', $SettingsStore['name']);
     });
   };
   // checking if name is set or not in local storage && running the settings once

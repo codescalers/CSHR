@@ -136,9 +136,6 @@
         let rc = findRowCol(item.date);
 
         if (rc == null) {
-          console.log('didn`t find date for ', item);
-          console.log(item.date);
-          console.log(days);
           item.startCol = item.startRow = 0;
         } else {
           item.startCol = rc.col;
@@ -162,7 +159,6 @@
     let nextMonthAbbrev = monthNames[(month + 1) % 12].slice(0, 3);
     //	find the last Monday of the previous month
     var firstDay = new Date(year, month, 1).getDay();
-    //console.log('fd='+firstDay+' '+dayNames[firstDay]);
     var daysInThisMonth = new Date(year, month + 1, 0).getDate();
     var daysInLastMonth = new Date(year, month, 0).getDate();
     var prevMonth = month == 0 ? 11 : month - 1;
@@ -182,7 +178,6 @@
           date: d,
         });
       else days.push({ name: '' + (i + 1), enabled: true, date: d });
-      //console.log('i='+i+'  dt is '+d+' date() is '+d.getDate());
     }
     //	show any days to fill up the last row (disabled) - always less than 7
     for (let i = 0; days.length % 7; i++) {

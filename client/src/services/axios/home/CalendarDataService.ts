@@ -163,8 +163,6 @@ class CalendarDataService {
 		const now = new Date();
 		const year = now.getFullYear(); //	this is the month & year displayed
 		const month = now.getMonth();
-
-		console.log("today", month + 1, year);
 		const { results: data } = await this.getByMonthYearAPI(month + 1, year);
 		let meetings: meetingItemType[] = [];
 		let events: eventItemType[] = [];

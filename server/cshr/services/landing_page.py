@@ -35,8 +35,11 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
             # Thats mean user table
             response[obj.birthday.day] = {}
         elif hasattr(obj, "meeting_link") and not response.get(obj.date.day):
-            # Thats mean meetings, events table
+            # Thats mean meetings.
             response[obj.date.day] = {}
+        elif hasattr(obj, "people") and not response.get(obj.from_date.day):
+            # Thats mean events.
+            response[obj.from_date.day] = {}
         elif hasattr(obj, "type") and obj.type == TYPE_CHOICES.VACATIONS:
             # vacations
             response[obj.from_date.day] = {}
@@ -73,9 +76,10 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
                 response[obj]["events"] = EventSerializer(
                     events.filter(from_date__day=event.from_date.day), many=True
                 ).data
+
             if event.end_date.day == obj:
+                print("Nooooooo")
                 response[obj]["events"] = EventSerializer(
                     events.filter(end_date__day=event.end_date.day), many=True
                 ).data
-
     return response

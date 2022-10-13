@@ -6,7 +6,6 @@
 
   onMount(async ()=>{
     evaluations=await evaluationDataService.getByAll();
-    console.log(evaluations+"sss")
   });
 </script>
 
