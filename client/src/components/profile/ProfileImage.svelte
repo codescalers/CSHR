@@ -6,13 +6,15 @@
         UserInterface,
     } from '../../types';
     export let user: AdminViewInterface | SupervisorViewInterface | UserInterface | userType;
+    export let size: number = 50;
+
     let username: string[] = user.full_name.split(' ')    
 </script>
 
 <Link to={'/profile/' + user.id}>
     {#if user.image[0] == "#"}
         <span class="user-profile-image rounded-circle"
-            style="background-color:{user.image}"
+            style="background-color:{user.image}; width:{size}px; height:{size}px;"
         >
             {username[0][0]}{username[1][0]}
         </span>
@@ -21,15 +23,14 @@
         <img
             src="{process.env.APP_BASE_API_URL + user.image}"
             class="user-profile-image rounded-circle"
+            style="width:{size}px; height:{size}px;"
         />
     {/if}
 </Link>
 
 <style>
     .user-profile-image{
-        width: 50px;
-        height: 50px;
-        color: rgb(245 222 179);
+        color: #fff;
         font-weight: 700;
         justify-content: center;
         align-items: center;

@@ -9,7 +9,7 @@ from server.cshr.views.evaluation import (
 
 urlpatterns = [
     path("", BaseEvaluationsAPIView.as_view()),
-    path("user/", BaseUserEvaluationsAPIView.as_view()),
+    path("users/", BaseUserEvaluationsAPIView.as_view()),
     path("<str:id>/", EvaluationsAPIView.as_view()),
     path("user/<str:id>/", UserEvaluationsAPIView.as_view()),
 ]

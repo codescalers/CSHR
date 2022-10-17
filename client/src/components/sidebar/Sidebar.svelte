@@ -56,7 +56,7 @@
         <NavBar />
     </div>
 
-    <div class="container-fluid page-content height-100" bind:this={pageContent}>
+    <div class="container-fluid page-content" bind:this={pageContent}>
         <slot name="content"></slot>
     </div>
 </div>

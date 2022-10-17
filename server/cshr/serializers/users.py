@@ -328,3 +328,14 @@ class TeamSerializer(ModelSerializer):
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color
+
+
+class BasicUserSerializer(ModelSerializer):
+    """Implemented to be standered class for multiple usecases."""
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "full_name",
+        ]

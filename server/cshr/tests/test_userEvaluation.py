@@ -102,7 +102,7 @@ class UserEvaluationTests(APITestCase):
 
     def test_create_user_evaluation_by_admin(self):
         """test ability of creating a new evaluation by admin"""
-        url = "/api/evaluation/user/"
+        url = "/api/evaluation/users/"
         data = {
             "link": "testCase",
             "user": 1,
@@ -116,7 +116,7 @@ class UserEvaluationTests(APITestCase):
 
     def test_create_user_evaluation_by_supervisor(self):
         """test unauthorized  evaluation creation by supervisor"""
-        url = "/api/evaluation/user/"
+        url = "/api/evaluation/users/"
         data = {
             "link": "testCase",
             "user": 1,
@@ -131,7 +131,7 @@ class UserEvaluationTests(APITestCase):
 
     def test_create_user_evaluation_by_user(self):
         """test unauthorized  evaluation creation by user"""
-        url = "/api/evaluation/user/"
+        url = "/api/evaluation/users/"
         data = {
             "link": "testCase",
             "user": 1,
@@ -144,7 +144,7 @@ class UserEvaluationTests(APITestCase):
 
     def test_create_user_evaluation_by_unauthenticated_user(self):
         """test unauthorized  evaluation creation by unauthenticated user"""
-        url = "/api/evaluation/user/"
+        url = "/api/evaluation/users/"
         data = {
             "link": "testCase",
             "user": 1,
@@ -160,7 +160,7 @@ class UserEvaluationTests(APITestCase):
         """test list evaluations by admin"""
         createUserEvalTmp()
         """create a new record"""
-        url = "/api/evaluation/user/"
+        url = "/api/evaluation/users/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -171,7 +171,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        url = "/api/evaluation/user/"
+        url = "/api/evaluation/users/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -184,7 +184,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        url = "/api/evaluation/user/"
+        url = "/api/evaluation/users/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -194,13 +194,13 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        url = "/api/evaluation/user/"
+        url = "/api/evaluation/users/"
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_user_evaluation_empty_list(self):
         """test ability to return empty list if database is empty"""
-        url = "/api/evaluation/user/"
+        url = "/api/evaluation/users/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -212,7 +212,7 @@ class UserEvaluationTests(APITestCase):
         """create a new record"""
         self.assertEqual(UserEvaluations.objects.count(), 1)
 
-        url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -222,7 +222,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -234,7 +234,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp(3)
         """create a new record"""
-        url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -244,7 +244,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp(2)
         """create a new record"""
-        url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -254,7 +254,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -265,7 +265,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        update_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        update_url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.put(
             update_url,
@@ -286,7 +286,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        update_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        update_url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -309,7 +309,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        update_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        update_url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.put(
             update_url,
@@ -328,7 +328,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        update_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        update_url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         response = self.client.put(
             update_url,
             {
@@ -347,7 +347,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/user/{65}/"
+        update_url = f"/api/evaluation/users/{65}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.put(
             update_url,
@@ -367,7 +367,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/user/{65}/"
+        update_url = f"/api/evaluation/users/{65}/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -389,7 +389,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/user/{65}/"
+        update_url = f"/api/evaluation/users/{65}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.put(
             update_url,
@@ -409,7 +409,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
 
-        update_url = f"/api/evaluation/user/{65}/"
+        update_url = f"/api/evaluation/users/{65}/"
         response = self.client.put(
             update_url,
             {
@@ -427,7 +427,7 @@ class UserEvaluationTests(APITestCase):
 
         createUserEvalTmp()
         """create a new record"""
-        update_url = f"/api/evaluation/user/{UserEvaluations.objects.get().id}/"
+        update_url = f"/api/evaluation/users/{UserEvaluations.objects.get().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.put(update_url, {}, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -439,7 +439,7 @@ class UserEvaluationTests(APITestCase):
         """create a new record"""
         count = UserEvaluations.objects.count()
 
-        delete_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        delete_url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -451,7 +451,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
         count = UserEvaluations.objects.count()
-        delete_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        delete_url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
@@ -465,7 +465,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
         count = UserEvaluations.objects.count()
-        delete_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        delete_url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -477,7 +477,7 @@ class UserEvaluationTests(APITestCase):
         createUserEvalTmp()
         """create a new record"""
         count = UserEvaluations.objects.count()
-        delete_url = f"/api/evaluation/user/{UserEvaluations.objects.last().id}/"
+        delete_url = f"/api/evaluation/users/{UserEvaluations.objects.last().id}/"
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(UserEvaluations.objects.count(), count)

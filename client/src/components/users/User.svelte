@@ -2,44 +2,27 @@
   import { Link } from 'svelte-navigator';
 
   import type { UserInterface } from '../../types';
+  import ProfileImage from '../profile/ProfileImage.svelte';
   export let user: UserInterface;
 </script>
 
-<Link class="card rounded bg-light shadow" to={`../profile/${user.id}`}>
+<Link class="card b-0" to={`../profile/${user.id}`}>
   <div class="card-body px-4 card-hover">
     <h5 class="card-title">
-      <div
-        class={`my-2  mx-auto card-img-top circular_img`}
-        style={`background-image:url(${
-          process.env.APP_BASE_API_URL + user.image
-        });background-color:${
-          user.gender === 'Male' ? '#2986cc' : '#FB5858'
-        };border:1.5px solid ${
-          user.gender === 'Male' ? 'var(--secondary-color)' : 'pink'
-        }`}
-        data-bs-toggle="tooltip"
-        title={user.full_name + ' #' + user.team}
-      />
-      <div class="text-center my-4 mx-3">{user.full_name}</div>
+      <div class="d-flex justify-content-center">
+        <ProfileImage user={user} size={80}/>
+      </div>
+      <div class="text-center mt-4 mb-2 text-dark">{user.full_name}</div>
     </h5>
-    <p class="card-text" />
-    <p class="blockquote-footer w-100 text-center">
+    <p class="w-100 text-center text-muted">
+      <span>{user.job_title}</span>
+      <small class="blockquote-footer">
+        <cite title="Team">{user.team}</cite>
+      </small><br/>
       <small>
-        <cite title="Team"># {user.team}</cite>
-      </small>
-      <br />
-      <small>
-        <cite title="Address">
-          <i class="bi bi-geo" />
-          {user.address}</cite
-        >
+        <cite>{user.email}</cite>
       </small>
     </p>
-    <blockquote class="blockquote mb-0">
-      <p class="text-center">
-        {user.job_title}
-      </p>
-    </blockquote>
   </div>
 </Link>
 
@@ -62,5 +45,9 @@
     box-shadow: 0 0 0 0.3rem var(--secondary-color);
     transform: scale(1.01);
     border-radius: inherit;
+  }
+  .card{
+    border: none;
+    background: transparent !important;
   }
 </style>

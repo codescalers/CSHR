@@ -2,7 +2,7 @@ from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
 )
-from server.cshr.models.hr_letters import HrLetters
+from server.cshr.models.hr_letters import HrLetters, UserDocements
 from server.cshr.serializers.users import BaseUserSerializer
 
 
@@ -49,3 +49,9 @@ class LandingPageHrLetterSerializer(ModelSerializer):
         this function return request's approval user
         """
         return BaseUserSerializer(obj.approval_user).data
+
+
+class UserDocementsSerializer(ModelSerializer):
+    class Meta:
+        model = UserDocements
+        fields = "__all__"

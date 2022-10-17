@@ -50,7 +50,7 @@
   <div class="container">
     <div class="d-flex flex-column justify-content-between">
       <div>
-        <div class="input-group rounded d-flex flex-row my-2">
+        <!-- <div class="input-group rounded d-flex flex-row my-2">
           <input
             type="search"
             class="form-control rounded"
@@ -61,7 +61,7 @@
           <span class="input-group-text border-0" id="search-addon">
             <i class="fas fa-search" />
           </span>
-        </div>
+        </div> -->
 
         <div class="row justify-content-between">
           {#each users as user (user.id)}
@@ -71,7 +71,7 @@
           {/each}
         </div>
       </div>
-      <Pagination bind:length bind:value={pageValue} />
+      <!-- <Pagination bind:length bind:value={pageValue} /> -->
     </div>
   </div>
 {/if}

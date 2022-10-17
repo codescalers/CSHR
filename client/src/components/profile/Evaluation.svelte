@@ -1,48 +1,102 @@
 <script lang="ts">
-  import type { UserEvaluationType } from '../../types';
   import {onMount} from "svelte";
+  import type { UserEvaluationType } from '../../types';
+  import Quarter from "./EvaluationQuarter.svelte"
+  import { EvaluationQuarter } from "../../services/utils/enums";
   import evaluationDataService from '../../services/axios/evaluation/EvaluationDataService';
+  export let user: any;
+
+
   let evaluations: UserEvaluationType[];
+  let date: Date = new Date();
+  let year: number = date.getFullYear();
+  let isLoading: boolean = false;
+
+  async function plusOneYear(){
+    isLoading = true;
+    year += 1;
+    await filterUserEvaluationBaedOnYear(year);
+    isLoading = false;
+  }
+
+  async function minusOneYear(){
+    isLoading = true;
+    year -= 1;
+    await filterUserEvaluationBaedOnYear(year);
+    isLoading = false;
+  }
+  async function filterUserEvaluationBaedOnYear(year: number){
+    evaluations = await evaluationDataService.UserEvaluations(user.id, year);
+  }
 
   onMount(async ()=>{
-    evaluations=await evaluationDataService.getByAll();
+    isLoading = true;
+    evaluations = await evaluationDataService.UserEvaluations(user.id, year);
+    isLoading = false;
   });
+
+  // EvaluationQuarter
+
 </script>
 
 <div class="col-md-12 my-2">
   <div class="card mb-4 mb-md-0">
+    <div class="card-header">
+      Evaluations
+    </div>
     <div class="card-body">
-      <p class="mb-4">
-        <span class="text-primary font-italic me-1"
-          ><i class="bi bi-file-earmark-bar-graph-fill" /></span
-        >
-        Evaluations
-      </p>
-
-      {#if typeof evaluations === 'undefined' || !Array.isArray(evaluations) || evaluations.length === 0}
-        <p class="my-2 name">No evaluations found</p>
-      {:else}
-        <div class="d-flex flex-row justify-content-start flex-wrap">
-          {#each evaluations as evaluation, index (index)}
-            <div class="p-2">
-              <p class="my-2 name">
-                Quarter : {evaluation.quarter}
-              </p>
-              <p class="my-2 name">
-                Score : {evaluation.score}
-              </p>
-              <a
-                class="btn btn-primary"
-                href={evaluation.link + ''}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                check evaluation
-              </a>
-            </div>
-          {/each}
+ 
+      <div class="row">
+        <div class="col-2">
+          <button class="btn" on:click={minusOneYear}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+              <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+            </svg>
+          </button>
         </div>
+        <div class="col-8 d-flex justify-content-center align-items-center">
+          <p class="text-center text-muted year">{year}</p>
+        </div>
+        <div class="col-2">
+          <button class="btn" on:click={plusOneYear}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+              <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      {#if isLoading}
+        <div class="d-flex justify-content-center align-items-center">
+          <div class="spinner-grow" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      {:else}
+        <div class="mt-2 card-header b-none text-center text-muted">
+          <strong>{EvaluationQuarter.JAN_MARCH}</strong>
+        </div> 
+        <Quarter quarter = {EvaluationQuarter.JAN_MARCH} {evaluations} />
+        <div class="mt-2 card-header b-none text-center text-muted">
+          <strong>{EvaluationQuarter.APR_JUN}</strong>
+        </div>
+        <Quarter quarter = {EvaluationQuarter.APR_JUN} {evaluations} />
+        <div class="mt-2 card-header b-none text-center text-muted">
+          <strong>{EvaluationQuarter.JUL_SEP}</strong>
+        </div>
+        <Quarter quarter = {EvaluationQuarter.JUL_SEP} {evaluations} />
+        <div class="mt-2 card-header b-none text-center text-muted">
+          <strong>{EvaluationQuarter.OCT_DEC}</strong>
+        </div>
+        <Quarter quarter = {EvaluationQuarter.OCT_DEC} {evaluations} />
       {/if}
     </div>
   </div>
 </div>
+
+<style>
+  .year{
+    font-size: 21px;
+    font-weight: 700;
+    margin: 0;
+  }
+</style>

@@ -6,7 +6,6 @@
 </script>
 
 <Sidebar bind:isLoading bind:isError>
-  <span slot="page-name" />
   <section class="fluid-container mt-5 content" slot="content">
     <Profile bind:isLoading bind:isError />
   </section>

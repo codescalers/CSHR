@@ -20,7 +20,7 @@ class Evaluations(TimeStamp):
     """Database model for evaluations"""
 
     form = models.CharField(max_length=50, choices=EVALUATION_FORM_TYPE.choices)
-    quarter = models.CharField(max_length=150, choices=EVALUATION_FORM_TYPE.choices)
+    quarter = models.CharField(max_length=150, choices=EVALUATION_QUARTER.choices)
     link = models.CharField(max_length=150)
 
     def __str__(self) -> str:
@@ -35,7 +35,7 @@ class UserEvaluations(TimeStamp):
     """Database model for user evaluations"""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    quarter = models.CharField(max_length=150, choices=EVALUATION_FORM_TYPE.choices)
+    quarter = models.CharField(max_length=150, choices=EVALUATION_QUARTER.choices)
     link = models.CharField(max_length=150)
     score = models.IntegerField(default=0)
 

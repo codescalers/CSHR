@@ -14,6 +14,10 @@
   import Evaluation from './Evaluation.svelte';
   import Company from './Company.svelte';
   import Salary from './Salary.svelte';
+  import ProfileImage from './ProfileImage.svelte';
+  import ReportTo from './ReportTo.svelte';
+  import UserDocements from './UserDocements.svelte';
+  import VacationBalance from './VacationBalance.svelte';
 
   const params = useParams();
   let id: number = Number($params.id);
@@ -46,37 +50,20 @@
       <div class="col-lg-4">
         <div class="card mb-4">
           <div class="card-body text-center">
-            <div
-              class={`my-2  mx-auto card-img-top circular_img`}
-              style={`background-image:url(${
-                process.env.APP_BASE_API_URL + user.image
-              });background-color:${
-                user.gender === 'Male' ? '#2986cc' : '#FB5858'
-              };border:1.5px solid ${
-                user.gender === 'Male' ? 'var(--secondary-color)' : 'pink'
-              }`}
-              data-bs-toggle="tooltip"
-              title={user.full_name + ' #' + user.team}
-            />
-
+            <div class="d-flex justify-content-center">
+              <ProfileImage user={user} size={80}/>
+            </div>
             <h5 class="my-3">{user.full_name}</h5>
             <p class="text-muted mb-1">{user.job_title}</p>
             <p class="text-muted mb-4">{user.address}</p>
           </div>
         </div>
 
-        <div class="card mb-4 mb-lg-0">
-          <div class="card-body p-0">
-            <ul class="list-group list-group-flush rounded-3">
-              <li
-                class="list-group-item d-flex justify-content-between align-items-center p-3"
-              >
-                <i class="bi bi-telegram icon" style="color:#27A1E0;" />
-                <a class="mb-0" href={user.telegram_link}>telegram</a>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <ReportTo users={user.reporting_to}/>
+        {#if $UserStore.user_type === 'Admin' || $UserStore.user_type === 'Supervisor' || $UserStore.id === id}
+          <Evaluation {user}/>
+          <UserDocements user={user} />
+        {/if}
       </div>
       <div class="col-lg-8">
         <UserData bind:user />
@@ -87,13 +74,12 @@
         {#if $UserStore.user_type === 'Admin' || $UserStore.user_type === 'Supervisor' || $UserStore.id === id}
           <div class="row">
             <Company bind:companies={user.user_company_properties} />
-            <Evaluation />
           </div>
+          <VacationBalance />
         {/if}
-
         {#if $UserStore.user_type === 'Admin' || $UserStore.id === id}
           <div class="row">
-            <Salary bind:salaries={user.salary} />
+            <Salary salaries={user.salary} />
           </div>
         {/if}
       </div>

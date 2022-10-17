@@ -32,6 +32,7 @@ export interface SupervisorViewInterface extends GeneralUserInterface {
   social_insurance_number: string;
   user_evaluation: UserEvaluationType[];
   user_company_properties: CompanyPropertiesType[];
+  salary: SalaryType;
 }
 
 export interface AdminViewInterface extends SupervisorViewInterface {
@@ -137,3 +138,10 @@ export interface IAuthStore {
   token?: string;
   refreshtoken?: string;
 }
+
+export type UserDocements = {
+  user: number;
+  name: string;
+  image: string;
+  status: number;
+};

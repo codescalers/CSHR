@@ -6,7 +6,6 @@
 </script>
 
 <Sidebar bind:isLoading bind:isError>
-  <span slot="page-name">Users</span>
   <div class="container" slot="content">
     <AllUsers bind:isLoading bind:isError />
   </div>

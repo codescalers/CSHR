@@ -1,10 +1,17 @@
-from server.cshr.serializers.hr_letters import HrLetterSerializer
+from server.cshr.serializers.hr_letters import (
+    HrLetterSerializer,
+    UserDocementsSerializer,
+)
 from server.cshr.serializers.hr_letters import HrLetterUpdateSerializer
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
+from server.cshr.api.permission import IsAdmin, UserIsAuthenticated, IsSupervisor
 from server.cshr.services.users import get_user_by_id
-from server.cshr.services.hr_letters import get_all_hrLetters, get_hrLetter_by_id
+from server.cshr.services.hr_letters import (
+    filter_all_docs_based_on_user,
+    get_all_hrLetters,
+    get_hrLetter_by_id,
+)
 from server.cshr.services.hr_letters import get_hr_letter_by_user
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
@@ -197,3 +204,23 @@ class HrLetterRejectApiView(ListAPIView, GenericAPIView):
             return CustomResponse.not_found(
                 message="user is not found", status_code=404
             )
+
+
+class GetAllUserDocementsAPIView(ListAPIView):
+    permission_classes = [IsAdmin | IsSupervisor]
+    serializer_class = UserDocementsSerializer
+
+    def get(self, request: Request, user_id: str) -> Response:
+        if not user_id.isdigit():
+            return CustomResponse.bad_request(
+                message="Invalid id", error="Id must be a number", data=[]
+            )
+        user = get_user_by_id(user_id)
+        if user is None:
+            return CustomResponse.not_found(
+                message=f"There is no user has this id {user_id}"
+            )
+        queryset = filter_all_docs_based_on_user(user)
+        return CustomResponse.success(
+            data=self.get_serializer(queryset, many=True).data
+        )

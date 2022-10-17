@@ -17,6 +17,11 @@ class UserEvaluationSerializer(ModelSerializer):
     This class will be used to get all info about user evaluation
     """
 
+    # user = SerializerMethodField()
+
     class Meta:
         model = UserEvaluations
-        fields = ["user", "quarter", "link", "score"]
+        fields = "__all__"
+
+    # def get_user(self, obj):
+    #     return BasicUserSerializer(obj).data
