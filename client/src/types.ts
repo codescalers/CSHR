@@ -152,6 +152,11 @@ export type SelectOptionType = {
   extraData?: any;
 };
 
+export type WeekendHolidays = {
+  label: any;
+  value: any;
+};
+
 export type VacationBalanceType = {
   annual_leaves: number;
   leave_execuses: number;

@@ -5,7 +5,7 @@ from django.db import models
 from server.cshr.models.abstracts import TimeStamp
 
 class WEEKEND_DAYS(models.TextChoices):
-    """gender of users"""
+    """Weekenh holidays choices"""
     Friday_and_Saturday     = "Friday:Saturday", "Friday:Saturday"
     Saturday_and_Sunday     = "Saturday:Sunday", "Saturday:Sunday"
     Sunday_and_Monday       = "Sunday:Monday", "Sunday:Monday"

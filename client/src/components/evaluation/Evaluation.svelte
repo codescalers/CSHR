@@ -1,11 +1,12 @@
 <script lang="ts">
-  import type { SelectOptionType } from '../select/types';
+  import type { SelectOptionType } from '../../types';
   import MultiSelect from '../select/MultiSelect.svelte';
   import Submit from '../submit/Submit.svelte';
   import Input from '../input/Input.svelte';
   import evaluationDataService from '../../services/axios/evaluation/EvaluationDataService';
   export let isLoading: boolean = false;
   export let isError: boolean = false;
+
   let evaluation_form_options: SelectOptionType[] = [
     { label: 'Peer 2 Peer Form', value: 'Peer 2 Peer Form' },
     { label: 'Reverse Form', value: 'Reverse Form' },
@@ -17,10 +18,12 @@
     { value: '7 : 9', label: '7 : 9' },
     { value: '10 : 12', label: '10 : 12' },
   ];
+
   let evaluation_form_selected: SelectOptionType[] = [];
   let evaluation_quartur_selected: SelectOptionType[] = [];
   let evaluationLinkValue: string;
   let evaluationLinkIsError: boolean | null = null;
+
   $: submitDisabled =
     evaluationLinkIsError === null ||
     evaluationLinkIsError === true ||

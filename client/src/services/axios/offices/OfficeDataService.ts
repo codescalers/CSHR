@@ -35,6 +35,17 @@ class OfficeDataService {
 			throw new Error(err);
 		}
 	}
+	public async post(data: {
+		name: string;
+		country: string;
+		weekend: string;
+	}) {
+		try {
+			await http.post("/office/", data);
+		} catch (err) {
+			console.error(this.errorMessage + err);
+		}
+	}
 }
 
 const officeDataService = new OfficeDataService();

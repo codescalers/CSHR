@@ -1,6 +1,7 @@
 <script lang="ts">
     import Evaluation from '../evaluation/Evaluation.svelte';
     import UserEvaluation from '../evaluation/UserEvaluation.svelte';
+  import Office from '../office/Office.svelte';
     import UserDocuments from "../userdocuments/UserDocuments.svelte"
     import VacationBalance from "../vacations/VacationBalance.svelte"
     import GreatAndHint from "./GreatAndHint.svelte"
@@ -16,7 +17,7 @@
         aria-orientation="vertical"
       >
         <a
-          class="nav-link active"
+          class="nav-link active mb-2"
           id="v-tabs-vacation-balance-tab"
           data-mdb-toggle="tab"
           href="#v-tabs-vacation-balance"
@@ -26,7 +27,7 @@
           >Update/Post vacations balance</a
         >
         <a
-          class="nav-link"
+          class="nav-link mb-2"
           id="v-tabs-home-tab"
           data-mdb-toggle="tab"
           href="#v-tabs-home"
@@ -36,7 +37,7 @@
           >Evaluation Form</a
         >
         <a
-          class="nav-link"
+          class="nav-link mb-2"
           id="v-tabs-user-eval-tab"
           data-mdb-toggle="tab"
           href="#v-tabs-user-eval"
@@ -46,7 +47,7 @@
           >User Evaluation Form</a
         >
         <a
-          class="nav-link"
+          class="nav-link mb-2"
           id="v-tabs-user-docs-tab"
           data-mdb-toggle="tab"
           href="#v-tabs-user-docs"
@@ -54,6 +55,16 @@
           aria-controls="v-tabs-user-docs"
           aria-selected="false"
           >User Documents</a
+        >
+        <a
+          class="nav-link mb-2"
+          id="v-tabs-office-tab"
+          data-mdb-toggle="tab"
+          href="#v-tabs-office"
+          role="tab"
+          aria-controls="v-tabs-office"
+          aria-selected="false"
+          >Add new office</a
         >
       </div>
     </div>
@@ -115,6 +126,20 @@
               hint={"You can add any documents related to user by using this form."} 
             />
             <UserDocuments />
+          </div>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="v-tabs-office"
+          role="tabpanel"
+          aria-labelledby="v-tabs-office-tab"
+        >
+          <div class="height-100">
+            <GreatAndHint 
+              header={"New Office"}
+              hint={"You can add office .e.g. `Codescalers` using this form."} 
+            />
+            <Office />
           </div>
         </div>
       </div>
