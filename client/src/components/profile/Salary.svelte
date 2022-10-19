@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { SalaryType } from '../../types';
   export let salaries: SalaryType | null = null;  
+  console.log(salaries);
+  
 </script>
 
 <div class="col-md-12 my-2">
@@ -9,7 +11,7 @@
       Salaries
     </div>
     <div class="card-body">
-      {#if salaries === null}
+      {#if salaries === null || !salaries.current_salary || !salaries.joining_salary}
         <p class="my-2 name">No salaries found</p>
       {:else}
       <div class="row">

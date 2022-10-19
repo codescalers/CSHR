@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Anonym
 from typing import Any, Union
 
 from server.cshr.models.abstracts import TimeStamp
-from server.cshr.models.office import Office
+from server.cshr.models.office import Office, WEEKEND_DAYS
 from server.cshr.utils.generate import generate_random_color
 
 
@@ -34,7 +34,6 @@ class USER_TYPE(models.TextChoices):
 
 class GENDER_TYPE(models.TextChoices):
     """gender of users"""
-
     MALE = "Male", "male"
     FEMALE = "Female", "female"
 

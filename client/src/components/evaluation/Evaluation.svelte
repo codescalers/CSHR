@@ -28,77 +28,73 @@
     evaluation_quartur_selected.length === 0;
 </script>
 
+
 <form>
-  <MultiSelect
-    bind:options={evaluation_form_options}
-    bind:selected={evaluation_form_selected}
-    isLabel={true}
-    placeholder="Select Evaluation Form"
-    removeAllTitle="Remove all Evaluation Form"
-    label="Evaluation Form"
-    multiple={false}
-  />
-
-  <MultiSelect
-    bind:options={evaluation_quartur_options}
-    bind:selected={evaluation_quartur_selected}
-    isLabel={true}
-    label="Evaluation Quartur"
-    placeholder="Select Evaluation Quartur"
-    removeAllTitle="Remove all Evaluation Quartur"
-    multiple={false}
-  />
-
-  <Input
-    type="url"
-    label={'Evaluation Link'}
-    bind:value={evaluationLinkValue}
-    handleInput={() => {
-      return false;
-    }}
-    size={20}
-    errorMessage="Evaluation Link is invalid"
-    hint={'please write a valid link'}
-    bind:isError={evaluationLinkIsError}
-    placeholder="Enter Evaluation Link"
-  />
-  <div class="mt-5 col-3">
-    <Submit
-      successMessage={'Evaluation is Submitted'}
-      errorMessage={' Evaluation Submission Failed'}
-      label="Submit"
-      onClick={async () => {
-        isLoading = true;
-        try {
-          /*    await CalendarDataService.postMeeting({
-          hostedUserID: $UserStore.id,
-          date: startDate,
-          invitedUsers: invited_people,
-          location: meetingLocationValue,
-          meetingLink: meetingLinkValue,
-          time: meetingTimeValue,
-        
-        }); */
-
-          await evaluationDataService.postEvaluation({
-            form: evaluation_form_selected[0].value,
-            quarter: evaluation_quartur_selected[0].value,
-            link: evaluationLinkValue,
-          });
-        } catch (error) {
-          isError = true;
-        } finally {
-          isLoading = false;
-          evaluationLinkValue = '';
-          evaluation_form_selected = [];
-          evaluation_quartur_selected = [];
-        }
-        return isError;
-      }}
-      className=""
-      bind:disabled={submitDisabled}
-    />
+  <div class="row d-flex justify-content-center align-items-center">
+    <div class="col-12">
+      <MultiSelect
+        bind:options={evaluation_form_options}
+        bind:selected={evaluation_form_selected}
+        isLabel={true}
+        placeholder="Select Evaluation Form"
+        removeAllTitle="Remove all Evaluation Form"
+        label="Evaluation Form"
+        multiple={false}
+      />
+    </div>
+    <div class="col-12">
+      <MultiSelect
+        bind:options={evaluation_quartur_options}
+        bind:selected={evaluation_quartur_selected}
+        isLabel={true}
+        label="Evaluation Quartur"
+        placeholder="Select Evaluation Quartur"
+        removeAllTitle="Remove all Evaluation Quartur"
+        multiple={false}
+      />
+    </div>
+    <div class="col-12">
+      <Input
+        type="url"
+        label={'Evaluation Link'}
+        bind:value={evaluationLinkValue}
+        handleInput={() => {
+          return false;
+        }}
+        size={20}
+        errorMessage="Evaluation Link is invalid"
+        hint={'please write a valid link'}
+        bind:isError={evaluationLinkIsError}
+        placeholder="Enter Evaluation Link"
+      />
+    </div>
+    <div class="col-12 mt-4  d-flex justify-content-end">
+      <Submit
+        width={'15'}
+        successMessage={'Evaluation is Submitted'}
+        errorMessage={' Evaluation Submission Failed'}
+        label="Submit"
+        onClick={async () => {
+          isLoading = true;
+          try {
+            await evaluationDataService.postEvaluation({
+              form: evaluation_form_selected[0].value,
+              quarter: evaluation_quartur_selected[0].value,
+              link: evaluationLinkValue,
+            });
+          } catch (error) {
+            isError = true;
+          } finally {
+            isLoading = false;
+            evaluationLinkValue = '';
+            evaluation_form_selected = [];
+            evaluation_quartur_selected = [];
+          }
+          return isError;
+        }}
+        className=""
+        bind:disabled={submitDisabled}
+      />
+    </div>
   </div>
 </form>
-
-<form />

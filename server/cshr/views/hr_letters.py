@@ -1,6 +1,6 @@
 from server.cshr.serializers.hr_letters import (
     HrLetterSerializer,
-    UserDocementsSerializer,
+    UserDocumentsSerializer,
 )
 from server.cshr.serializers.hr_letters import HrLetterUpdateSerializer
 from server.cshr.models.users import User
@@ -49,13 +49,9 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
                 applying_user=current_user,
             )
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            msg = get_hr_letter_request_email_template(
-                current_user, serializer.data, url
-            )
+            msg = get_hr_letter_request_email_template(current_user, serializer.data, url)
             bool1 = set_notification_request_redis(serializer.data, url)
-            bool2 = send_email_for_request.delay(
-                current_user.id, msg, "Hr Letter request"
-            )
+            bool2 = send_email_for_request.delay(current_user.id, msg, "Hr Letter request")
             if bool1 and bool2:
                 return CustomResponse.success(
                     data=serializer.data,
@@ -63,12 +59,31 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
                     status_code=201,
                 )
             else:
-                return CustomResponse.not_found(
-                    message="user is not found", status_code=404
-                )
-        return CustomResponse.bad_request(
-            error=serializer.errors, message="Hr letter creation failed"
-        )
+                return CustomResponse.not_found(message="user is not found", status_code=404)
+        return CustomResponse.bad_request(error=serializer.errors, message="Hr letter creation failed")
+
+    def get_queryset(self) -> Response:
+        query_set = get_all_hrLetters()
+        return query_set
+
+
+class BaseUserDocumentsAPIView(ListAPIView, GenericAPIView):
+    """Class BaseUserDocumentsAPIView to create a new user document into database"""
+
+    serializer_class = UserDocumentsSerializer
+    permission_classes = (IsAdmin,)
+
+    def post(self, request: Request) -> Response:
+        """Method to create a new user document"""
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return CustomResponse.success(
+                data=serializer.data,
+                message="Document created",
+                status_code=201,
+            )
+        return CustomResponse.bad_request(error=serializer.errors, message="Document creation failed")
 
     def get_queryset(self) -> Response:
         query_set = get_all_hrLetters()
@@ -84,14 +99,10 @@ class HrLetterApiView(ListAPIView, GenericAPIView):
         """method to get a single HR Letter by id"""
         hr_letter = get_hrLetter_by_id(id=id)
         if hr_letter is None:
-            return CustomResponse.not_found(
-                message="hr_letter not found", status_code=404
-            )
+            return CustomResponse.not_found(message="hr_letter not found", status_code=404)
         serializer = HrLetterSerializer(hr_letter)
 
-        return CustomResponse.success(
-            data=serializer.data, message="hr_letter found", status_code=200
-        )
+        return CustomResponse.success(data=serializer.data, message="hr_letter found", status_code=200)
 
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete an Hr Letter by id"""
@@ -110,14 +121,10 @@ class HrLetterUserApiView(ListAPIView, GenericAPIView):
         """method to get all Hr Letters for certain user"""
         current_user: User = get_user_by_id(request.user.id)
         if current_user is None:
-            return CustomResponse.not_found(
-                message="user is not found", status_code=404
-            )
+            return CustomResponse.not_found(message="user is not found", status_code=404)
         hr_letters = get_hr_letter_by_user(current_user.id)
         serializer = HrLetterSerializer(hr_letters, many=True)
-        return CustomResponse.success(
-            data=serializer.data, message="hr letter requests found", status_code=200
-        )
+        return CustomResponse.success(data=serializer.data, message="hr letter requests found", status_code=200)
 
 
 class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
@@ -134,9 +141,7 @@ class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
             serializer.save(approval_user=current_user)
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
-            bool = send_email_for_reply.delay(
-                current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply"
-            )
+            bool = send_email_for_reply.delay(current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply")
             if bool:
                 return CustomResponse.success(
                     data=serializer.data,
@@ -144,12 +149,8 @@ class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
                     status_code=202,
                 )
             else:
-                return CustomResponse.not_found(
-                    message="user is not found", status_code=404
-                )
-        return CustomResponse.bad_request(
-            data=serializer.errors, message="HR Letter failed to update"
-        )
+                return CustomResponse.not_found(message="user is not found", status_code=404)
+        return CustomResponse.bad_request(data=serializer.errors, message="HR Letter failed to update")
 
 
 class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
@@ -166,17 +167,11 @@ class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
         url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(hr_letter, "accepted", url)
         msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
-        bool2 = send_email_for_reply.delay(
-            current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply"
-        )
+        bool2 = send_email_for_reply.delay(current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply")
         if bool1 and bool2:
-            return CustomResponse.success(
-                message="hr letter request accepted", status_code=202
-            )
+            return CustomResponse.success(message="hr letter request accepted", status_code=202)
         else:
-            return CustomResponse.not_found(
-                message="user is not found", status_code=404
-            )
+            return CustomResponse.not_found(message="user is not found", status_code=404)
 
 
 class HrLetterRejectApiView(ListAPIView, GenericAPIView):
@@ -193,34 +188,22 @@ class HrLetterRejectApiView(ListAPIView, GenericAPIView):
         url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(hr_letter, "rejected", url)
         msg = get_hr_letter_reply_email_template(current_user, hr_letter, url)
-        bool2 = send_email_for_reply.delay(
-            current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply"
-        )
+        bool2 = send_email_for_reply.delay(current_user.id, hr_letter.applying_user.id, msg, "Hr Letter reply")
         if bool1 and bool2:
-            return CustomResponse.success(
-                message="hr letter request rejected", status_code=202
-            )
+            return CustomResponse.success(message="hr letter request rejected", status_code=202)
         else:
-            return CustomResponse.not_found(
-                message="user is not found", status_code=404
-            )
+            return CustomResponse.not_found(message="user is not found", status_code=404)
 
 
-class GetAllUserDocementsAPIView(ListAPIView):
+class GetAllUserDocumentsAPIView(ListAPIView):
     permission_classes = [IsAdmin | IsSupervisor]
-    serializer_class = UserDocementsSerializer
+    serializer_class = UserDocumentsSerializer
 
     def get(self, request: Request, user_id: str) -> Response:
         if not user_id.isdigit():
-            return CustomResponse.bad_request(
-                message="Invalid id", error="Id must be a number", data=[]
-            )
+            return CustomResponse.bad_request(message="Invalid id", error="Id must be a number", data=[])
         user = get_user_by_id(user_id)
         if user is None:
-            return CustomResponse.not_found(
-                message=f"There is no user has this id {user_id}"
-            )
+            return CustomResponse.not_found(message=f"There is no user has this id {user_id}")
         queryset = filter_all_docs_based_on_user(user)
-        return CustomResponse.success(
-            data=self.get_serializer(queryset, many=True).data
-        )
+        return CustomResponse.success(data=self.get_serializer(queryset, many=True).data)

@@ -115,11 +115,11 @@ export type SalaryType = {
     gross: number[];
   };
   joining_salary: {
-    net: number[]|[];
-    gross: number[]|[];
+    net: number[] | [];
+    gross: number[] | [];
   };
-  net_salary_before_joining: number[]|[];
-  Benefits: number[]|[];
+  net_salary_before_joining: number[] | [];
+  Benefits: number[] | [];
 };
 
 export type CompanyPropertiesType = {
@@ -139,9 +139,29 @@ export interface IAuthStore {
   refreshtoken?: string;
 }
 
-export type UserDocements = {
+export type UserDocuments = {
   user: number;
   name: string;
   image: string;
   status: number;
 };
+
+export type SelectOptionType = {
+  label: any;
+  value: any;
+  extraData?: any;
+};
+
+export type VacationBalanceType = {
+  annual_leaves: number;
+  leave_execuses: number;
+  emergency_leaves: number;
+  public_holidays?: number[];
+}
+
+export interface IVacationBalance {
+  annual_leaves: number;
+  leave_execuses: number;
+  emergency_leaves: number;
+  public_holidays: number[];
+}

@@ -16,7 +16,7 @@
   import Salary from './Salary.svelte';
   import ProfileImage from './ProfileImage.svelte';
   import ReportTo from './ReportTo.svelte';
-  import UserDocements from './UserDocements.svelte';
+  import UserDocuments from './GetUserDocuments.svelte';
   import VacationBalance from './VacationBalance.svelte';
 
   const params = useParams();
@@ -62,7 +62,7 @@
         <ReportTo users={user.reporting_to}/>
         {#if $UserStore.user_type === 'Admin' || $UserStore.user_type === 'Supervisor' || $UserStore.id === id}
           <Evaluation {user}/>
-          <UserDocements user={user} />
+          <UserDocuments user={user} />
         {/if}
       </div>
       <div class="col-lg-8">

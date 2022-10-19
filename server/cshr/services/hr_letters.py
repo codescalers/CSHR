@@ -1,4 +1,4 @@
-from server.cshr.models.hr_letters import HrLetters, UserDocements
+from server.cshr.models.hr_letters import HrLetters, UserDocuments
 from server.cshr.models.users import User
 
 
@@ -22,4 +22,4 @@ def get_hr_letter_by_user(id: str) -> HrLetters:
 
 def filter_all_docs_based_on_user(user: User):
     """Return all user docs"""
-    return UserDocements.objects.filter(user=user)
+    return UserDocuments.objects.filter(user=user)

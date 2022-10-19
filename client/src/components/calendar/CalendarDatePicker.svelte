@@ -1,12 +1,16 @@
 <script lang="ts">
   import DatePicker from './Datepicker.svelte';
   import Input from '../input/Input.svelte';
+  import Vacation from '../../services/axios/vacations/Vacation';
+  import { createEventDispatcher } from 'svelte';
   export let startDate = '2022-03-01';
   export let endDate = '2022-03-03';
   export let errorMessage = '';
   export let onlyStart = false;
   export let isLoading = false;
   export let datePickerDisabled = true;
+
+  const dispatch = createEventDispatcher();
 
   const locale: {
     en: {
@@ -21,7 +25,11 @@
       start: 0,
     },
   };
-  function validateDate(date: string, error_name: string): boolean {
+  async function validateDate(date: string, error_name: string): Promise<boolean> {
+    const vacationCalculator = await Vacation.calculator(startDate, endDate);
+    dispatch('message', {
+			text: vacationCalculator
+		});
     let check = Date.parse(date);
     if (!check) {
       //it is not a date with format YYYY-MM-DD

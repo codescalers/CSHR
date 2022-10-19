@@ -37,17 +37,8 @@ class Vacation(Requests):
     def ___str__(self):
         return self.reason
 
-
-class PublicHolidays(models.Model):
-    date = models.DateField(unique=True)
-
-    def __str__(self):
-        return str(self.date)
-
-
 class VacationBalance(models.Model):
     """User vacation balance model."""
-
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     sick_leaves = models.IntegerField()
     compensation = models.IntegerField()

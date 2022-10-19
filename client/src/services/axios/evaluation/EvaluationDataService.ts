@@ -63,6 +63,18 @@ class EvaluationDataService {
 			console.error(this.errorMessage + err);
 		}
 	}
+	public async postUserEvaluation(data: {
+		user: number;
+		quarter: string;
+		link: string;
+		score: number;
+	}) {
+		try {
+			await http.post("evaluation/users/", data);
+		} catch (err) {
+			console.error(this.errorMessage + err);
+		}
+	}
 }
 
 const evaluationDataService = new EvaluationDataService();

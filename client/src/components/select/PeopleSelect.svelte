@@ -13,7 +13,8 @@
   export let isLoading = false;
   export let isError: boolean | null = null;
   export let mylabel = 'People';
-  export let isTop : boolean;
+  export let isTop : boolean = true;
+  export let multiple : boolean;
   export let selected: SelectOptionType[] = [];
   let options: SelectOptionType[] = [];
 
@@ -60,6 +61,7 @@
     {removeAllTitle}
     isLabel={false}
     isTop ={isTop}
+    multiple={multiple}
   >
     <PeopleSlot let:option {option} slot="option" />
   </MultiSelect>

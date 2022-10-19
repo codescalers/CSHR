@@ -7,7 +7,7 @@
     import userDataService from '../../services/axios/user/UserDataService';
     import { UserStore } from '../../stores';
     import { authStore } from '../../stores';
-  import PageFooter from "./PageFooter.svelte";
+    import PageFooter from "./PageFooter.svelte";
     
     let toggleId: HTMLElement, navId: HTMLElement, bodyId: HTMLElement, headerId: HTMLElement, pageContent: HTMLElement;
 

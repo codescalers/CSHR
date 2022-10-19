@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "svelte-flatpickr": "^3.2.6"
+  }
+}

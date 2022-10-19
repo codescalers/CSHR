@@ -29,8 +29,8 @@ class StanderdVacationBalance:
 
     def write(self, key: str, new_value: Any) -> Dict:
         """Write method that can write new values into balance Json file."""
-        founded: bool = self.file_content.get(key)
-        if founded:
+        founded: Any = self.file_content.get(key)
+        if founded is not None:
             self.file_content[key] = new_value
         return self.bulk_write(self.file_content)
 
@@ -122,11 +122,22 @@ class StanderdVacationBalance:
     def get_difference_between_two_days(self, start_date: datetime, end_date: datetime):
         return int((end_date - start_date).days + 1)
 
+    def remove_weekends(self, user: User, start_date: datetime, end_date: datetime):
+        weekend = user.location.weekend.split(':')
+        delta = end_date - start_date   # returns timedelta
+        actual_days = []
+        for i in range(delta.days + 1):
+            day = start_date + datetime.timedelta(days=i)
+            if not day.strftime("%A") in weekend:
+                actual_days.append(day)
+        return len(actual_days)
+
     def check_balance(self, user, reason, start_date: datetime, end_date: datetime):
         self.check(user)
+        
         old_balance = self.check_old_balance(user, reason)
         v = user.vacationbalance
-        vacation_days = self.get_difference_between_two_days(start_date, end_date)
+        vacation_days = self.remove_weekends(user, start_date, end_date)
         if hasattr(v, reason):
             curr_balance = getattr(v, reason)
             if reason == "public_holidays":

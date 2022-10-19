@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type { UserDocements } from '../../types';
+    import type { UserDocuments } from '../../types';
     import {onMount} from "svelte";
     import UserDataService from '../../services/axios/user/UserDataService';
     export let user: any;
-    let documents: UserDocements[];
+    let documents: UserDocuments[];
     onMount(async ()=>{
       documents = await UserDataService.getUserDocuments(user.id);
     });

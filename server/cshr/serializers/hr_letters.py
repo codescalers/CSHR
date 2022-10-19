@@ -2,7 +2,8 @@ from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
 )
-from server.cshr.models.hr_letters import HrLetters, UserDocements
+from server.cshr.models.hr_letters import HrLetters, UserDocuments
+from server.cshr.serializers.Image_upload import Base64ImageField
 from server.cshr.serializers.users import BaseUserSerializer
 
 
@@ -51,7 +52,8 @@ class LandingPageHrLetterSerializer(ModelSerializer):
         return BaseUserSerializer(obj.approval_user).data
 
 
-class UserDocementsSerializer(ModelSerializer):
+class UserDocumentsSerializer(ModelSerializer):
+    image = Base64ImageField(max_length=None, use_url=True,)
     class Meta:
-        model = UserDocements
-        fields = "__all__"
+        model = UserDocuments
+        fields = ["user", "image", "name"]

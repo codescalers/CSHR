@@ -60,7 +60,7 @@ class LandingPageVacationsSerializer(ModelSerializer):
         return BaseUserSerializer(obj.approval_user).data
 
 
-class UserVacationBalanceSerializer(serializers.Serializer):
+class VacationBalanceSerializer(serializers.Serializer):
     sick_leaves = serializers.FloatField()
     compensation = serializers.FloatField()
     unpaid = serializers.FloatField()

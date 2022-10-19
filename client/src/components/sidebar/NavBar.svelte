@@ -45,11 +45,13 @@
                     <i class="fa-solid fa-plus-circle nav_icon" />
                     <span class="nav_name">add a user</span>
                 </Link>
+                <Link to="/dashboard" class="nav_link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
+                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2z"/>
+                    </svg>
+                    <span class="nav_name">Dashboard</span>
+                </Link>
             {/if}
-            <a href="/evaluation" class="nav_link">
-            <i class="fa-solid fa-book nav_icon" />
-            <span class="nav_name">Evaluation Form</span>
-            </a>
             <a href="/team" data-bs-toggle="collapse" class="nav_link">
             <i class="fa-solid fa-gear nav_icon" />
             <span class="nav_name">Settings</span>

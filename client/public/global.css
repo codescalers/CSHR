@@ -117,9 +117,30 @@ h1, h2, h3, h4, h5, h6 {
 .body-pd{
     padding-left: calc(var(--nav-width) + 1rem)
 }
-.active{
-    color: var(--white-color)
+.nav-tabs .nav-link.active {
+    border: none !important;
+    background: rgb(54 55 64)!important;
+    color: #fff !important;
 }
+.nav-tabs .nav-link:hover{
+    border: none !important;
+    background: rgba(54, 55, 64, 0.699)!important;
+    color: #fff !important;
+    transition: .3s;
+}
+.flatpickr-calendar{
+    top: 380.328px !important;
+    left: 1005.5px!important;
+    right: auto;
+}
+.nav-tabs .nav-link {
+    color: rgb(8, 8, 8) !important;
+    border-radius: 1px !important;
+    transition: .3s;
+}
+/* .active{
+    color: var(--white-color)
+} */
 .active::before{
     content: '';
     position: absolute;

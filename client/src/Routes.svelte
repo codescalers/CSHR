@@ -6,10 +6,7 @@
   import Users from './pages/Users.svelte';
  
   import Logout from './pages/Logout.svelte';
-  // import Settings from './pages/Settings.svelte';
   import LoggedRoute from './routes/LoggedRoute.svelte';
-  import AdminRoute from "./routes/AdminRoute.svelte";
-  // import Supervisor from './routes/Supervisor.svelte'
   import Login from './pages/Login.svelte';
   import { setTheme } from './services/utils/theme';
   import { onMount } from 'svelte';
@@ -17,7 +14,7 @@
   import Requests from './pages/Requests.svelte';
   import UserProfile from './pages/UserProfile.svelte';
   import Team from './pages/Team.svelte';
-  import Evaluation from './pages/Evaluation.svelte';
+  import Dashboard from './pages/Dashboard.svelte';
   
   const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
@@ -40,8 +37,8 @@
     <LoggedRoute path={"profile/:id"} component={UserProfile} />
     <LoggedRoute path={"profile/"} component={UserProfile} />
     <LoggedRoute path={"team/"} component={Team} /> 
-    <LoggedRoute path={"evaluation/"}  component={Evaluation}/> 
     <LoggedRoute path={'/register'} component={Register}/> 
+    <LoggedRoute path={'/dashboard'} component={Dashboard}/> 
 
     <Route>
       <Error error={404} />

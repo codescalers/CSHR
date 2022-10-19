@@ -9,6 +9,13 @@
   let startDate = `2022-${thisDate.getMonth() + 1}-${thisDate.getDate()}`;
   let endDate = `2022-${thisDate.getMonth() + 1}-${thisDate.getDate() + 2}`;
   let datePickerDisabled = false;
+
+  let VacationCalculator: number;
+
+  const handleVacationCalculator = (event: { detail: { text: number; }; }) => {
+    VacationCalculator = event.detail.text;
+  };
+
 </script>
 
 <div class="container">
@@ -17,6 +24,7 @@
     bind:startDate
     bind:endDate
     bind:datePickerDisabled
+    on:message={handleVacationCalculator}
   >
     <div slot="toggler" class="my-4">
       <div class="options">
@@ -48,6 +56,7 @@
           bind:startDate
           bind:endDate
           bind:datePickerDisabled
+          calculatorValue = {VacationCalculator}
         />
       {/if}
       {#if formToggle === 1}

@@ -1,14 +1,1 @@
-{
-    "annual_leaves": 15,
-    "sick_leaves": 100,
-    "compensation": 100,
-    "unpaid": 100,
-    "emergency_leaves": 6,
-    "leave_execuses": 10,
-    "public_holidays": [
-        "2022-10-12",
-        "2022-10-14",
-        "2022-09-13"
-    ],
-    "year": 2022
-}
+{"annual_leaves": 15, "sick_leaves": 100, "compensation": 100, "unpaid": 100, "emergency_leaves": 6, "leave_execuses": 4, "public_holidays": ["2022-10-20", "2022-10-13", "2022-10-12"], "year": 2022}

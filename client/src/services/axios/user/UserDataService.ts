@@ -30,6 +30,18 @@ class UserDataService {
 			console.error(this.errorMessage + err);
 		}
 	}
+	public async postUserDocument(data: {
+		user: number;
+		name: string;
+		image: string;
+	}) {
+		console.log(data);
+		try {
+			await http.post("hrletter/docs/", data);
+		} catch (err) {
+			console.error(this.errorMessage + err);
+		}
+	}
 }
 
 const userDataService = new UserDataService();

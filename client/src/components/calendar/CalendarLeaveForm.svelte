@@ -8,12 +8,12 @@
   import type { VacationBalanceType } from '../../types';
   import Vacation from '../../services/axios/vacations/Vacation';
 
-  export let modalID = 1211112121121121;
   export let startDate: string;
   export let endDate: string;
   export let isLoading = false;
   export let isError = false;
   export let datePickerDisabled = false;
+  export let calculatorValue: number;
 
   let alertTitle: string, alertClass: string, alertMessage: string, showAlert: boolean;
 
@@ -27,6 +27,7 @@
   $: submitDisabled =
     selectedReason == 0 || datePickerDisabled == true 
 </script>
+
 
 <form>
   <div class="form-group row">
@@ -45,7 +46,10 @@
       </select>
     </div>
   </div>
-  <div class="my-4">
+  <div class="alert alert-light p-0 text-center">
+    Actual value after deducting weekend holidays {calculatorValue}
+  </div>
+  <div>
     <Submit
       showthis={false}
       label="Submit"

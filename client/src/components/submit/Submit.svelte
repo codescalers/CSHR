@@ -13,6 +13,7 @@
   export let success: Promise<boolean> | boolean = true;
   export let show = false;
   export let modalData: any = {};
+  export let width:string = "100";
   let isLoading = false;
 </script>
 
@@ -20,6 +21,7 @@
   {id}
   type="submit"
   class={`btn ${className.length !== 0 ? className : 'submit'}`}
+  style="width: {width}%;"
   on:click|preventDefault={async () => {
     isLoading = true;
     success = !(await onClick());
@@ -52,8 +54,9 @@
     font-size: 1rem;
     color: var(--primary-color);
     background-color: var(--secondary-color);
-    width: 100%;
     border: 1px solid var(--primary-color);
+    max-height: 40px;
+    height: 40px;
   }
   .submit:hover {
     background-color: var(--primary-color);
