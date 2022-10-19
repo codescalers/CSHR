@@ -21,7 +21,7 @@
     {:else}
         <!-- svelte-ignore a11y-missing-attribute -->
         <img
-            src="{process.env.APP_BASE_API_URL + user.image}"
+            src="{process.env.APP_BASE_API_URL + user.image.replace('/', '')}"
             class="user-profile-image rounded-circle"
             style="width:{size}px; height:{size}px;"
         />
