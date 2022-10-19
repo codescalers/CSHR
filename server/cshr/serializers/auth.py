@@ -2,10 +2,11 @@ from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
     TokenRefreshSerializer,
 )
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.state import token_backend
 from rest_framework_simplejwt.settings import api_settings
+from server.cshr.serializers.Image_upload import Base64ImageField
 from rest_framework import exceptions
 from django.contrib.auth.hashers import check_password
 from typing import Dict, Any
@@ -81,7 +82,7 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
 class RegisterSerializer(ModelSerializer):
     """class RegisterSerializer to serialize the user obj"""
 
-    image = SerializerMethodField()
+    image = Base64ImageField(max_length=None, use_url=True,)
 
     class Meta:
         model = User
@@ -101,10 +102,9 @@ class RegisterSerializer(ModelSerializer):
             "image",
             "gender",
             "job_title",
+            "address",
+            "social_insurance_number"
         )
-
-    def get_image(self, obj: User) -> str:
-        return obj.image.url if obj.image else obj.background_color
 
     def create(self, validated_data):
         password = validated_data.pop("password", None)

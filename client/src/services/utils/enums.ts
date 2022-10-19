@@ -7,14 +7,14 @@ export enum VacationTypeChoises {
 export enum RequestStatus{
     approved    = "approved",
     rejected    = "rejected",
-}
+};
 
 export enum EvaluationQuarter{
     JAN_MARCH   = "1 : 3",
     APR_JUN     = "4 : 6",
     JUL_SEP     = "7 : 9",
     OCT_DEC     = "10 : 12"
-}
+};
 
 export enum WeekendHolidaysEnum{
     Friday_and_Saturday     = "Friday:Saturday",
@@ -24,4 +24,24 @@ export enum WeekendHolidaysEnum{
     Tuesday_and_Wednesday   = "Tuesday:Wednesday",
     Wednesday_and_Thursday  = "Wednesday:Thursday",
     Thursday_and_Friday     = "Thursday:Friday",
+};
+
+export enum TeamEnum{
+    Development = "Development",
+    QA          = "Q&A",
+    Operations  = "Operations",
+    Marketing   = "Marketing",
+    Management  = "Management",
+    Accounting  = "Accounting"
+};
+
+export enum GenderEnum{
+    Male = "Male",
+    Female = "Female"
+};
+
+export enum UserTypeEnum{
+    Supervisor  = "Supervisor",
+    Admin       = "Admin",
+    User        = "User"
 }

@@ -152,21 +152,36 @@ export type SelectOptionType = {
   extraData?: any;
 };
 
-export type WeekendHolidays = {
-  label: any;
-  value: any;
-};
-
 export type VacationBalanceType = {
   annual_leaves: number;
   leave_execuses: number;
   emergency_leaves: number;
   public_holidays?: number[];
-}
+};
 
 export interface IVacationBalance {
   annual_leaves: number;
   leave_execuses: number;
   emergency_leaves: number;
   public_holidays: number[];
-}
+};
+
+export type registeringData = {
+  first_name: string;
+  last_name: string;
+  telegram_link: string;
+  email: string;
+  birthday: Date;
+  mobile_number: string;
+  address: string;
+  password: string;
+  location: number;
+  team: string;
+  salary: any;
+  user_type: string;
+  social_insurance_number: string;
+  reporting_to: number[];
+  image: HTMLImageElement;
+  gender: string ;
+  job_title:string;
+};

@@ -2,16 +2,17 @@
     import Input  from '../input/Input.svelte';
     import Submit from '../submit/Submit.svelte';
     import MultiSelect from '../select/MultiSelect.svelte';
-    import { weekendHolidaysChoices } from "../../services/utils/weekendChoices"
-    import type { WeekendHolidays } from "../../types"
-  import OfficeDataService from '../../services/axios/offices/OfficeDataService';
+    import { weekendHolidaysChoices } from "../../services/utils/choices"
+    import type { SelectOptionType } from "../../types"
+    import OfficeDataService from '../../services/axios/offices/OfficeDataService';
+    import { validateName } from '../../services/utils/validators';
 
     export let isLoading: boolean = false;
     export let isError: boolean = false;
 
     let officeName: string, officeCountry: string;
-    let weekendHolidays: WeekendHolidays[] = weekendHolidaysChoices
-    let weekendHolidaysSelected: WeekendHolidays[] = [];
+    let weekendHolidays: SelectOptionType[] = weekendHolidaysChoices
+    let weekendHolidaysSelected: SelectOptionType[] = [];
     $: submitDisabled = 
         officeName == "" || officeName == undefined || officeName == null ||
         officeCountry == "" || officeCountry == undefined || officeCountry == null ||
@@ -26,9 +27,7 @@
                 type="text"
                 label={'Office Name'}
                 bind:value={officeName}
-                handleInput={() => {
-                    return false;
-                }}
+                handleInput={validateName}
                 size={25}
                 errorMessage="Office name is invalid."
                 placeholder="Office name."
@@ -40,9 +39,7 @@
                 type="text"
                 label={'Office Country'}
                 bind:value={officeCountry}
-                handleInput={() => {
-                    return false;
-                }}
+                handleInput={validateName}
                 size={25}
                 errorMessage="Office country is invalid."
                 placeholder="office country"
@@ -70,9 +67,9 @@
                     isLoading = true;
                     try {
                         await OfficeDataService.post({
-                        weekend: weekendHolidaysSelected[0].value,
-                        name: officeName,
-                        country: officeCountry
+                            weekend: weekendHolidaysSelected[0].value,
+                            name: officeName,
+                            country: officeCountry
                         });
                     } catch (error) {
                         isError = true;

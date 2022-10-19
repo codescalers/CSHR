@@ -2,6 +2,7 @@
     import Evaluation from '../evaluation/Evaluation.svelte';
     import UserEvaluation from '../evaluation/UserEvaluation.svelte';
   import Office from '../office/Office.svelte';
+  import Register from '../register/Register.svelte';
     import UserDocuments from "../userdocuments/UserDocuments.svelte"
     import VacationBalance from "../vacations/VacationBalance.svelte"
     import GreatAndHint from "./GreatAndHint.svelte"
@@ -65,6 +66,16 @@
           aria-controls="v-tabs-office"
           aria-selected="false"
           >Add new office</a
+        >
+        <a
+          class="nav-link mb-2"
+          id="v-tabs-new-user-tab"
+          data-mdb-toggle="tab"
+          href="#v-tabs-new-user"
+          role="tab"
+          aria-controls="v-tabs-new-user"
+          aria-selected="false"
+          >Add new user</a
         >
       </div>
     </div>
@@ -140,6 +151,20 @@
               hint={"You can add office .e.g. `Codescalers` using this form."} 
             />
             <Office />
+          </div>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="v-tabs-new-user"
+          role="tabpanel"
+          aria-labelledby="v-tabs-new-user-tab"
+        >
+          <div>
+            <GreatAndHint 
+              header={"New User"}
+              hint={"You can add new user using this form."} 
+            />
+            <Register />
           </div>
         </div>
       </div>

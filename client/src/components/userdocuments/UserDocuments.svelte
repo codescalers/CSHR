@@ -49,7 +49,7 @@
         </div>
           <div class="col-12">
             <SelectImage bind:image />
-        </div>
+          </div>
         <div class="col-12 mt-4  d-flex justify-content-end">
             <Submit
               width={'15'}

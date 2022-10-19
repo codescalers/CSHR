@@ -22,7 +22,7 @@
 
 <div class="bg-white rounded-5">
     <form>
-        <div class="form-outline mb-4">
+        <div class="form-outline">
             <Input
                 type="number"
                 label={'Annual leaves'}
@@ -36,7 +36,7 @@
                 hint={'Write annual leaves in numbers'}
             />
         </div>
-        <div class="form-outline mb-4">
+        <div class="form-outline">
             <Input
                 type="number"
                 label={'Leave execuses'}
@@ -50,7 +50,7 @@
                 hint={'Write Leave execuses in numbers'}
             />
         </div>
-        <div class="form-outline mb-4">
+        <div class="form-outline">
             <Input
                 type="number"
                 label={'Emergency leaves'}

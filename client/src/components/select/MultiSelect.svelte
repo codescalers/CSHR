@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SelectOptionType } from './types';
+  import type { SelectOptionType } from '../../types';
   import { v4 as uuidv4 } from 'uuid';
 
   export let options: SelectOptionType[] = [],
@@ -285,7 +285,7 @@
   }
   .option.highlighted {
     background-color: hsl(200, 100%, 50%);
-    color: white !important;
+    color: rgb(15, 4, 4) !important;
   }
   .remove-label {
     width: 0.15em;
