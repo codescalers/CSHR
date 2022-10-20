@@ -1,8 +1,8 @@
 <script lang="ts">
     import Evaluation from '../evaluation/Evaluation.svelte';
     import UserEvaluation from '../evaluation/UserEvaluation.svelte';
-  import Office from '../office/Office.svelte';
-  import Register from '../register/Register.svelte';
+    import Office from '../office/Office.svelte';
+    import Register from '../register/Register.svelte';
     import UserDocuments from "../userdocuments/UserDocuments.svelte"
     import VacationBalance from "../vacations/VacationBalance.svelte"
     import GreatAndHint from "./GreatAndHint.svelte"

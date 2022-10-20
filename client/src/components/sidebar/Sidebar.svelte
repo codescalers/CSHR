@@ -18,8 +18,6 @@
         headerId.classList.toggle('body-pd')
         pageContent.classList.toggle('page-content-open')
     }
-
-
     const navigate = useNavigate();
     onMount(async () => {
         if (!authStore.isAuth() || $UserStore === undefined) {

@@ -48,6 +48,9 @@ export interface PaginatedInterface<T> {
   next: string;
   previous: string;
 }
+export interface NotifacationCreatedInterface{
+  count: number;
+}
 export interface SettingsInterface {
   "primary-color": string;
   "secondary-color": string;

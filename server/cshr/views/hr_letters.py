@@ -43,14 +43,13 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             current_user: User = get_user_by_id(request.user.id)
-            serializer.save(
+            saved = serializer.save(
                 type=TYPE_CHOICES.HR_LETTERS,
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
-            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            msg = get_hr_letter_request_email_template(current_user, serializer.data, url)
-            bool1 = set_notification_request_redis(serializer.data, url)
+            msg = get_hr_letter_request_email_template(current_user, serializer.data, saved.id)
+            bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(current_user.id, msg, "Hr Letter request")
             if bool1 and bool2:
                 return CustomResponse.success(

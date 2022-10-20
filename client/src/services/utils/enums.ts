@@ -7,6 +7,7 @@ export enum VacationTypeChoises {
 export enum RequestStatus{
     approved    = "approved",
     rejected    = "rejected",
+    pinding     = "pending"
 };
 
 export enum EvaluationQuarter{

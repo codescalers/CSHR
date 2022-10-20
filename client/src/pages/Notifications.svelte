@@ -1,73 +1,26 @@
 <script lang="ts">
   import Sidebar from '../components/sidebar/Sidebar.svelte';
+  import { onMount } from 'svelte';
+  import NotificationService from "../services/axios/notifications/notifications"
+  import ProfileImage from '../components/profile/ProfileImage.svelte';
+  import { Link } from 'svelte-navigator';
 
-  let pageCount = 0;
-  let pageSize = 3;
-  let requests = [
-    {
-      name: 'Marc',
-      period: 2,
-      role: 'Software Engineer',
-      date: '28 May, 2000',
-      time: '6.30',
-      classPill: 'danger',
-    },
-    {
-      name: 'Joe',
-      period: 3,
-      role: 'Software Engineer',
-      date: '28 May, 2000',
-      time: '6.30',
-      classPill: 'primary',
-    },
-    {
-      name: 'Joe',
-      period: 3,
-      role: 'Software Engineer',
-      date: '28 May, 2000',
-      time: '6.30',
-      classPill: 'primary',
-    },
-    {
-      name: 'Michael',
-      period: 2,
-      role: 'Engineering Manager',
-      date: '28 May, 2000',
-      time: '6.33',
-      classPill: 'danger',
-    },
-    {
-      name: 'Marwan',
-      period: 3,
-      role: 'SRE',
-      date: '28 May, 2000',
-      time: '6.33',
-      classPill: 'primary',
-    },
-    {
-      name: 'Joel',
-      period: 3,
-      role: 'QA Engineer',
-      date: '28 May, 2000',
-      time: '6.33',
-      classPill: 'primary',
-    },
-  ];
-  function increment() {
-    if (totalNotifications - pageCount * 3 - pageSize > 0) {
-      pageCount++;
+  let isLoading = false;
+  let isError: boolean | null = null;
+  let notifications: any;
+
+  onMount(async () => {
+    isLoading = true;
+    try {
+      notifications = await NotificationService.getAll();
+    } catch (error) {
+      isError = true;
     }
-  }
-  function decrement() {
-    if (pageCount > 0) {
-      pageCount--;
-    }
-  }
-  let totalNotifications = requests.length;
+    isLoading = false;
+  });
 </script>
 
 <Sidebar>
-  <span slot="page-name">Notification</span>
   <section class=" fluid-container mt-5" slot="content">
     <div>
       <h4 class="child mx-5">All Notifications</h4>
@@ -75,78 +28,48 @@
       <table class="table align-middle mb-0 mx-5">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Date</th>
-            <th>Type</th>
+            <th>User</th>
+            <th>Content</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {#each requests.slice(pageCount * 3, pageCount * 3 + 3) as request}
-            <tr>
-              <td>
-                <div class="d-flex align-items-center">
-                  <img
-                    src="https://mdbootstrap.com/img/new/avatars/8.jpg"
-                    alt=""
-                    style="width: 45px; height: 45px"
-                    class="rounded-circle"
-                  />
-                  <div class="ms-3">
-                    <p class="fw-bold mb-1">{request.name}</p>
-                    <p class="text-muted mb-0">
-                      Updated {request.period} days ago
-                    </p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <p class="fw-bold mb-1">{request.role}</p>
-                <p class="text-muted mb-0">{request.date}</p>
-              </td>
-              <td>
-                <p class="fw-bold mb-1">{request.date}</p>
-                <p class="text-muted mb-0">{request.time}</p>
-              </td>
-              <td>
-                <span class="badge rounded-pill text-bg-{request.classPill} p-3"
-                  >{request.classPill}</span
-                >
-              </td>
-            </tr>
-          {/each}
+          {#if notifications}
+            {#each notifications as notification}
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <ProfileImage user={JSON.parse(notification.user)}/>
+                      <div class="ms-3">
+                        <p class="fw-bold mb-1">{JSON.parse(notification.user).full_name}</p>
+                        <p class="text-muted mb-0">
+                          {JSON.parse(notification.user).user_type}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <p class="fw-bold mb-1">{notification.title}</p>
+                    <p class="text-muted mb-0">{notification.created_at}</p>
+                  </td>
+                  <td>
+                    <Link class="text-dark" to="/{notification.type}/{notification.event_id}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                      </svg>
+                    </Link>
+                  </td>
+                </tr>
+            {/each}
+          {/if}
         </tbody>
       </table>
-      <div class="pagination">
-        <div class="pagination-labels">
-          <label class="text-muted mb-0 ">Rows per page:</label>
-        </div>
-
-        <div class="pagination-labels">
-          <label class="text-muted mb-0"
-            >{pageCount + 1} of {totalNotifications / pageSize}</label
-          >
-          <button class="pagination-button" on:click={decrement}
-            ><i class="icon fa-solid fa-chevron-left" /></button
-          >
-          <button class="pagination-button" on:click={increment}
-            ><i class="icon fa-solid fa-chevron-right" /></button
-          >
-        </div>
-      </div>
     </div>
   </section>
 </Sidebar>
 
 <style>
-  .page-body {
-    position: absolute;
-    height: 942px;
-    left: 285px;
-    right: 33px;
-    top: 128px;
-  }
-
   .child {
     display: inline-block;
     left: 10cm;
@@ -158,10 +81,6 @@
   }
   .pagination-labels {
     margin: 0.1cm;
-  }
-  .sort {
-    display: inline-block;
-    padding-left: 35cm;
   }
   label {
     font-weight: 300;

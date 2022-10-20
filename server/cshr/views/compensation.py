@@ -52,11 +52,10 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
-            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             msg = get_compensation_request_email_template(
-                current_user, serializer.data, url
+                current_user, serializer.data, event_id
             )
-            bool1 = set_notification_request_redis(serializer.data, url)
+            bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(
                 current_user.id, msg, "Compensation request"
             )

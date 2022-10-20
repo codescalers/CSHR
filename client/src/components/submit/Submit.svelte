@@ -20,7 +20,7 @@
 <button
   {id}
   type="submit"
-  class={`btn ${className.length !== 0 ? className : 'submit'}`}
+  class={`${className.length !== 0 ? className : 'submit'}`}
   style="width: {width}%;"
   on:click|preventDefault={async () => {
     isLoading = true;

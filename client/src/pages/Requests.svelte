@@ -1,14 +1,10 @@
 <script lang="ts">
   import Requests from '../services/axios/requests/requests';
   import ActionButton from '../components/requests/requestsButtons.svelte';
-
+  import { Link } from 'svelte-navigator';
   import { onMount } from 'svelte';
-
   import Sidebar from '../components/sidebar/Sidebar.svelte';
   import ProfileImage from '../components/profile/ProfileImage.svelte';
-
-  let pageCount = 0;
-  let pageSize = 7;
 
   const handleActions = (event: { detail: { text: any; }; }) => {
     const sRequest = event.detail.text.request
@@ -21,16 +17,6 @@
     });
   }
 
-  function increment() {
-    if (totalRequests - pageCount * 7 - pageSize > 0) {
-      pageCount++;
-    }
-  }
-  function decrement() {
-    if (pageCount > 0) {
-      pageCount--;
-    }
-  }
   let requests: any = [];
   let totalRequests = 1;
 
@@ -56,7 +42,8 @@
             <th scope="col">Name</th>
             <th>Type</th>
             <th>Date</th>
-            <th>Desicion</th>
+            <th style="width:10%">Desicion</th>
+            <th style="width:10%">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -101,32 +88,21 @@
                   </span>
                 </p>
               </td>
-              <td>
-                <div class="container w-100 p-0">
+              <td style="width:10%">
                   <ActionButton {request} on:message={handleActions}/>
-                </div>
+              </td>
+              <td>
+                <Link class="text-dark" to="/{request.type.toLowerCase()}s/{request.id}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                  </svg>
+                </Link>
               </td>
             </tr>
           {/each}
         </tbody>
       </table>
-    </div>
-
-    <div class="row justify-content-end mt-3">
-      <div class="col-2 mr-5">
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label class="text-muted mb-0 ">Rows per page:</label>
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label class="text-muted mb-0"
-          >{pageCount + 1} of {Math.ceil(totalRequests / pageSize)}</label
-        >
-        <button class="pagination-button" on:click={decrement}
-          ><i class="icon fa-solid fa-chevron-left" /></button
-        >
-        <button class="pagination-button" on:click={increment}
-          ><i class="icon fa-solid fa-chevron-right" /></button
-        >
-      </div>
     </div>
   </section>
 </Sidebar>

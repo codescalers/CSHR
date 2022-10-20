@@ -1,7 +1,13 @@
+import datetime
+from time import strptime
+from typing import Dict
+from django.utils.dateparse import parse_datetime
 import redis
+import json
 from django.core.exceptions import ImproperlyConfigured
 from server.components import config
 from server.cshr.models.users import User
+from server.cshr.serializers.users import TeamSerializer
 from server.cshr.services.users import get_user_by_id
 
 
@@ -16,41 +22,44 @@ redis_instance = redis.StrictRedis(
 )
 
 
-def set_notification_request_redis(data, url):
+def set_notification_request_redis(data: Dict) -> bool:
     """this function set requests notifications"""
     user = get_user_by_id(data["applying_user"])
-    if user is None:
-        return False
-    title = user.first_name + " " + user.last_name + " is applying for " + data["type"]
-    dict = {"title": title, "url": url}
+    title = "applying for " + data["type"]
+    created_at = parse_datetime(data["created_at"])
+
+    sending_data: Dict = {
+        "created_at": f'{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}',
+        "title": title,
+        "type": data["type"],
+        "event_id": str(data["id"]),
+        "user": json.dumps(TeamSerializer(user).data)
+    }
     approving_users = user.reporting_to.all()
     for approving_user in approving_users:
         hashname = (
             "user" + str(approving_user.id) + ":" + data["type"] + str(data["id"])
         )
-
-        redis_instance.hmset(hashname, dict)
+        redis_instance.hmset(hashname, sending_data)
         redis_instance.expire(hashname, 30 * 3600 * 24)
     return True
 
 
-def set_notification_reply_redis(data, state, url):
+def set_notification_reply_redis(data: Dict, state: str, event_id: int):
     """this function set accept notifications"""
     approving_user = data.approval_user
-    title = (
-        approving_user.first_name
-        + " "
-        + approving_user.last_name
-        + " "
-        + state
-        + "your "
-        + data.type
-        + " request"
-    )
-    dict = {"title": title, "url": url}
+    title = f"Your {data.type} request was {state} by {approving_user.full_name}"
+    created_at = parse_datetime(data.created_at)
+    sending_data: Dict = {
+        "created_at": f'{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}',
+        "title": title,
+        "type": data.type,
+        "event_id": event_id,
+        "user": json.dumps(TeamSerializer(approving_user).data)
+    }
     applying_user = data.applying_user
     hashname = "user" + str(applying_user.id) + ":" + data.type + str(data.id)
-    redis_instance.hmset(hashname, dict)
+    redis_instance.hmset(hashname, sending_data)
     return True
 
 

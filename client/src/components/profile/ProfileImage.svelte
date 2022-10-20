@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Link } from 'svelte-navigator';
     import type {
         AdminViewInterface,
         SupervisorViewInterface,
@@ -11,7 +10,7 @@
     let username: string[] = user.full_name.split(' ')    
 </script>
 
-<Link to={'/profile/' + user.id}>
+<a href='/profile/{user.id}'>
     {#if user.image[0] == "#"}
         <span class="user-profile-image rounded-circle"
             style="background-color:{user.image}; width:{size}px; height:{size}px;"
@@ -26,7 +25,7 @@
             style="width:{size}px; height:{size}px;"
         />
     {/if}
-</Link>
+</a>
 
 <style>
     .user-profile-image{

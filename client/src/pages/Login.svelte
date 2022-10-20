@@ -8,10 +8,6 @@
   import { validateEmail } from '../services/utils/validators';
   import Submit from '../components/submit/Submit.svelte';
 
-  const handleMail = (e: any): boolean => {
-    return !validateEmail(e.target.value);
-  };
-
   let passwordValue = '';
   let emailValue = '';
   let isErrormail: null | boolean = null;
@@ -20,11 +16,11 @@
     isErrorpass === null ||
     isErrormail ||
     isErrorpass) as boolean;
+  
   $: formDisable = (isErrormail === null ||
     isErrorpass === null ||
     isErrormail ||
     isErrorpass) as boolean;
-  let isLoading = false;
 
   const submit = async () => {
     let isError = false;
@@ -47,30 +43,26 @@
   };
 </script>
 
-<div class="background">
-  <div class="card m-auto">
-    <img alt="threefold logo" src="/assets/images/threefold-logo.jpeg" />
-    <h3>Sign In</h3>
-    <fieldset
-      id="isloading"
-      disabled={isLoading}
-      style={` opacity: ${isLoading ? '0.1' : '1'}`}
-    >
-      <div class="mb-1 input">
-        <Input
-          isTop={false}
-          className="myInput"
-          type="email"
-          label={'Email'}
-          bind:value={emailValue}
-          handleInput={handleMail}
-          size={255}
-          errorMessage="E-mail is  invalid"
-          hint={'please write a valid E-mail format'}
-          placeholder={'please enter your email here'}
-          bind:isError={isErrormail}
-        />
-      </div>
+
+<div class="card m-auto mt-5 pt-5">
+  <img alt="threefold logo" src="/assets/images/threefold-logo.jpeg" />
+  <h3>Sign In</h3>
+    <div class="mb-1 input">
+      <Input
+        isTop={false}
+        className="myInput"
+        type="email"
+        label={'Email'}
+        bind:value={emailValue}
+        handleInput={validateEmail}
+        size={255}
+        errorMessage="E-mail is  invalid"
+        hint={'please write a valid E-mail format'}
+        placeholder={'please enter your email here'}
+        bind:isError={isErrormail}
+      />
+    </div>
+    <div class="mb-1 input">
       <Input
         isTop={false}
         type="password"
@@ -80,24 +72,24 @@
         handleInput={() => {
           return false;
         }}
-        size={400}
         errorMessage="Password is  invalid"
         hint={'please write a valid password'}
         placeholder={'please enter your password here'}
         bind:isError={isErrorpass}
       />
-      <div class="mt-5 pt-3">
-        <Submit
-          disabled={formDisable}
-          successMessage={'Welcome to HR System !'}
-          errorMessage={'Please check your credentials'}
-          label="Login"
-          onClick={submit}
-        />
-      </div>
-    </fieldset>
-  </div>
+    </div>
+    <div class="mt-3 pt-3 d-flex justify-content-center align-items-center w-100">
+      <Submit
+        width={"250"}
+        disabled={formDisable}
+        successMessage={'Welcome to HR System !'}
+        errorMessage={'Please check your credentials'}
+        label="Login"
+        onClick={submit}
+      />
+    </div>
 </div>
+
 <svg
   id="visual"
   style="transform:rotate(0deg); transition: 0.3s"
@@ -129,58 +121,49 @@
   /></svg
 >
 
-<style>
-  :global(.myInput label) {
-    color: #9fa2b4;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 12px;
-  }
+<svelte:head>
+  <style>
+    body{
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    :global(.myInput label) {
+      color: #9fa2b4;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+  
+    :global(.myInput input) {
+      color: #4b506d;
+  
+      background-color: #fff !important;
+    }
+    :global(.myInput input::placeholder) {
+      color: #525568;
+      font-weight: 200;
+    }
+  
+    :global(.myInput .py-3) {
+      padding-bottom: 0rem !important;
+    }
+  
+    .card {
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      padding: 20px 20px 20px 20px;
+      height: 480px;
+      width: 400px;
+    }
+    .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    }
+    img {
+      height: 50px;
+      width: 50px;
+    }
+  </style>
 
-  :global(.myInput input) {
-    color: #4b506d;
+</svelte:head>
 
-    background-color: #fff !important;
-  }
-  :global(.myInput input::placeholder) {
-    color: #525568;
-    font-weight: 200;
-  }
-
-  :global(.myInput .py-3) {
-    padding-bottom: 0rem !important;
-  }
-
-  .card {
-    display: flex;
-    align-items: center;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    transition: 0.3s;
-    padding: 20px 20px 20px 20px;
-    height: 480px;
-    width: 400px;
-  }
-  .card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-  }
-  .background {
-    align-items: center;
-    height: 40vh;
-    width: 100%;
-    margin: auto;
-  }
-  #visual {
-    position: absolute;
-    display: block;
-    margin: auto;
-    left: 0;
-    top: -200;
-
-    width: 100%;
-    z-index: -1;
-  }
-  img {
-    height: 50px;
-    width: 50px;
-  }
-</style>

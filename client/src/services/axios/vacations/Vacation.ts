@@ -16,6 +16,32 @@ class Vacation{
 			throw new Error(error);
 		}
 	}
+	public async vacatioDetails(id : number) {
+		try {
+			const data = await http.get(`/vacations/${id}/`);
+			if (data.status === 404) {
+				throw new Error("Vacation not found");
+			} else if (data.status !== 200) {
+				throw new Error(data.data.message);
+			}
+			return data.data.results;
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
+	public async comment(id : number, requestData: any) {
+		try {
+			const data = await http.put(`/vacations/comment/${id}/`, requestData);
+			if (data.status === 404) {
+				throw new Error("Vacation not found");
+			} else if (data.status !== 202) {
+				throw new Error(data.data.message);
+			}
+			return data.data.results;
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
 	public async calculator(startDate: string, endDate: string) {
 		try {
 			const data = await http.get(`/vacations/calculate/?start_date=${startDate}&end_date=${endDate}`);

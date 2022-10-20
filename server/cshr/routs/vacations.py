@@ -1,7 +1,6 @@
 from django.urls import path
 from server.cshr.views.vacations import (
     BaseVacationsApiView,
-    VacationApprovalAPIView,
     VacationCommentsAPIView,
     VacationsHelpersApiView,
     VacationsUpdateApiView,
@@ -23,6 +22,5 @@ urlpatterns = [
     path("approve/<str:id>/", VacationsAcceptApiView.as_view()),
     path("reject/<str:id>/", VacationsRejectApiView.as_view()),
     path("<str:id>/", VacationsHelpersApiView.as_view()),
-    path("put/<str:id>/", VacationApprovalAPIView.as_view()),
     path("comment/<str:id>/", VacationCommentsAPIView.as_view()),
 ]

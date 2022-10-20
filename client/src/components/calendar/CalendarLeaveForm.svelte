@@ -84,7 +84,9 @@
     />
   </div>
 {#if showAlert}
-  <Alert title={alertTitle} message={alertMessage} type={alertClass}/>
+  <div class="mt-2">
+    <Alert title={alertTitle} message={alertMessage} type={alertClass}/>
+  </div>
 {/if}
 </form>
 
