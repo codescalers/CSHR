@@ -62,6 +62,32 @@ def set_notification_reply_redis(data: Dict, state: str, event_id: int):
     redis_instance.hmset(hashname, sending_data)
     return True
 
+def notification_commented(data: Dict, user,  state: str, event_id: int):
+    """this function set accept notifications"""
+    commented_user: User = None
+    hashname: str = None
+    if user == data.approval_user:
+        commented_user = data.approval_user
+        title = f"Your {data.type} request was {state} by {commented_user.full_name}"
+        hashname = "user" + str(data.applying_user.id) + ":" + data.type + str(data.id)
+    elif user == data.applying_user:
+        commented_user = data.applying_user
+        title = f"Your approving {data.type} request was {state} by {commented_user.full_name}"
+        hashname = "user" + str(data.approval_user.id) + ":" + data.type + str(data.id)
+
+    created_at = parse_datetime(data.created_at)
+    sending_data: Dict = {
+        "created_at": f'{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}',
+        "title": title,
+        "type": data.type,
+        "event_id": event_id,
+        "user": json.dumps(TeamSerializer(commented_user).data)
+    }
+    if hashname is None:
+        return False
+    redis_instance.hmset(hashname, sending_data)
+    return True
+
 
 def get_notifications(user: User):
     """this function returns all notifications for certain user"""

@@ -36,6 +36,7 @@ from server.cshr.celery.send_email import send_email_for_reply
 from server.cshr.models.vacations import Vacation
 from server.cshr.services.vacations import get_vacations_by_user
 from server.cshr.utils.redis_functions import (
+    notification_commented,
     set_notification_request_redis,
     set_notification_reply_redis,
 )
@@ -251,6 +252,7 @@ class VacationCommentsAPIView(GenericAPIView):
             "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}"
         }
         update_vacation_change_log(vacation, comment)
+        notification_commented(vacation, request.user, "commented", id)
         return CustomResponse.success(data=comment, status_code=202, message="vacation comment added")
 
 

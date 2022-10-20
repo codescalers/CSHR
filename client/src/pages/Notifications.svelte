@@ -21,20 +21,20 @@
 </script>
 
 <Sidebar>
+  <!-- rgb(248 249 253) -->
   <section class=" fluid-container mt-5" slot="content">
     <div>
       <h4 class="child mx-5">All Notifications</h4>
-
-      <table class="table align-middle mb-0 mx-5">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Content</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#if notifications}
+      {#if notifications && notifications.length > 0}
+        <table class="table align-middle mb-0 mx-5">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Content</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
             {#each notifications as notification}
                 <tr>
                   <td>
@@ -62,9 +62,24 @@
                   </td>
                 </tr>
             {/each}
-          {/if}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      {:else}
+      <div class="mt-4 d-flex justify-content-center">
+        <div class="row">
+          <div class="col-12 d-flex justify-content-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-bell-slash-fill" viewBox="0 0 16 16">
+              <path d="M5.164 14H15c-1.5-1-2-5.902-2-7 0-.264-.02-.523-.06-.776L5.164 14zm6.288-10.617A4.988 4.988 0 0 0 8.995 2.1a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 7c0 .898-.335 4.342-1.278 6.113l9.73-9.73zM10 15a2 2 0 1 1-4 0h4zm-9.375.625a.53.53 0 0 0 .75.75l14.75-14.75a.53.53 0 0 0-.75-.75L.625 15.625z"/>
+            </svg>
+          </div>
+          <div class="col-12 d-flex justify-content-center">
+            <div class="mt-4 pt-4 mb-4 pb-4 d-flex">
+              <h4>Will let you know when you have updates.</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/if}
     </div>
   </section>
 </Sidebar>
