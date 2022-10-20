@@ -70,7 +70,7 @@
     <div class="container">
         {#if $UserStore.user_type == "Supervisor"}
             <div class="mb-4" style="width: 20%;">
-                <ActionButton request = {vacation} on:message={handleActions}/>
+                <ActionButton showEyeButtonView = {false} request = {vacation} on:message={handleActions}/>
             </div>
         {/if}
         <div class="card p-4 d-flex justify-content-center">

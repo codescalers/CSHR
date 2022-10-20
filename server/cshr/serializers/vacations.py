@@ -45,7 +45,8 @@ class LandingPageVacationsSerializer(ModelSerializer):
             "status",
             "applying_user",
             "approval_user",
-            "change_log"
+            "change_log",
+            "type"
         ]
 
     def get_applying_user(self, obj: Vacation) -> BaseUserSerializer:
