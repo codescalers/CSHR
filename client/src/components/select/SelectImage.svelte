@@ -1,5 +1,6 @@
 <script lang="ts">
     export let image: HTMLImageElement;
+    export let styleOnRow: string = "";
     let input: HTMLInputElement;
     let container;
     let placeholder;
@@ -20,7 +21,7 @@
     }
 </script>
 
-<div class="row">
+<div class="row" style="{styleOnRow}">
     <div class="col-6">
         <input
             bind:this={input}

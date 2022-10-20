@@ -22,6 +22,8 @@ class RegisterApiView(GenericAPIView):
     def post(self, request: Request) -> Response:
         """Method to register a new user"""
         serializer = self.get_serializer(data=request.data)
+        if request.data.get("image") == "":
+            request.data["image"] = None
         if serializer.is_valid():
             serializer.save()
             return CustomResponse.success(

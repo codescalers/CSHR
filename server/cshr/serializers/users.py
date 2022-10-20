@@ -7,6 +7,7 @@ from rest_framework.serializers import (
     JSONField,
 )
 from server.cshr.models.users import User, UserSkills
+from server.cshr.serializers.Image_upload import Base64ImageField
 from server.cshr.serializers.training_courses import TrainingCoursesSerializer
 from server.cshr.serializers.company_properties import CompanyPropertiesSerializer
 from server.cshr.services.training_courses import get_training_courses_for_a_user
@@ -228,6 +229,8 @@ class SelfUserSerializer(ModelSerializer):
         model = User
         fields = [
             "id",
+            "first_name",
+            "last_name",
             "gender",
             "email",
             "full_name",
@@ -248,6 +251,7 @@ class SelfUserSerializer(ModelSerializer):
             "job_title",
             "address",
             "user_type",
+            "background_color"
         ]
 
     def get_user_certificates(self, obj):
@@ -339,3 +343,75 @@ class BasicUserSerializer(ModelSerializer):
             "id",
             "full_name",
         ]
+
+
+
+class UpdateUserSerializer(ModelSerializer):
+    """
+    This class will be used to get all info about a user to themselves
+    """
+
+    user_certificates = SerializerMethodField()
+    user_company_properties = SerializerMethodField(read_only=True)
+    user_evaluation = SerializerMethodField(read_only=True)
+    reporting_to = SerializerMethodField(read_only=True)
+    created_at = DateTimeField(read_only=True)
+    team = CharField(read_only=True)
+    salary = JSONField(read_only=True)
+    image = Base64ImageField(
+        max_length=None, use_url=True,
+        required=False, allow_null=True,
+    )
+    skills = SerializerMethodField()
+    location = SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "gender",
+            "email",
+            "full_name",
+            "image",
+            "telegram_link",
+            "birthday",
+            "location",
+            "skills",
+            "user_certificates",
+            "reporting_to",
+            "created_at",
+            "social_insurance_number",
+            "team",
+            "user_company_properties",
+            "salary",
+            "mobile_number",
+            "user_evaluation",
+            "job_title",
+            "address",
+            "user_type",
+            "background_color"
+        ]
+
+    def get_user_certificates(self, obj):
+        training_courses = get_training_courses_for_a_user(obj.id)
+        return TrainingCoursesSerializer(training_courses, many=True).data
+
+    def get_user_company_properties(self, obj):
+        company_properties = get_all_company_properties_for_a_user(obj.id)
+        return CompanyPropertiesSerializer(company_properties, many=True).data
+
+    def get_user_evaluation(self, obj):
+        evaluations = get_evaluations_for_a_user(obj.id)
+        return UserEvaluationSerializer(evaluations, many=True).data
+
+    def get_reporting_to(self, obj):
+        reporting_to = obj.reporting_to.all()
+        return TeamSerializer(reporting_to, many=True).data
+
+    def get_skills(self, obj):
+        return UserSkillsSerializer(obj.skills.all(), many=True).data
+
+    def get_location(self, obj):
+        return OfficeSerializer(obj.location).data

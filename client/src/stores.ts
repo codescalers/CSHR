@@ -33,7 +33,6 @@ export const SupervisorStore: Writable<PaginatedInterface<SupervisorType>> = wri
 
 function createAuthStore() {
 	const store = writable<IAuthStore>({});
-	const user = get(UserStore);
 	const { subscribe, update } = store;
 
 	isAuthenticated().then((res) => {
@@ -59,6 +58,9 @@ function createAuthStore() {
 					UserStore.set({
 						id: data.id,
 						gender: data.gender,
+						background_color: data.background_color,
+						first_name: data.first_name,
+						last_name: data.last_name,
 						email: data.email,
 						full_name: data.full_name,
 						image: data.image,

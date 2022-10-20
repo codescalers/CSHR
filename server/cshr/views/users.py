@@ -6,6 +6,7 @@ from server.cshr.models.users import User
 from server.cshr.api.permission import (
     IsAdmin,
     IsSupervisor,
+    IsUser,
     UserIsAuthenticated,
 )
 from server.cshr.utils.validations import Validator
@@ -15,6 +16,7 @@ from server.cshr.serializers.users import (
     SupervisorUserSerializer,
     AdminUserSerializer,
     SelfUserSerializer,
+    UpdateUserSerializer,
     UserSkillsSerializer,
 )
 from server.cshr.services.users import (
@@ -177,20 +179,31 @@ class SelfUserAPIView(ListAPIView, GenericAPIView):
             )
         return CustomResponse.not_found(message="User not found", status_code=404)
 
-    def put(self, request: Request, format=None) -> Response:
+class UpdateUserProfileUserAPIView(GenericAPIView):
+    permission_classes = [IsUser | IsAdmin]
+    serializer_class = UpdateUserSerializer
+
+    def put(self, request: Request, id: str, format=None) -> Response:
         """To update a user"""
-        user = self.request.user
+        user = get_user_by_id(id)
+        if user is None:
+            return CustomResponse.not_found(status_code=404, message="User not found")
+        remove_image: bool = request.data.get("remove_image")
+        if request.data.get("image") == "":
+            request.data["image"] = user.image if user.image else None
+
         serializer = self.get_serializer(user, data=request.data, partial=True)
-        if user is not None:
-            if serializer.is_valid():
-                serializer.save()
-                return CustomResponse.success(
-                    data=serializer.data, status_code=204, message="User updated"
-                )
-            return CustomResponse.bad_request(
-                data=serializer.errors, status_code=400, message="User not updated"
+        if serializer.is_valid():
+            serializer.save()
+            if remove_image:
+                user.image.delete()
+                user.save()
+            return CustomResponse.success(
+                data=serializer.data, status_code=202, message="User updated"
             )
-        return CustomResponse.not_found(status_code=404, message="User not found")
+        return CustomResponse.bad_request(
+            data=serializer.errors, status_code=400, message="User not updated"
+        )
 
 
 class UserSkillsAPIView(GenericAPIView):

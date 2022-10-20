@@ -5,7 +5,6 @@
 </script>
 
 <Sidebar>
-  <span slot="page-name">Calendar</span>
   <section
     class="fluid-container  h-100 d-flex align-items-center justify-content-center"
     slot="content"

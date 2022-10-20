@@ -82,7 +82,10 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
 class RegisterSerializer(ModelSerializer):
     """class RegisterSerializer to serialize the user obj"""
 
-    image = Base64ImageField(max_length=None, use_url=True,)
+    image = Base64ImageField(
+        max_length=None, use_url=True,
+        required=False, allow_null=True,
+    )
 
     class Meta:
         model = User

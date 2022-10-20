@@ -2,11 +2,12 @@
     import { Link, Router } from 'svelte-navigator';
     import { UserStore } from '../../stores';
 </script>
+
 <Router>
     <nav class="nav">
         <div>
-            <Link to="/" class="nav_logo">
-                <i class="bx bx-layer nav_logo-icon" />
+            <Link to="/" class="nav_logo" style="margin-left: -10px;margin-bottom: 3px;">
+                <img alt="threefold logo" src="/assets/images/threefold-logo.png" style="width: 40px;"/>
                 <span class="nav_logo-name">Threefold</span>
             </Link>
             <div class="nav_list">
@@ -20,17 +21,18 @@
                     </svg>
                     <span class="nav_name">Notifications</span>
                 </Link>
-                {#if $UserStore.user_type === "Supervisor"}
+                {#if $UserStore && $UserStore.user_type === "Supervisor"}
                     <Link to="/requests" class="nav_link">
                         <i class="fa-solid fa-users nav_icon" />
                         <span class="nav_name">Requests</span>
                     </Link>
                 {/if}
-                {#if $UserStore.user_type === "User"}
+                {#if $UserStore && $UserStore.user_type === "User"}
                     <Link to="/team" class="nav_link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-microsoft-teams nav_icon" viewBox="0 0 16 16">
-                            <path d="M9.186 4.797a2.42 2.42 0 1 0-2.86-2.448h1.178c.929 0 1.682.753 1.682 1.682v.766Zm-4.295 7.738h2.613c.929 0 1.682-.753 1.682-1.682V5.58h2.783a.7.7 0 0 1 .682.716v4.294a4.197 4.197 0 0 1-4.093 4.293c-1.618-.04-3-.99-3.667-2.35Zm10.737-9.372a1.674 1.674 0 1 1-3.349 0 1.674 1.674 0 0 1 3.349 0Zm-2.238 9.488c-.04 0-.08 0-.12-.002a5.19 5.19 0 0 0 .381-2.07V6.306a1.692 1.692 0 0 0-.15-.725h1.792c.39 0 .707.317.707.707v3.765a2.598 2.598 0 0 1-2.598 2.598h-.013Z"/>
-                            <path d="M.682 3.349h6.822c.377 0 .682.305.682.682v6.822a.682.682 0 0 1-.682.682H.682A.682.682 0 0 1 0 10.853V4.03c0-.377.305-.682.682-.682Zm5.206 2.596v-.72h-3.59v.72h1.357V9.66h.87V5.945h1.363Z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+                            <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
                         </svg>
                         <span class="nav_name">Team</span>
                     </Link>
@@ -42,7 +44,7 @@
                     </svg>
                     <span class="nav_name">Employees</span>
                 </Link>
-                {#if $UserStore.user_type === "Admin"}
+                {#if $UserStore && $UserStore.user_type === "Admin"}
                     <Link to="/dashboard" class="nav_link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
                             <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2z"/>
@@ -56,7 +58,7 @@
                 </Link>
             </div>
         </div>
-        <Link to="auth/logout/" class="nav_link">
+        <Link to="/auth/logout/" class="nav_link">
             <i class="bx bx-log-out nav_icon" />
             <span class="nav_name">SignOut</span>
         </Link>

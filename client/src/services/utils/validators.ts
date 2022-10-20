@@ -35,3 +35,8 @@ export const validateBirthday = (e: any): boolean=>{
 	if (date.getFullYear() < today.getFullYear()){return false;}
 	return true;
 }
+
+export const validateBackgroundColor = (e: any): boolean => {
+	if(e.target.value[0] == "#" && isNaN(e.target.value.slice(1,-1)))return false;
+	return true;
+}

@@ -11,6 +11,9 @@ export type requestLabelType =
 export interface GeneralUserInterface {
   id: number;
   full_name: string;
+  first_name: string;
+  background_color: string;
+  last_name: string;
   email: string;
   gender: "Female" | "Male";
   team: string;
@@ -170,6 +173,7 @@ export interface IVacationBalance {
 };
 
 export type registeringData = {
+  id: number;
   first_name: string;
   last_name: string;
   telegram_link: string;

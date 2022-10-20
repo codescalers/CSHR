@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import { SettingsStore } from './stores';
   import Routes from './Routes.svelte';
+
   onMount(async function () {
     $SettingsStore = await SettingsApi.getSettings();
   });

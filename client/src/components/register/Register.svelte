@@ -18,6 +18,7 @@
     import PeopleSelect from '../select/PeopleSelect.svelte';
     import RegisterDataService from '../../services/axios/register/RegisterDataService';
     import SelectImage from '../select/SelectImage.svelte';
+    import { clearUserData } from '../../services/utils/helpers';
 
     export let isLoading: boolean = false;
     export let isError: boolean = false;
@@ -47,10 +48,6 @@
     = null;
 
     $: submitDisabled = 
-        isErrorfName == null || isErrorlName == null || isErrormail == null ||
-        isErrorMobile == null || isErrorJobTitle == null || isErrorpass == null ||
-        isErrorLink == null || isErrorBirthday == null || isErrorSocialNumber == null ||
-        isErrorCurrentNetSalary == null || isErrorCurrentGrossSalary == null ||
         isErrorCurrentGrossSalary == true || isErrorCurrentNetSalary == true ||
         isErrorBirthday == true || isErrorLink == true || isErrorpass == true ||
         isErrorJobTitle == true || isErrorMobile == true || isErrormail == true ||
@@ -71,30 +68,6 @@
     let salaryField = [false,false,false,false]
     let showaddbutton = true;
     let thisSalaryInput: number = 0;
-
-    const clearData = () => {
-        for (const field in registeration) {
-            if (field == "birthday"){
-                registeration[field] = new Date();
-            } else if (field == "salary"){
-                registeration[field] = {
-                    current_salary:{net:[],gross:[]},
-                    net_salary_before_joining:[],
-                    joining_salary: {
-                        net:[],
-                        gross:[]
-                    },
-                    benefits:[]
-                };
-            } else if (field == "reporting_to"){
-                registeration[field] = []
-            } else if (field == "location"){
-                registeration[field] = 0
-            } else {
-                registeration[field] = ""
-            }
-        }
-    };
 </script>
 
 <div class="bg-white rounded-5">
@@ -358,7 +331,7 @@
             </div>
         {/if}
         {#if salaryField[3] == true}
-            <div class="form-outline">
+            <div class="form-outline mb-3">
                 <Input
                     type="number"
                     label={'Benefits'}
@@ -372,16 +345,22 @@
                 />
             </div>
         {/if}
-        <div class="mb-4 d-flex justify-content-start mt-2">
-            <button type="button" class="btn btn-light minusbutton"
-                on:click|preventDefault={() => {
-                    salaryField[thisSalaryInput] = true;
-                    showaddbutton = true;
-                    thisSalaryInput += 1
-                }}
-            > Add More Salary
-            </button>
-        </div>
+        {#if showaddbutton}
+            <div class="mb-4 d-flex justify-content-start mt-2">
+                <button type="button" class="btn btn-light minusbutton"
+                    on:click|preventDefault={() => {
+                        salaryField[thisSalaryInput] = true;
+                        thisSalaryInput += 1
+                        if (thisSalaryInput == 4){
+                            showaddbutton = false;
+                        } else {
+                            showaddbutton = true;
+                        }
+                    }}
+                > Add More Salary
+                </button>
+            </div>
+        {/if}
         <div class="row">
             <div class="col-4">
                 <!-- svelte-ignore a11y-label-has-associated-control -->
@@ -396,8 +375,8 @@
         <div class="form-outline mt-4  d-flex justify-content-end">
             <Submit
                 width={'15'}
-                successMessage={'Evaluation is Submitted'}
-                errorMessage={' Evaluation Submission Failed'}
+                successMessage={'User created successfully!'}
+                errorMessage={'User creation failed!'}
                 label="Submit"
                 onClick={async () => {
                     isLoading = true;
@@ -408,14 +387,18 @@
                     registeration.location = locationSelected[0].value;
                     registeration.gender = genderSelected[0].value;
                     registeration.user_type = userTypeSelected[0].value;
-                    registeration.image = image.src
+                    if (image != undefined){
+                        registeration.image = image.src
+                    } else {
+                        registeration.image = ""
+                    }
                     try {
                         RegisterDataService.register(registeration);
                     } catch (error) {
                         isError = true;
                     } finally {
                         isLoading = false;
-                        clearData()
+                        clearUserData(registeration)
                         userTypeSelected = []
                         genderSelected = []
                         locationSelected = []

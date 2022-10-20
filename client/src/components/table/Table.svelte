@@ -1,11 +1,5 @@
 <script lang="ts">
-  import Pagination from '../pagination/Pagination.svelte';
   import { v4 as uuidv4 } from 'uuid';
-
-  // page value
-  export let pageIndex: number = 1;
-  // number of pages
-  export let length: number = 10;
   // headers array
   export let headers: string[];
   // table class
@@ -30,9 +24,6 @@
       </thead>
       <slot name="table-body" />
     </table>
-  </div>
-  <div>
-    <Pagination bind:value={pageIndex} bind:length />
   </div>
 </div>
 

@@ -1,84 +1,64 @@
 <script lang="ts">
-  import { dialogs } from 'svelte-dialogs';
-  //import { onMount } from "svelte";
-  //import { fade, scale } from "svelte/transition";
-  import SettingsApi from './SettingsApi';
-  //import types {SettingsType} from "../../types";
-  import { SettingsStore } from '../../stores';
-
-  import { v4 as uuidv4 } from 'uuid';
-
-  let inputs = [
-    { label: 'name', type: 'text', required: true },
-    { label: 'email', type: 'email' },
-    { label: 'Primary Color', type: 'color' },
-    { label: 'Secondary Color', type: 'color' },
-    { label: 'Background Image Link', type: 'url' },
-  ];
-  const promptOptions = {
-    title: 'Settings',
-  };
-  const alertSettings = () => {
-    if (SettingsApi.isName() === true && inputs[0].label === 'name') {
-      inputs = inputs.splice(1, inputs.length - 1);
-    }
-
-    dialogs.prompt(inputs, promptOptions).then((settingsInputData) => {
-      const newSettings = {
-        name: !SettingsApi.isName()
-          ? settingsInputData[0] + '#' + uuidv4()
-          : SettingsApi.getName(),
-        email: settingsInputData[1] + '',
-        'primary-color':
-          settingsInputData[2] === undefined
-            ? '#2B515F'
-            : settingsInputData[2] + '',
-        'secondary-color':
-          settingsInputData[3] === undefined
-            ? '#EDF2F9'
-            : settingsInputData[3] + '',
-        'background-image':
-          settingsInputData[4] === undefined
-            ? $SettingsStore['background-image']
-            : 'url(' + settingsInputData[4] + ')',
-      };
-
-      if (SettingsApi.isName() === true) {
-        SettingsApi.setSettings(newSettings);
-      } else {
-        SettingsApi.setSettings(newSettings);
-        SettingsStore.update((oldSettings) => {
-          return {
-            ...oldSettings,
-            ...newSettings,
-          };
-        });
-      }
-    });
-  };
-  // checking if name is set or not in local storage && running the settings once
-  if (SettingsApi.isName() === false) {
-    alertSettings();
-  }
+  import UpdateProfile from "./UpdateProfile.svelte"
+  import ChangePassword from "./ChangePassword.svelte"
+  import { UserStore } from "../../stores"
 </script>
 
-<div class="settings">
-  <button class="settings-btn" on:click={alertSettings}
-    ><i class="fa-solid fa-gear icon" />
-  </button>
+<div class="container">
+  <ul class="nav mt-4 nav-tabs nav-fill mb-3" id="ex1" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a
+        class="nav-link active"
+        id="ex2-tab-1"
+        data-mdb-toggle="tab"
+        href="#ex2-tabs-1"
+        role="tab"
+        aria-controls="ex2-tabs-1"
+        aria-selected="true"
+        >Update Profile</a
+      >
+    </li>
+    <li class="nav-item" role="presentation">
+      <a
+        class="nav-link"
+        id="ex2-tab-2"
+        data-mdb-toggle="tab"
+        href="#ex2-tabs-2"
+        role="tab"
+        aria-controls="ex2-tabs-2"
+        aria-selected="false"
+        >Change Password</a
+      >
+    </li>
+  </ul>
+  <div class="tab-content" id="ex2-content">
+    <div
+      class="tab-pane fade show active"
+      id="ex2-tabs-1"
+      role="tabpanel"
+      aria-labelledby="ex2-tab-1"
+    >
+      <UpdateProfile user={$UserStore}/>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="ex2-tabs-2"
+      role="tabpanel"
+      aria-labelledby="ex2-tab-2"
+    >
+      <ChangePassword />
+    </div>
+  </div>
 </div>
 
-<style>
-  .settings {
-    text-align: right;
-  }
-  .settings-btn {
-    background: none;
-    border: none;
-  }
 
-  .icon {
-    font-size: 2rem;
-    color: var(--primary-color);
+
+<style>
+  .nav {
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      overflow: hidden;
   }
 </style>
