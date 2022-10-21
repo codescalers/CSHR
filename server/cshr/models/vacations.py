@@ -37,8 +37,10 @@ class Vacation(Requests):
     def ___str__(self):
         return self.reason
 
+
 class VacationBalance(models.Model):
     """User vacation balance model."""
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     sick_leaves = models.IntegerField()
     compensation = models.IntegerField()

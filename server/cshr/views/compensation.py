@@ -47,13 +47,13 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             current_user: User = get_user_by_id(request.user.id)
-            serializer.save(
+            saved = serializer.save(
                 type=TYPE_CHOICES.COMPENSATION,
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
             msg = get_compensation_request_email_template(
-                current_user, serializer.data, event_id
+                current_user, serializer.data, saved.id
             )
             bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(

@@ -181,6 +181,7 @@ class SelfUserAPIView(ListAPIView, GenericAPIView):
             )
         return CustomResponse.not_found(message="User not found", status_code=404)
 
+
 class UpdateUserProfileUserAPIView(GenericAPIView):
     permission_classes = [IsUser | IsAdmin]
     serializer_class = UpdateUserSerializer
@@ -207,14 +208,18 @@ class UpdateUserProfileUserAPIView(GenericAPIView):
             data=serializer.errors, status_code=400, message="User not updated"
         )
 
+
 class UserSkillsAPIView(GenericAPIView):
     permission_classes = (UserIsAuthenticated,)
     serializer_class = UserSkillsSerializer
 
     def get(self, request: Request):
         skills: UserSkills = get_all_skills()
-        serializer: UserSkillsSerializer = self.get_serializer(skills, many=True) 
-        return CustomResponse.success(data=serializer.data, message="Success found skills")
+        serializer: UserSkillsSerializer = self.get_serializer(skills, many=True)
+        return CustomResponse.success(
+            data=serializer.data, message="Success found skills"
+        )
+
 
 class PostUserSkillsAPIView(GenericAPIView):
     serializer_class = PostUserSkillsSerializer

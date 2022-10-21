@@ -6,13 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cshr', '0053_delete_publicholidays'),
+        ("cshr", "0053_delete_publicholidays"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='office',
-            name='weekend',
-            field=models.CharField(choices=[('Friday:Saturday', 'Friday:Saturday'), ('Saturday:Sunday', 'Saturday:Sunday'), ('Sunday:Monday', 'Sunday:Monday'), ('Monday:Tuesday', 'Monday:Tuesday'), ('Tuesday:Wednesday', 'Tuesday:Wednesday'), ('Wednesday:Thursday', 'Wednesday:Thursday'), ('Thursday:Friday', 'Thursday:Friday')], default='Friday:Saturday', max_length=20),
+            model_name="office",
+            name="weekend",
+            field=models.CharField(
+                choices=[
+                    ("Friday:Saturday", "Friday:Saturday"),
+                    ("Saturday:Sunday", "Saturday:Sunday"),
+                    ("Sunday:Monday", "Sunday:Monday"),
+                    ("Monday:Tuesday", "Monday:Tuesday"),
+                    ("Tuesday:Wednesday", "Tuesday:Wednesday"),
+                    ("Wednesday:Thursday", "Wednesday:Thursday"),
+                    ("Thursday:Friday", "Thursday:Friday"),
+                ],
+                default="Friday:Saturday",
+                max_length=20,
+            ),
         ),
     ]

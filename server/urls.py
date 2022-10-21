@@ -55,22 +55,19 @@ if settings.DEBUG:
         public=False,
     )
 
-    urlpatterns = (
-        [
-            # URLs specific only to django-debug-toolbar:
-            path("__debug__/", include(debug_toolbar.urls)),
-            # Swagger
-            path(
-                "swagger/",
-                schema_view.with_ui("swagger", cache_timeout=0),
-                name="schema-swagger-ui",
-            ),
-            path(
-                "redoc/",
-                schema_view.with_ui("redoc", cache_timeout=0),
-                name="schema-redoc",
-            ),
-            # noqa: DJ05
-        ]
-        + urlpatterns
-    )
+    urlpatterns = [
+        # URLs specific only to django-debug-toolbar:
+        path("__debug__/", include(debug_toolbar.urls)),
+        # Swagger
+        path(
+            "swagger/",
+            schema_view.with_ui("swagger", cache_timeout=0),
+            name="schema-swagger-ui",
+        ),
+        path(
+            "redoc/",
+            schema_view.with_ui("redoc", cache_timeout=0),
+            name="schema-redoc",
+        ),
+        # noqa: DJ05
+    ] + urlpatterns

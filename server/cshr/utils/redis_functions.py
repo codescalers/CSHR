@@ -1,5 +1,3 @@
-import datetime
-from time import strptime
 from typing import Dict
 from django.utils.dateparse import parse_datetime
 import redis
@@ -29,11 +27,11 @@ def set_notification_request_redis(data: Dict) -> bool:
     created_at = parse_datetime(data["created_at"])
 
     sending_data: Dict = {
-        "created_at": f'{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}',
+        "created_at": f"{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}",
         "title": title,
         "type": data["type"],
         "event_id": str(data["id"]),
-        "user": json.dumps(TeamSerializer(user).data)
+        "user": json.dumps(TeamSerializer(user).data),
     }
     approving_users = user.reporting_to.all()
     for approving_user in approving_users:
@@ -51,18 +49,19 @@ def set_notification_reply_redis(data: Dict, state: str, event_id: int):
     title = f"Your {data.type} request was {state} by {approving_user.full_name}"
     created_at = parse_datetime(data.created_at)
     sending_data: Dict = {
-        "created_at": f'{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}',
+        "created_at": f"{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}",
         "title": title,
         "type": data.type,
         "event_id": event_id,
-        "user": json.dumps(TeamSerializer(approving_user).data)
+        "user": json.dumps(TeamSerializer(approving_user).data),
     }
     applying_user = data.applying_user
     hashname = "user" + str(applying_user.id) + ":" + data.type + str(data.id)
     redis_instance.hmset(hashname, sending_data)
     return True
 
-def notification_commented(data: Dict, user,  state: str, event_id: int):
+
+def notification_commented(data: Dict, user, state: str, event_id: int):
     """this function set accept notifications"""
     commented_user: User = None
     hashname: str = None
@@ -77,11 +76,11 @@ def notification_commented(data: Dict, user,  state: str, event_id: int):
 
     created_at = parse_datetime(data.created_at)
     sending_data: Dict = {
-        "created_at": f'{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}',
+        "created_at": f"{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}",
         "title": title,
         "type": data.type,
         "event_id": event_id,
-        "user": json.dumps(TeamSerializer(commented_user).data)
+        "user": json.dumps(TeamSerializer(commented_user).data),
     }
     if hashname is None:
         return False

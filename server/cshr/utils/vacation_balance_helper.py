@@ -123,8 +123,8 @@ class StanderdVacationBalance:
         return int((end_date - start_date).days + 1)
 
     def remove_weekends(self, user: User, start_date: datetime, end_date: datetime):
-        weekend = user.location.weekend.split(':')
-        delta = end_date - start_date   # returns timedelta
+        weekend = user.location.weekend.split(":")
+        delta = end_date - start_date  # returns timedelta
         actual_days = []
         for i in range(delta.days + 1):
             day = start_date + datetime.timedelta(days=i)
@@ -134,7 +134,7 @@ class StanderdVacationBalance:
 
     def check_balance(self, user, reason, start_date: datetime, end_date: datetime):
         self.check(user)
-        
+
         old_balance = self.check_old_balance(user, reason)
         v = user.vacationbalance
         vacation_days = self.remove_weekends(user, start_date, end_date)

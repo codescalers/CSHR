@@ -93,6 +93,7 @@ def get_user_team_leads(user: User) -> Union[List[User], List]:
     )
     return team_leaders
 
+
 def get_all_skills():
     """Return all skills"""
     return UserSkills.objects.all()

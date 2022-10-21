@@ -53,7 +53,11 @@ class LandingPageHrLetterSerializer(ModelSerializer):
 
 
 class UserDocumentsSerializer(ModelSerializer):
-    image = Base64ImageField(max_length=None, use_url=True,)
+    image = Base64ImageField(
+        max_length=None,
+        use_url=True,
+    )
+
     class Meta:
         model = UserDocuments
         fields = ["user", "image", "name"]

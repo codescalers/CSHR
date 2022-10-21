@@ -9,7 +9,7 @@ from server.cshr.views.vacations import (
     VacationsRejectApiView,
     UserVacationBalanceApiView,
     AdminVacationBalanceApiView,
-    CalculateVacationDaysApiView
+    CalculateVacationDaysApiView,
 )
 
 urlpatterns = [

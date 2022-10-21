@@ -3,7 +3,7 @@ from server.cshr.views.auth import (
     RegisterApiView,
     LoginByTokenApiView,
     MyTokenRefreshView,
-    ChangePasswordView
+    ChangePasswordView,
 )
 
 

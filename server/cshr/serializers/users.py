@@ -5,7 +5,7 @@ from rest_framework.serializers import (
     CharField,
     DateTimeField,
     JSONField,
-    ListField
+    ListField,
 )
 from server.cshr.models.users import User, UserSkills
 from server.cshr.serializers.Image_upload import Base64ImageField
@@ -24,16 +24,19 @@ class UserSkillsSerializer(ModelSerializer):
     """
     This class will be used to get all info about a skills
     """
+
     class Meta:
         model = UserSkills
         fields = [
             "name",
         ]
 
+
 class PostUserSkillsSerializer(ModelSerializer):
     """
     This class will be used to get all info about a skills
     """
+
     skills = ListField(child=CharField())
 
     class Meta:
@@ -262,7 +265,7 @@ class SelfUserSerializer(ModelSerializer):
             "job_title",
             "address",
             "user_type",
-            "background_color"
+            "background_color",
         ]
 
     def get_user_certificates(self, obj):
@@ -356,7 +359,6 @@ class BasicUserSerializer(ModelSerializer):
         ]
 
 
-
 class UpdateUserSerializer(ModelSerializer):
     """
     This class will be used to get all info about a user to themselves
@@ -370,8 +372,10 @@ class UpdateUserSerializer(ModelSerializer):
     team = CharField(read_only=True)
     salary = JSONField(read_only=True)
     image = Base64ImageField(
-        max_length=None, use_url=True,
-        required=False, allow_null=True,
+        max_length=None,
+        use_url=True,
+        required=False,
+        allow_null=True,
     )
     skills = SerializerMethodField()
     location = SerializerMethodField()
@@ -402,7 +406,7 @@ class UpdateUserSerializer(ModelSerializer):
             "job_title",
             "address",
             "user_type",
-            "background_color"
+            "background_color",
         ]
 
     def get_user_certificates(self, obj):

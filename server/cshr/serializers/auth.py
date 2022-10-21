@@ -18,6 +18,7 @@ class ChangePasswordSerializer(Serializer):
     old_password = CharField()
     new_password = CharField()
 
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     """Override TokenObtainPairSerializer to add extra responses"""
 
@@ -87,8 +88,10 @@ class RegisterSerializer(ModelSerializer):
     """class RegisterSerializer to serialize the user obj"""
 
     image = Base64ImageField(
-        max_length=None, use_url=True,
-        required=False, allow_null=True,
+        max_length=None,
+        use_url=True,
+        required=False,
+        allow_null=True,
     )
 
     class Meta:
@@ -110,7 +113,7 @@ class RegisterSerializer(ModelSerializer):
             "gender",
             "job_title",
             "address",
-            "social_insurance_number"
+            "social_insurance_number",
         )
 
     def create(self, validated_data):
