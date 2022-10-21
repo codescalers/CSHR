@@ -2,7 +2,7 @@ from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
     TokenRefreshSerializer,
 )
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, Serializer, CharField
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.state import token_backend
 from rest_framework_simplejwt.settings import api_settings
@@ -13,6 +13,10 @@ from typing import Dict, Any
 from server.cshr.models.users import User
 from server.cshr.services.users import get_user_by_email, get_user_by_id
 
+
+class ChangePasswordSerializer(Serializer):
+    old_password = CharField()
+    new_password = CharField()
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     """Override TokenObtainPairSerializer to add extra responses"""

@@ -41,6 +41,24 @@ class UserDataService {
 			console.error(this.errorMessage + err);
 		}
 	}
+	public async changePassword(data: {
+		old_password: string;
+		new_password: string;
+	}) {
+		try {
+			const { status, statusText } = await http.put("/auth/change-password/", data);
+			if (status === 404) {
+				throw new Error("User not found");
+			} else if (status !== 200) {
+				throw new Error(
+					this.errorMessage + status + " wtih status text : " + statusText
+				);
+			};
+			
+		} catch (err) {
+			throw new Error(`Error while registering${err}`);
+		}
+	}
 }
 
 const userDataService = new UserDataService();
