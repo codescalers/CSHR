@@ -14,6 +14,16 @@ export const validateName = (e: any): boolean => {
 	return !re.test(String(e.target.value));
 }
 
+export const validateLink = (e: any): boolean => {
+	let urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
+	    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // validate domain name
+	    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // validate OR ip (v4) address
+	    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // validate port and path
+	    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // validate query string
+	    '(\\#[-a-z\\d_]*)?$','i'); // validate fragment locator
+	return !urlPattern.test(String(e.target.value));
+}
+
 export const validatePhoneNumber = (e: any): boolean => {
 	if (e.target.value.match(/\b(\d{10,15})$/)) return false;
 	return true;

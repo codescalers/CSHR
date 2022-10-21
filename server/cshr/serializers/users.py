@@ -5,6 +5,7 @@ from rest_framework.serializers import (
     CharField,
     DateTimeField,
     JSONField,
+    ListField
 )
 from server.cshr.models.users import User, UserSkills
 from server.cshr.serializers.Image_upload import Base64ImageField
@@ -23,12 +24,22 @@ class UserSkillsSerializer(ModelSerializer):
     """
     This class will be used to get all info about a skills
     """
+    class Meta:
+        model = UserSkills
+        fields = [
+            "name",
+        ]
+
+class PostUserSkillsSerializer(ModelSerializer):
+    """
+    This class will be used to get all info about a skills
+    """
+    skills = ListField(child=CharField())
 
     class Meta:
         model = UserSkills
         fields = [
-            "id",
-            "name",
+            "skills",
         ]
 
 

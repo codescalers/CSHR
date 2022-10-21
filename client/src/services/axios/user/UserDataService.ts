@@ -35,7 +35,6 @@ class UserDataService {
 		name: string;
 		image: string;
 	}) {
-		console.log(data);
 		try {
 			await http.post("hrletter/docs/", data);
 		} catch (err) {

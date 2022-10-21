@@ -92,3 +92,7 @@ def get_user_team_leads(user: User) -> Union[List[User], List]:
         get_user_by_id(user.id).reporting_to.all().order_by("-created_at")
     )
     return team_leaders
+
+def get_all_skills():
+    """Return all skills"""
+    return UserSkills.objects.all()

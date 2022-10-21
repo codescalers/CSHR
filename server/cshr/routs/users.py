@@ -11,11 +11,13 @@ from server.cshr.views.users import (
     UserSkillsAPIView,
     TeamAPIView,
     SupervisorsAPIView,
+    PostUserSkillsAPIView,
 )
 
 
 urlpatterns = [
     path("skills/", UserSkillsAPIView.as_view()),
+    path("skills/add_skill/", PostUserSkillsAPIView.as_view()),
     path("supervisor/", BaseSupervisorUserAPIView.as_view()),
     path("admin/", BaseAdminUserAPIView.as_view()),
     path("teams/", TeamAPIView.as_view()),

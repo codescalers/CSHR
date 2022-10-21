@@ -2,7 +2,7 @@ from typing import List
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.models.users import User
+from server.cshr.models.users import User, UserSkills
 from server.cshr.api.permission import (
     IsAdmin,
     IsSupervisor,
@@ -13,6 +13,7 @@ from server.cshr.utils.validations import Validator
 from server.cshr.api.response import CustomResponse
 from server.cshr.serializers.users import (
     GeneralUserSerializer,
+    PostUserSkillsSerializer,
     SupervisorUserSerializer,
     AdminUserSerializer,
     SelfUserSerializer,
@@ -20,6 +21,7 @@ from server.cshr.serializers.users import (
     UserSkillsSerializer,
 )
 from server.cshr.services.users import (
+    get_all_skills,
     get_user_by_id,
     get_or_create_skill_by_name,
     get_all_of_users,
@@ -205,33 +207,41 @@ class UpdateUserProfileUserAPIView(GenericAPIView):
             data=serializer.errors, status_code=400, message="User not updated"
         )
 
-
 class UserSkillsAPIView(GenericAPIView):
     permission_classes = (UserIsAuthenticated,)
     serializer_class = UserSkillsSerializer
 
+    def get(self, request: Request):
+        skills: UserSkills = get_all_skills()
+        serializer: UserSkillsSerializer = self.get_serializer(skills, many=True) 
+        return CustomResponse.success(data=serializer.data, message="Success found skills")
+
+class PostUserSkillsAPIView(GenericAPIView):
+    serializer_class = PostUserSkillsSerializer
+    permission_classes = (UserIsAuthenticated,)
+
     def post(self, request: Request):
         """to add a skill to a user"""
-        user = request.user
         serializer = self.get_serializer(data=request.data)
+        print(request.data)
         if serializer.is_valid():
-            skill_name = serializer.validated_data.get("name")
-            if Validator.validate_string(skill_name):
-                skill, created = get_or_create_skill_by_name(skill_name)
-                response = {"status_code": 201, "message": "skill added successfully"}
-                if skill in user.skills.all():
-                    user.skills.remove(skill)
-                    response["status_code"] = 204
-                else:
-                    user.skills.add(skill)
+            user_id: int = request.data.get("user_id")
+            user: User = get_user_by_id(user_id)
+            skills = serializer.validated_data.get("skills")
+            if type(skills) is not list:
+                skills = [skills]
 
-                return CustomResponse.success(
-                    data=serializer.data,
-                    status_code=response["status_code"],
-                    message=response["message"],
-                )
-            return CustomResponse.bad_request(
-                message=" there cannot be special characters in the skill name"
+            for skill in skills:
+                if Validator.validate_string(skill):
+                    skill_, created = get_or_create_skill_by_name(skill)
+                    user.skills.add(skill_)
+                else:
+                    return CustomResponse.bad_request(
+                        message=" there cannot be special characters in the skill name"
+                    )
+            return CustomResponse.success(
+                data=serializer.data,
+                message="Skills added successfully",
             )
         return CustomResponse.bad_request(
             message=" data provided is corrupted", error=serializer.errors

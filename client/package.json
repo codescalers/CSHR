@@ -71,6 +71,7 @@
         "svelte-navigator": "^3.1.6",
         "svelte-paginate": "^0.0.1",
         "svelte-routing": "^1.6.0",
+        "svelte-tags-input": "^3.0.0",
         "uuid": "^8.3.2"
     }
 }
