@@ -2,6 +2,7 @@
   import usersDataService from '../../services/axios/users/UsersDataService';
   import { onMount } from 'svelte';
   import { AllUsersStore, UserStore } from '../../stores';
+  import PeopleSlot from './PeopleSlot.svelte';
   import MultiSelect from './MultiSelect.svelte';
   import type { SelectOptionType } from '../../types';
   import ErrorComponent from '../error/ErrorComponent.svelte';
@@ -10,9 +11,7 @@
   export let removeAllTitle = 'Remove all users';
   export let isLoading = false;
   export let isError: boolean | null = null;
-  export let mylabel = 'People';
-  export let isTop : boolean = true;
-  export let multiple : boolean;
+
   export let selected: SelectOptionType[] = [];
   let options: SelectOptionType[] = [];
 
@@ -54,12 +53,11 @@
   <MultiSelect
     bind:options
     bind:selected
-    label= {mylabel}
+    label="People"
     {placeholder}
     {removeAllTitle}
     isLabel={false}
-    isTop ={isTop}
-    multiple={multiple}
   >
+    <PeopleSlot let:option {option} slot="option" />
   </MultiSelect>
 {/if}

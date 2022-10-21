@@ -159,8 +159,9 @@
         }
         return isError;
       }}
-      className="btn btn-primary"
+      className="abtn btn-primary"
       bind:disabled={submitDisabled}
     />
   </div>
 </Modal>
+
