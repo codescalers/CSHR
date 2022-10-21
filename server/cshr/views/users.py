@@ -223,7 +223,6 @@ class PostUserSkillsAPIView(GenericAPIView):
     def post(self, request: Request):
         """to add a skill to a user"""
         serializer = self.get_serializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
             user_id: int = request.data.get("user_id")
             user: User = get_user_by_id(user_id)

@@ -42,9 +42,7 @@
                     </div>
                 </div>
                 <div class="col-6 d-flex justify-content-end">
-                    {#if $UserStore}
-                        <ProfileImage user={$UserStore}/>
-                    {/if}
+                    <ProfileImage user={$UserStore}/>
                 </div>
             </div>
         </div>

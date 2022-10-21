@@ -1,29 +1,29 @@
 <script lang="ts">
     import type {
-        AdminViewInterface,
-        SupervisorViewInterface,
         UserInterface,
     } from '../../types';
-    export let user: AdminViewInterface | SupervisorViewInterface | UserInterface | userType;
+    export let user: UserInterface;
     export let size: number = 50;
 
-    let username: string[] = user.full_name.split(' ')    
+    let username: string[] = user.full_name.split(' ')
+    let logo: string = `${username[0][0]}${username[1][0]}`
+
 </script>
 
 <a href='/profile/{user.id}'>
-    {#if user.image[0] == "#"}
-        <span class="user-profile-image rounded-circle"
-            style="background-color:{user.image}; width:{size}px; height:{size}px;"
-        >
-            {username[0][0]}{username[1][0]}
-        </span>
-    {:else}
+    {#if user.image.includes("profile_image") }
         <!-- svelte-ignore a11y-missing-attribute -->
         <img
             src="{process.env.APP_BASE_API_URL + user.image.replace('/', '')}"
             class="user-profile-image rounded-circle"
             style="width:{size}px; height:{size}px;"
         />
+    {:else}
+        <span class="user-profile-image rounded-circle"
+            style="background-color:{user.image}; width:{size}px; height:{size}px;"
+        >
+            {logo.toLocaleUpperCase()}
+        </span>
     {/if}
 </a>
 

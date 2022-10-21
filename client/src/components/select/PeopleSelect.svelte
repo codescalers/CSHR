@@ -1,11 +1,9 @@
 <script lang="ts">
-  import type { UserInterface } from '../../types';
   import usersDataService from '../../services/axios/users/UsersDataService';
   import { onMount } from 'svelte';
   import { AllUsersStore, UserStore } from '../../stores';
-  import PeopleSlot from './PeopleSlot.svelte';
   import MultiSelect from './MultiSelect.svelte';
-  import type { SelectOptionType } from './types';
+  import type { SelectOptionType } from '../../types';
   import ErrorComponent from '../error/ErrorComponent.svelte';
   import LoadingComponent from '../loader/LoadingComponent.svelte';
   export let placeholder = `Select Users`;
@@ -29,7 +27,7 @@
           AllUsersStore.set(users);
         }
       }
-      $AllUsersStore.forEach((user: UserInterface) => {
+      $AllUsersStore.forEach((user) => {
         if (user.id !== $UserStore.id)
           options.push({
             value: user.id,
@@ -63,6 +61,5 @@
     isTop ={isTop}
     multiple={multiple}
   >
-    <PeopleSlot let:option {option} slot="option" />
   </MultiSelect>
 {/if}

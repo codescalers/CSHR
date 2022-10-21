@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { SalaryType } from '../../types';
-  export let salaries: SalaryType | null = null;  
-  console.log(salaries);
-  
+  export let salaries: SalaryType | null = null;    
 </script>
 
 <div class="col-md-12 my-2">
