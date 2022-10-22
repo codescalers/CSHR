@@ -30,7 +30,7 @@ app.conf.beat_schedule = {
     "user_old_balance_format": {
         "task": "user_old_balance_format",
         "schedule": crontab(
-            month_of_year="12", day_of_month=1, hour=8, minute=30
+            month_of_year="1", day_of_month=1, hour=8, minute=30
         ),
     },
     "user_resetting_old_balance": {
