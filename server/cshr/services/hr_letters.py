@@ -15,9 +15,9 @@ def get_all_hrLetters() -> HrLetters:
     return HrLetters.objects.all()
 
 
-def get_hr_letter_by_user(id: str) -> HrLetters:
+def get_hr_letter_by_user(user: User) -> HrLetters:
     "Return all Hr Letters for certain user"
-    return HrLetters.objects.filter(applying_user=id)
+    return HrLetters.objects.filter(applying_user=user)
 
 
 def filter_all_docs_based_on_user(user: User):

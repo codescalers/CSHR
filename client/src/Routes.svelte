@@ -15,6 +15,7 @@
   import Dashboard from './pages/Dashboard.svelte';
   import VacationDetail from './pages/VacationDetail.svelte';
   import Settings from './pages/Settings.svelte';
+  import VacationUpdate from './pages/VacationUpdate.svelte';
   
   const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
@@ -32,6 +33,7 @@
     <LoggedRoute path={"auth/logout/"} component={Logout}/> 
     <LoggedRoute path={"requests/"} component={Requests}/> 
     <LoggedRoute path={"vacations/:id"} component={VacationDetail}/> 
+    <LoggedRoute path={"vacations/:id/update/"} component={VacationUpdate}/> 
     <LoggedRoute path={"users/"} component={Users}/> 
     <LoggedRoute path={"profile/:user_type/:id"} component={UserProfile} />
     <LoggedRoute path={"profile/:id"} component={UserProfile} />

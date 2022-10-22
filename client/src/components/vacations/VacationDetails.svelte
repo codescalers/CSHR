@@ -10,6 +10,7 @@
     import { UserStore } from '../../stores';
     import { tweened } from 'svelte/motion';
     import ActionButton from '../requests/requestsButtons.svelte';
+    import { Link } from 'svelte-navigator';
 
     export let isLoading = false;
     export let isError: boolean | null = null;
@@ -53,6 +54,10 @@
             {"user": $UserStore, "comment": `${$UserStore.full_name} ${vacation.status} your vacation`}
         )
     }
+
+    const updateVacation = (vacation: any) => {
+        console.log(vacation);
+    }
 </script>
 
 {#if isError}
@@ -72,6 +77,13 @@
             <div class="mb-4" style="width: 20%;">
                 <ActionButton showEyeButtonView = {false} request = {vacation} on:message={handleActions}/>
             </div>
+        {/if}
+        {#if $UserStore.user_type == "User" && vacation.status == RequestStatus.pinding}
+            <Link to="/vacations/{vacation.id}/update" class="abtn btn-primary mb-2 custom-a"
+                style="color: #fff"
+                >
+                <span class="nav_name">Update Vacation</span>
+            </Link>
         {/if}
         <div class="card p-4 d-flex justify-content-center">
             <div class="row">
@@ -240,5 +252,9 @@
         width: 55%;
         border-radius: 50px 0px 50px 50px;
         background: rgb(220 226 231);
+    }
+
+    .custom-a:hover{
+        color: #fff !important;
     }
 </style>

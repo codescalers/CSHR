@@ -6,7 +6,6 @@ import type {
 	eventItemType,
 	vacationItemType,
 	birthDateItemType,
-	userType,
 } from "./types";
 
 class CalendarDataService {
@@ -22,6 +21,16 @@ class CalendarDataService {
 			console.error(
 				`${this.errorMessage} Error while fetching Calendar data ${error}`
 			);
+		}
+	}
+	public async updateVacation(vacationID: string, data:any) {
+		try {
+			return await (
+				await http.put(`/vacations/edit/${vacationID}/`, data)
+			).data;
+		} catch (error) {
+			this.errorMessage = error.response.data.message
+			throw new Error(this.errorMessage)
 		}
 	}
 	public async postMeeting(e: {
@@ -152,10 +161,8 @@ class CalendarDataService {
 			);
 			return axios
 		} catch (error) {
-			console.error(
-				`${this.errorMessage} Error while leave event data ${error}`
-			);
-			return error;
+			this.errorMessage = error.response.data.message
+			throw new Error(this.errorMessage)
 		}
 	}
 

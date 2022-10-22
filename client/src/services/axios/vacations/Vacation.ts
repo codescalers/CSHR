@@ -58,7 +58,7 @@ class Vacation{
 	public async postAdminBalance(data: {
 		annual_leaves: number;
 		emergency_leaves: number;
-		leave_execuses: number;
+		leave_excuses: number;
 		public_holidays: string[];
 	}) {
 		try {

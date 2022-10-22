@@ -47,7 +47,7 @@ class VacationBalance(models.Model):
     unpaid = models.IntegerField()
     annual_leaves = models.IntegerField()
     emergency_leaves = models.IntegerField()
-    leave_execuses = models.IntegerField()
+    leave_excuses = models.IntegerField()
     public_holidays = models.IntegerField()
     date = models.DateField(auto_now=True)
     old_balance = models.JSONField(default=dict, null=True)

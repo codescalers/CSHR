@@ -56,7 +56,7 @@
         try {
             await Vacation.postAdminBalance({
                 annual_leaves: +annualValue,
-                leave_execuses: +leaveValue,
+                leave_excuses: +leaveValue,
                 emergency_leaves: +emergencyValue,
                 public_holidays: handleDates(date),
             });

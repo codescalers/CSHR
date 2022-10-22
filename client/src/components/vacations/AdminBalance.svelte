@@ -14,7 +14,7 @@
 
     let balanceValues: VacationBalanceType = {
         "annual_leaves" : 0,
-        "leave_execuses" : 0,
+        "leave_excuses" : 0,
         "emergency_leaves" : 0,
     };
 
@@ -40,7 +40,7 @@
             <Input
                 type="number"
                 label={'Leave execuses'}
-                bind:value={balanceValues.leave_execuses}
+                bind:value={balanceValues.leave_excuses}
                 handleInput={() => {
                     return false;
                 }}
@@ -66,7 +66,7 @@
         </div>
         <DatePickerSelect 
             annualValue={balanceValues.annual_leaves}
-            leaveValue = {balanceValues.leave_execuses}
+            leaveValue = {balanceValues.leave_excuses}
             emergencyValue = {balanceValues.emergency_leaves}
         />
     </form>

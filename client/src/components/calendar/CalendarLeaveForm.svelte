@@ -1,7 +1,6 @@
 <script lang="ts">
   import Submit from '../submit/Submit.svelte';
   import Alert from "../alert/Alert.svelte"
-
   import {onMount} from "svelte";
   import CalendarDataService from '../../services/axios/home/CalendarDataService';
   import { UserStore } from '../../stores';
@@ -14,12 +13,14 @@
   export let isError = false;
   export let datePickerDisabled = false;
   export let calculatorValue: number;
+  export let isUpdate = false;
+  export let selectedReason: any = 0;
+  export let vacationID: string;
+  let errorMessage: string = "", successMessage: string = "";
 
   let alertTitle: string, alertClass: string, alertMessage: string, showAlert: boolean;
 
-  let selectedReason: any = 0;
   let vBalance: VacationBalanceType;
-
   onMount(async ()=>{
     vBalance = await Vacation.balance();
   });
@@ -36,11 +37,7 @@
       <select bind:value={selectedReason} id="Reason" class="form-select form-control" aria-label="Default select example">
         {#if vBalance}
           {#each Object.entries(vBalance) as [name, _value]}
-            {#if _value == 100}
-              <option value={name}>{name}</option>
-            {:else}
               <option value={name}>{name} {_value}</option>
-            {/if}
           {/each}
         {/if}
       </select>
@@ -51,36 +48,40 @@
   </div>
   <div>
     <Submit
-      showthis={false}
+      successMessage={successMessage}
+      errorMessage={errorMessage}
       label="Submit"
       onClick={async () => {
         isLoading = true;
-        try {
-          const axios = await CalendarDataService.postLeave({
-            end_date: endDate,
-            from_date: startDate,
-            reason: selectedReason,
-            applyingUserId: $UserStore.id,
-          });
-          if (axios.status != 201){
-            alertMessage = axios.response.data.message;
-            alertTitle = "Leave Submission Failed"
-            alertClass = "danger";
-          } else {
-            alertMessage = axios.data.message;
-            alertClass = "success";
-            alertTitle = "Leave Submitted"
+          try {
+            if(isUpdate){
+              const axios = await CalendarDataService.updateVacation(vacationID, {
+                end_date: endDate,
+                from_date: startDate,
+                reason: selectedReason,
+                applyingUserId: $UserStore.id,
+              });
+              successMessage = axios.message
+            } else {
+              const axios = await CalendarDataService.postLeave({
+                end_date: endDate,
+                from_date: startDate,
+                reason: selectedReason,
+                applyingUserId: $UserStore.id,
+              });
+              successMessage = axios.data.message
+            }
+          } catch (error) {
+              isError = true;
+              console.log(error);
+              errorMessage = error.message
+          } finally {
+              isLoading = false;
           }
-          showAlert = true;
-        } catch (error) {
-          isError = true;
-        } finally {
-          isLoading = false;
-          selectedReason = 0;
-        }
-        return isError;
+          return isError;
       }}
-      disabled={submitDisabled}
+      className=""
+      bind:disabled={submitDisabled}
     />
   </div>
 {#if showAlert}

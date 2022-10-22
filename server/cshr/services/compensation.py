@@ -14,6 +14,6 @@ def get_all_compensations() -> Compensation:
     return Compensation.objects.all()
 
 
-def get_compensations_by_user(id: str) -> Compensation:
+def get_compensations_by_user(user: str) -> Compensation:
     "Return all compensations for certain user"
-    return Compensation.objects.filter(applying_user=id)
+    return Compensation.objects.filter(applying_user=user)

@@ -10,7 +10,7 @@ from server.cshr.serializers.vacations import (
     VacationBalanceSerializer,
     UserBalanceUpdateSerializer,
 )
-from server.cshr.api.permission import IsSupervisor, UserIsAuthenticated, IsAdmin
+from server.cshr.api.permission import IsSupervisor, IsUser, UserIsAuthenticated, IsAdmin
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
@@ -117,7 +117,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             set_notification_request_redis(serializer.data)
             send_email_for_request(request.user.id, msg, "Vacation request")
             return CustomResponse.success(
-                status_code=201, message="Successfully updated balance"
+                status_code=201, message="Successfully Vacation Posted!"
             )
         return CustomResponse.bad_request(error=serializer.errors)
 
@@ -174,37 +174,40 @@ class VacationUserApiView(ListAPIView, GenericAPIView):
 
 class VacationsUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsUser | IsSupervisor]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
+        v = StanderdVacationBalance()
         if vacation is None:
             return CustomResponse.not_found(message="Vacation not found")
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
-        current_user: User = get_user_by_id(request.user.id)
 
         if serializer.is_valid():
-
-            serializer.save(approval_user=current_user)
-            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            msg = get_vacation_reply_email_template(current_user, vacation, url)
-
-            bool = send_email_for_reply.delay(
-                current_user.id, vacation.applying_user.id, msg, "Vacation reply"
+            balance = v.check_balance(
+                user=request.user,
+                reason=serializer.validated_data.get("reason"),
+                start_date=serializer.validated_data.get("from_date"),
+                end_date=serializer.validated_data.get("end_date"),
             )
-            if bool:
-                return CustomResponse.success(
-                    data=serializer.data,
-                    message="vacation request updated",
-                    status_code=202,
-                )
-            else:
-                return CustomResponse.not_found(
-                    message="user is not found", status_code=404
-                )
-
+            if balance is not True:
+                return CustomResponse.bad_request(message=balance)
+            v.vacation_update_balance(vacation)
+            serializer.save()
+            comment: Dict = {
+                "update": True,
+                "user": TeamSerializer(request.user).data,
+                "comment": f"{request.user.first_name.title()} update his vacation",
+                "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
+            }
+            update_vacation_change_log(vacation, comment)
+            return CustomResponse.success(
+                data=serializer.data,
+                message="Vacation Request Updated",
+                status_code=202,
+            )
         return CustomResponse.bad_request(
-            data=serializer.errors, message="vacation failed to update"
+            data=serializer.errors, message="Vacation Failed to Update"
         )
 
 

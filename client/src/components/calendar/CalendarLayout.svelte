@@ -19,6 +19,7 @@
 
 <div class="calendar table-responsive table-responsive">
   {#each headers as header, index (index)}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <span class="day-name" on:click={() => dispatch('headerClick', header)}
       >{header}</span
     >
@@ -26,10 +27,12 @@
 
   {#each days as day, index (index)}
     {#if day.enabled}
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <span class="day" on:click={() => dispatch('dayClick', day)}
         >{day.name}</span
       >
     {:else}
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <span class="day day-disabled" on:click={() => dispatch('dayClick', day)}
         >{day.name}</span
       >
@@ -38,6 +41,7 @@
 
   {#each items as item (item.id)}
     {#if eventNames.has(item.eventName)}
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <section
         on:click={() => dispatch('itemClick', item)}
         style="grid-column: {item.startCol} / span {item.len};      

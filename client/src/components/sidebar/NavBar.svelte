@@ -21,7 +21,7 @@
                     </svg>
                     <span class="nav_name">Notifications</span>
                 </Link>
-                {#if $UserStore && $UserStore.user_type === "Supervisor"}
+                {#if $UserStore && $UserStore.user_type === "Supervisor" || $UserStore && $UserStore.user_type === "User"}
                     <Link to="/requests" class="nav_link">
                         <i class="fa-solid fa-users nav_icon" />
                         <span class="nav_name">Requests</span>

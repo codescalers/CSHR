@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 from server.cshr.api.response import CustomResponse
 from server.cshr.models.users import User
-from server.cshr.models.vacations import REASON_CHOICES, VacationBalance
+from server.cshr.models.vacations import REASON_CHOICES, Vacation, VacationBalance
 
 import datetime
 import os
@@ -81,13 +81,13 @@ class StanderdVacationBalance:
         month: int = 12 - user.created_at.month
 
         annual_leaves: int = round(self.file_content["annual_leaves"] / 12 * month)
-        leave_execuses: int = round(self.file_content["leave_execuses"] / 12 * month)
+        leave_excuses: int = round(self.file_content["leave_excuses"] / 12 * month)
         emergency_leaves: int = round(
             self.file_content["emergency_leaves"] / 12 * month
         )
         calculated_values = {
             "annual_leaves": annual_leaves,
-            "leave_execuses": leave_execuses,
+            "leave_excuses": leave_excuses,
             "emergency_leaves": emergency_leaves,
             "sick_leaves": self.file_content["sick_leaves"],
             "unpaid": self.file_content["unpaid"],
@@ -113,7 +113,7 @@ class StanderdVacationBalance:
                 sick_leaves=values["sick_leaves"],
                 emergency_leaves=values["emergency_leaves"],
                 public_holidays=values["public_holidays"],
-                leave_execuses=values["leave_execuses"],
+                leave_excuses=values["leave_excuses"],
                 unpaid=values["unpaid"],
             ),
         )
@@ -131,6 +131,20 @@ class StanderdVacationBalance:
             if not day.strftime("%A") in weekend:
                 actual_days.append(day)
         return len(actual_days)
+    
+    def vacation_update_balance(self, vacation: Vacation):
+        """
+            This method will used when user wants to update his vacation request and the reaseon changed.
+            the actual value of old reason must return.
+        """ 
+        # new_days: int = self.remove_weekends(vacation.applying_user, new_start_date, new_end_date)
+        old_days: int = self.remove_weekends(
+            vacation.applying_user, vacation.from_date, vacation.end_date
+        )
+        reason: str = vacation.reason
+        balance: VacationBalance = VacationBalance.objects.get(user=vacation.applying_user)
+        get_actual_reason_value = getattr(balance, reason)
+        return self.update_user_balance(vacation.applying_user, reason, get_actual_reason_value + old_days)
 
     def check_balance(self, user, reason, start_date: datetime, end_date: datetime):
         self.check(user)

@@ -160,14 +160,14 @@ export type SelectOptionType = {
 
 export type VacationBalanceType = {
   annual_leaves: number;
-  leave_execuses: number;
+  leave_excuses: number;
   emergency_leaves: number;
   public_holidays?: number[];
 };
 
 export interface IVacationBalance {
   annual_leaves: number;
-  leave_execuses: number;
+  leave_excuses: number;
   emergency_leaves: number;
   public_holidays: number[];
 };

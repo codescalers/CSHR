@@ -21,7 +21,7 @@
         <div class="row">
             <div class="col-3 text-muted d-flex justify-content-center">{vacationBalance.annual_leaves}</div>
             <div class="col-3 text-muted d-flex justify-content-center">{vacationBalance.emergency_leaves}</div>
-            <div class="col-3 text-muted d-flex justify-content-center">{vacationBalance.leave_execuses}</div>
+            <div class="col-3 text-muted d-flex justify-content-center">{vacationBalance.leave_excuses}</div>
             <div class="col-3 text-muted d-flex justify-content-center">{vacationBalance.public_holidays}</div>
         </div>
         </div>
