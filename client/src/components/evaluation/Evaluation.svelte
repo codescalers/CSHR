@@ -4,6 +4,7 @@
   import Submit from '../submit/Submit.svelte';
   import Input from '../input/Input.svelte';
   import evaluationDataService from '../../services/axios/evaluation/EvaluationDataService';
+  import {validateLink} from "../../services/utils/validators"
   export let isLoading: boolean = false;
   export let isError: boolean = false;
 
@@ -61,9 +62,7 @@
         type="url"
         label={'Evaluation Link'}
         bind:value={evaluationLinkValue}
-        handleInput={() => {
-          return false;
-        }}
+        handleInput={validateLink}
         size={20}
         errorMessage="Evaluation Link is invalid"
         hint={'please write a valid link'}
