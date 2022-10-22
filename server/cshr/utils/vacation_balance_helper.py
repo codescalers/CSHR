@@ -48,7 +48,15 @@ class StanderdVacationBalance:
 
     def check(self, user) -> VacationBalance:
         try:
-            return VacationBalance.objects.get(user=user)
+            balance = VacationBalance.objects.get(user=user)
+            for field in balance._meta.fields:
+                actual_value: int = getattr(balance, field.name)
+                if type(actual_value) == dict and len(actual_value) > 0:
+                    for k, v in actual_value.items():
+                        balance_attr: int = getattr(balance, k)
+                        if balance_attr + v < 100:
+                            setattr(balance, k, balance_attr + v)
+            return balance
         except VacationBalance.DoesNotExist:
             return self.create_new_balance(user)
 
@@ -141,11 +149,26 @@ class StanderdVacationBalance:
             vacation.applying_user, vacation.from_date, vacation.end_date
         )
         reason: str = vacation.reason
+        this_month: int = datetime.datetime.now().month
         balance: VacationBalance = VacationBalance.objects.get(user=vacation.applying_user)
         get_actual_reason_value = getattr(balance, reason)
+        if vacation.taked_from_old_balance and this_month < 3:
+            return self.update_user_balance(
+                vacation.applying_user,
+                reason,
+                balance.old_balance.get(reason) + old_days,
+                taked_from_old_balance = vacation.taked_from_old_balance
+            )
         return self.update_user_balance(vacation.applying_user, reason, get_actual_reason_value + old_days)
 
-    def check_balance(self, user, reason, start_date: datetime, end_date: datetime):
+    def check_balance(
+        self,
+        user: User,
+        vacation: Vacation,
+        reason: str,
+        start_date: datetime,
+        end_date: datetime
+    ):
         self.check(user)
 
         old_balance = self.check_old_balance(user, reason)
@@ -157,13 +180,25 @@ class StanderdVacationBalance:
                 return "You cannot apply for public holidays vacations, you take it automatically."
             if old_balance + curr_balance >= vacation_days:
                 new_value: int = curr_balance - vacation_days
+                this_month: int = datetime.datetime.now().month
+                if old_balance >= vacation_days and this_month < 3:
+                    self.set_taked_from_old_balance(vacation)
+                    return self.update_user_balance(
+                        user, reason, old_balance-vacation_days,
+                        taked_from_old_balance = vacation.taked_from_old_balance
+                    )
                 return self.update_user_balance(user, reason, new_value)
             return (
                 f"You only have {old_balance+curr_balance} days left of reason {reason}"
             )
+    def set_taked_from_old_balance(self, vacation: Vacation):
+        """Update vacation with taked from ild balance to return the value to old balance when user update his request."""
+        vacation.taked_from_old_balance = True
+        vacation.save()
 
     def update_user_balance(
-        self, user: User, reason: REASON_CHOICES, new_value: int
+        self, user: User, reason: REASON_CHOICES, new_value: int,
+        taked_from_old_balance: bool = False
     ) -> VacationBalance:
         """
         Set new value based on field name -> reason.
@@ -172,6 +207,13 @@ class StanderdVacationBalance:
         new_value: the new value will adding to filed[reason]
         """
         balance: VacationBalance = VacationBalance.objects.get(user=user)
+        if taked_from_old_balance:
+            if reason in balance.old_balance:
+                balance.old_balance[reason] = new_value
+                balance.save()
+                return True
+            return f"Old balance has no attrbute named {reason}"    
+        
         if hasattr(balance, reason):
             setattr(balance, reason, new_value)
             balance.save()

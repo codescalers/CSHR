@@ -37,7 +37,9 @@
       <select bind:value={selectedReason} id="Reason" class="form-select form-control" aria-label="Default select example">
         {#if vBalance}
           {#each Object.entries(vBalance) as [name, _value]}
+            {#if name != "user"}
               <option value={name}>{name} {_value}</option>
+            {/if}
           {/each}
         {/if}
       </select>

@@ -99,19 +99,20 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
+            saved = serializer.save(
+                type=TYPE_CHOICES.VACATIONS,
+                status=STATUS_CHOICES.PENDING,
+                applying_user=request.user,
+            )
             balance = v.check_balance(
                 user=request.user,
+                vacation = saved,
                 reason=serializer.validated_data.get("reason"),
                 start_date=serializer.validated_data.get("from_date"),
                 end_date=serializer.validated_data.get("end_date"),
             )
             if balance is not True:
                 return CustomResponse.bad_request(message=balance)
-            saved = serializer.save(
-                type=TYPE_CHOICES.VACATIONS,
-                status=STATUS_CHOICES.PENDING,
-                applying_user=request.user,
-            )
             msg = get_vacation_request_email_template(
                 request.user, serializer.data, saved.id
             )
@@ -190,6 +191,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
                 reason=serializer.validated_data.get("reason"),
                 start_date=serializer.validated_data.get("from_date"),
                 end_date=serializer.validated_data.get("end_date"),
+                vacation=vacation
             )
             if balance is not True:
                 return CustomResponse.bad_request(message=balance)
