@@ -20,8 +20,27 @@ app.conf.beat_schedule = {
     "send_email": {
         "task": "send_email",
         "schedule": crontab(minute=0, hour=9),
-    }
+    },
+    "quarter_evaluation": {
+        "task": "send_quarter_evaluation_email",
+        "schedule": crontab(
+            month_of_year="1,4,7,10", day_of_month=1, hour=8, minute=30
+        ),
+    },
+    "user_old_balance_format": {
+        "task": "user_old_balance_format",
+        "schedule": crontab(
+            month_of_year="12", day_of_month=1, hour=8, minute=30
+        ),
+    },
+    "user_resetting_old_balance": {
+        "task": "user_resetting_old_balance",
+        "schedule": crontab(
+            month_of_year="3", day_of_month=1, hour=8, minute=30
+        ),
+    },
 }
+
 mail_title = "Probation period update"
 
 
@@ -110,6 +129,43 @@ def send_email():
         )
         send_mail(mail_title, msg, settings.EMAIL_HOST_USER, admins_emails)
 
+@app.task(name="send_quarter_evaluation_email")
+def send_quarter_evaluation_email():
+    from server.cshr.models.users import USER_TYPE
+    from server.cshr.models.users import User
+
+    supervisors = User.objects.filter(user_type=USER_TYPE.SUPERVISOR)
+    supervisors_emails = []
+    for admin in supervisors:
+        supervisors_emails.append(admin.email)
+
+    msg = "It is time for Quarter Evaluation"
+    send_mail(
+        "Quarter Evalaluation Time",
+        msg,
+        settings.EMAIL_HOST_USER,
+        supervisors_emails,
+    )
+
+@app.task(name="user_old_balance_format")
+def user_old_balance_format():
+    from server.cshr.models.users import User
+    from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
+
+    users = User.objects.all()
+    v = StanderdVacationBalance()
+    for user in users:
+        v.old_balance_format(user)
+
+@app.task(name="user_resetting_old_balance")
+def user_resetting_old_balance():
+    from server.cshr.models.users import User
+    from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
+
+    users = User.objects.all()
+    v = StanderdVacationBalance()
+    for user in users:
+        v.resetting_old_balance(user)
 
 @shared_task()
 def send_email_for_request(user_id, msg, mail_title) -> Response:
