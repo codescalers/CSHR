@@ -16,6 +16,7 @@ from server.cshr.models.users import User
 from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.vacations import (
+    get_balance_by_user,
     get_vacation_by_id,
     get_all_vacations,
 )
@@ -356,12 +357,53 @@ class UserVacationBalanceApiView(GenericAPIView):
 
     def get(self, request: Request) -> Response:
         """Get method to get all user balance"""
-        user: User = get_user_by_id(request.user.id)
+        user_id = request.query_params.get("user_id")
+        if not user_id.isdigit():
+            return CustomResponse.bad_request(message="Invalid user id.")
+        if user_id is None:
+            return CustomResponse.bad_request(message="You must send `user_id` as a query_params.")
+        user: User = get_user_by_id(user_id)
+        if user is None:
+            return CustomResponse.not_found(message="User not found.")
         v: StanderdVacationBalance = StanderdVacationBalance()
         balance = v.check(user)
+        request.data["user"] = TeamSerializer(user).data
         return CustomResponse.success(
             message="Baance founded.", data=self.get_serializer(balance).data
         )
+    
+    def put(self, request:Request) -> CustomResponse:
+        """Use this endpoint to update user balance"""
+        user_id = request.query_params.get("user_id")
+        if not user_id.isdigit():
+            return CustomResponse.bad_request(message="Invalid user id.")
+        if user_id is None:
+            return CustomResponse.bad_request(message="You must send `user_id` as a query_params.")
+        user: User = get_user_by_id(user_id)
+        v: StanderdVacationBalance = StanderdVacationBalance()
+        v.check(user)
+        user_balance = get_balance_by_user(user)
+        serializer = self.get_serializer(user_balance, data=request.data)
+        if serializer.is_valid():
+            print(user)
+            if request.data.get("delete_old_balance") == True:   
+                serializer.save(
+                    old_balance={},
+                    user = user
+                )
+            else:
+                serializer.save(user = user)
+            return CustomResponse.success(
+                message="Successfully updated user balance",
+                status_code=202,
+                data=serializer.data
+            )
+        return CustomResponse.bad_request(
+            message="Please make sure that you entered a valid data",
+            error=serializer.errors
+        )
+
+
 
 
 class CalculateVacationDaysApiView(GenericAPIView):

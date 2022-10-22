@@ -11,8 +11,11 @@
   export let removeAllTitle = 'Remove all users';
   export let isLoading = false;
   export let isError: boolean | null = null;
-
+  export let mylabel = 'People';
+  export let isTop : boolean;
+  export let multiple: boolean = true;
   export let selected: SelectOptionType[] = [];
+
   let options: SelectOptionType[] = [];
 
   onMount(async () => {
@@ -53,10 +56,12 @@
   <MultiSelect
     bind:options
     bind:selected
-    label="People"
+    label= {mylabel}
     {placeholder}
     {removeAllTitle}
     isLabel={false}
+    isTop ={isTop}
+    multiple={multiple}
   >
     <PeopleSlot let:option {option} slot="option" />
   </MultiSelect>

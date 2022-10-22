@@ -22,7 +22,7 @@
 
   let vBalance: VacationBalanceType;
   onMount(async ()=>{
-    vBalance = await Vacation.balance();
+    vBalance = await Vacation.balance($UserStore.id);
   });
 
   $: submitDisabled =

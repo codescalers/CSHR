@@ -1,11 +1,12 @@
+import type { VacationBalanceType } from "../../../types";
 import http from "../http-common";
 
 
 class Vacation{
 	errorMessage = "Error in Vacation Data Service: ";
-	public async balance() {
+	public async balance(userID: number) {
 		try {
-			const data = await http.get("/vacations/balance/");
+			const data = await http.get(`/vacations/balance/?user_id=${userID}`);
 			if (data.status === 404) {
 				throw new Error("Balance not found");
 			} else if (data.status !== 200) {
@@ -13,7 +14,7 @@ class Vacation{
 			}
 			return data.data.results;
 		} catch (error) {
-			throw new Error(error);
+			throw new Error(error.response.data.message);
 		}
 	}
 	public async vacatioDetails(id : number) {
@@ -64,7 +65,14 @@ class Vacation{
 		try {
 			await http.post("vacations/admin-balance/", data);
 		} catch (err) {
-			console.error(this.errorMessage + err);
+			throw new Error(err.response.data.message);
+		}
+	}
+	public async updateUserBalance(userBalance: VacationBalanceType) {
+		try {
+			await http.put(`/vacations/balance/?user_id=${userBalance.user.id}`, userBalance);
+		} catch (err) {
+			throw new Error(err.response.data.message);
 		}
 	}
 }

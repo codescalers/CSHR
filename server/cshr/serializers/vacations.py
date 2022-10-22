@@ -3,8 +3,9 @@ from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
 )
-from server.cshr.models.vacations import Vacation
-from server.cshr.serializers.users import BaseUserSerializer
+from server.cshr.models.users import User
+from server.cshr.models.vacations import Vacation, VacationBalance
+from server.cshr.serializers.users import BaseUserSerializer, TeamSerializer
 from rest_framework import serializers
 
 
@@ -62,15 +63,26 @@ class LandingPageVacationsSerializer(ModelSerializer):
         return BaseUserSerializer(obj.approval_user).data
 
 
-class VacationBalanceSerializer(serializers.Serializer):
-    sick_leaves = serializers.FloatField()
-    compensation = serializers.FloatField()
-    unpaid = serializers.FloatField()
-    annual_leaves = serializers.FloatField()
-    emergency_leaves = serializers.FloatField()
-    leave_excuses = serializers.FloatField()
-    public_holidays = serializers.JSONField(default=list)
-
+class VacationBalanceSerializer(ModelSerializer):
+    """Class user balance to update user balance."""
+    user = SerializerMethodField()
+    class Meta:
+        model = VacationBalance
+        fields = [
+            "user",
+            "sick_leaves",
+            "compensation",
+            "unpaid",
+            "annual_leaves",
+            "emergency_leaves",
+            "leave_excuses",
+            "public_holidays"
+        ]
+    
+    def get_user(self, obj: User):
+        """This method to return user data instead of his id"""
+        return TeamSerializer(obj.user).data
+    
 
 class UserBalanceUpdateSerializer(serializers.Serializer):
     ids = serializers.JSONField(default=list)

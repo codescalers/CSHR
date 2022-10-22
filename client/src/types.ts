@@ -159,6 +159,8 @@ export type SelectOptionType = {
 };
 
 export type VacationBalanceType = {
+  delete_old_balance: boolean;
+  user: UserInterface;
   annual_leaves: number;
   leave_excuses: number;
   emergency_leaves: number;

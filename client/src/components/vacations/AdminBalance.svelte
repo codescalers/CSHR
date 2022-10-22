@@ -2,17 +2,10 @@
     import type { VacationBalanceType } from '../../types';
     import Input  from '../input/Input.svelte';
     import DatePickerSelect from './DatePickerSelect.svelte';
-    import type {
-        AdminViewInterface,
-        SupervisorViewInterface,
-        UserInterface,
-    } from '../../types';
-
-    export let user: AdminViewInterface | SupervisorViewInterface | UserInterface;
-
-    const date = new Date();
+    import { UserStore } from "../../stores"
 
     let balanceValues: VacationBalanceType = {
+        "user": $UserStore,
         "annual_leaves" : 0,
         "leave_excuses" : 0,
         "emergency_leaves" : 0,

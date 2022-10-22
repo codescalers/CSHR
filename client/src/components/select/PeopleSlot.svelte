@@ -4,9 +4,7 @@
     export let option: SelectOptionType;
     let full_name: string = option.extraData.full_name;
     let team: string = option.extraData.team;
-  
-    let hidden = false;
-  </script>
+</script>
   
   <div class="option" title={`#${team}`}>
     <span>{full_name}</span>

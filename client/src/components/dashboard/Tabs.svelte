@@ -5,6 +5,7 @@
     import Register from '../register/Register.svelte';
     import UserDocuments from "../userdocuments/UserDocuments.svelte"
     import VacationBalance from "../vacations/VacationBalance.svelte"
+    import UserVacationBalance from "../vacations/UserVacationBalance.svelte"
     import GreatAndHint from "./GreatAndHint.svelte"
     let date: Date = new Date();
 </script>
@@ -26,6 +27,16 @@
           aria-controls="v-tabs-vacation-balance"
           aria-selected="false"
           >Update/Post vacations balance</a
+        >
+        <a
+          class="nav-link mb-2"
+          id="v-tabs-user-vacation-balance-tab"
+          data-mdb-toggle="tab"
+          href="#v-tabs-user-vacation-balance"
+          role="tab"
+          aria-controls="v-tabs-user-vacation-balance"
+          aria-selected="false"
+          >Update User Vacation Balance</a
         >
         <a
           class="nav-link mb-2"
@@ -109,6 +120,20 @@
               hint={"Select quarter and link to make it visible to all of users."} 
             />
             <Evaluation />
+          </div>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="v-tabs-user-vacation-balance"
+          role="tabpanel"
+          aria-labelledby="v-tabs-user-vacation-balance-tab"
+        >
+          <div class="height-100">
+            <GreatAndHint 
+              header={"tThis is the user balance of year " + date.getFullYear()}
+              hint={"The user also has an old balance object, we reset this old balance values to zeros on the first day of march month every year as a cron job, you can always check and if you find these values not zeros after `1/3/*years` you can delete all old balances by checking the checkbox below."} 
+            />
+            <UserVacationBalance />
           </div>
         </div>
         <div
