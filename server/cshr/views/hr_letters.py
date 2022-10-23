@@ -1,3 +1,4 @@
+from datetime import datetime
 from server.cshr.serializers.hr_letters import (
     HrLetterSerializer,
     UserDocumentsSerializer,
@@ -42,6 +43,12 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
         """Method to create a new hr letter"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
+            with_date: bool = serializer.validated_data.get("from_date")
+            end_date: bool = serializer.validated_data.get("end_date")
+            if with_date and with_date == None or with_date and end_date == None:
+                return CustomResponse.bad_request(
+                    message = "If you want to mention the date you have to send it with your request"
+                )
             current_user: User = get_user_by_id(request.user.id)
             saved = serializer.save(
                 type=TYPE_CHOICES.HR_LETTERS,

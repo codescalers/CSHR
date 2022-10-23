@@ -18,8 +18,10 @@ class HrLetters(Requests):
 
     # who is sending to
     addresses = models.CharField(max_length=45)
-    date = models.DateField(auto_now=True)
+    with_salary_mentioned = models.BooleanField(default=False)
     with_date = models.BooleanField(default=False)
+    from_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
 
     def __str__(self) -> str:
         return self.addresses

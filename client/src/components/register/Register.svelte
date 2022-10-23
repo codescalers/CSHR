@@ -414,17 +414,20 @@
     </form>
 </div>
 
- 
-<style>
-.minusbutton{
-    border: 1px solid rgb(18, 189, 26);
-    width: 15%;
-    height: 40px;
-    max-height: 40px !important;
-}
-.minusbutton:hover{
-    background-color: rgb(18, 189, 26)!important;
-    color: #fff!important;
-}
-</style>
-    
+<svelte:head>
+    <style>
+        input {
+            opacity: 1 !important;
+        }
+        .minusbutton{
+            border: 1px solid rgb(18, 189, 26);
+            width: 15%;
+            height: 40px;
+            max-height: 40px !important;
+        }
+        .minusbutton:hover{
+            background-color: rgb(18, 189, 26)!important;
+            color: #fff!important;
+        }
+    </style>
+</svelte:head>

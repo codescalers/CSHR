@@ -167,6 +167,14 @@ export type VacationBalanceType = {
   public_holidays?: number[];
 };
 
+export type HRLetterType = {
+  addresses: string;
+  with_date: boolean;
+  with_salary_mentioned: boolean;
+  from_date?: string|null;
+  end_date?: string|null;
+};
+
 export interface IVacationBalance {
   annual_leaves: number;
   leave_excuses: number;

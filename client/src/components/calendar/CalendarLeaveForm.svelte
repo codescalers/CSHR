@@ -15,7 +15,9 @@
   export let calculatorValue: number;
   export let isUpdate = false;
   export let selectedReason: any = 0;
-  export let vacationID: string;
+  export let vacationID: string="";
+  export let withReason: boolean = true;
+  export let withSubmit: boolean = true;
   let errorMessage: string = "", successMessage: string = "";
 
   let alertTitle: string, alertClass: string, alertMessage: string, showAlert: boolean;
@@ -31,61 +33,65 @@
 
 
 <form>
-  <div class="form-group row">
-    <label class="col-sm-4 col-form-label py-3" for="Reason">Reason</label>
-    <div class="col-sm-8">
-      <select bind:value={selectedReason} id="Reason" class="form-select form-control" aria-label="Default select example">
-        {#if vBalance}
-          {#each Object.entries(vBalance) as [name, _value]}
-            {#if name != "user"}
-              <option value={name}>{name} {_value}</option>
-            {/if}
-          {/each}
-        {/if}
-      </select>
+  {#if withReason}
+    <div class="form-group row">
+      <label class="col-sm-4 col-form-label py-3" for="Reason">Reason</label>
+      <div class="col-sm-8">
+        <select bind:value={selectedReason} id="Reason" class="form-select form-control" aria-label="Default select example">
+          {#if vBalance}
+            {#each Object.entries(vBalance) as [name, _value]}
+              {#if name != "user"}
+                <option value={name}>{name} {_value}</option>
+              {/if}
+            {/each}
+          {/if}
+        </select>
+      </div>
     </div>
-  </div>
+  {/if}
   <div class="alert alert-light p-0 text-center">
     Actual value after deducting weekend holidays {calculatorValue}
   </div>
-  <div>
-    <Submit
-      successMessage={successMessage}
-      errorMessage={errorMessage}
-      label="Submit"
-      onClick={async () => {
-        isLoading = true;
-          try {
-            if(isUpdate){
-              const axios = await CalendarDataService.updateVacation(vacationID, {
-                end_date: endDate,
-                from_date: startDate,
-                reason: selectedReason,
-                applyingUserId: $UserStore.id,
-              });
-              successMessage = axios.message
-            } else {
-              const axios = await CalendarDataService.postLeave({
-                end_date: endDate,
-                from_date: startDate,
-                reason: selectedReason,
-                applyingUserId: $UserStore.id,
-              });
-              successMessage = axios.data.message
+  {#if withSubmit}
+    <div>
+      <Submit
+        successMessage={successMessage}
+        errorMessage={errorMessage}
+        label="Submit"
+        onClick={async () => {
+          isLoading = true;
+            try {
+              if(isUpdate && vacationID != ""){
+                const axios = await CalendarDataService.updateVacation(vacationID, {
+                  end_date: endDate,
+                  from_date: startDate,
+                  reason: selectedReason,
+                  applyingUserId: $UserStore.id,
+                });
+                successMessage = axios.message
+              } else {
+                const axios = await CalendarDataService.postLeave({
+                  end_date: endDate,
+                  from_date: startDate,
+                  reason: selectedReason,
+                  applyingUserId: $UserStore.id,
+                });
+                successMessage = axios.data.message
+              }
+            } catch (error) {
+                isError = true;
+                console.log(error);
+                errorMessage = error.message
+            } finally {
+                isLoading = false;
             }
-          } catch (error) {
-              isError = true;
-              console.log(error);
-              errorMessage = error.message
-          } finally {
-              isLoading = false;
-          }
-          return isError;
-      }}
-      className=""
-      bind:disabled={submitDisabled}
-    />
-  </div>
+            return isError;
+        }}
+        className=""
+        bind:disabled={submitDisabled}
+      />
+    </div>
+  {/if}
 {#if showAlert}
   <div class="mt-2">
     <Alert title={alertTitle} message={alertMessage} type={alertClass}/>

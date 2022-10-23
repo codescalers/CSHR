@@ -24,7 +24,7 @@
 
 <div class="row">
   <h4 class="child  mx-3">All Requests</h4>
-  <table class="table align-middle mb-0 mx-3 w-100">
+  <table class="table align-middle mb-0 mx-3 w-100" style="overflow: hidden;">
     <colgroup>
       <col span="1" style="width: 25%;" />
       <col span="1" style="width: 35%;" />

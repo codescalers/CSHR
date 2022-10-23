@@ -16,6 +16,7 @@
   import VacationDetail from './pages/VacationDetail.svelte';
   import Settings from './pages/Settings.svelte';
   import VacationUpdate from './pages/VacationUpdate.svelte';
+  import HrLetter from './pages/HrLetter.svelte';
   
   const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
@@ -41,6 +42,7 @@
     <LoggedRoute path={"team/"} component={Team} /> 
     <LoggedRoute path={'dashboard/'} component={Dashboard}/> 
     <LoggedRoute path={'settings/'} component={Settings}/> 
+    <LoggedRoute path={'hr_letter/'} component={HrLetter}/> 
 
     <Route>
       <Error error={404} />
