@@ -24,6 +24,8 @@ dj-database-url = "1.0.0"
 whitenoise = "6.2.0"
 psycopg2 = "2.9.4"
 locallibs = "^0.1.1-alpha.1"
+"backports.weakref" = "^1.0.post1"
+"backports.zoneinfo" = "^0.2.1"
 
 [tool.poetry.dev-dependencies]
 black = "22.6.0"
