@@ -6,7 +6,7 @@ from django.db.models import Q
 from typing import List
 
 
-def filter_vacations_by_month_and_year(user: User, month: str, year: str) -> Vacation:
+def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
     """
     This function will filter all of vacations based on its yesr, month.
     """
@@ -14,7 +14,7 @@ def filter_vacations_by_month_and_year(user: User, month: str, year: str) -> Vac
         Q(from_date__month=month, from_date__year=year)
         | Q(end_date__month=month, end_date__year=year)
     )
-    return vacations.filter(applying_user=user)
+    return vacations
 
 
 def get_vacation_by_id(id: str) -> Vacation:
@@ -69,4 +69,10 @@ def filter_user_vacations_by_pending_status(user: User) -> Vacation:
     return Vacation.objects.filter(
         status=STATUS_CHOICES.PENDING,
         applying_user = user,
-    )
+    ).order_by('created_at')
+
+def filter_user_vacations(user: User) -> Vacation:
+    """Return all vacations that has pending status and related to user"""
+    return Vacation.objects.filter(
+        applying_user = user
+    ).order_by('created_at')

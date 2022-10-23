@@ -8,7 +8,7 @@ from ..serializers.compensation import (
 from ..api.response import CustomResponse
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
+from server.cshr.api.permission import IsUser, UserIsAuthenticated, IsSupervisor
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.compensation import (
     get_all_compensations,
@@ -47,6 +47,7 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             current_user: User = get_user_by_id(request.user.id)
+            request.data["applying_user"] = current_user.id
             saved = serializer.save(
                 type=TYPE_CHOICES.COMPENSATION,
                 status=STATUS_CHOICES.PENDING,
@@ -77,17 +78,19 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
 class CompensationApiView(ListAPIView, GenericAPIView):
 
     serializer_class = CompensationSerializer
-    permission_class = UserIsAuthenticated
+    permission_class = [IsUser,]
 
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete a Compensation by id"""
         compensation = get_compensation_by_id(id=id)
         if compensation is None:
             return CustomResponse.not_found(message="Compensation not found")
-
+        if compensation.status != STATUS_CHOICES.PENDING:
+            return CustomResponse.bad_request(message="You can only delete requests with pinding status.")
+        if compensation.applying_user != request.user:
+            return CustomResponse.unauthorized()
         compensation.delete()
-        return CustomResponse.success(message="User deleted", status_code=204)
-        """method to get a single Compensation by id"""
+        return CustomResponse.success(message="Compensation deleted", status_code=204)
 
     def get(self, request: Request, id: str, format=None) -> Response:
         compensation = get_compensation_by_id(id=id)

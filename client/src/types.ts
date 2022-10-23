@@ -175,6 +175,17 @@ export type HRLetterType = {
   end_date?: string|null;
 };
 
+export type CompensationType = {
+  reason: string;
+  from_date: string;
+  end_date: string;
+  applying_user?: UserInterface;
+  approval_user?: UserInterface;
+  status?: string;
+  type?: string;
+  id?: number;
+};
+
 export interface IVacationBalance {
   annual_leaves: number;
   leave_excuses: number;

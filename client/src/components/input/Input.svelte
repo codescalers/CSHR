@@ -24,10 +24,10 @@
   // if true the input is invalid && show error message
   // if false the input is valid && hide error message
   /// if null the input is not touched && hide error message
-  export let isError: boolean | null = null;
+  export let isError: boolean | null | Promise<boolean> = null;
   export let isTop: boolean = true;
 
-  export let handleInput: (e: any) => boolean;
+  export let handleInput: (e: any) => boolean | Promise<boolean>;
   // for setting the error function
   const ref = (node: HTMLInputElement) => {
     node.type = type;

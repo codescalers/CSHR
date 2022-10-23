@@ -12,12 +12,14 @@
   export let isLoading = false;
   export let isError = false;
   export let datePickerDisabled = false;
-  export let calculatorValue: number;
+  export let calculatorValue: number = 0;
   export let isUpdate = false;
   export let selectedReason: any = 0;
   export let vacationID: string="";
   export let withReason: boolean = true;
   export let withSubmit: boolean = true;
+  export let showCalclator: boolean = true;
+
   let errorMessage: string = "", successMessage: string = "";
 
   let alertTitle: string, alertClass: string, alertMessage: string, showAlert: boolean;
@@ -49,9 +51,11 @@
       </div>
     </div>
   {/if}
-  <div class="alert alert-light p-0 text-center">
-    Actual value after deducting weekend holidays {calculatorValue}
-  </div>
+  {#if showCalclator}
+    <div class="alert alert-light p-0 text-center">
+      Actual value after deducting weekend holidays {calculatorValue}
+    </div>
+  {/if}
   {#if withSubmit}
     <div>
       <Submit

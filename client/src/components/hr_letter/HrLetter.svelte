@@ -132,11 +132,3 @@
         </div>
     </div>
 </div>
-
-<svelte:head>
-    <style>
-        input {
-            opacity: 1 !important;
-        }
-    </style>
-</svelte:head>

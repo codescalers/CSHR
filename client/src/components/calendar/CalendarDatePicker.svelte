@@ -9,6 +9,7 @@
   export let onlyStart = false;
   export let isLoading = false;
   export let datePickerDisabled = true;
+  export let calculate: boolean = true;
 
   const dispatch = createEventDispatcher();
 
@@ -26,10 +27,12 @@
     },
   };
   async function validateDate(date: string, error_name: string): Promise<boolean> {
-    const vacationCalculator = await Vacation.calculator(startDate, endDate);
-    dispatch('message', {
-			text: vacationCalculator
-		});
+    if (calculate){
+      const vacationCalculator = await Vacation.calculator(startDate, endDate);
+      dispatch('message', {
+        text: vacationCalculator
+      });
+    }
     let check = Date.parse(date);
     if (!check) {
       //it is not a date with format YYYY-MM-DD

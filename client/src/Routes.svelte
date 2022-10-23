@@ -17,6 +17,9 @@
   import Settings from './pages/Settings.svelte';
   import VacationUpdate from './pages/VacationUpdate.svelte';
   import HrLetter from './pages/HrLetter.svelte';
+  import HrLetterDetails from './pages/HrLetterDetails.svelte';
+  import Compensations from './pages/Compensations.svelte';
+  import CompensationsDetails from './pages/CompensationsDetails.svelte';
   
   const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
@@ -33,8 +36,8 @@
     <LoggedRoute path={"notifications/"} component={Notifications}/>
     <LoggedRoute path={"auth/logout/"} component={Logout}/> 
     <LoggedRoute path={"requests/"} component={Requests}/> 
-    <LoggedRoute path={"vacations/:id"} component={VacationDetail}/> 
-    <LoggedRoute path={"vacations/:id/update/"} component={VacationUpdate}/> 
+    <LoggedRoute path={"vacation/:id"} component={VacationDetail}/> 
+    <LoggedRoute path={"vacation/:id/update/"} component={VacationUpdate}/> 
     <LoggedRoute path={"users/"} component={Users}/> 
     <LoggedRoute path={"profile/:user_type/:id"} component={UserProfile} />
     <LoggedRoute path={"profile/:id"} component={UserProfile} />
@@ -42,7 +45,10 @@
     <LoggedRoute path={"team/"} component={Team} /> 
     <LoggedRoute path={'dashboard/'} component={Dashboard}/> 
     <LoggedRoute path={'settings/'} component={Settings}/> 
-    <LoggedRoute path={'hr_letter/'} component={HrLetter}/> 
+    <LoggedRoute path={'hr_letters/'} component={HrLetter}/> 
+    <LoggedRoute path={'hr_letters/:id/'} component={HrLetterDetails}/> 
+    <LoggedRoute path={'compensations/'} component={Compensations}/> 
+    <LoggedRoute path={'compensations/:id'} component={CompensationsDetails}/> 
 
     <Route>
       <Error error={404} />

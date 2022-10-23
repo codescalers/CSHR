@@ -22,9 +22,14 @@ redis_instance = redis.StrictRedis(
 
 def set_notification_request_redis(data: Dict) -> bool:
     """this function set requests notifications"""
-    user = get_user_by_id(data["applying_user"])
+    applying_user = None
+    if type(data["applying_user"]) != int and data.get("applying_user").get("id"):
+        applying_user = data["applying_user"]["id"]
+    else:
+        applying_user = data["applying_user"]
+    user = get_user_by_id(applying_user)
     title = "applying for " + data["type"]
-    created_at = parse_datetime(data["created_at"])
+    created_at = parse_datetime(str(data["created_at"]))
 
     sending_data: Dict = {
         "created_at": f"{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}",
@@ -47,7 +52,7 @@ def set_notification_reply_redis(data: Dict, state: str, event_id: int):
     """this function set accept notifications"""
     approving_user = data.approval_user
     title = f"Your {data.type} request was {state} by {approving_user.full_name}"
-    created_at = parse_datetime(data.created_at)
+    created_at = parse_datetime(str(data.created_at))
     sending_data: Dict = {
         "created_at": f"{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}",
         "title": title,

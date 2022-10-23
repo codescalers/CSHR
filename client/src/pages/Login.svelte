@@ -12,15 +12,13 @@
   let emailValue = '';
   let isErrormail: null | boolean = null;
   let isErrorpass: null | boolean = null;
-  let formDisable = (isErrormail === null ||
-    isErrorpass === null ||
+  let formDisable = (isErrormail === true ||
+    isErrorpass === true ||
     isErrormail ||
     isErrorpass) as boolean;
   
-  $: formDisable = (isErrormail === null ||
-    isErrorpass === null ||
-    isErrormail ||
-    isErrorpass) as boolean;
+  $: formDisable = (isErrormail === true ||
+    isErrorpass === true) as boolean;
 
   const submit = async () => {
     let isError = false;

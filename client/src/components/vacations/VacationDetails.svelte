@@ -11,6 +11,8 @@
     import { tweened } from 'svelte/motion';
     import ActionButton from '../requests/requestsButtons.svelte';
     import { Link } from 'svelte-navigator';
+    import { navigate } from 'svelte-navigator';
+    import Requests from "../../services/axios/requests/requests"
 
     export let isLoading = false;
     export let isError: boolean | null = null;
@@ -54,10 +56,6 @@
             {"user": $UserStore, "comment": `${$UserStore.full_name} ${vacation.status} your vacation`}
         )
     }
-
-    const updateVacation = (vacation: any) => {
-        console.log(vacation);
-    }
 </script>
 
 {#if isError}
@@ -75,15 +73,28 @@
     <div class="container">
         {#if $UserStore.user_type == "Supervisor"}
             <div class="mb-4" style="width: 20%;">
-                <ActionButton showEyeButtonView = {false} request = {vacation} on:message={handleActions}/>
+                <ActionButton request = {vacation} on:message={handleActions}/>
             </div>
         {/if}
         {#if $UserStore.user_type == "User" && vacation.status == RequestStatus.pinding}
-            <Link to="/vacations/{vacation.id}/update" class="abtn btn-primary mb-2 custom-a"
-                style="color: #fff"
-                >
-                <span class="nav_name">Update Vacation</span>
-            </Link>
+            <div class="d-flex display-buttons">
+                <Link to="/vacations/{vacation.id}/update" class="abtn btn-primary mb-2 custom-a"
+                    style="color: #fff"
+                    >
+                    <span class="nav_name">Update Vacation</span>
+                </Link>
+                <button on:click={async() => {
+                    await Requests.delete(vacation);
+                    navigate('/', { replace: true });
+                }} class="abtn btn-danger mb-2 custom-a"
+                    style="color: #fff"
+                    >
+                    <span class="nav_name">Delete vacation</span>
+                </button>
+            </div>
+            <small class="text-muted text-center">
+                Hint: Once you click on the delete button the request will delete without any confirmation
+            </small>
         {/if}
         <div class="card p-4 d-flex justify-content-center">
             <div class="row">
@@ -256,5 +267,9 @@
 
     .custom-a:hover{
         color: #fff !important;
+    }
+    .display-buttons{
+        flex-direction: column;
+        width: 20%
     }
 </style>

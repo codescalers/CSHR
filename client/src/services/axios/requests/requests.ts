@@ -15,14 +15,20 @@ class Requests {
 			value.type = "HR letters";
 			request.push(value);
 		});
+		
+		data.compensations.forEach(function (value: any) {
+			value.type = "Compensations";
+			request.push(value);
+		});
 	
 		document.body.style.cursor = "default";
 		return request;
 	}
 
-	public async approve(incomingData: Object | JSON, id: number) {
+	public async approve(incomingData: any, id: number) {
+		console.log(incomingData);
 		try {
-			const { data, status, statusText } = await http.put(`/vacations/approve/${id}/`, incomingData);
+			const { data, status, statusText } = await http.put(`/${incomingData.type.toLowerCase()}/approve/${id}/`, incomingData);
 			if (status !== 202) {
 				throw new Error(
 					"Error while approving this request." +
@@ -33,14 +39,13 @@ class Requests {
 			}
 			return data.results;
 		} catch (err) {
-			console.error(this.errorMessage + err);
-			throw new Error(err);
+			throw new Error(err.response.data.message);
 		}
 	}
 
-	public async reject(incomingData: Object | JSON, id: number) {
+	public async reject(incomingData: any, id: number) {
 		try {
-			const { data, status, statusText } = await http.put(`/vacations/reject/${id}/`, incomingData);
+			const { data, status, statusText } = await http.put(`/${incomingData.type.toLowerCase()}/reject/${id}/`, incomingData);
 			if (status !== 202) {
 				throw new Error(
 					"Error while approving this request." +
@@ -51,8 +56,23 @@ class Requests {
 			}
 			return data.results;
 		} catch (err) {
-			console.error(this.errorMessage + err);
-			throw new Error(err);
+			throw new Error(err.response.data.message);
+		}
+	}
+	public async delete(incomingData: any) {
+		try {
+			const { data, status, statusText } = await http.delete(`/${incomingData.type.toLowerCase()}/${incomingData.id}/`);
+			if (status !== 204) {
+				throw new Error(
+					"Error while approving this request." +
+            status +
+            " wtih status text : " +
+            statusText
+				);
+			}
+			return data.results;
+		} catch (err) {
+			throw new Error(err.response.data.message);
 		}
 	}
 }
