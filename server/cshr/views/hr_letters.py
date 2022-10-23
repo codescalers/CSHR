@@ -21,8 +21,7 @@ from server.cshr.services.hr_letters import get_hr_letter_by_user
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.celery.send_email import send_email_for_reply
-from server.cshr.celery.send_email import send_email_for_request
+from server.cshr.celery.send_email import send_email_for_reply, send_email_for_request
 from server.cshr.utils.email_messages_templates import (
     get_hr_letter_request_email_template,
 )

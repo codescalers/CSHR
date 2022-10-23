@@ -3,7 +3,7 @@ from rest_framework.serializers import (
     SerializerMethodField,
 )
 from server.cshr.models.official_documents import OffcialDocument
-from server.cshr.serializers.users import BaseUserSerializer
+from server.cshr.serializers.users import TeamSerializer
 
 
 class OffcialDocumentSerializer(ModelSerializer):
@@ -18,11 +18,11 @@ class OffcialDocumentSerializer(ModelSerializer):
         model = OffcialDocument
         fields = ["document", "applying_user", "status", "type", "created_at", "id"]
 
-    def get_applying_user(self, obj: OffcialDocument) -> BaseUserSerializer:
+    def get_applying_user(self, obj: OffcialDocument) -> TeamSerializer:
         """
         this function return request's applying user
         """
-        return BaseUserSerializer(obj.applying_user).data
+        return TeamSerializer(obj.applying_user).data
 
     def get_status(self, obj: OffcialDocument) -> str:
         """

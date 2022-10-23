@@ -6,7 +6,9 @@ from server.cshr.services.hr_letters import (
     filter_hr_letter_by_pinding_status,
     get_hr_letter_by_user,
 )
-from server.cshr.services.official_documents import filter_all_official_docs_by_pinding_status
+from server.cshr.services.official_documents import (
+    filter_all_official_docs_by_pinding_status,
+)
 from server.cshr.services.vacations import (
     filter_user_vacations,
     filter_vacations_by_pending_status,

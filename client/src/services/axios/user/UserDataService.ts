@@ -14,7 +14,7 @@ class UserDataService {
 	public async getUserDocuments(id: number) {
 		try {
 			return await (
-				await http.get(`/hrletter/docs/${id}/`)
+				await http.get(`/hr_letters/docs/${id}/`)
 			).data.results;
 		} catch (err) {
 			console.error(this.errorMessage + err);
@@ -36,7 +36,7 @@ class UserDataService {
 		image: string;
 	}) {
 		try {
-			await http.post("hrletter/docs/", data);
+			await http.post("hr_letters/docs/", data);
 		} catch (err) {
 			console.error(this.errorMessage + err);
 		}

@@ -2,9 +2,11 @@
     import { onMount } from 'svelte';
     import Vacation from '../../services/axios/vacations/Vacation';
 
+    export let user: any;
+
     let vacationBalance: any = null;
     onMount(async () => {
-        vacationBalance = await Vacation.balance();
+        vacationBalance = await Vacation.balance(user.id);
     });
 </script>
 

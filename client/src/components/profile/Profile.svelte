@@ -75,7 +75,7 @@
           <div class="row">
             <Company bind:companies={user.user_company_properties} />
           </div>
-          <VacationBalance />
+          <VacationBalance user={user}/>
         {/if}
         {#if $UserStore.user_type === 'Admin' || $UserStore.id === id}
           <div class="row">
