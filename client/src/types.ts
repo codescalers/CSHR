@@ -168,11 +168,15 @@ export type VacationBalanceType = {
 };
 
 export type HRLetterType = {
+  applying_user?: UserInterface;
+  approval_user?: UserInterface;
+  id?: number;
   addresses: string;
   with_date: boolean;
   with_salary_mentioned: boolean;
   from_date?: string|null;
   end_date?: string|null;
+  status?: string;
 };
 
 export type CompensationType = {

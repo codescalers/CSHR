@@ -1,5 +1,6 @@
 from server.cshr.serializers.hr_letters import (
     HrLetterSerializer,
+    LandingPageHrLetterSerializer,
     UserDocumentsSerializer,
 )
 from server.cshr.serializers.hr_letters import HrLetterUpdateSerializer
@@ -107,7 +108,7 @@ class BaseUserDocumentsAPIView(ListAPIView, GenericAPIView):
 
 class HrLetterApiView(ListAPIView, GenericAPIView):
 
-    serializer_class = HrLetterSerializer
+    serializer_class = LandingPageHrLetterSerializer
     permission_classes = (UserIsAuthenticated,)
 
     def get(self, request: Request, id: str, format=None) -> Response:
@@ -117,7 +118,7 @@ class HrLetterApiView(ListAPIView, GenericAPIView):
             return CustomResponse.not_found(
                 message="hr_letter not found", status_code=404
             )
-        serializer = HrLetterSerializer(hr_letter)
+        serializer = self.get_serializer(hr_letter)
 
         return CustomResponse.success(
             data=serializer.data, message="hr_letter found", status_code=200

@@ -3,10 +3,16 @@ import http from "../http-common";
 
 
 class HRLetterDataService {
-	errorMessage = "Error in Hr Letter Data Service: ";
 	public async post(data: HRLetterType) {
 		try {
 			return await http.post("/hr_letters/", data);
+		} catch (err) {
+			throw new Error(err.response.data.message);
+		}
+	}
+	public async getByID(id: number) {
+		try {
+			return await http.get(`/hr_letters/${id}/`);
 		} catch (err) {
 			throw new Error(err.response.data.message);
 		}
