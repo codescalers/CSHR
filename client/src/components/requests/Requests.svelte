@@ -63,9 +63,13 @@
             <td>
               <p class="fw-bold mb-1">{request.type}</p>
               <p class="text-muted mb-0">
-                {request.type == 'HR letters'
-                  ? request.addresses
-                  : request.reason}
+                {#if request.type == 'HR letters'}
+                  {request.addresses}
+                {:else if request.type == "Official documents"}
+                  {request.document}
+                {:else}
+                  {request.reason}
+                {/if}
               </p>
             </td>
             <td>

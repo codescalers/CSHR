@@ -6,7 +6,11 @@ from server.cshr.serializers.hr_letters import (
 from server.cshr.serializers.hr_letters import HrLetterUpdateSerializer
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import IsAdmin, UserIsAuthenticated, IsSupervisor
+from server.cshr.api.permission import (
+    IsAdmin,
+    UserIsAuthenticated,
+    IsSupervisor,
+)
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.hr_letters import (
     filter_all_docs_based_on_user,
@@ -184,7 +188,9 @@ class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
 
 
 class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
-    permission_classes = [ IsAdmin, ]
+    permission_classes = [
+        IsAdmin,
+    ]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         hr_letter = get_hrLetter_by_id(id=id)
@@ -210,7 +216,9 @@ class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
 
 
 class HrLetterRejectApiView(ListAPIView, GenericAPIView):
-    permission_classes = [ IsAdmin, ]
+    permission_classes = [
+        IsAdmin,
+    ]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         hr_letter = get_hrLetter_by_id(id=id)

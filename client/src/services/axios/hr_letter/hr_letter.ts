@@ -10,6 +10,13 @@ class HRLetterDataService {
 			throw new Error(err.response.data.message);
 		}
 	}
+	public async postOfficialDocument(data: any) {
+		try {
+			return await http.post("/official_documents/", data);
+		} catch (err) {
+			throw new Error(err.response.data.message);
+		}
+	}
 	public async getByID(id: number) {
 		try {
 			return await http.get(`/hr_letters/${id}/`);

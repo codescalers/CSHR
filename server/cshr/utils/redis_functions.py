@@ -42,6 +42,7 @@ def set_notification_request_redis(data: Dict) -> bool:
     if (
         sending_data.get("type") == TYPE_CHOICES.COMPENSATION
         or sending_data.get("type") == TYPE_CHOICES.HR_LETTERS
+        or sending_data.get("type") == TYPE_CHOICES.OFFICIAL_DOCUMENT
     ):
         admins: User = User.objects.filter(user_type=USER_TYPE.ADMIN)
         for admin in admins:

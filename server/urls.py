@@ -28,6 +28,7 @@ urlpatterns = [
                 path("hr_letters/", include("server.cshr.routs.hr_letters")),
                 path("vacations/", include("server.cshr.routs.vacations")),
                 path("requests/", include("server.cshr.routs.requests")),
+                path("official_documents/", include("server.cshr.routs.official_documents")),
                 path(
                     "company_properties/",
                     include("server.cshr.routs.company_properties"),

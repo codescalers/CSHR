@@ -1,9 +1,12 @@
 """   this file will contain functions to make union for all request types """
+from server.cshr.models.official_documents import OffcialDocument
+from server.cshr.serializers.official_documents import OffcialDocumentSerializer
 from server.cshr.models.users import USER_TYPE, User
 from server.cshr.services.hr_letters import (
     filter_hr_letter_by_pinding_status,
     get_hr_letter_by_user,
 )
+from server.cshr.services.official_documents import filter_all_official_docs_by_pinding_status
 from server.cshr.services.vacations import (
     filter_user_vacations,
     filter_vacations_by_pending_status,
@@ -34,11 +37,15 @@ def requests_format_response(user: User) -> Dict:
         compensations: List[Compensation] = LandingPageCompensationSerializer(
             get_compensations_by_user(user), many=True
         ).data
+        official_docs: List[OffcialDocument] = []
     elif user.user_type == USER_TYPE.ADMIN:
         hr_letters: List[HrLetters] = LandingPageHrLetterSerializer(
             filter_hr_letter_by_pinding_status(), many=True
         ).data
         vacations: List[Vacation] = []
+        official_docs: List[OffcialDocument] = OffcialDocumentSerializer(
+            filter_all_official_docs_by_pinding_status(), many=True
+        ).data
         compensations: List[Compensation] = LandingPageCompensationSerializer(
             filter_all_compensations_by_pinding_status(), many=True
         ).data
@@ -49,8 +56,11 @@ def requests_format_response(user: User) -> Dict:
         ).data
         hr_letters: List[HrLetters] = []
         compensations: List[Compensation] = []
+        official_docs: List[OffcialDocument] = []
+
     response: Dict = {}
     response["vacations"] = vacations[::-1]
     response["hr_letters"] = hr_letters[::-1]
     response["compensations"] = compensations[::-1]
+    response["official_docs"] = official_docs[::-1]
     return response

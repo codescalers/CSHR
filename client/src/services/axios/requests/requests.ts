@@ -20,6 +20,11 @@ class Requests {
 			value.type = "Compensations";
 			request.push(value);
 		});
+
+		data.official_docs.forEach(function (value: any) {
+			value.type = "Official documents";
+			request.push(value);
+		});
 	
 		document.body.style.cursor = "default";
 		return request;

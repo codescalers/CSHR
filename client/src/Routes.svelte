@@ -21,6 +21,7 @@
   import Compensations from './pages/Compensations.svelte';
   import CompensationsDetails from './pages/CompensationsDetails.svelte';
   import CompensationsUpdate from './pages/CompensationsUpdate.svelte';
+  import OffcialDocument from './pages/OffcialDocument.svelte';
   
   const mode = localStorage.getItem('mode') as 'light' | 'dark' | null;
 
@@ -51,6 +52,7 @@
     <LoggedRoute path={'compensations/'} component={Compensations}/> 
     <LoggedRoute path={'compensations/:id'} component={CompensationsDetails}/> 
     <LoggedRoute path={'compensations/:id/update'} component={CompensationsUpdate}/> 
+    <LoggedRoute path={'offcial-document/'} component={OffcialDocument}/> 
 
     <Route>
       <Error error={404} />
