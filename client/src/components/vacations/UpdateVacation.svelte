@@ -3,6 +3,9 @@
     import CalendarDatePicker from '../calendar/CalendarDatePicker.svelte';
     import Vacation from '../../services/axios/vacations/Vacation';
     import { onMount } from 'svelte';
+    import { RequestStatus } from '../../services/utils/enums';
+    import { Route } from 'svelte-navigator';
+    import Error from '../../pages/Error.svelte';
 
     export let isLoading = false;
     export let isError: boolean | null = null;
@@ -34,7 +37,12 @@
     };
   
   </script>
-  
+{#if vacation && vacation.status != RequestStatus.pinding}
+    <Route>
+        <Error error={404} />
+    </Route>
+{/if}
+
 <div class="container" style="width: 30%;">
     {#if startDate && endDate}
         <CalendarDatePicker

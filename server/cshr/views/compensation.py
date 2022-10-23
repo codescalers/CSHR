@@ -8,7 +8,7 @@ from ..serializers.compensation import (
 from ..api.response import CustomResponse
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import IsUser, UserIsAuthenticated, IsSupervisor
+from server.cshr.api.permission import IsAdmin, IsUser, UserIsAuthenticated, IsSupervisor
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.compensation import (
     get_all_compensations,
@@ -128,7 +128,7 @@ class CompensationUserApiView(ListAPIView, GenericAPIView):
 
 class CompensationUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = CompensationUpdateSerializer
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsUser]
     """method to update a Compensation by id"""
 
     def put(self, request: Request, id: str, format=None) -> Response:
@@ -138,7 +138,7 @@ class CompensationUpdateApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(compensation, data=request.data, partial=True)
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
-            serializer.save(approval_user=current_user)
+            serializer.save()
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             msg = get_compensation_reply_email_template(current_user, compensation, url)
             bool = send_email_for_reply.delay(
@@ -163,7 +163,7 @@ class CompensationUpdateApiView(ListAPIView, GenericAPIView):
 
 
 class CompensationAcceptApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         compensation = get_compensation_by_id(id=id)
@@ -190,7 +190,7 @@ class CompensationAcceptApiView(ListAPIView, GenericAPIView):
 
 
 class CompensationRejectApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         compensation = get_compensation_by_id(id=id)
