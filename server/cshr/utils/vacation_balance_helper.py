@@ -139,27 +139,31 @@ class StanderdVacationBalance:
             if not day.strftime("%A") in weekend:
                 actual_days.append(day)
         return len(actual_days)
-    
+
     def vacation_update_balance(self, vacation: Vacation):
         """
-            This method will used when user wants to update his vacation request and the reaseon changed.
-            the actual value of old reason must return.
-        """ 
+        This method will used when user wants to update his vacation request and the reaseon changed.
+        the actual value of old reason must return.
+        """
         old_days: int = self.remove_weekends(
             vacation.applying_user, vacation.from_date, vacation.end_date
         )
         reason: str = vacation.reason
         this_month: int = datetime.datetime.now().month
-        balance: VacationBalance = VacationBalance.objects.get(user=vacation.applying_user)
+        balance: VacationBalance = VacationBalance.objects.get(
+            user=vacation.applying_user
+        )
         get_actual_reason_value = getattr(balance, reason)
         if vacation.taked_from_old_balance and this_month < 3:
             return self.update_user_balance(
                 vacation.applying_user,
                 reason,
                 balance.old_balance.get(reason) + old_days,
-                taked_from_old_balance = vacation.taked_from_old_balance
+                taked_from_old_balance=vacation.taked_from_old_balance,
             )
-        return self.update_user_balance(vacation.applying_user, reason, get_actual_reason_value + old_days)
+        return self.update_user_balance(
+            vacation.applying_user, reason, get_actual_reason_value + old_days
+        )
 
     def check_balance(
         self,
@@ -167,7 +171,7 @@ class StanderdVacationBalance:
         vacation: Vacation,
         reason: str,
         start_date: datetime,
-        end_date: datetime
+        end_date: datetime,
     ):
         self.check(user)
 
@@ -184,21 +188,27 @@ class StanderdVacationBalance:
                 if old_balance >= vacation_days and this_month < 3:
                     self.set_taked_from_old_balance(vacation)
                     return self.update_user_balance(
-                        user, reason, old_balance-vacation_days,
-                        taked_from_old_balance = vacation.taked_from_old_balance
+                        user,
+                        reason,
+                        old_balance - vacation_days,
+                        taked_from_old_balance=vacation.taked_from_old_balance,
                     )
                 return self.update_user_balance(user, reason, new_value)
             return (
                 f"You only have {old_balance+curr_balance} days left of reason {reason}"
             )
+
     def set_taked_from_old_balance(self, vacation: Vacation):
         """Update vacation with taked from ild balance to return the value to old balance when user update his request."""
         vacation.taked_from_old_balance = True
         vacation.save()
 
     def update_user_balance(
-        self, user: User, reason: REASON_CHOICES, new_value: int,
-        taked_from_old_balance: bool = False
+        self,
+        user: User,
+        reason: REASON_CHOICES,
+        new_value: int,
+        taked_from_old_balance: bool = False,
     ) -> VacationBalance:
         """
         Set new value based on field name -> reason.
@@ -212,8 +222,8 @@ class StanderdVacationBalance:
                 balance.old_balance[reason] = new_value
                 balance.save()
                 return True
-            return f"Old balance has no attrbute named {reason}"    
-        
+            return f"Old balance has no attrbute named {reason}"
+
         if hasattr(balance, reason):
             setattr(balance, reason, new_value)
             balance.save()
@@ -233,7 +243,7 @@ class StanderdVacationBalance:
             return 0
         else:
             return user.vacationbalance.old_balance[reason]
-    
+
     def old_balance_format(self, user: User) -> VacationBalance:
         """
         This function takes a user as an argument and

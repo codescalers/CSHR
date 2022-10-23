@@ -29,15 +29,11 @@ app.conf.beat_schedule = {
     },
     "user_old_balance_format": {
         "task": "user_old_balance_format",
-        "schedule": crontab(
-            month_of_year="1", day_of_month=1, hour=8, minute=30
-        ),
+        "schedule": crontab(month_of_year="1", day_of_month=1, hour=8, minute=30),
     },
     "user_resetting_old_balance": {
         "task": "user_resetting_old_balance",
-        "schedule": crontab(
-            month_of_year="3", day_of_month=1, hour=8, minute=30
-        ),
+        "schedule": crontab(month_of_year="3", day_of_month=1, hour=8, minute=30),
     },
 }
 
@@ -129,6 +125,7 @@ def send_email():
         )
         send_mail(mail_title, msg, settings.EMAIL_HOST_USER, admins_emails)
 
+
 @app.task(name="send_quarter_evaluation_email")
 def send_quarter_evaluation_email():
     from server.cshr.models.users import USER_TYPE
@@ -147,6 +144,7 @@ def send_quarter_evaluation_email():
         supervisors_emails,
     )
 
+
 @app.task(name="user_old_balance_format")
 def user_old_balance_format():
     from server.cshr.models.users import User
@@ -157,6 +155,7 @@ def user_old_balance_format():
     for user in users:
         v.old_balance_format(user)
 
+
 @app.task(name="user_resetting_old_balance")
 def user_resetting_old_balance():
     from server.cshr.models.users import User
@@ -166,6 +165,7 @@ def user_resetting_old_balance():
     v = StanderdVacationBalance()
     for user in users:
         v.resetting_old_balance(user)
+
 
 @shared_task()
 def send_email_for_request(user_id, msg, mail_title) -> Response:

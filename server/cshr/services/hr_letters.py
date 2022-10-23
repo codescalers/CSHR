@@ -25,5 +25,6 @@ def filter_all_docs_based_on_user(user: User):
     """Return all user docs"""
     return UserDocuments.objects.filter(user=user)
 
+
 def filter_hr_letter_by_pinding_status():
     return HrLetters.objects.filter(status=STATUS_CHOICES.PENDING)

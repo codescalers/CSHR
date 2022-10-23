@@ -8,6 +8,7 @@ from server.cshr.serializers.users import BaseUserSerializer, TeamSerializer
 
 class CompensationSerializer(ModelSerializer):
     """class CompensationSerializer to serialize the user obj"""
+
     applying_user = SerializerMethodField()
     approval_user = SerializerMethodField()
     status = SerializerMethodField()
@@ -25,17 +26,17 @@ class CompensationSerializer(ModelSerializer):
             "status",
             "type",
             "created_at",
-            "id"
+            "id",
         ]
-    
+
     def get_applying_user(self, obj: Compensation) -> TeamSerializer:
         """Return an obj of user"""
         return TeamSerializer(obj.applying_user).data
-    
+
     def get_status(self, obj: Compensation) -> str:
         """Return the actual string of status"""
         return obj.status
-    
+
     def get_type(self, obj: Compensation) -> str:
         """Return the actual string of type"""
         return obj.type
@@ -43,10 +44,14 @@ class CompensationSerializer(ModelSerializer):
     def get_created_at(self, obj: Compensation) -> str:
         """Return the actual string of created_at"""
         return obj.created_at
-    
+
     def get_approval_user(self, obj: Compensation) -> TeamSerializer:
         """Return an obj of user"""
-        return TeamSerializer(obj.approval_user).data if obj.approval_user is not None else None
+        return (
+            TeamSerializer(obj.approval_user).data
+            if obj.approval_user is not None
+            else None
+        )
 
 
 class CompensationUpdateSerializer(ModelSerializer):

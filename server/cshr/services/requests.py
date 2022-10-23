@@ -1,8 +1,17 @@
 """   this file will contain functions to make union for all request types """
 from server.cshr.models.users import USER_TYPE, User
-from server.cshr.services.hr_letters import filter_hr_letter_by_pinding_status, get_all_hrLetters, get_hr_letter_by_user
-from server.cshr.services.vacations import filter_user_vacations, filter_vacations_by_pending_status, filter_user_vacations_by_pending_status
-from server.cshr.services.compensation import filter_all_compensations_by_pinding_status, get_all_compensations, get_compensations_by_user
+from server.cshr.services.hr_letters import (
+    filter_hr_letter_by_pinding_status,
+    get_hr_letter_by_user,
+)
+from server.cshr.services.vacations import (
+    filter_user_vacations,
+    filter_vacations_by_pending_status,
+)
+from server.cshr.services.compensation import (
+    filter_all_compensations_by_pinding_status,
+    get_compensations_by_user,
+)
 from typing import List, Dict
 from server.cshr.models.hr_letters import HrLetters
 from server.cshr.models.compensation import Compensation

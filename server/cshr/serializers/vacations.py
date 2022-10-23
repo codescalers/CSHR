@@ -65,7 +65,9 @@ class LandingPageVacationsSerializer(ModelSerializer):
 
 class VacationBalanceSerializer(ModelSerializer):
     """Class user balance to update user balance."""
+
     user = SerializerMethodField()
+
     class Meta:
         model = VacationBalance
         fields = [
@@ -76,13 +78,13 @@ class VacationBalanceSerializer(ModelSerializer):
             "annual_leaves",
             "emergency_leaves",
             "leave_excuses",
-            "public_holidays"
+            "public_holidays",
         ]
-    
+
     def get_user(self, obj: User):
         """This method to return user data instead of his id"""
         return TeamSerializer(obj.user).data
-    
+
 
 class UserBalanceUpdateSerializer(serializers.Serializer):
     ids = serializers.JSONField(default=list)

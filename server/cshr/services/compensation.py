@@ -14,6 +14,7 @@ def get_all_compensations() -> Compensation:
     """Return all compensations"""
     return Compensation.objects.all()
 
+
 def filter_all_compensations_by_pinding_status() -> Compensation:
     """Return all compensations"""
     return Compensation.objects.filter(status=STATUS_CHOICES.PENDING)

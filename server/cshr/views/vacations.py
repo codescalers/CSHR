@@ -10,7 +10,12 @@ from server.cshr.serializers.vacations import (
     VacationBalanceSerializer,
     UserBalanceUpdateSerializer,
 )
-from server.cshr.api.permission import IsSupervisor, IsUser, UserIsAuthenticated, IsAdmin
+from server.cshr.api.permission import (
+    IsSupervisor,
+    IsUser,
+    UserIsAuthenticated,
+    IsAdmin,
+)
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
@@ -106,7 +111,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             )
             balance = v.check_balance(
                 user=request.user,
-                vacation = saved,
+                vacation=saved,
                 reason=serializer.validated_data.get("reason"),
                 start_date=serializer.validated_data.get("from_date"),
                 end_date=serializer.validated_data.get("end_date"),
@@ -191,7 +196,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
                 reason=serializer.validated_data.get("reason"),
                 start_date=serializer.validated_data.get("from_date"),
                 end_date=serializer.validated_data.get("end_date"),
-                vacation=vacation
+                vacation=vacation,
             )
             if balance is not True:
                 return CustomResponse.bad_request(message=balance)
@@ -363,7 +368,9 @@ class UserVacationBalanceApiView(GenericAPIView):
         if not user_id.isdigit():
             return CustomResponse.bad_request(message="Invalid user id.")
         if user_id is None:
-            return CustomResponse.bad_request(message="You must send `user_id` as a query_params.")
+            return CustomResponse.bad_request(
+                message="You must send `user_id` as a query_params."
+            )
         user: User = get_user_by_id(user_id)
         if user is None:
             return CustomResponse.not_found(message="User not found.")
@@ -373,14 +380,16 @@ class UserVacationBalanceApiView(GenericAPIView):
         return CustomResponse.success(
             message="Baance founded.", data=self.get_serializer(balance).data
         )
-    
-    def put(self, request:Request) -> CustomResponse:
+
+    def put(self, request: Request) -> CustomResponse:
         """Use this endpoint to update user balance"""
         user_id = request.query_params.get("user_id")
         if not user_id.isdigit():
             return CustomResponse.bad_request(message="Invalid user id.")
         if user_id is None:
-            return CustomResponse.bad_request(message="You must send `user_id` as a query_params.")
+            return CustomResponse.bad_request(
+                message="You must send `user_id` as a query_params."
+            )
         user: User = get_user_by_id(user_id)
         v: StanderdVacationBalance = StanderdVacationBalance()
         v.check(user)
@@ -388,24 +397,19 @@ class UserVacationBalanceApiView(GenericAPIView):
         serializer = self.get_serializer(user_balance, data=request.data)
         if serializer.is_valid():
             print(user)
-            if request.data.get("delete_old_balance") == True:   
-                serializer.save(
-                    old_balance={},
-                    user = user
-                )
+            if request.data.get("delete_old_balance") is True:
+                serializer.save(old_balance={}, user=user)
             else:
-                serializer.save(user = user)
+                serializer.save(user=user)
             return CustomResponse.success(
                 message="Successfully updated user balance",
                 status_code=202,
-                data=serializer.data
+                data=serializer.data,
             )
         return CustomResponse.bad_request(
             message="Please make sure that you entered a valid data",
-            error=serializer.errors
+            error=serializer.errors,
         )
-
-
 
 
 class CalculateVacationDaysApiView(GenericAPIView):

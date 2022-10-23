@@ -64,15 +64,15 @@ def get_vacation_based_on_request(request_: Requests):
     except Vacation.DoesNotExist:
         return None
 
+
 def filter_user_vacations_by_pending_status(user: User) -> Vacation:
     """Return all vacations that has pending status and related to user"""
     return Vacation.objects.filter(
         status=STATUS_CHOICES.PENDING,
-        applying_user = user,
-    ).order_by('created_at')
+        applying_user=user,
+    ).order_by("created_at")
+
 
 def filter_user_vacations(user: User) -> Vacation:
     """Return all vacations that has pending status and related to user"""
-    return Vacation.objects.filter(
-        applying_user = user
-    ).order_by('created_at')
+    return Vacation.objects.filter(applying_user=user).order_by("created_at")

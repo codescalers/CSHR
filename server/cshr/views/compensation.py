@@ -78,7 +78,9 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
 class CompensationApiView(ListAPIView, GenericAPIView):
 
     serializer_class = CompensationSerializer
-    permission_class = [IsUser,]
+    permission_class = [
+        IsUser,
+    ]
 
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete a Compensation by id"""
@@ -86,7 +88,9 @@ class CompensationApiView(ListAPIView, GenericAPIView):
         if compensation is None:
             return CustomResponse.not_found(message="Compensation not found")
         if compensation.status != STATUS_CHOICES.PENDING:
-            return CustomResponse.bad_request(message="You can only delete requests with pinding status.")
+            return CustomResponse.bad_request(
+                message="You can only delete requests with pinding status."
+            )
         if compensation.applying_user != request.user:
             return CustomResponse.unauthorized()
         compensation.delete()
