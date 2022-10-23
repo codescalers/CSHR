@@ -7,8 +7,8 @@ authors = ["Mahmoud-Emad <mahmmoud.hassanein@gmail.com>"]
 
 
 [tool.poetry.dependencies]
-python = "^3.8"
-Django = "^4.0"
+python = "^3.8.1"
+Django = "^4.0.1"
 drf-yasg = "^1.21.3"
 djangorestframework = "^3.13.1"
 django-debug-toolbar = "^3.5.0"
