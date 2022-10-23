@@ -7,7 +7,7 @@ authors = ["Mahmoud-Emad <mahmmoud.hassanein@gmail.com>"]
 
 
 [tool.poetry.dependencies]
-python = "3.8.10"
+python = "3.8.15"
 Django = "4.0.8"
 drf-yasg = "1.21.3"
 djangorestframework = "3.13.1"
