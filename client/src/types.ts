@@ -179,8 +179,8 @@ export type CompensationType = {
   reason: string;
   from_date: string;
   end_date: string;
-  applying_user?: GeneralUserInterface | number;
-  approval_user?: GeneralUserInterface;
+  applying_user?: UserInterface;
+  approval_user?: UserInterface;
   status?: string;
   type?: string;
   id?: number;

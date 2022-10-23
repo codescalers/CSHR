@@ -26,9 +26,9 @@ class Requests {
 	}
 
 	public async approve(incomingData: any, id: number) {
-		console.log(incomingData);
+		const type: string = incomingData.type.toLowerCase().replace(" ", "_")
 		try {
-			const { data, status, statusText } = await http.put(`/${incomingData.type.toLowerCase()}/approve/${id}/`, incomingData);
+			const { data, status, statusText } = await http.put(`/${type}/approve/${id}/`, incomingData);
 			if (status !== 202) {
 				throw new Error(
 					"Error while approving this request." +
@@ -44,8 +44,9 @@ class Requests {
 	}
 
 	public async reject(incomingData: any, id: number) {
+		const type: string = incomingData.type.toLowerCase().replace(" ", "_")
 		try {
-			const { data, status, statusText } = await http.put(`/${incomingData.type.toLowerCase()}/reject/${id}/`, incomingData);
+			const { data, status, statusText } = await http.put(`/${type}/reject/${id}/`, incomingData);
 			if (status !== 202) {
 				throw new Error(
 					"Error while approving this request." +

@@ -8,7 +8,12 @@ from ..serializers.compensation import (
 from ..api.response import CustomResponse
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import IsAdmin, IsUser, UserIsAuthenticated, IsSupervisor
+from server.cshr.api.permission import (
+    IsAdmin,
+    IsUser,
+    UserIsAuthenticated,
+    IsSupervisor,
+)
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.compensation import (
     get_all_compensations,
@@ -173,9 +178,10 @@ class CompensationAcceptApiView(ListAPIView, GenericAPIView):
         compensation.approval_user = current_user
         compensation.status = STATUS_CHOICES.APPROVED
         compensation.save()
-        url = request.build_absolute_uri()
-        bool1 = set_notification_reply_redis(compensation, "accepted", url)
-        msg = get_compensation_reply_email_template(current_user, compensation, url)
+        bool1 = set_notification_reply_redis(compensation, "accepted", compensation.id)
+        msg = get_compensation_reply_email_template(
+            current_user, compensation, compensation.id
+        )
         bool2 = send_email_for_reply.delay(
             current_user.id, compensation.applying_user.id, msg, "Compensation reply"
         )
@@ -200,9 +206,10 @@ class CompensationRejectApiView(ListAPIView, GenericAPIView):
         compensation.approval_user = current_user
         compensation.status = STATUS_CHOICES.REJECTED
         compensation.save()
-        url = request.build_absolute_uri()
-        bool1 = set_notification_reply_redis(compensation, "rejected", url)
-        msg = get_compensation_reply_email_template(current_user, compensation, url)
+        bool1 = set_notification_reply_redis(compensation, "rejected", compensation.id)
+        msg = get_compensation_reply_email_template(
+            current_user, compensation, compensation.id
+        )
         bool2 = send_email_for_reply.delay(
             current_user.id, compensation.applying_user.id, msg, "Compensation reply"
         )

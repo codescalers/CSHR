@@ -4,7 +4,8 @@ import redis
 import json
 from django.core.exceptions import ImproperlyConfigured
 from server.components import config
-from server.cshr.models.users import User
+from server.cshr.models.requests import TYPE_CHOICES
+from server.cshr.models.users import USER_TYPE, User
 from server.cshr.serializers.users import TeamSerializer
 from server.cshr.services.users import get_user_by_id
 
@@ -38,13 +39,23 @@ def set_notification_request_redis(data: Dict) -> bool:
         "event_id": str(data["id"]),
         "user": json.dumps(TeamSerializer(user).data),
     }
-    approving_users = user.reporting_to.all()
-    for approving_user in approving_users:
-        hashname = (
-            "user" + str(approving_user.id) + ":" + data["type"] + str(data["id"])
-        )
-        redis_instance.hmset(hashname, sending_data)
-        redis_instance.expire(hashname, 30 * 3600 * 24)
+    if (
+        sending_data.get("type") == TYPE_CHOICES.COMPENSATION
+        or sending_data.get("type") == TYPE_CHOICES.HR_LETTERS
+    ):
+        admins: User = User.objects.filter(user_type=USER_TYPE.ADMIN)
+        for admin in admins:
+            hashname = "user" + str(admin.id) + ":" + data["type"] + str(data["id"])
+            redis_instance.hmset(hashname, sending_data)
+            redis_instance.expire(hashname, 30 * 3600 * 24)
+    else:
+        approving_users = user.reporting_to.all()
+        for approving_user in approving_users:
+            hashname = (
+                "user" + str(approving_user.id) + ":" + data["type"] + str(data["id"])
+            )
+            redis_instance.hmset(hashname, sending_data)
+            redis_instance.expire(hashname, 30 * 3600 * 24)
     return True
 
 

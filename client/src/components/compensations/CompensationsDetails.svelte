@@ -90,8 +90,8 @@
                     <p>Applying User</p>
                 </div>
                 <div class="col-6 d-flex">
-                    <ProfileImage user={compensation.applying_user}/>
                     {#if compensation.applying_user != undefined}
+                        <ProfileImage user={compensation.applying_user}/>
                         <p class="p-2">{compensation.applying_user.full_name}</p>
                     {/if}
                 </div>
