@@ -51,7 +51,7 @@
           {#if isClose}
             <button
               type="button"
-              class="btn btn-secondary"
+              class="abtn btn-secondary"
               data-bs-dismiss="modal"
               data-bs-target="#modal"
             >
@@ -60,7 +60,7 @@
           {/if}
           {#if isDelete}
             <button
-              class="btn  btn-danger"
+              class="abtn btn-danger"
               data-bs-dismiss="modal"
               data-bs-target="#modal"
               aria-label="Close"
@@ -71,7 +71,7 @@
           {/if}
           {#if isDone}
             <button
-              class="btn  btn-success"
+              class="abtn btn-success"
               data-bs-dismiss="modal"
               data-bs-target="#modal"
               aria-label="Close"

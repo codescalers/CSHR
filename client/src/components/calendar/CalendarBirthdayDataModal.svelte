@@ -1,26 +1,11 @@
 <script lang="ts">
-  //  import { ConfettiExplosion } from "svelte-confetti-explosion";
-  export let item: birthDateItemType;
-
-  onMount(() => {
-    /*  const confetti = new ConfettiExplosion({
-      props: {
-        colors: ["#2986cc", "#FB5858"],
-        duration: 5000,
-      },
-    });
-    {
-      confetti.start();
-    } */
-  });
   import type {
     birthDateItemType,
     userType,
   } from '../../services/axios/home/types';
-  import { UserStore } from '../../stores';
   import Modal from '../modal/Modal.svelte';
   import StackedImages from '../image/StackedImages.svelte';
-  import { onMount } from 'svelte';
+  export let item: birthDateItemType;
 
   let itemIndex: number = 0;
   let clickedUser: userType;
@@ -63,25 +48,9 @@
             <div class="d-flex flex-column gap-1">
               <span>{clickedUser.full_name}</span>
               <span>{clickedUser.team}</span>
-              <span
-                ><a
-                  href={`mailto:${clickedUser.email}?subject=Happy%20Birth%20Day%20ahmad&body=Dear%20${clickedUser.full_name}%2C%0D%0A%0D%0AI%20wish%20you%20a%20happy%20birthday%20${clickedUser.full_name}%F0%9F%8E%82%0D%0A%0D%0A%0D%0Ayour%20beloved%2C%0D%0A${$UserStore.full_name}`}
-                  >{clickedUser.email}
-                </a></span
-              >
+              <span>{clickedUser.email}</span>
             </div>
           </div>
-          {#if Number($UserStore.id) !== Number(item.id)}
-            <div class="my-2 right">
-              <a
-                href={`mailto:${clickedUser.email}?subject=Happy%20Birth%20Day%20ahmad&body=Dear%20${clickedUser.full_name}%2C%0D%0A%0D%0AI%20wish%20you%20a%20happy%20birthday%20${clickedUser.full_name}%F0%9F%8E%82%0D%0A%0D%0A%0D%0Ayour%20beloved%2C%0D%0A${$UserStore.full_name}`}
-              >
-                <button class="btn btn-outline-primary">
-                  send a message</button
-                ></a
-              >
-            </div>
-          {/if}
         </div>
       {/if}
     </div>
