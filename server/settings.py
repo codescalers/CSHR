@@ -10,7 +10,7 @@ DEBUG = config("DJANGO_DEBUG") == "ON"
 
 CELERY_IMPORTS = ("server.cshr.celery.send_email",)
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "cshrapp.herokuapp.com", "cshr.tiiny.site"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "cshrapp.herokuapp.com", "kaleidoscopic-churros-b700b5.netlify.app"]
 
 # Application definition
 INSTALLED_APPS = [
