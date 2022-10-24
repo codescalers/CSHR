@@ -14,15 +14,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="user",
-            name="reporting_to",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
-                to=settings.AUTH_USER_MODEL,
-            ),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name="user",
             name="social_insurance_number",
             field=models.CharField(default="default", max_length=45),
             preserve_default=False,
