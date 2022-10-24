@@ -183,7 +183,7 @@ class SelfUserAPIView(ListAPIView, GenericAPIView):
 
 
 class UpdateUserProfileUserAPIView(GenericAPIView):
-    permission_classes = [IsUser | IsAdmin]
+    permission_classes = [IsUser | IsAdmin | IsSupervisor]
     serializer_class = UpdateUserSerializer
 
     def put(self, request: Request, id: str, format=None) -> Response:
