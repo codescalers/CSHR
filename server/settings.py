@@ -181,3 +181,6 @@ EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD")
 import dj_database_url 
 prod_db  =  dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(prod_db)
+
+CORS_ORIGIN_ALLOW_ALL = True
+APPEND_SLASH = True
