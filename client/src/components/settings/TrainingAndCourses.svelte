@@ -16,7 +16,7 @@
         isErrorLink == true || isErrorLink == null
 </script>
 
-<h5>This section realted to <span class="text-primary">Training and courses</span></h5>
+<h5>This section related to <span class="text-primary">Training and courses</span></h5>
 <div class="row">
     <div class="col-12">
         <div class="form-outline">

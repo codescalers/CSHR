@@ -26,7 +26,7 @@
 
 </script>
 
-<h5>This section realted to <span class="text-primary">User Skills</span></h5>
+<h5>This section related to <span class="text-primary">User Skills</span></h5>
 
 <div class="form-outline">
   <div class="row">

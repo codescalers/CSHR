@@ -40,7 +40,7 @@
         role="tab"
         aria-controls="ex2-tabs-3"
         aria-selected="false"
-        >Addtional Informations</a
+        >Additional information</a
       >
     </li>
   </ul>
