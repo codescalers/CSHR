@@ -47,7 +47,6 @@ class LoginByTokenApiView(TokenObtainPairView):
         """Method to register a new user"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-
             return CustomResponse.success(
                 data=serializer.custom_token(data=serializer.data),
                 message="User logged in successfully",

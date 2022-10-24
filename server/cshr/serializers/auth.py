@@ -31,7 +31,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs: Any) -> Dict[str, Any]:
         data = {}
-        attrs["email"] = attrs.get("email").lower()
+        attrs["email"] = attrs.get("email")
 
         self.user = get_user_by_email(attrs["email"])
         if self.user is None:
