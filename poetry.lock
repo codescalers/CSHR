@@ -538,6 +538,14 @@ python-versions = ">=3.6.2"
 wcwidth = "*"
 
 [[package]]
+name = "psycopg2"
+version = "2.9.4"
+description = "psycopg2 - Python-PostgreSQL Database Adapter"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "pycodestyle"
 version = "2.9.1"
 description = "Python style guide checker"
@@ -769,7 +777,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.10.8"
-content-hash = "40a9beb674c1e155d0d946ad1a45a9a816a8b4b980874bde112ae74f59db3aa6"
+content-hash = "9b8469a276448a63d5d9aca0c0e5736d26250a91623591662da749c4bb3e3cfd"
 
 [metadata.files]
 amqp = []
@@ -895,6 +903,7 @@ pathspec = []
 pillow = []
 platformdirs = []
 prompt-toolkit = []
+psycopg2 = []
 pycodestyle = []
 pyflakes = []
 pyjwt = []
