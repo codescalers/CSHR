@@ -1,7 +1,9 @@
 
 CMD:=poetry run
 client:=cd client
-up:
+terraform:=cd terraform
+
+docker-up:
 	docker-compose up --build -d
 install:
 	poetry install
@@ -20,3 +22,7 @@ migrate:
 user:
 	$(CMD) python3 manage.py createsuperuser
 	$(CMD) python3 manage.py runserver
+terraform-up:
+	$(terraform) && terraform init && terraform apply -parallelism=1
+terraform-down:
+	$(terraform) && terraform destroy -parallelism=1

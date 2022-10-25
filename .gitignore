@@ -16,6 +16,9 @@ build/
 develop-eggs/
 dist/
 downloads/
+*.backup
+.terraform/
+*.tfstate
 eggs/
 .eggs/
 lib/
