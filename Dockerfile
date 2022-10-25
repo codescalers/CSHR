@@ -16,22 +16,20 @@ ENV DJANGO_ENV=${DJANGO_ENV} \
   POETRY_VERSION=1.0.5 \
   POETRY_VIRTUALENVS_CREATE=false \
   POETRY_CACHE_DIR='/var/cache/pypoetry'
-
 ENV DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC
+# set work directory
+WORKDIR /server_directory
+COPY . /server_directory
+
 # System deps:
 RUN apt-get update && apt-get install -y openssh-server nginx python3.8 python3-pip \
     && pip install "poetry==$POETRY_VERSION" && poetry --version
 
-# set work directory
-WORKDIR /server
-COPY pyproject.toml poetry.lock start.sh /server/
-
 # Install dependencies:
-RUN poetry install
-# copy project
-COPY . .
+RUN poetry install 
 
 EXPOSE 8000
-RUN chmod +x /server/start.sh
+# change start.sh mode.
+RUN chmod +x /server_directory/start.sh
 CMD ["python3","./manage.py", "runserver", "0.0.0.0:8000"]
 # docker run --name <container_name> -p 8000:8000 -d <image_name>
