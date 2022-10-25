@@ -30,6 +30,10 @@ jobs:
           working-directory: client/
 
 
-      - name: build and push flist
+      - name: build and push server flist
         run: | 
-          curl -f -X POST  -H "Authorization: bearer ${{ secrets.FLIST_TOKEN }}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/cshr:latest'
+          curl -f -X POST  -H "Authorization: bearer ${{ secrets.FLIST_TOKEN }}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/cshr_server:latest'
+
+      - name: build and push client flist
+        run: | 
+          curl -f -X POST  -H "Authorization: bearer ${{ secrets.FLIST_TOKEN }}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/cshr_client:latest'
