@@ -9,8 +9,12 @@
     let logo: string;
 
     if(user){
-        username = user.full_name.split(' ')
-        logo = `${username[0][0].toLocaleUpperCase()}${username[1][0].toLocaleUpperCase()}`
+        if (user.full_name.split(' ')[0] == ""){
+            logo = `${user.email[0].toLocaleUpperCase()}${user.email[1].toLocaleUpperCase()}`
+        } else {
+            username = user.full_name.split(' ')
+            logo = `${username[0][0].toLocaleUpperCase()}${username[1][0].toLocaleUpperCase()}`
+        }
     }
 
 </script>

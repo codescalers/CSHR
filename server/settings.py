@@ -10,7 +10,13 @@ DEBUG = config("DJANGO_DEBUG") == "ON"
 
 CELERY_IMPORTS = ("server.cshr.celery.send_email",)
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "cshrapp.herokuapp.com", "kaleidoscopic-churros-b700b5.netlify.app"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost", 
+    "cshrapp.herokuapp.com",
+    "0.0.0.0",
+    "kaleidoscopic-churros-b700b5.netlify.app"
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -66,13 +72,9 @@ WSGI_APPLICATION = "server.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config("P_NAME"),
-        'USER': config("P_USER"),
-        'PASSWORD': config("P_PASSWORD"),
-        'HOST': config('P_HOST'),
-        'PORT': config('P_PORT')
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
