@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y openssh-server nginx python3.8 python3-
 
 # set work directory
 WORKDIR /server
-COPY pyproject.toml poetry.lock /code/
+COPY pyproject.toml poetry.lock /server/
 
 # Install dependencies:
 RUN poetry install
