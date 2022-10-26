@@ -15,8 +15,8 @@ ENV DJANGO_ENV=${DJANGO_ENV} \
   # poetry:
   POETRY_VERSION=1.0.5 \
   POETRY_VIRTUALENVS_CREATE=false \
-  POETRY_CACHE_DIR='/var/cache/pypoetry'
-ENV DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC
+  POETRY_CACHE_DIR='/var/cache/pypoetry' \
+  DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC
 # set work directory
 WORKDIR /server_directory
 COPY . /server_directory
@@ -25,8 +25,13 @@ COPY . /server_directory
 RUN apt-get update && apt-get install -y openssh-server nginx python3.8 python3-pip \
     && pip install "poetry==$POETRY_VERSION" && poetry --version
 
+# Install zinit.
+# RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download/v0.2.5/zinit
+# COPY zinit /etc/zinit
+# && chmod +x /sbin/zinit
+
 # Install dependencies:
-RUN poetry install 
+RUN poetry install
 
 EXPOSE 8000
 # change start.sh mode.
