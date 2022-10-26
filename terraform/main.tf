@@ -31,7 +31,7 @@ resource "grid_deployment" "d1" {
         memory = 1024
         entrypoint = "/server/start.sh"
         env_vars = {
-            SSH_KEY = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCvb7z9QW7P7+gJVy8sw3IaJtVdIWPpnhU05NlTcxyRKt74UrOEJ9Ip/wjLsBg4fMZ5voPb9lToMiQ/eV1SqYulDUFSduyfCGucpu+FSvoyKYIgdIoTNIxSZeVm8btvwuO+4UXhpkOzUQ9NZW3SYJcr2rGHlT08jNu0goB9CrhzmGXAKze8+MInENFk4p8PD9ppKn14Fvkded4sMue2GQnKOOXTGy3TWrvyUYrcdLivH2UIiSp4n4/KnINSzwPAz3bNYtaRAkpPDV6vnTQSCi50mL+4bxIzyg51QeDwIRL7EigjRSDRsLkz4yiJ7mk6X5ci/IZTPhHpzVErunOWNwVleCeigB3kt2qUdYBGF+Ev1dVfIq5F+yfdxLlhHvzazx7biPMljqk+sDg0iGcv1gKHGM/+bIPvW+wLMkCLzAVcnDo8+6/V4L6yWZOS39R80fMpfntId9IPiFc1tlc2Fip4B5N0qATKd9C16AU2U4KkKQeMqKCqvhwm05dxB9jmNpfEgA9lWi5m5mdj0YMV0Hqp9YiQmqJ7yQS4JSHVJ0izIWBBOGPVnN/PFggeS8kUbueb9xizhDDO37T/COYLXVCvA7gbAgQ+ACi5bzYDOy83v2KBggfiGuBxmn1KhlX8X1swmCBXTVDLVogwn1KMBLuz9d3fTi6hAE2NTxpzVODa2Q== mahmmoud.hassanein@gmail.com"
+            SSH_KEY = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8KhnjC8yi2Td7gMEiVmJfUNg1lXE457S+eW1jip0HW3MGLsKjXekauLbR7qcSOKUGURZlsw2KbRdOZnWbQovs24YdevUos/9XIHxFL+mJEy+5gyHuU5Z/yGcuW7O6Qj5xtwvBwe/kWnMtgEd2xXxQqEY3ZHkVh++mA/eqbhikMIsM7Qi5SKBT210+7KT5989BbUpk9e43koFNkVPCXgDR5+frhbEvCq06OVAE8vuEQ/C6EW1ZKn65nVt2z0kA7c8rUE0sEZRnI35oCEwazMlxiPm9B67GryoO7bkTvIrencFHeOrR3/7htjGxFEnJw6yyiUJtSZVP/bbRcPZ6yJtCMF03nK4IdXsHblyjXXu7u3M+7nrx6KBjew2bOHlUAU52MPOPpyJFADwM66t7P7hxIDJ3Nubwufxukqt+VasJSWI6GN9rtk6Cj1Ro2N2JJ+a4vZSdxl5RrPhujfkh87Vptxncl5G8q7oSjfMXAjk22rsJ+nuYczn57SD5PxYGjO0= mahmmoud.hassanein@gmail.com"
         }
         planetary = true
     }
@@ -42,7 +42,7 @@ resource "grid_deployment" "d1" {
         memory = 1024
         entrypoint = "/client/start.sh"
         env_vars = {
-            SSH_KEY = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCvb7z9QW7P7+gJVy8sw3IaJtVdIWPpnhU05NlTcxyRKt74UrOEJ9Ip/wjLsBg4fMZ5voPb9lToMiQ/eV1SqYulDUFSduyfCGucpu+FSvoyKYIgdIoTNIxSZeVm8btvwuO+4UXhpkOzUQ9NZW3SYJcr2rGHlT08jNu0goB9CrhzmGXAKze8+MInENFk4p8PD9ppKn14Fvkded4sMue2GQnKOOXTGy3TWrvyUYrcdLivH2UIiSp4n4/KnINSzwPAz3bNYtaRAkpPDV6vnTQSCi50mL+4bxIzyg51QeDwIRL7EigjRSDRsLkz4yiJ7mk6X5ci/IZTPhHpzVErunOWNwVleCeigB3kt2qUdYBGF+Ev1dVfIq5F+yfdxLlhHvzazx7biPMljqk+sDg0iGcv1gKHGM/+bIPvW+wLMkCLzAVcnDo8+6/V4L6yWZOS39R80fMpfntId9IPiFc1tlc2Fip4B5N0qATKd9C16AU2U4KkKQeMqKCqvhwm05dxB9jmNpfEgA9lWi5m5mdj0YMV0Hqp9YiQmqJ7yQS4JSHVJ0izIWBBOGPVnN/PFggeS8kUbueb9xizhDDO37T/COYLXVCvA7gbAgQ+ACi5bzYDOy83v2KBggfiGuBxmn1KhlX8X1swmCBXTVDLVogwn1KMBLuz9d3fTi6hAE2NTxpzVODa2Q== mahmmoud.hassanein@gmail.com"
+            SSH_KEY = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8KhnjC8yi2Td7gMEiVmJfUNg1lXE457S+eW1jip0HW3MGLsKjXekauLbR7qcSOKUGURZlsw2KbRdOZnWbQovs24YdevUos/9XIHxFL+mJEy+5gyHuU5Z/yGcuW7O6Qj5xtwvBwe/kWnMtgEd2xXxQqEY3ZHkVh++mA/eqbhikMIsM7Qi5SKBT210+7KT5989BbUpk9e43koFNkVPCXgDR5+frhbEvCq06OVAE8vuEQ/C6EW1ZKn65nVt2z0kA7c8rUE0sEZRnI35oCEwazMlxiPm9B67GryoO7bkTvIrencFHeOrR3/7htjGxFEnJw6yyiUJtSZVP/bbRcPZ6yJtCMF03nK4IdXsHblyjXXu7u3M+7nrx6KBjew2bOHlUAU52MPOPpyJFADwM66t7P7hxIDJ3Nubwufxukqt+VasJSWI6GN9rtk6Cj1Ro2N2JJ+a4vZSdxl5RrPhujfkh87Vptxncl5G8q7oSjfMXAjk22rsJ+nuYczn57SD5PxYGjO0= mahmmoud.hassanein@gmail.com"
         }
         planetary = true
     }
