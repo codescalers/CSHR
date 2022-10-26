@@ -7,8 +7,8 @@ authors = ["Mahmoud-Emad <mahmmoud.hassanein@gmail.com>"]
 
 
 [tool.poetry.dependencies]
-python = "3.10.6"
-Django = "4.0.1"
+python = "^3.8"
+Django = "^4.0"
 drf-yasg = "^1.21.3"
 djangorestframework = "^3.13.1"
 django-debug-toolbar = "^3.5.0"
@@ -19,9 +19,6 @@ tzdata = "^2022.2"
 django-celery-beat = "^2.3.0"
 python-decouple = "^3.6"
 redis = "^4.3.4"
-whitenoise = "^6.2.0"
-dj-database-url = "^1.0.0"
-gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"

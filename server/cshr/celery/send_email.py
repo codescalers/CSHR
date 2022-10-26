@@ -8,11 +8,12 @@ from django.core.mail import send_mail
 from celery import shared_task
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework.response import Response
+import os
 
 
-if config("REDIS_HOST") is None:
+if os.environ.get("REDIS_HOST") is None:
     raise ImproperlyConfigured("REDIS_HOST is not defined")
-app = Celery("tasks", broker=config("REDIS_HOST"))
+app = Celery("tasks", broker=os.environ.get("REDIS_HOST"))
 
 app.autodiscover_tasks()
 

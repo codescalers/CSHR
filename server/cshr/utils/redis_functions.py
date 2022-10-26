@@ -1,23 +1,23 @@
 from typing import Dict
 from django.utils.dateparse import parse_datetime
-import redis
-import json
 from django.core.exceptions import ImproperlyConfigured
-from server.components import config
 from server.cshr.models.requests import TYPE_CHOICES
 from server.cshr.models.users import USER_TYPE, User
 from server.cshr.serializers.users import TeamSerializer
 from server.cshr.services.users import get_user_by_id
+import redis
+import json
+import os
 
 
-if config("REDIS_HOST_ONLY") is None:
+if os.environ.get("REDIS_HOST_ONLY") is None:
     raise ImproperlyConfigured("REDIS_HOST_ONLY is not defined")
 
-if config("REDIS_PORT") is None:
+if os.environ.get("REDIS_PORT") is None:
     raise ImproperlyConfigured("REDIS_PORT is not defined")
 
 redis_instance = redis.StrictRedis(
-    host=config("REDIS_HOST_ONLY"), port=config("REDIS_PORT"), db=0
+    host=os.environ.get("REDIS_HOST_ONLY"), port=os.environ.get("REDIS_PORT"), db=0
 )
 
 
