@@ -5,4 +5,4 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Europe/Belgium apt-get i
 WORKDIR /server_directory
 COPY . /server_directory
 
-RUN chmod +x /server_directory/init.sh
+RUN chmod +x /server_directory/start.sh
