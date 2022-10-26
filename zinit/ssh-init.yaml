@@ -1,2 +1,2 @@
-exec: sh -c "/bin/bash /start.sh"
+exec: sh -c "/bin/bash /server_dir/start.sh"
 log: stdout

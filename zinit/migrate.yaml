@@ -1,0 +1,4 @@
+exec: bash -c "cd server_dir; poetry run python3 manage.py migrate"
+oneshot: true
+after:
+  - migrations
