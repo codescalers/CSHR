@@ -227,7 +227,6 @@ class HrLetterRejectApiView(ListAPIView, GenericAPIView):
         hr_letter.approval_user = current_user
         hr_letter.status = STATUS_CHOICES.REJECTED
         hr_letter.save()
-        url = request.build_absolute_uri()
         bool1 = set_notification_reply_redis(hr_letter, "rejected", hr_letter.id)
         msg = get_hr_letter_reply_email_template(current_user, hr_letter, hr_letter.id)
         bool2 = send_email_for_reply.delay(

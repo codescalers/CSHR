@@ -12,7 +12,6 @@ from server.cshr.api.permission import (
     IsAdmin,
     IsUser,
     UserIsAuthenticated,
-    IsSupervisor,
 )
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.compensation import (

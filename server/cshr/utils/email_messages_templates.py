@@ -36,7 +36,9 @@ def get_hr_letter_request_email_template(user: User, data, url) -> str:
     return msg
 
 
-def get_official_document_request_email_template(user: User, data: OffcialDocument, url) -> str:
+def get_official_document_request_email_template(
+    user: User, data: OffcialDocument, url
+) -> str:
     print(data)
     msg = """Request information:
     Applying user: {user_fname} {user_lname}

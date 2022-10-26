@@ -71,13 +71,17 @@ class OfficialDocumentAcceptApiView(GenericAPIView):
     def put(self, request: Request, id: str, format=None) -> Response:
         document = get_official_document_by_id(id=id)
         if document is None:
-            return CustomResponse.not_found(message="Official Document request not found")
+            return CustomResponse.not_found(
+                message="Official Document request not found"
+            )
         current_user: User = get_user_by_id(request.user.id)
         document.approval_user = current_user
         document.status = STATUS_CHOICES.APPROVED
         document.save()
         bool1 = set_notification_reply_redis(document, "accepted", document.id)
-        msg = get_official_document_request_email_template(current_user, document, document.id)
+        msg = get_official_document_request_email_template(
+            current_user, document, document.id
+        )
         bool2 = send_email_for_reply.delay(
             current_user.id, document.applying_user.id, msg, "Official Document reply"
         )
@@ -89,6 +93,7 @@ class OfficialDocumentAcceptApiView(GenericAPIView):
             return CustomResponse.not_found(
                 message="user is not found", status_code=404
             )
+
 
 class OfficialDocumentRejectApiView(GenericAPIView):
     permission_classes = [
@@ -104,7 +109,9 @@ class OfficialDocumentRejectApiView(GenericAPIView):
         document.status = STATUS_CHOICES.REJECTED
         document.save()
         bool1 = set_notification_reply_redis(document, "rejected", document.id)
-        msg = get_official_document_request_email_template(current_user, document, document.id)
+        msg = get_official_document_request_email_template(
+            current_user, document, document.id
+        )
         bool2 = send_email_for_reply.delay(
             current_user.id, document.applying_user.id, msg, "Hr Letter reply"
         )

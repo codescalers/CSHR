@@ -1,5 +1,5 @@
 from datetime import timedelta
-from server.components import config, BASE_DIR
+from server.components import BASE_DIR
 import os
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -12,10 +12,10 @@ CELERY_IMPORTS = ("server.cshr.celery.send_email",)
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
-    "localhost", 
+    "localhost",
     "cshrapp.herokuapp.com",
     "0.0.0.0",
-    "kaleidoscopic-churros-b700b5.netlify.app"
+    "kaleidoscopic-churros-b700b5.netlify.app",
 ]
 
 # Application definition
@@ -184,7 +184,7 @@ EMAIL_HOST_USER = os.environ.get("EMAIL")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 
 
-# import dj_database_url 
+# import dj_database_url
 # prod_db  =  dj_database_url.config(conn_max_age=500)
 # DATABASES['default'].update(prod_db)
 
