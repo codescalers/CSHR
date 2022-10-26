@@ -25,20 +25,21 @@ WORKDIR /server_directory
 COPY . /server_directory
 
 # System deps:
-RUN apt-get update && apt-get install -y openssh-server \
-    wget nginx python3.8 python3-pip && \
-    pip install "poetry==$POETRY_VERSION" && poetry --version
+RUN apt-get update && apt-get install -y openssh-server
+    # wget nginx python3.8 python3-pip && \
+    # pip install "poetry==$POETRY_VERSION" && poetry --version
 
-RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download/v0.2.5/zinit && \
-  chmod +x /sbin/zinit
+# RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download/v0.2.5/zinit && \
+  # chmod +x /sbin/zinit
 
-COPY zinit /etc/zinit
+# COPY zinit /etc/zinit
 
 # Install dependencies:
-RUN poetry install
+# RUN poetry install
 
 EXPOSE 8000
 # change start.sh mode.
-RUN chmod +x /sbin/zinit && chmod +x /server_directory/start.sh
+# RUN chmod +x /sbin/zinit && chmod +x /server_directory/start.sh
+RUN chmod +x /server_directory/start.sh
 CMD ["python3","./manage.py", "runserver", "0.0.0.0:8000"]
 # docker run --name <container_name> -p 8000:8000 -d <image_name>
