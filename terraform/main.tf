@@ -9,7 +9,6 @@ terraform {
 provider "grid" {
     mnemonics = "actual reveal dish guilt inner film scheme between lonely myself material replace" 
     network = "dev"
-
 }
 
 resource "grid_network" "net1" {
