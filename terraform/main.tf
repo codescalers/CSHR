@@ -12,7 +12,7 @@ provider "grid" {
 }
 
 resource "grid_network" "net1" {
-    nodes = [28]
+    nodes = [28, 29]
     ip_range = "10.1.0.0/16"
     name = "network"
     description = "newer network"
@@ -34,7 +34,7 @@ resource "grid_deployment" "d1" {
             DJANGO_SECRET_KEY="tSHKyMyXRsgfliCvjnAzySi5WI8j5f1gJSfxY7UruSq3dE814v"
             DJANGO_DEBUG="ON"
             EMAIL="codescalersinternship@gmail.com"
-            EMAIL_PASSWORD="ylglqynbmbcssszy"
+            EMAIL_PASSWORD="y l g l q y n b m b c s s s z y"
             EMAIL_HOST="smtp.gmail.com"
             REDIS_HOST="redis://localhost:6379"
             REDIS_HOST_ONLY="localhost"

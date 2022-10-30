@@ -23,6 +23,6 @@ user:
 	$(CMD) python3 manage.py createsuperuser
 	$(CMD) python3 manage.py runserver
 terraform-up:
-	$(terraform) && terraform init && terraform apply -parallelism=1
+	$(terraform) && terraform init && terraform apply -parallelism=1 -auto-approve
 terraform-down:
-	$(terraform) && terraform destroy -parallelism=1
+	$(terraform) && terraform destroy -parallelism=1 -auto-approve
