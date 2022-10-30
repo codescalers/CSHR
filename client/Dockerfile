@@ -11,14 +11,11 @@ RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download
   chmod +x /sbin/zinit
 
 WORKDIR /client_dir
-
 COPY . /client_dir
 COPY zinit /etc/zinit
-COPY package*.json /client_dir/
+COPY package*.json client_dir/
 
 RUN chmod +x /sbin/zinit && chmod +x /client_dir/start.sh
-RUN npm run build
-
 EXPOSE 8080
 
 ENV HOST=0.0.0.0
