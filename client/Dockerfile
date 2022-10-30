@@ -13,11 +13,9 @@ RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download
 WORKDIR /client_dir
 COPY . /client_dir
 COPY zinit /etc/zinit
-COPY package*.json client_dir/
 
-RUN chmod +x /sbin/zinit && chmod +x /client_dir/start.sh
+RUN chmod +x /client_dir/start.sh
+
 EXPOSE 8080
-
 ENV HOST=0.0.0.0
-
 ENTRYPOINT ["zinit", "init"]
