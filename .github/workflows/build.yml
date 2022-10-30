@@ -27,7 +27,7 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cshr_client:latest
-          working-directory: client/
+          dockerfile: "./client/Dockerfile"
 
 
       - name: build and push server flist
