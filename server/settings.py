@@ -16,6 +16,7 @@ ALLOWED_HOSTS = [
     "cshrapp.herokuapp.com",
     "0.0.0.0",
     "kaleidoscopic-churros-b700b5.netlify.app",
+    os.environ.get("CLIENT_IP") # Threefold client node ip
 ]
 
 # Application definition

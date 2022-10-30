@@ -39,9 +39,16 @@ resource "grid_deployment" "d1" {
             REDIS_HOST="redis://localhost:6379"
             REDIS_HOST_ONLY="localhost"
             REDIS_PORT="6379"
+            CLIENT_IP=grid_deployment.d2.vms[0].ip
         }
         planetary = true
     }
+}
+
+resource "grid_deployment" "d2" {
+  node = 29
+  network_name = grid_network.net1.name
+  ip_range = lookup(grid_network.net1.nodes_ip_range, 29, "")
     vms {
         name = "clientVM"
         flist = "https://hub.grid.tf/omda.3bot/codescalersinternship-cshr_client-latest.flist"
@@ -60,5 +67,5 @@ output "ygg_ip_1" {
     value = grid_deployment.d1.vms[0].ygg_ip
 }
 output "ygg_ip_2" {
-    value = grid_deployment.d1.vms[1].ygg_ip
+    value = grid_deployment.d2.vms[0].ygg_ip
 }
