@@ -21,14 +21,14 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cshr_server:latest
+          file: "./server/Dockerfile"
       
       - name: Build and push client image
         uses: docker/build-push-action@v3
         with:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cshr_client:latest
-          dockerfile: "./client/Dockerfile"
-
+          file: "./client/Dockerfile"
 
       - name: build and push server flist
         run: | 
