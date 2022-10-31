@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-ENV DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC
+ENV DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC SSH_KEY="TEST SSH KEY"
 
 RUN mkdir -p /etc/zinit/
 RUN apt-get -y update && \

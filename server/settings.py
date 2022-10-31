@@ -1,22 +1,21 @@
 from datetime import timedelta
-from server.components import BASE_DIR
+from server.components import BASE_DIR, config
 import os
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY") or config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_DEBUG") == "ON"
+DEBUG = os.environ.get("DJANGO_DEBUG") == "ON" or config("DJANGO_DEBUG") == "ON"
 
 CELERY_IMPORTS = ("server.cshr.celery.send_email",)
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
-    "localhost",
     "cshrapp.herokuapp.com",
     "0.0.0.0",
     "kaleidoscopic-churros-b700b5.netlify.app",
-    os.environ.get("CLIENT_IP") # Threefold client node ip
+    os.environ.get("CLIENT_IP") or config("CLIENT_IP") # Threefold client node ip
 ]
 
 # Application definition
@@ -177,12 +176,13 @@ CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
 # email config
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "cshr.User"
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_HOST = os.environ.get("EMAIL_HOST") or config("EMAIL_HOST")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get("EMAIL")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+EMAIL_HOST_USER = os.environ.get("EMAIL") or config("EMAIL")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD") or config("EMAIL_PASSWORD")
 
 
 # import dj_database_url

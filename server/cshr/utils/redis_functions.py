@@ -5,21 +5,23 @@ from server.cshr.models.requests import TYPE_CHOICES
 from server.cshr.models.users import USER_TYPE, User
 from server.cshr.serializers.users import TeamSerializer
 from server.cshr.services.users import get_user_by_id
+from server.components import config
 import redis
 import json
 import os
 
 
-if os.environ.get("REDIS_HOST_ONLY") is None:
-    raise ImproperlyConfigured("REDIS_HOST_ONLY is not defined")
-
-if os.environ.get("REDIS_PORT") is None:
-    raise ImproperlyConfigured("REDIS_PORT is not defined")
+if os.environ.get("REDIS_HOST") is None:
+    try:
+        _, R_HOST, R_PORT = config("REDIS_HOST").replace("//", "").split(':')
+    except:
+        raise ImproperlyConfigured("REDIS_HOST is not defined")
+else:
+    _, R_HOST, R_PORT = os.environ.get("REDIS_HOST").replace("//", "").split(':')
 
 redis_instance = redis.StrictRedis(
-    host=os.environ.get("REDIS_HOST_ONLY"), port=os.environ.get("REDIS_PORT"), db=0
+    host=R_HOST, port=R_PORT, db=0
 )
-
 
 def set_notification_request_redis(data: Dict) -> bool:
     """this function set requests notifications"""
