@@ -18,7 +18,6 @@ RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download
 
 
 WORKDIR /server_dir
-COPY [".env", "/server_dir/"]
 COPY . /server_dir
 COPY zinit /etc/zinit
 
