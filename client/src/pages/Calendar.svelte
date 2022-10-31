@@ -16,7 +16,6 @@
 </script>
 
 <Sidebar bind:isLoading bind:isError>
-  <span slot="page-name">Calendar</span>
   <div slot="content">
     <div>
       <div

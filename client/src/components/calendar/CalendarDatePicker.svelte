@@ -33,7 +33,7 @@
         text: vacationCalculator
       });
     }
-    let check = Date.parse(date);
+    let check = Date.parse(date);    
     if (!check) {
       //it is not a date with format YYYY-MM-DD
       errorMessage = `${error_name} format is invalid message`;
@@ -48,8 +48,11 @@
   }
   $: validateDate(startDate, 'Start Date');
   $: validateDate(endDate, 'End Date');
+  console.log(validateDate(endDate, 'End Date').then(value => (value)));
 </script>
-
+{startDate}
+{endDate}
+{validateDate(endDate, 'End Date').then(value => (value))}
 <div class="container table-primary table-responsive">
   <fieldset
     id="isloading"
@@ -96,8 +99,8 @@
             type="text"
             hint={'with this Format YYYY-MM-DD.'}
             errorMessage={'Please provide a valid End Date'}
-            handleInput={() => {
-              return validateDate(endDate, 'End Date');
+            handleInput={async () => {
+              return await validateDate(endDate, 'End Date');
             }}
             size={20}
             placeholder={'end date'}

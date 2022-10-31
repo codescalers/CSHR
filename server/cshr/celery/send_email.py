@@ -14,7 +14,7 @@ REISHOST: str = None
 if os.environ.get("REDIS_HOST") is None:
     try:
         REISHOST = config("REDIS_HOST")
-    except:
+    except Exception:
         raise ImproperlyConfigured("REDIS_HOST is not defined")
 else:
     REISHOST = os.environ.get("REDIS_HOST")

@@ -6,15 +6,26 @@
 
   let formToggle: number = 0;
   let thisDate: Date = new Date();
+  let endDate: string;
   let startDate = `2022-${thisDate.getMonth() + 1}-${thisDate.getDate()}`;
-  let endDate = `2022-${thisDate.getMonth() + 1}-${thisDate.getDate() + 2}`;
-  let datePickerDisabled = false;
+  const daysInCurrentMonth = getDaysInMonth(thisDate.getFullYear(), thisDate.getMonth() + 1);
 
+  if (thisDate.getDate() + 2 > daysInCurrentMonth){
+    endDate = `2022-${thisDate.getMonth() + 2}-${thisDate.getDate() + 2 - daysInCurrentMonth}`;
+  } else {
+    endDate = `2022-${thisDate.getMonth() + 1}-${thisDate.getDate() + 2}`;
+  }
+  
+  let datePickerDisabled = false;
   let VacationCalculator: number;
 
   const handleVacationCalculator = (event: { detail: { text: number; }; }) => {
     VacationCalculator = event.detail.text;
   };
+
+  function getDaysInMonth(year: number, month: number) {
+    return new Date(year, month, 0).getDate();
+  }
 
 </script>
 
