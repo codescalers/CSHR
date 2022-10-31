@@ -23,13 +23,13 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/cshr_server:latest
           file: "./Dockerfile"
           secrets: |
-            "DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }}"
-            "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}"
-            "EMAIL_HOST=${{ secrets.EMAIL_HOST }}"
-            "EMAIL=${{ secrets.EMAIL }}"
-            "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}"
-            "REDIS_HOST=${{ secrets.REDIS_HOST }}"
-            "CLIENT_IP=${{ secrets.CLIENT_IP }}"
+            DJANGO_DEBUG=${{ secrets.DJANGO_DEBUG }}
+            DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+            EMAIL_HOST=${{ secrets.EMAIL_HOST }}
+            EMAIL=${{ secrets.EMAIL }}
+            REDIS_HOST=${{ secrets.REDIS_HOST }}
+            EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
+            CLIENT_IP=${{ secrets.CLIENT_IP }}
 
       
       - name: Build and push client image
