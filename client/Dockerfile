@@ -1,10 +1,10 @@
-FROM node:12 AS build
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC
 
 RUN mkdir -p /etc/zinit/
 RUN apt-get -y update && \
-    apt-get -y install wget curl vim nginx openssh-client openssh-server && \
+    apt-get -y install wget vim nginx nodejs npm openssh-client openssh-server && \
     rm -rf /var/lib/apt/lists/*
 
 RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download/v0.2.5/zinit && \

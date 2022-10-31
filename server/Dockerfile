@@ -16,7 +16,7 @@ WORKDIR /server_dir
 COPY . /server_dir
 COPY zinit /etc/zinit
 
-RUN chmod +x /sbin/zinit && chmod +x /server_dir/start.sh
+RUN chmod +x /server_dir/start.sh
 RUN poetry install
 EXPOSE 8000
 ENTRYPOINT  ["zinit", "init"]
