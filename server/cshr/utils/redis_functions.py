@@ -17,6 +17,7 @@ if os.environ.get("REDIS_HOST") is None:
     except Exception:
         raise ImproperlyConfigured("REDIS_HOST is not defined")
 else:
+    print(os.environ.get("DJANGO_DEBUG"))
     print(os.environ.get("REDIS_HOST"))
     print(os.environ.get("REDIS_HOST").replace("//", "").split(":"))
     _, R_HOST, R_PORT = os.environ.get("REDIS_HOST").replace("//", "").split(":")
