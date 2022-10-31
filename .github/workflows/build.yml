@@ -29,6 +29,7 @@ jobs:
             "EMAIL=${{ secrets.EMAIL }}"
             "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}"
             "REDIS_HOST=${{ secrets.REDIS_HOST }}"
+            "CLIENT_IP=${{ secrets.CLIENT_IP }}"
 
       
       - name: Build and push client image
