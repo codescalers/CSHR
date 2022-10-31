@@ -62,6 +62,14 @@ class LandingPageVacationsSerializer(ModelSerializer):
         """
         return BaseUserSerializer(obj.approval_user).data
 
+class AdminVacationBalanceSerializer(serializers.Serializer):
+    sick_leaves = serializers.FloatField()
+    compensation = serializers.FloatField()
+    unpaid = serializers.FloatField()
+    annual_leaves = serializers.FloatField()
+    emergency_leaves = serializers.FloatField()
+    leave_excuses = serializers.FloatField()
+    public_holidays = serializers.JSONField(default=list)
 
 class VacationBalanceSerializer(ModelSerializer):
     """Class user balance to update user balance."""
@@ -78,7 +86,6 @@ class VacationBalanceSerializer(ModelSerializer):
             "annual_leaves",
             "emergency_leaves",
             "leave_excuses",
-            "public_holidays",
         ]
 
     def get_user(self, obj: User):

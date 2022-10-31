@@ -1,5 +1,6 @@
 from server.cshr.serializers.users import TeamSerializer
 from server.cshr.serializers.vacations import (
+    AdminVacationBalanceSerializer,
     LandingPageVacationsSerializer,
     VacationsCommentsSerializer,
     VacationsSerializer,
@@ -51,7 +52,7 @@ from server.cshr.utils.redis_functions import (
 class AdminVacationBalanceApiView(GenericAPIView):
     """Class VacationBalance to update or post vacation balance by only admin."""
 
-    serializer_class = VacationBalanceSerializer
+    serializer_class = AdminVacationBalanceSerializer
     permission_classes = [IsAdmin]
 
     def post(self, request: Request) -> Response:

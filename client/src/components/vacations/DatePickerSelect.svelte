@@ -4,6 +4,8 @@
 	import 'flatpickr/dist/flatpickr.css'
 	import 'flatpickr/dist/themes/light.css'
     import Vacation from "../../services/axios/vacations/Vacation"
+    import { createEventDispatcher } from 'svelte';
+    const dispatch = createEventDispatcher();
     
     export let isLoading: boolean = false;
     export let isError: boolean = false;
@@ -20,14 +22,15 @@
     $:submitDisabled = 
         annualValue == 0 || 
         leaveValue == 0 || 
-        emergencyValue == 0 || 
-        date == null || date.length == 0;
+        emergencyValue == 0
 
-    const handleDates = (dates_: string[]) => {        
-        dates_.forEach(thisDate => {
-            let newdate = new Date(thisDate)
-            dates.push(`${newdate.getFullYear()}-${newdate.getMonth()+1}-${newdate.getDate()}`)
-        });  
+    const handleDates = (dates_: string[]) => {
+        if (dates_ != null){
+            dates_.forEach(thisDate => {
+                let newdate = new Date(thisDate)
+                dates.push(`${newdate.getFullYear()}-${newdate.getMonth()+1}-${newdate.getDate()}`)
+            });
+        }    
         return dates;
     }
 </script>
@@ -48,8 +51,8 @@
 <div class="col-12 mt-4  d-flex justify-content-end">
     <Submit
         width={'15'}
-        successMessage={'Evaluation is Submitted'}
-        errorMessage={' Evaluation Submission Failed'}
+        successMessage={'Vacation Balance is Submitted'}
+        errorMessage={' Vacation Balance Submission Failed'}
         label="Submit"
         onClick={async () => {
         isLoading = true;
@@ -63,10 +66,12 @@
         } catch (error) {
             isError = true;
         } finally {
+            dispatch('message', {
+                annualValue: 0,
+                leaveValue: 0,
+                emergencyValue: 0,
+            });
             isLoading = false;
-            annualValue = 0;
-            leaveValue = 0;
-            emergencyValue = 0;
             date = null;
             dates = [];
         }

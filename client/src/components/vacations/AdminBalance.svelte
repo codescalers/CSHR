@@ -6,10 +6,20 @@
 
     let balanceValues: VacationBalanceType = {
         "user": $UserStore,
-        "annual_leaves" : 0,
-        "leave_excuses" : 0,
-        "emergency_leaves" : 0,
+        "annual_leaves": 0,
+        "leave_excuses": 0,
+        "emergency_leaves": 0,
+        delete_old_balance: false
     };
+
+    const removeValues = (event: { detail: {
+      emergencyValue: any;
+      leaveValue: any; annualValue: number; }; 
+    }) => {
+        balanceValues.annual_leaves = event.detail.annualValue
+        balanceValues.leave_excuses = event.detail.leaveValue
+        balanceValues.emergency_leaves = event.detail.emergencyValue
+    }
 
 </script>
 
@@ -57,7 +67,8 @@
                 hint={'Write Emergency leaves in numbers'}
             />
         </div>
-        <DatePickerSelect 
+        <DatePickerSelect
+            on:message={removeValues}
             annualValue={balanceValues.annual_leaves}
             leaveValue = {balanceValues.leave_excuses}
             emergencyValue = {balanceValues.emergency_leaves}
