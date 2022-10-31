@@ -21,7 +21,7 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cshr_server:latest
-          file: "./server/Dockerfile"
+          file: "./Dockerfile"
       
       - name: Build and push client image
         uses: docker/build-push-action@v3
