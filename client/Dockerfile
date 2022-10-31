@@ -1,7 +1,6 @@
 FROM ubuntu:22.04
 
-ENV DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC SSH_KEY="TEST SSH KEY"
-
+ENV DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC
 RUN mkdir -p /etc/zinit/
 RUN apt-get -y update && \
     apt-get -y install wget vim nginx nodejs npm openssh-client openssh-server && \
