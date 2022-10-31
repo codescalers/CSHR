@@ -18,5 +18,8 @@ COPY zinit /etc/zinit
 
 RUN chmod +x /server_dir/start.sh
 RUN poetry install
+RUN poetry run python3 manage.py makemigrations
+RUN poetry run python3 manage.py migrate
+
 EXPOSE 8000
 ENTRYPOINT  ["zinit", "init"]

@@ -1,4 +1,0 @@
-exec: bash -c "cd server_dir; poetry run python3 manage.py makemigrations"
-oneshot: true
-after:
-  - ssh-init
