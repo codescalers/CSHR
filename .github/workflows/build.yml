@@ -3,7 +3,7 @@ name: Build and push a docker image and a flist.
 
 on:
   push:
-    branches: [ main, development_fix_homepage_endpoint ]
+    branches: [main, development_fix_homepage_endpoint]
 
 jobs:
   build:
@@ -22,18 +22,19 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cshr_server:latest
           file: "./Dockerfile"
-      
+
       - name: Build and push client image
         uses: docker/build-push-action@v3
         with:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cshr_client:latest
           file: "./client/Dockerfile"
+          context: ./client
 
       - name: build and push server flist
-        run: | 
+        run: |
           curl -f -X POST  -H "Authorization: bearer ${{ secrets.FLIST_TOKEN }}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/cshr_server:latest'
 
       - name: build and push client flist
-        run: | 
+        run: |
           curl -f -X POST  -H "Authorization: bearer ${{ secrets.FLIST_TOKEN }}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/cshr_client:latest'
