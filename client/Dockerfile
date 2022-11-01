@@ -14,7 +14,6 @@ RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download
 WORKDIR /client_dir
 COPY . /client_dir
 COPY zinit /etc/zinit
-COPY rollup.config.js /client_dir
 
 RUN chmod +x /client_dir/start.sh
 

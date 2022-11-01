@@ -4,6 +4,7 @@
     "private": false,
     "type": "module",
     "scripts": {
+        "rollup": "rollup",
         "build": "rollup -c",
         "dev": "rollup -c -w ",
         "env:dev": "env-cmd npm run dev",
