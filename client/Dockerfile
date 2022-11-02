@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC\
     PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH\
     NODE_PATH=$NVM_DIR/v$NODE_VERSION/lib/node_modules\
-    NVM_DIR=/usr/local/nvm NODE_VERSION=14.17.0 HOST=0.0.0.0
+    NVM_DIR=/usr/local/nvm NODE_VERSION=16.0.0 HOST=0.0.0.0
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
