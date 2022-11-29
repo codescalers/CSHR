@@ -1,5 +1,4 @@
 """This file contains everything related to the Meetings model."""
-import datetime
 from server.cshr.models.meetings import Meetings
 from typing import Any, Dict, List
 
@@ -32,12 +31,15 @@ def filter_meetings_by_month_and_year(user: User, month: str, year: str) -> Meet
 
 def filter_meetings_by_day(year: int, month: int, day: int) -> List[Meetings]:
     """Filter all users by birthdates"""
-    return Meetings.objects.filter(
-        date__year = year, date__month = month, date__day = day
-    )
+    return Meetings.objects.filter(date__year=year, date__month=month, date__day=day)
+
 
 def send_meeting_to_calendar(meeting: Meetings) -> Dict[str, Any]:
-    from server.cshr.services.landing_page import LandingPageClassNameEnum, LandingPageTypeEnum
+    from server.cshr.services.landing_page import (
+        LandingPageClassNameEnum,
+        LandingPageTypeEnum,
+    )
+
     """
     Takes the standerd meeting, then update it with calendar values.
         calendar pattern:

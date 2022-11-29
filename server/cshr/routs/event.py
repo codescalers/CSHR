@@ -1,5 +1,9 @@
 from django.urls import path
-from server.cshr.views.event import EventApiView, BaseEventsAPIView, GetEventOnDayAPIView
+from server.cshr.views.event import (
+    EventApiView,
+    BaseEventsAPIView,
+    GetEventOnDayAPIView,
+)
 
 
 urlpatterns = [

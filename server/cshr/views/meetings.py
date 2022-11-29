@@ -4,7 +4,12 @@ from server.cshr.serializers.meetings import MeetingsSerializer
 from server.cshr.models.users import User
 from server.cshr.api.permission import UserIsAuthenticated
 from server.cshr.services.users import get_user_by_id
-from server.cshr.services.meetings import filter_meetings_by_day, get_all_meetings, get_meeting_by_id, send_meeting_to_calendar
+from server.cshr.services.meetings import (
+    filter_meetings_by_day,
+    get_all_meetings,
+    get_meeting_by_id,
+    send_meeting_to_calendar,
+)
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -88,20 +93,30 @@ class MeetingsApiView(ListAPIView, GenericAPIView):
             data=serializer.errors, message="meeting failed to update"
         )
 
+
 class GetMeetingsOnDayAPIView(GenericAPIView):
     """Class to filter all meetings based on requested day."""
+
     serializer_class = MeetingsSerializer
-    permission_classes = [UserIsAuthenticated,]
+    permission_classes = [
+        UserIsAuthenticated,
+    ]
 
     def get(self, request: Request) -> Response:
         """Get all meetings based on requested day that sent as a query param"""
-        if not request.query_params.get("day") or \
-           not request.query_params.get("month") or \
-           not request.query_params.get("year"):
-            return CustomResponse.bad_request(message="You must send [year, month, day] to filter based on it.")
-        year: int = (int(request.query_params.get("year")))
-        month: int = (int(request.query_params.get("month")))
-        day: int = (int(request.query_params.get("day")))
+        if (
+            not request.query_params.get("day")
+            or not request.query_params.get("month")
+            or not request.query_params.get("year")
+        ):
+            return CustomResponse.bad_request(
+                message="You must send [year, month, day] to filter based on it."
+            )
+        year: int = int(request.query_params.get("year"))
+        month: int = int(request.query_params.get("month"))
+        day: int = int(request.query_params.get("day"))
         events: List[User] = filter_meetings_by_day(year, month, day)
         serializer = self.serializer_class(events, many=True)
-        return CustomResponse.success(data=serializer.data, message="Meetings founded successfully.")
+        return CustomResponse.success(
+            data=serializer.data, message="Meetings founded successfully."
+        )

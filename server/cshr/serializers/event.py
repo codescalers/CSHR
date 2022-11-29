@@ -42,6 +42,7 @@ class EventSerializer(ModelSerializer):
             "minute": obj.end_date.minute,
         }
 
+
 class EventOnDaySerializer(ModelSerializer):
     custom_people = SerializerMethodField()
 

@@ -253,17 +253,25 @@ class PostUserSkillsAPIView(GenericAPIView):
             message=" data provided is corrupted", error=serializer.errors
         )
 
+
 class GetUsersBirthDatesAPIView(GenericAPIView):
     """Class to filter all users birthdates based on requested day."""
+
     serializer_class = BaseUserSerializer
-    permission_classes = [UserIsAuthenticated,]
+    permission_classes = [
+        UserIsAuthenticated,
+    ]
 
     def get(self, request: Request) -> Response:
         """Get all users birthdates based on requested day that sent as a query param"""
         if not request.query_params.get("day") or not request.query_params.get("month"):
-            return CustomResponse.bad_request(message="You must send [day, month] to filter based on it.")
-        month: int = (int(request.query_params.get("month")))
-        day: int = (int(request.query_params.get("day")))
+            return CustomResponse.bad_request(
+                message="You must send [day, month] to filter based on it."
+            )
+        month: int = int(request.query_params.get("month"))
+        day: int = int(request.query_params.get("day"))
         users: List[User] = filter_users_by_birthdates(month, day)
         serializer = self.serializer_class(users, many=True)
-        return CustomResponse.success(data=serializer.data, message="Users founded successfully.")
+        return CustomResponse.success(
+            data=serializer.data, message="Users founded successfully."
+        )

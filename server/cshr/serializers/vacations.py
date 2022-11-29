@@ -8,6 +8,7 @@ from server.cshr.models.vacations import Vacation, VacationBalance
 from server.cshr.serializers.users import BaseUserSerializer, TeamSerializer
 from rest_framework import serializers
 
+
 class VacationsSerializer(ModelSerializer):
     class Meta:
         model = Vacation
@@ -119,6 +120,7 @@ class CalculateCurrentBalanceSerializer(serializers.Serializer):
         """This method to return user data instead of his id"""
         return TeamSerializer(obj.user).data
 
+
 class CalculateBalanceSerializer(serializers.Serializer):
     user = serializers.SerializerMethodField()
     sick_leaves = serializers.SerializerMethodField()
@@ -145,24 +147,24 @@ class CalculateBalanceSerializer(serializers.Serializer):
 
     def get_sick_leaves(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.sick_leaves, obj.actual_balance.get('sick_leaves')]
-    
+        return [obj.sick_leaves, obj.actual_balance.get("sick_leaves")]
+
     def get_compensation(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.compensation, obj.actual_balance.get('compensation')]
-    
+        return [obj.compensation, obj.actual_balance.get("compensation")]
+
     def get_unpaid(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.unpaid, obj.actual_balance.get('unpaid')]
-    
+        return [obj.unpaid, obj.actual_balance.get("unpaid")]
+
     def get_annual_leaves(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.annual_leaves, obj.actual_balance.get('annual_leaves')]
-    
+        return [obj.annual_leaves, obj.actual_balance.get("annual_leaves")]
+
     def get_emergency_leaves(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.emergency_leaves, obj.actual_balance.get('emergency_leaves')]
-    
+        return [obj.emergency_leaves, obj.actual_balance.get("emergency_leaves")]
+
     def get_leave_excuses(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.leave_excuses, obj.actual_balance.get('leave_excuses')]
+        return [obj.leave_excuses, obj.actual_balance.get("leave_excuses")]

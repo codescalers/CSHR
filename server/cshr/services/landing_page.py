@@ -17,29 +17,37 @@ from typing import Any, List, Dict, Union
 from itertools import chain
 from enum import Enum
 
-class LandingPageTypeEnum(Enum):
-    VACATION    = "vacation"
-    BIRTHDAY    = "birthday"
-    MEETING     = "meeting"
-    Event       = "event"
-    
-class LandingPageClassNameEnum(Enum):
-    VACATION    = "task--warning"
-    BIRTHDAY    = "task--primary"
-    MEETING     = "task--danger"
-    Event       = "task--info"
-    
 
+class LandingPageTypeEnum(Enum):
+    VACATION = "vacation"
+    BIRTHDAY = "birthday"
+    MEETING = "meeting"
+    Event = "event"
+
+
+class LandingPageClassNameEnum(Enum):
+    VACATION = "task--warning"
+    BIRTHDAY = "task--primary"
+    MEETING = "task--danger"
+    Event = "task--info"
 
 
 def landing_page_calendar_functionality(user: User, month: str, year: str):
     """
     This function will filter all of events based on its yesr, month.
     """
-    vacations: List[Vacation] = filter_vacations_by_month_and_year(month, year).order_by('-created_at')
-    meetings: List[Meetings] = filter_meetings_by_month_and_year(user, month, year).order_by('-created_at')
-    events: List[Event] = filter_events_by_month_and_year(user, month, year).order_by('-created_at')
-    users_birthdates: List[User] = filter_users_by_berithday_month(month).order_by('-created_at')
+    vacations: List[Vacation] = filter_vacations_by_month_and_year(
+        month, year
+    ).order_by("-created_at")
+    meetings: List[Meetings] = filter_meetings_by_month_and_year(
+        user, month, year
+    ).order_by("-created_at")
+    events: List[Event] = filter_events_by_month_and_year(user, month, year).order_by(
+        "-created_at"
+    )
+    users_birthdates: List[User] = filter_users_by_berithday_month(month).order_by(
+        "-created_at"
+    )
 
     objects: Union[List[Any], None] = list(
         chain(vacations, events, meetings, users_birthdates)
@@ -56,9 +64,10 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
             obj["eventName"] = LandingPageTypeEnum.VACATION.value
             obj["vacation"] = LandingPageVacationsSerializer(
                 vacations.filter(
-                    from_date__day = object.from_date.day,
-                    from_date__month = object.from_date.month,
-                ), many = True
+                    from_date__day=object.from_date.day,
+                    from_date__month=object.from_date.month,
+                ),
+                many=True,
             ).data
         elif isinstance(object, Meetings):
             obj["title"] = LandingPageTypeEnum.MEETING.value
@@ -69,23 +78,24 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
             obj["eventName"] = LandingPageTypeEnum.MEETING.value
             obj["meeting"] = MeetingsSerializer(
                 meetings.filter(
-                    date__day = object.date.day,
-                    date__month = object.date.month
-                ), many = True
+                    date__day=object.date.day, date__month=object.date.month
+                ),
+                many=True,
             ).data
         elif isinstance(object, Event):
             obj["len"] = (object.end_date - object.from_date).days + 1
             obj["date"] = object.from_date
             obj["title"] = LandingPageTypeEnum.Event.value
             obj["className"] = LandingPageClassNameEnum.Event.value
-            obj['isBottom'] = True
+            obj["isBottom"] = True
             obj["eventName"] = LandingPageTypeEnum.Event.value
             obj["event"] = EventSerializer(
                 events.filter(
-                    from_date__day = object.from_date.day,
-                    from_date__month = object.from_date.month,
-                    from_date__year = object.from_date.year
-                ), many = True
+                    from_date__day=object.from_date.day,
+                    from_date__month=object.from_date.month,
+                    from_date__year=object.from_date.year,
+                ),
+                many=True,
             ).data
         elif isinstance(object, User):
             today = datetime.datetime.now()
@@ -97,16 +107,21 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
             obj["vlen"] = 2
             obj["users"] = BaseUserSerializer(
                 users_birthdates.filter(
-                    birthday__day = object.birthday.day,
-                    birthday__month = object.birthday.month,
-                ), many = True
+                    birthday__day=object.birthday.day,
+                    birthday__month=object.birthday.month,
+                ),
+                many=True,
             ).data
         else:
             return CustomResponse.bad_request(message="Unknown landing page type")
 
-        if hasattr(object, "from_date") and hasattr(object, "end_date") and not isinstance(object, Event):
+        if (
+            hasattr(object, "from_date")
+            and hasattr(object, "end_date")
+            and not isinstance(object, Event)
+        ):
             obj["len"] = (object.end_date - object.from_date).days + 1
             obj["date"] = object.from_date
         response.append(obj)
-            
+
     return response

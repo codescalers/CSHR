@@ -129,8 +129,9 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             send_email_for_request(request.user.id, msg, "Vacation request")
             response_date: Dict = send_vacation_to_calendar(saved)
             return CustomResponse.success(
-                status_code=201, message="Successfully Vacation Posted!",
-                data = response_date
+                status_code=201,
+                message="Successfully Vacation Posted!",
+                data=response_date,
             )
         return CustomResponse.bad_request(error=serializer.errors)
 
@@ -402,16 +403,16 @@ class UserVacationBalanceApiView(GenericAPIView):
         user_balance = get_balance_by_user(user)
 
         # Set default values
-        request.data['compensation'] = 100
-        request.data['sick_leaves'] = 100
-        request.data['unpaid'] = 100
+        request.data["compensation"] = 100
+        request.data["sick_leaves"] = 100
+        request.data["unpaid"] = 100
 
         serializer = self.get_serializer(user_balance, data=request.data)
         if serializer.is_valid():
             if request.data.get("delete_old_balance") is True:
-                saved = serializer.save(old_balance={}, user=user)
+                serializer.save(old_balance={}, user=user)
             else:
-                saved = serializer.save(user=user)
+                serializer.save(user=user)
             update_user_actual_balance(user_balance)
             return CustomResponse.success(
                 message="Successfully updated user balance",

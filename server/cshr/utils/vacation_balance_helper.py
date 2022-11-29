@@ -51,7 +51,11 @@ class StanderdVacationBalance:
             balance = VacationBalance.objects.get(user=user)
             for field in balance._meta.fields:
                 actual_value: int = getattr(balance, field.name)
-                if type(actual_value) == dict and len(actual_value) > 0 and field.name != "actual_balance":
+                if (
+                    type(actual_value) == dict
+                    and len(actual_value) > 0
+                    and field.name != "actual_balance"
+                ):
                     for k, v in actual_value.items():
                         balance_attr: int = getattr(balance, k)
                         if balance_attr + v < 100:
@@ -123,7 +127,7 @@ class StanderdVacationBalance:
             public_holidays=values["public_holidays"],
             leave_excuses=values["leave_excuses"],
             unpaid=values["unpaid"],
-            actual_balance=values
+            actual_balance=values,
         )
 
         return balance

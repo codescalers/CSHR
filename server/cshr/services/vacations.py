@@ -1,7 +1,7 @@
 """This file contains everything related to the Vacation model."""
 from server.cshr.models.requests import STATUS_CHOICES, Requests
 from server.cshr.models.users import User
-from server.cshr.models.vacations import REASON_CHOICES, Vacation, VacationBalance
+from server.cshr.models.vacations import Vacation, VacationBalance
 from django.db.models import Q
 from typing import Any, Dict, List
 
@@ -79,6 +79,7 @@ def filter_user_vacations(user: User) -> Vacation:
     """Return all vacations that has pending status and related to user"""
     return Vacation.objects.filter(applying_user=user).order_by("created_at")
 
+
 def update_user_actual_balance(user_balance: VacationBalance) -> VacationBalance:
     """Update user actual balance field with the current balance."""
     user_balance.actual_balance = {
@@ -87,13 +88,18 @@ def update_user_actual_balance(user_balance: VacationBalance) -> VacationBalance
         "compensation": 100,
         "unpaid": 100,
         "emergency_leaves": user_balance.emergency_leaves,
-        "leave_excuses": user_balance.leave_excuses
+        "leave_excuses": user_balance.leave_excuses,
     }
     user_balance.save()
     return user_balance
 
+
 def send_vacation_to_calendar(vacation: Vacation) -> Dict[str, Any]:
-    from server.cshr.services.landing_page import LandingPageClassNameEnum, LandingPageTypeEnum
+    from server.cshr.services.landing_page import (
+        LandingPageClassNameEnum,
+        LandingPageTypeEnum,
+    )
+
     """
     Takes the standerd vacation, then update it with calendar values.
         calendar pattern:

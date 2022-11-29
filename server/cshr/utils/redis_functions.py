@@ -117,7 +117,7 @@ def get_notifications(user: User):
         print(json.loads(dval.get("user")))
         noti_user_id: int = json.loads(dval.get("user"))["id"]
         try:
-            User.objects.get(id = noti_user_id)
+            User.objects.get(id=noti_user_id)
             notifications.append(dval)
         except User.DoesNotExist:
             redis_instance.delete(key)

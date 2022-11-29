@@ -1,5 +1,4 @@
 """This file will containes everything related to User model."""
-import datetime
 from django.contrib.auth.hashers import check_password
 from django.db.models import Q
 from typing import List, Union
@@ -99,8 +98,7 @@ def get_all_skills():
     """Return all skills"""
     return UserSkills.objects.all()
 
+
 def filter_users_by_birthdates(month: int, day: int) -> List[User]:
     """Filter all users by birthdates"""
-    return User.objects.filter(
-        birthday__month = month, birthday__day = day
-    )
+    return User.objects.filter(birthday__month=month, birthday__day=day)

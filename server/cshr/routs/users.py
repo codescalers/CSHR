@@ -12,7 +12,7 @@ from server.cshr.views.users import (
     TeamAPIView,
     SupervisorsAPIView,
     PostUserSkillsAPIView,
-    GetUsersBirthDatesAPIView
+    GetUsersBirthDatesAPIView,
 )
 
 

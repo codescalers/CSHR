@@ -29,15 +29,21 @@ def filter_events_by_month_and_year(user: User, month: str, year: str) -> Event:
     )
     return events
 
+
 def filter_events_by_day(day: int) -> List[Event]:
     """Filter all users by birthdates"""
     today = datetime.datetime.now()
     return Event.objects.filter(
-        from_date__year = today.year, from_date__month = today.month, from_date__day = day
+        from_date__year=today.year, from_date__month=today.month, from_date__day=day
     )
 
+
 def send_event_to_calendar(event: Event) -> Dict[str, Any]:
-    from server.cshr.services.landing_page import LandingPageClassNameEnum, LandingPageTypeEnum
+    from server.cshr.services.landing_page import (
+        LandingPageClassNameEnum,
+        LandingPageTypeEnum,
+    )
+
     """
     Takes the standerd event, then update it with calendar values.
         calendar pattern:
@@ -54,7 +60,7 @@ def send_event_to_calendar(event: Event) -> Dict[str, Any]:
     response["date"] = event.from_date
     response["title"] = LandingPageTypeEnum.Event.value
     response["className"] = LandingPageClassNameEnum.Event.value
-    response['isBottom'] = True
+    response["isBottom"] = True
     response["eventName"] = LandingPageTypeEnum.Event.value
     response["event"] = [EventSerializer(event).data]
     return response
