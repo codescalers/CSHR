@@ -12,8 +12,9 @@ class TYPE_CHOICES(models.TextChoices):
     """
 
     HR_LETTERS = "hr_letters", "HR Letters"
-    COMPENSATION = "compensation", "Compensation"
+    COMPENSATION = "compensations", "Compensations"
     VACATIONS = "vacations", "Vacations"
+    OFFICIAL_DOCUMENT = "official-document", "Official document"
 
 
 class STATUS_CHOICES(models.TextChoices):

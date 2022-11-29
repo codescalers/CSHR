@@ -28,9 +28,8 @@ jobs:
           echo EMAIL=${{ secrets.EMAIL }} >> .env
           echo EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }} >> .env
           echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
-          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
-          echo REDIS_HOST_ONLY= localhost >> .env
-          echo REDIS_PORT= 6000 >> .env
+          echo REDIS_HOST=${{ secrets.REDIS_HOST}} >> .env
+          echo CLIENT_IP= ${{ secrets.CLIENT_IP }} >> .env
           cat .env
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3

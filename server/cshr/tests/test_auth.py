@@ -111,6 +111,8 @@ class RegisterationTests(APITestCase):
             "user_type": "User",
             "reporting_to": [],
             "gender": "Male",
+            "address": "Hena",
+            "social_insurance_number": "52412",
             "job_title": "developer",
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)

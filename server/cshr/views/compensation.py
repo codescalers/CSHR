@@ -8,7 +8,11 @@ from ..serializers.compensation import (
 from ..api.response import CustomResponse
 from server.cshr.models.users import User
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import UserIsAuthenticated, IsSupervisor
+from server.cshr.api.permission import (
+    IsAdmin,
+    IsUser,
+    UserIsAuthenticated,
+)
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.compensation import (
     get_all_compensations,
@@ -47,16 +51,16 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             current_user: User = get_user_by_id(request.user.id)
-            serializer.save(
+            request.data["applying_user"] = current_user.id
+            saved = serializer.save(
                 type=TYPE_CHOICES.COMPENSATION,
                 status=STATUS_CHOICES.PENDING,
                 applying_user=current_user,
             )
-            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             msg = get_compensation_request_email_template(
-                current_user, serializer.data, url
+                current_user, serializer.data, saved.id
             )
-            bool1 = set_notification_request_redis(serializer.data, url)
+            bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(
                 current_user.id, msg, "Compensation request"
             )
@@ -78,17 +82,23 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
 class CompensationApiView(ListAPIView, GenericAPIView):
 
     serializer_class = CompensationSerializer
-    permission_class = UserIsAuthenticated
+    permission_class = [
+        IsUser,
+    ]
 
     def delete(self, request: Request, id, format=None) -> Response:
         """method to delete a Compensation by id"""
         compensation = get_compensation_by_id(id=id)
         if compensation is None:
             return CustomResponse.not_found(message="Compensation not found")
-
+        if compensation.status != STATUS_CHOICES.PENDING:
+            return CustomResponse.bad_request(
+                message="You can only delete requests with pinding status."
+            )
+        if compensation.applying_user != request.user:
+            return CustomResponse.unauthorized()
         compensation.delete()
-        return CustomResponse.success(message="User deleted", status_code=204)
-        """method to get a single Compensation by id"""
+        return CustomResponse.success(message="Compensation deleted", status_code=204)
 
     def get(self, request: Request, id: str, format=None) -> Response:
         compensation = get_compensation_by_id(id=id)
@@ -122,7 +132,7 @@ class CompensationUserApiView(ListAPIView, GenericAPIView):
 
 class CompensationUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = CompensationUpdateSerializer
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsUser]
     """method to update a Compensation by id"""
 
     def put(self, request: Request, id: str, format=None) -> Response:
@@ -132,7 +142,7 @@ class CompensationUpdateApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(compensation, data=request.data, partial=True)
         current_user: User = get_user_by_id(request.user.id)
         if serializer.is_valid():
-            serializer.save(approval_user=current_user)
+            serializer.save()
             url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             msg = get_compensation_reply_email_template(current_user, compensation, url)
             bool = send_email_for_reply.delay(
@@ -157,7 +167,7 @@ class CompensationUpdateApiView(ListAPIView, GenericAPIView):
 
 
 class CompensationAcceptApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         compensation = get_compensation_by_id(id=id)
@@ -167,9 +177,10 @@ class CompensationAcceptApiView(ListAPIView, GenericAPIView):
         compensation.approval_user = current_user
         compensation.status = STATUS_CHOICES.APPROVED
         compensation.save()
-        url = request.build_absolute_uri()
-        bool1 = set_notification_reply_redis(compensation, "accepted", url)
-        msg = get_compensation_reply_email_template(current_user, compensation, url)
+        bool1 = set_notification_reply_redis(compensation, "accepted", compensation.id)
+        msg = get_compensation_reply_email_template(
+            current_user, compensation, compensation.id
+        )
         bool2 = send_email_for_reply.delay(
             current_user.id, compensation.applying_user.id, msg, "Compensation reply"
         )
@@ -184,7 +195,7 @@ class CompensationAcceptApiView(ListAPIView, GenericAPIView):
 
 
 class CompensationRejectApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         compensation = get_compensation_by_id(id=id)
@@ -194,9 +205,10 @@ class CompensationRejectApiView(ListAPIView, GenericAPIView):
         compensation.approval_user = current_user
         compensation.status = STATUS_CHOICES.REJECTED
         compensation.save()
-        url = request.build_absolute_uri()
-        bool1 = set_notification_reply_redis(compensation, "rejected", url)
-        msg = get_compensation_reply_email_template(current_user, compensation, url)
+        bool1 = set_notification_reply_redis(compensation, "rejected", compensation.id)
+        msg = get_compensation_reply_email_template(
+            current_user, compensation, compensation.id
+        )
         bool2 = send_email_for_reply.delay(
             current_user.id, compensation.applying_user.id, msg, "Compensation reply"
         )

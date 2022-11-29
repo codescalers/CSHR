@@ -82,7 +82,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -96,7 +96,7 @@ class VacationsTests(APITestCase):
             "reason": "invalid",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -137,7 +137,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -156,7 +156,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -175,7 +175,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -194,7 +194,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -214,44 +214,6 @@ class VacationsTests(APITestCase):
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_update_vacation_request(self) -> Vacation:
-        """add vacation _request"""
-        url = "/api/vacations/"
-        data = {
-            "reason": "annual_leaves",
-            "from_date": "2022-08-23",
-            "end_date": "2022-08-23",
-            "change_log": 123,
-        }
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
-        )
-        response = client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/vacations/edit/1/"
-        data = {"applying_user": 1}
-        response = client.put(url, data, format="json")
-        self.assertEqual(response.status_code, 202)
-
-    def test_update_vacation_request_not_authorized(self) -> Vacation:
-        """add vacation _request"""
-        url = "/api/vacations/"
-        data = {
-            "reason": "annual_leaves",
-            "from_date": "2022-08-23",
-            "end_date": "2022-08-23",
-            "change_log": 123,
-        }
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
-        )
-        response = client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/vacations/edit/1/"
-        data = {"applying_user": 1}
-        response = client.put(url, data, format="json")
-        self.assertEqual(response.status_code, 403)
-
     def test_update_vacation_request_invalid_user_id(self) -> Vacation:
         """add vacation request"""
         url = "/api/vacations/"
@@ -259,7 +221,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
@@ -271,44 +233,6 @@ class VacationsTests(APITestCase):
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_update_vacation_change_log(self) -> Vacation:
-        """update status and add a comment"""
-        url = "/api/vacations/"
-        data = {
-            "reason": "annual_leaves",
-            "from_date": "2022-08-23",
-            "end_date": "2022-08-23",
-            "change_log": {},
-        }
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
-        )
-        response = client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/vacations/put/1/"
-        data = {"status": "Rejected", "comment": "hi admin"}
-        response = client.put(url, data, format="json")
-        self.assertEqual(response.status_code, 202)
-
-    def test_user_adds_comment(self) -> Vacation:
-        """add vacation _request"""
-        url = "/api/vacations/"
-        data = {
-            "reason": "annual_leaves",
-            "from_date": "2022-08-23",
-            "end_date": "2022-08-23",
-            "change_log": {},
-        }
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
-        )
-        response = client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/vacations/comment/1/"
-        data = {"comment": "hi"}
-        response = client.put(url, data, format="json")
-        self.assertEqual(response.status_code, 202)
-
     def test_user_updates_status(self) -> Vacation:
         """user trying to update status"""
         url = "/api/vacations/"
@@ -316,14 +240,14 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": {},
+            "change_log": [],
         }
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/vacations/put/1/"
+        url = "/api/vacations/edit/1/"
         data = {"status": "Approved"}
         response = client.put(url, data, format="json")
         self.assertEqual(response.status_code, 403)
@@ -335,7 +259,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -361,14 +285,14 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/vacations/accept/1/"
+        url = "/api/vacations/approve/1/"
         response = client.put(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -379,7 +303,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
@@ -397,14 +321,14 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/vacations/accept/1/"
+        url = "/api/vacations/approve/1/"
         response = client.put(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
 
@@ -415,7 +339,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
@@ -433,7 +357,7 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
@@ -451,13 +375,13 @@ class VacationsTests(APITestCase):
             "reason": "annual_leaves",
             "from_date": "2022-08-23",
             "end_date": "2022-08-23",
-            "change_log": 123,
+            "change_log": [],
         }
         self.headers = client.credentials(
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = "/api/vacations/accept/-1/"
+        url = "/api/vacations/approve/-1/"
         response = client.put(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

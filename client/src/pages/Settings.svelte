@@ -1,4 +1,10 @@
 <script lang="ts">
+    import Settings from '../componants/settings/Settings.svelte';
+    import Sidebar from '../componants/sidebar/Sidebar.svelte';
 </script>
 
-settings
+<Sidebar>
+    <section slot="content">
+        <Settings />
+    </section>
+</Sidebar>

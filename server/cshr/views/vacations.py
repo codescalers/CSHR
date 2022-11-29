@@ -1,21 +1,33 @@
+from server.cshr.serializers.users import TeamSerializer
 from server.cshr.serializers.vacations import (
+    AdminVacationBalanceSerializer,
+    CalculateBalanceSerializer,
+    LandingPageVacationsSerializer,
     VacationsCommentsSerializer,
     VacationsSerializer,
 )
-from typing import List
+from typing import Dict, List
 from server.cshr.serializers.vacations import (
     VacationsUpdateSerializer,
-    UserVacationBalanceSerializer,
+    VacationBalanceSerializer,
     UserBalanceUpdateSerializer,
 )
-from server.cshr.api.permission import IsSupervisor, UserIsAuthenticated, IsAdmin
+from server.cshr.api.permission import (
+    IsSupervisor,
+    IsUser,
+    UserIsAuthenticated,
+    IsAdmin,
+)
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.vacations import (
+    get_balance_by_user,
     get_vacation_by_id,
     get_all_vacations,
+    send_vacation_to_calendar,
+    update_user_actual_balance,
 )
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
@@ -24,7 +36,6 @@ from server.cshr.api.response import CustomResponse
 from datetime import datetime
 from server.cshr.utils.update_change_log import (
     update_vacation_change_log,
-    update_vacation_comment_log,
 )
 from server.cshr.utils.email_messages_templates import (
     get_vacation_request_email_template,
@@ -35,19 +46,34 @@ from server.cshr.celery.send_email import send_email_for_reply
 from server.cshr.models.vacations import Vacation
 from server.cshr.services.vacations import get_vacations_by_user
 from server.cshr.utils.redis_functions import (
+    notification_commented,
     set_notification_request_redis,
     set_notification_reply_redis,
 )
 
 
-class VacationBalanceApiView(GenericAPIView):
+class AdminVacationBalanceApiView(GenericAPIView):
     """Class VacationBalance to update or post vacation balance by only admin."""
 
-    serializer_class = VacationsSerializer
+    serializer_class = AdminVacationBalanceSerializer
     permission_classes = [IsAdmin]
 
     def post(self, request: Request) -> Response:
-        pass
+        v = StanderdVacationBalance()
+        request.data["sick_leaves"] = v.file_content["sick_leaves"]
+        request.data["compensation"] = v.file_content["compensation"]
+        request.data["unpaid"] = v.file_content["unpaid"]
+        request.data["year"] = datetime.today().year
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            for field, value in request.data.items():
+                v.write(field, value)
+            return CustomResponse.success(
+                message="Successfully updated balance values.", data=serializer.data
+            )
+        return CustomResponse.bad_request(
+            message="Invalid balance values.", error=serializer.errors
+        )
 
 
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
@@ -82,27 +108,30 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
+            saved = serializer.save(
+                type=TYPE_CHOICES.VACATIONS,
+                status=STATUS_CHOICES.PENDING,
+                applying_user=request.user,
+            )
             balance = v.check_balance(
                 user=request.user,
+                vacation=saved,
                 reason=serializer.validated_data.get("reason"),
                 start_date=serializer.validated_data.get("from_date"),
                 end_date=serializer.validated_data.get("end_date"),
             )
             if balance is not True:
                 return CustomResponse.bad_request(message=balance)
-            serializer.save(
-                type=TYPE_CHOICES.VACATIONS,
-                status=STATUS_CHOICES.PENDING,
-                applying_user=request.user,
-            )
-            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
             msg = get_vacation_request_email_template(
-                request.user, serializer.data, url
+                request.user, serializer.data, saved.id
             )
-            set_notification_request_redis(serializer.data, url)
+            set_notification_request_redis(serializer.data)
             send_email_for_request(request.user.id, msg, "Vacation request")
+            response_date: Dict = send_vacation_to_calendar(saved)
             return CustomResponse.success(
-                status_code=201, message="Successfully updated balance"
+                status_code=201,
+                message="Successfully Vacation Posted!",
+                data=response_date,
             )
         return CustomResponse.bad_request(error=serializer.errors)
 
@@ -113,20 +142,19 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
 
 class VacationsHelpersApiView(ListAPIView, GenericAPIView):
-    serializer_class = VacationsSerializer
+    serializer_class = LandingPageVacationsSerializer
     permission_classes = [UserIsAuthenticated]
     """Class Vacations_APIView to delete  vacation from database or get certain vacation"""
 
     def get(self, request: Request, id: str, format=None) -> Response:
         """method to get a single vacation by id"""
-        print(id)
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
             return CustomResponse.not_found(
                 message="vacation is not found", status_code=404
             )
 
-        serializer = VacationsSerializer(vacation)
+        serializer = LandingPageVacationsSerializer(vacation)
         return CustomResponse.success(
             data=serializer.data, message="vacation request found", status_code=200
         )
@@ -160,42 +188,46 @@ class VacationUserApiView(ListAPIView, GenericAPIView):
 
 class VacationsUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsUser | IsSupervisor]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
+        v = StanderdVacationBalance()
         if vacation is None:
             return CustomResponse.not_found(message="Vacation not found")
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
-        current_user: User = get_user_by_id(request.user.id)
 
         if serializer.is_valid():
-
-            serializer.save(approval_user=current_user)
-            url = request.build_absolute_uri() + str(serializer.data["id"]) + "/"
-            msg = get_vacation_reply_email_template(current_user, vacation, url)
-
-            bool = send_email_for_reply.delay(
-                current_user.id, vacation.applying_user.id, msg, "Vacation reply"
+            balance = v.check_balance(
+                user=request.user,
+                reason=serializer.validated_data.get("reason"),
+                start_date=serializer.validated_data.get("from_date"),
+                end_date=serializer.validated_data.get("end_date"),
+                vacation=vacation,
             )
-            if bool:
-                return CustomResponse.success(
-                    data=serializer.data,
-                    message="vacation request updated",
-                    status_code=202,
-                )
-            else:
-                return CustomResponse.not_found(
-                    message="user is not found", status_code=404
-                )
-
+            if balance is not True:
+                return CustomResponse.bad_request(message=balance)
+            v.vacation_update_balance(vacation)
+            serializer.save()
+            comment: Dict = {
+                "update": True,
+                "user": TeamSerializer(request.user).data,
+                "comment": f"{request.user.first_name.title()} update his vacation",
+                "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
+            }
+            update_vacation_change_log(vacation, comment)
+            return CustomResponse.success(
+                data=serializer.data,
+                message="Vacation Request Updated",
+                status_code=202,
+            )
         return CustomResponse.bad_request(
-            data=serializer.errors, message="vacation failed to update"
+            data=serializer.errors, message="Vacation Failed to Update"
         )
 
 
-class VacationsAcceptApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsSupervisor]
+class VacationsAcceptApiView(GenericAPIView):
+    permission_classes = [IsSupervisor | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
@@ -204,10 +236,16 @@ class VacationsAcceptApiView(ListAPIView, GenericAPIView):
         current_user: User = get_user_by_id(request.user.id)
         vacation.approval_user = current_user
         vacation.status = STATUS_CHOICES.APPROVED
+        comment: Dict = {
+            "user": TeamSerializer(request.user).data,
+            "comment": f"{request.user.first_name} approved your vacation",
+            "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
+        }
+        update_vacation_change_log(vacation, comment)
         vacation.save()
-        url = request.build_absolute_uri()
-        bool1 = set_notification_reply_redis(vacation, "accepted", url)
-        msg = get_vacation_reply_email_template(current_user, vacation, url)
+        event_id = id
+        bool1 = set_notification_reply_redis(vacation, "accepted", event_id)
+        msg = get_vacation_reply_email_template(current_user, vacation, event_id)
         bool2 = send_email_for_reply.delay(
             current_user.id, vacation.applying_user.id, msg, "Vacation reply"
         )
@@ -222,7 +260,7 @@ class VacationsAcceptApiView(ListAPIView, GenericAPIView):
 
 
 class VacationsRejectApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsSupervisor | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
@@ -231,10 +269,16 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         current_user: User = get_user_by_id(request.user.id)
         vacation.approval_user = current_user
         vacation.status = STATUS_CHOICES.REJECTED
+        comment: Dict = {
+            "user": TeamSerializer(request.user).data,
+            "comment": f"{request.user.first_name} rejacted your request",
+            "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
+        }
+        update_vacation_change_log(vacation, comment)
         vacation.save()
-        url = request.build_absolute_uri()
-        bool1 = set_notification_reply_redis(vacation, "rejected", url)
-        msg = get_vacation_reply_email_template(current_user, vacation, url)
+        event_id = id
+        bool1 = set_notification_reply_redis(vacation, "rejected", event_id)
+        msg = get_vacation_reply_email_template(current_user, vacation, event_id)
         bool2 = send_email_for_reply.delay(
             current_user.id, vacation.applying_user.id, msg, "Vacation reply"
         )
@@ -248,27 +292,6 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
             )
 
 
-class VacationApprovalAPIView(GenericAPIView):
-    """Use this class endpoint to change approved user value."""
-
-    serializer_class = VacationsSerializer
-    permission_classes = [IsAdmin | IsSupervisor]
-
-    def put(self, request: Request, id: str) -> Request:
-        """Use this endpoint to approve request."""
-        vacation = get_vacation_by_id(id=id)
-        vacation.approval_user = request.user
-        vacation.status = request.data["status"]
-        comment = request.data.get("comment")
-        comment_ = {"user": request.user.id, "comment": comment}
-        update_vacation_change_log(vacation, str(datetime.today()), comment_)
-        return CustomResponse.success(
-            data=VacationsSerializer(vacation).data,
-            status_code=202,
-            message="vacation change log and status updated",
-        )
-
-
 class VacationCommentsAPIView(GenericAPIView):
     """Use this endpoint to add a comment as a user."""
 
@@ -280,21 +303,25 @@ class VacationCommentsAPIView(GenericAPIView):
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
             return CustomResponse.bad_request(status_code=404)
-        comment = request.data.get("comment")
-        comment_ = {"user": request.user.id, "comment": comment}
-        update_vacation_comment_log(vacation, comment_)
+        comment: Dict = {
+            "user": TeamSerializer(request.user).data,
+            "comment": request.data.get("comment"),
+            "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
+        }
+        update_vacation_change_log(vacation, comment)
+        notification_commented(vacation, request.user, "commented", id)
         return CustomResponse.success(
-            data=comment_, status_code=202, message="vacation comment added"
+            data=comment, status_code=202, message="vacation comment added"
         )
 
 
 class UserVacationBalanceUpdateApiView(ListAPIView, GenericAPIView):
-    serializer_class = UserVacationBalanceSerializer
+    serializer_class = VacationBalanceSerializer
     permission_classes = [IsAdmin]
 
     def put(self, request: Request):
         yourdata = request.data
-        serializer = UserVacationBalanceSerializer(data=yourdata)
+        serializer = VacationBalanceSerializer(data=yourdata)
         if serializer.is_valid():
             v = StanderdVacationBalance()
             v.bulk_write(dict(serializer.data))
@@ -337,16 +364,86 @@ class UserBalanceUpdateApiView(ListAPIView, GenericAPIView):
 
 
 class UserVacationBalanceApiView(GenericAPIView):
-    serializer_class = UserVacationBalanceSerializer
+    serializer_class = VacationBalanceSerializer
     permission_classes = [
         UserIsAuthenticated,
     ]
 
     def get(self, request: Request) -> Response:
         """Get method to get all user balance"""
-        user: User = get_user_by_id(request.user.id)
+        user_id = request.query_params.get("user_id")
+        if not user_id.isdigit():
+            return CustomResponse.bad_request(message="Invalid user id.")
+        if user_id is None:
+            return CustomResponse.bad_request(
+                message="You must send `user_id` as a query_params."
+            )
+        user: User = get_user_by_id(user_id)
+        if user is None:
+            return CustomResponse.not_found(message="User not found.")
         v: StanderdVacationBalance = StanderdVacationBalance()
         balance = v.check(user)
+        request.data["user"] = TeamSerializer(user).data
         return CustomResponse.success(
-            message="Baance founded.", data=self.get_serializer(balance).data
+            message="Baance founded.", data=CalculateBalanceSerializer(balance).data
         )
+
+    def put(self, request: Request) -> CustomResponse:
+        """Use this endpoint to update user balance"""
+        user_id = request.query_params.get("user_id")
+        if not user_id.isdigit():
+            return CustomResponse.bad_request(message="Invalid user id.")
+        if user_id is None:
+            return CustomResponse.bad_request(
+                message="You must send `user_id` as a query_params."
+            )
+        user: User = get_user_by_id(user_id)
+        v: StanderdVacationBalance = StanderdVacationBalance()
+        v.check(user)
+        user_balance = get_balance_by_user(user)
+
+        # Set default values
+        request.data["compensation"] = 100
+        request.data["sick_leaves"] = 100
+        request.data["unpaid"] = 100
+
+        serializer = self.get_serializer(user_balance, data=request.data)
+        if serializer.is_valid():
+            if request.data.get("delete_old_balance") is True:
+                serializer.save(old_balance={}, user=user)
+            else:
+                serializer.save(user=user)
+            update_user_actual_balance(user_balance)
+            return CustomResponse.success(
+                message="Successfully updated user balance",
+                status_code=202,
+                data=serializer.data,
+            )
+        return CustomResponse.bad_request(
+            message="Please make sure that you entered a valid data",
+            error=serializer.errors,
+        )
+
+
+class CalculateVacationDaysApiView(GenericAPIView):
+    permission_classes = [
+        UserIsAuthenticated,
+    ]
+
+    def get(self, request: Request) -> Response:
+        """Use this endpoint to calculate the actual vacation days taked between 2 dates."""
+        user: User = get_user_by_id(request.user.id)
+        v: StanderdVacationBalance = StanderdVacationBalance()
+        v.check(user)
+        start_date: List[str] = request.query_params.get("start_date").split("-")
+        end_date: List[str] = request.query_params.get("end_date").split("-")
+        converted_from_date: datetime = datetime(
+            year=int(start_date[0]), month=int(start_date[1]), day=int(start_date[2])
+        ).date()
+        converted_end_date: datetime = datetime(
+            year=int(end_date[0]), month=int(end_date[1]), day=int(end_date[2])
+        ).date()
+        actual_days: int = v.remove_weekends(
+            user, converted_from_date, converted_end_date
+        )
+        return CustomResponse.success(message="Baance founded.", data=actual_days)

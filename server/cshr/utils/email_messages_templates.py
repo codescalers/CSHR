@@ -1,3 +1,4 @@
+from server.cshr.models.official_documents import OffcialDocument
 from server.cshr.models.users import User
 
 
@@ -30,6 +31,24 @@ def get_hr_letter_request_email_template(user: User, data, url) -> str:
         user_lname=user.last_name,
         addresses=data["addresses"],
         status=data["status"],
+        request_url=url,
+    )
+    return msg
+
+
+def get_official_document_request_email_template(
+    user: User, data: OffcialDocument, url
+) -> str:
+    print(data)
+    msg = """Request information:
+    Applying user: {user_fname} {user_lname}
+    Addresses : {document}
+    Status :{status}
+    Request Url: {request_url}""".format(
+        user_fname=user.first_name,
+        user_lname=user.last_name,
+        document=data.document,
+        status=data.status,
         request_url=url,
     )
     return msg

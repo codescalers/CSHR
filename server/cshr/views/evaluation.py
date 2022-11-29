@@ -1,6 +1,7 @@
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
+from server.cshr.models.users import User
 from server.cshr.serializers.evaluation import (
     UserEvaluationSerializer,
     EvaluationSerializer,
@@ -13,10 +14,12 @@ from server.cshr.api.permission import (
     CustomPermissions,
 )
 from server.cshr.services.evaluation import (
+    filter_all_evaluations_based_on_user_and_year,
     get_evaluation_by_id,
     get_user_evaluation_by_id,
     all_user_evaluations,
 )
+from server.cshr.services.users import get_user_by_id
 
 
 class BaseUserEvaluationsAPIView(ListAPIView, GenericAPIView):
@@ -70,19 +73,27 @@ class UserEvaluationsAPIView(ListAPIView, GenericAPIView):
         return CustomResponse.not_found(message="user evaluation not found")
 
     def get(self, request: Request, id: str, format=None) -> Response:
+        """Use this endpoint to retrieve user evaluations"""
+        year: str = request.query_params.get("year")
 
-        evaluation = get_user_evaluation_by_id(id)
+        if not year or not year.isdigit():
+            return CustomResponse.bad_request(message="Make sure the year is a number.")
+        if not id.isdigit():
+            return CustomResponse.bad_request(message="Invalid id")
 
-        if evaluation is not None:
-            has_permission = CustomPermissions.admin_or_supervisor(request.user)
-            if not has_permission and request.user.id != evaluation.user_id:
-                return CustomResponse.unauthorized()
-            serializer = UserEvaluationSerializer(evaluation)
-            return CustomResponse.success(
-                data=serializer.data, message="user evaluation found", status_code=200
-            )
-        return CustomResponse.not_found(
-            message="user evaluation not found", status_code=404
+        user: User = get_user_by_id(int(id))
+        if user is None:
+            return CustomResponse.not_found(message="User not found")
+
+        evaluations = filter_all_evaluations_based_on_user_and_year(user, year)
+        serializer = UserEvaluationSerializer(evaluations, many=True)
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
+
+        if not has_permission and request.user.id != user.id:
+            return CustomResponse.unauthorized()
+
+        return CustomResponse.success(
+            data=serializer.data, message="user evaluation found", status_code=200
         )
 
     def put(self, request: Request, id: str, format=None) -> Response:

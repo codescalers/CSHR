@@ -1,0 +1,4 @@
+exec: sh -c "cd server_dir; poetry run python3 manage.py createsuperuser --noinput"
+after:
+  - migrations
+oneshot: true

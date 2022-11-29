@@ -1,6 +1,10 @@
 # client
 client/node_modules
+client/public/build/
 **/node_modules/**
+**/public/build/**
+client/.vscode/
+**client/.vscode/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -9,7 +13,6 @@ __pycache__/
 
 # C extensions
 *.so
-yarn*
 .env
 # Distribution / packaging
 .Python
@@ -17,6 +20,9 @@ build/
 develop-eggs/
 dist/
 downloads/
+*.backup
+.terraform/
+*.tfstate
 eggs/
 .eggs/
 lib/
@@ -64,6 +70,7 @@ coverage.xml
 *.log
 local_settings.py
 db.sqlite3
+dump.rdb
 db.sqlite3-journal
 
 # Flask stuff:

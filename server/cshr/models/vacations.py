@@ -33,16 +33,10 @@ class Vacation(Requests):
     from_date = models.DateField()
     end_date = models.DateField()
     change_log = models.JSONField(default=list)
+    taked_from_old_balance = models.BooleanField(default=False)
 
     def ___str__(self):
         return self.reason
-
-
-class PublicHolidays(models.Model):
-    date = models.DateField(unique=True)
-
-    def __str__(self):
-        return str(self.date)
 
 
 class VacationBalance(models.Model):
@@ -54,10 +48,11 @@ class VacationBalance(models.Model):
     unpaid = models.IntegerField()
     annual_leaves = models.IntegerField()
     emergency_leaves = models.IntegerField()
-    leave_execuses = models.IntegerField()
+    leave_excuses = models.IntegerField()
     public_holidays = models.IntegerField()
     date = models.DateField(auto_now=True)
     old_balance = models.JSONField(default=dict, null=True)
+    actual_balance = models.JSONField(default=dict, null=True)
 
     def __str__(self):
         return str(self.user.email)
