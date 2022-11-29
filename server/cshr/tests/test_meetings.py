@@ -61,21 +61,21 @@ class MeetingsTests(APITestCase):
         url = f'{"/api/auth/login/"}'
         data = {"email": "ahmed@gmail.com", "password": "ahmedpass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "andrew@gmail.com", "password": "andrewpass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "helmy@gmail.com", "password": "helmypass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def test_create_meeting(self) -> Meetings:
         url = "/api/meeting/"
@@ -101,19 +101,6 @@ class MeetingsTests(APITestCase):
         )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_meeting_no_invited_users(self) -> Meetings:
-        url = "/api/meeting/"
-        data = {
-            "meeting_link": "meeting link",
-            "date": {"year": 2022, "month": 9, "day": 8, "hour": 16, "minute": 24},
-        }
-        self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
-        )
-        response = client.post(url, data, format="json")
-        # ManyToManyField accept null values when creating a new object.
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_get_certain_meeting(self) -> Meetings:
         """test to get a valid meeting"""

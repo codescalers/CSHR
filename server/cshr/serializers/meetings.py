@@ -10,14 +10,27 @@ class MeetingsSerializer(ModelSerializer):
 
     invited_users: List[User] = SerializerMethodField()
     date = SerializerMethodField()
+    host_user = SerializerMethodField()
+    host_user = SerializerMethodField()
 
     class Meta:
         model = Meetings
-        fields = ("id", "invited_users", "date", "meeting_link")
+        fields = (
+            "id",
+            "invited_users",
+            "date",
+            "meeting_link",
+            "host_user",
+            "location",
+        )
 
     def get_invited_users(self, obj: Meetings) -> List[BaseUserSerializer]:
         """Returns a list of users that invited to the meeting."""
         return BaseUserSerializer(obj.invited_users.all(), many=True).data
+
+    def get_host_user(self, obj: Meetings) -> BaseUserSerializer:
+        """Returns the  host user that made the meeting."""
+        return BaseUserSerializer(obj.host_user).data
 
     def get_date(self, obj: Meetings) -> Dict:
         return {

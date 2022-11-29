@@ -1,12 +1,17 @@
 
 CMD:=poetry run
-up:
+client:=cd client
+terraform:=cd terraform
+
+docker-up:
 	docker-compose up --build -d
 install:
 	poetry install
 	poetry check
-run:
+runserver:
 	$(CMD) python3 manage.py runserver
+runclient:
+	$(client) && npm install && npm run dev
 test:
 	$(CMD) python3 manage.py test
 lint:
@@ -16,6 +21,8 @@ migrate:
 	$(CMD) python3 manage.py migrate
 user:
 	$(CMD) python3 manage.py createsuperuser
-	$(CMD) python3 manage.py sqlmigrate cshr 0006
-	
-
+	$(CMD) python3 manage.py runserver
+terraform-up:
+	$(terraform) && terraform init && terraform apply -parallelism=1 -auto-approve
+terraform-down:
+	$(terraform) && terraform destroy -parallelism=1 -auto-approve

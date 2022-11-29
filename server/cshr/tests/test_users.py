@@ -20,6 +20,7 @@ class GeneralViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Male",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -52,6 +53,7 @@ class GeneralViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Male",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -61,12 +63,16 @@ class GeneralViewUserProfileTests(APITestCase):
             team="Development",
             salary={"gross": 2000},
             user_type="User",
-            reporting_to=admin,
             social_insurance_number="046 454 286",
             image="profile_image/default.png",
         )
         user.skills.add(react)
         user.skills.add(sql)
+        user.reporting_to.set(
+            [
+                admin.id,
+            ]
+        )
         TrainingCourses.objects.create(
             user=user,
             name="Meta Back-End Developer",
@@ -85,6 +91,7 @@ class GeneralViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Male",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
@@ -94,9 +101,13 @@ class GeneralViewUserProfileTests(APITestCase):
             team="Development",
             salary={"gross": 2000},
             user_type="Supervisor",
-            reporting_to=admin,
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
+        )
+        supervisor.reporting_to.set(
+            [
+                admin.id,
+            ]
         )
         supervisor.skills.add(react)
         supervisor.skills.add(sql)
@@ -124,21 +135,21 @@ class GeneralViewUserProfileTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "jane@gmail.com", "password": "adminpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "john@outlook.com", "password": "userpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def test_get_all_users_User(self):
         """a user can view specific fields of all other users.
@@ -150,27 +161,26 @@ class GeneralViewUserProfileTests(APITestCase):
         url = "/api/users/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
-        self.assertEqual(response.data["data"][1]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"][1]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"][1]["birthday"], "2000-12-30")
+        self.assertEqual(response.data["results"][1]["telegram_link"], "@johnblake")
+        self.assertEqual(response.data["results"][1]["email"], "john@outlook.com")
+        self.assertEqual(response.data["results"][1]["location"]["id"], 1)
+        self.assertEqual(response.data["results"][1]["reporting_to"][0]["id"], 1)
         self.assertEqual(
-            response.data["data"][1]["image"],
-            "http://testserver/profile_image/default.png",
-        )
-        self.assertEqual(response.data["data"][1]["birthday"], "2000-12-30")
-        self.assertEqual(response.data["data"][1]["telegram_link"], "@johnblake")
-        self.assertEqual(response.data["data"][1]["email"], "john@outlook.com")
-        self.assertEqual(response.data["data"][1]["location"], 1)
-        self.assertEqual(response.data["data"][1]["reporting_to"], 1)
-        self.assertEqual(response.data["data"][1]["skills"], [1, 2])
-        self.assertEqual(
-            response.data["data"][1]["user_certificates"][0]["name"],
+            response.data["results"][1]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
-        self.assertEqual(response.data["data"][1].get("mobile_number"), None)
-        self.assertEqual(response.data["data"][1].get("social_insurance_number"), None)
-        self.assertEqual(response.data["data"][1].get("team"), None)
-        self.assertEqual(response.data["data"][1].get("user_company_properties"), None)
-        self.assertEqual(response.data["data"][1].get("user_evaluation"), None)
-        self.assertEqual(response.data["data"][1].get("salary"), None)
+        self.assertEqual(response.data["results"][1].get("mobile_number"), None)
+        self.assertEqual(
+            response.data["results"][1].get("social_insurance_number"), None
+        )
+        self.assertEqual(response.data["results"][1].get("team"), "Development")
+        self.assertEqual(
+            response.data["results"][1].get("user_company_properties"), None
+        )
+        self.assertEqual(response.data["results"][1].get("user_evaluation"), None)
+        self.assertEqual(response.data["results"][1].get("salary"), None)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_a_user(self):
@@ -182,27 +192,22 @@ class GeneralViewUserProfileTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         response = self.client.get(url, format="json")
-        self.assertEqual(response.data["data"]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"]["birthday"], "2000-12-30")
+        self.assertEqual(response.data["results"]["telegram_link"], "@johnblake")
+        self.assertEqual(response.data["results"]["email"], "john@outlook.com")
+        self.assertEqual(response.data["results"]["location"]["id"], 1)
+        self.assertEqual(response.data["results"]["reporting_to"][0]["id"], 1)
         self.assertEqual(
-            response.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
-        )
-        self.assertEqual(response.data["data"]["birthday"], "2000-12-30")
-        self.assertEqual(response.data["data"]["telegram_link"], "@johnblake")
-        self.assertEqual(response.data["data"]["email"], "john@outlook.com")
-        self.assertEqual(response.data["data"]["location"], 1)
-        self.assertEqual(response.data["data"]["reporting_to"], 1)
-        self.assertEqual(response.data["data"]["skills"], [1, 2])
-        self.assertEqual(
-            response.data["data"]["user_certificates"][0]["name"],
+            response.data["results"]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
-        self.assertEqual(response.data["data"].get("mobile_number"), None)
-        self.assertEqual(response.data["data"].get("social_insurance_number"), None)
-        self.assertEqual(response.data["data"].get("team"), None)
-        self.assertEqual(response.data["data"].get("user_company_properties"), None)
-        self.assertEqual(response.data["data"].get("user_evaluation"), None)
-        self.assertEqual(response.data["data"].get("salary"), None)
+        self.assertEqual(response.data["results"].get("mobile_number"), None)
+        self.assertEqual(response.data["results"].get("social_insurance_number"), None)
+        self.assertEqual(response.data["results"].get("team"), "Development")
+        self.assertEqual(response.data["results"].get("user_company_properties"), None)
+        self.assertEqual(response.data["results"].get("user_evaluation"), None)
+        self.assertEqual(response.data["results"].get("salary"), None)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_a_user_not_found(self):
@@ -225,6 +230,7 @@ class SupervisorViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Female",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -257,6 +263,7 @@ class SupervisorViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Male",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -266,9 +273,13 @@ class SupervisorViewUserProfileTests(APITestCase):
             team="Development",
             salary={"gross": 2000},
             user_type="User",
-            reporting_to=admin,
             social_insurance_number="046 454 286",
             image="profile_image/default.png",
+        )
+        user.reporting_to.set(
+            [
+                admin.id,
+            ]
         )
         user.skills.add(react)
         user.skills.add(sql)
@@ -290,6 +301,7 @@ class SupervisorViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Female",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
@@ -299,9 +311,13 @@ class SupervisorViewUserProfileTests(APITestCase):
             team="Development",
             salary={"gross": 2000},
             user_type="Supervisor",
-            reporting_to=admin,
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
+        )
+        supervisor.reporting_to.set(
+            [
+                admin.id,
+            ]
         )
         supervisor.skills.add(react)
         supervisor.skills.add(sql)
@@ -329,21 +345,21 @@ class SupervisorViewUserProfileTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "jane@gmail.com", "password": "adminpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "john@outlook.com", "password": "userpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def test_get_all_users_supervisor(self):
         """a supervisor can view specific all fields of all other users except salary"""
@@ -352,35 +368,31 @@ class SupervisorViewUserProfileTests(APITestCase):
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.get(url, format="json")
-        self.assertEqual(len(response.data["data"]), 3)
-        self.assertEqual(response.data["data"][1]["full_name"], "John Blake")
+        self.assertEqual(len(response.data["results"]), 3)
+        self.assertEqual(response.data["results"][1]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"][1]["birthday"], "2000-12-30")
+        self.assertEqual(response.data["results"][1]["telegram_link"], "@johnblake")
+        self.assertEqual(response.data["results"][1]["email"], "john@outlook.com")
+        self.assertEqual(response.data["results"][1]["location"]["id"], 1)
+        self.assertEqual(response.data["results"][1]["reporting_to"][0]["id"], 1)
         self.assertEqual(
-            response.data["data"][1]["image"],
-            "http://testserver/profile_image/default.png",
-        )
-        self.assertEqual(response.data["data"][1]["birthday"], "2000-12-30")
-        self.assertEqual(response.data["data"][1]["telegram_link"], "@johnblake")
-        self.assertEqual(response.data["data"][1]["email"], "john@outlook.com")
-        self.assertEqual(response.data["data"][1]["location"], 1)
-        self.assertEqual(response.data["data"][1]["reporting_to"], 1)
-        self.assertEqual(response.data["data"][1]["skills"], [1, 2])
-        self.assertEqual(
-            response.data["data"][1]["user_certificates"][0]["name"],
+            response.data["results"][1]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
-        self.assertEqual(response.data["data"][1]["mobile_number"], "+201012345678")
+        self.assertEqual(response.data["results"][1]["mobile_number"], "+201012345678")
         self.assertEqual(
-            response.data["data"][1]["social_insurance_number"], "046 454 286"
+            response.data["results"][1]["social_insurance_number"], "046 454 286"
         )
-        self.assertEqual(response.data["data"][1]["team"], "Development")
+        self.assertEqual(response.data["results"][1]["team"], "Development")
         self.assertEqual(
-            response.data["data"][1]["user_company_properties"][0]["name"], "computer"
+            response.data["results"][1]["user_company_properties"][0]["name"],
+            "computer",
         )
         self.assertEqual(
-            response.data["data"][1]["user_evaluation"][0]["link"],
+            response.data["results"][1]["user_evaluation"][0]["link"],
             "https://evaluation2",
         )
-        self.assertEqual(response.data["data"][1].get("salary"), None)
+        self.assertEqual(response.data["results"][1].get("salary"), None)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_a_user_supervisor(self):
@@ -390,33 +402,29 @@ class SupervisorViewUserProfileTests(APITestCase):
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.get(url, format="json")
-        self.assertEqual(response.data["data"]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"]["birthday"], "2000-12-30")
+        self.assertEqual(response.data["results"]["telegram_link"], "@johnblake")
+        self.assertEqual(response.data["results"]["email"], "john@outlook.com")
+        self.assertEqual(response.data["results"]["location"]["id"], 1)
+        self.assertEqual(response.data["results"]["reporting_to"][0]["id"], 1)
         self.assertEqual(
-            response.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
-        )
-        self.assertEqual(response.data["data"]["birthday"], "2000-12-30")
-        self.assertEqual(response.data["data"]["telegram_link"], "@johnblake")
-        self.assertEqual(response.data["data"]["email"], "john@outlook.com")
-        self.assertEqual(response.data["data"]["location"], 1)
-        self.assertEqual(response.data["data"]["reporting_to"], 1)
-        self.assertEqual(response.data["data"]["skills"], [1, 2])
-        self.assertEqual(
-            response.data["data"]["user_certificates"][0]["name"],
+            response.data["results"]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
-        self.assertEqual(response.data["data"]["mobile_number"], "+201012345678")
+        self.assertEqual(response.data["results"]["mobile_number"], "+201012345678")
         self.assertEqual(
-            response.data["data"]["social_insurance_number"], "046 454 286"
+            response.data["results"]["social_insurance_number"], "046 454 286"
         )
-        self.assertEqual(response.data["data"]["team"], "Development")
+        self.assertEqual(response.data["results"]["team"], "Development")
         self.assertEqual(
-            response.data["data"]["user_company_properties"][0]["name"], "computer"
+            response.data["results"]["user_company_properties"][0]["name"], "computer"
         )
         self.assertEqual(
-            response.data["data"]["user_evaluation"][0]["link"], "https://evaluation2"
+            response.data["results"]["user_evaluation"][0]["link"],
+            "https://evaluation2",
         )
-        self.assertEqual(response.data["data"].get("salary"), None)
+        self.assertEqual(response.data["results"].get("salary"), None)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_all_users_normaluser(self):
@@ -460,6 +468,7 @@ class AdminViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Female",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -492,6 +501,7 @@ class AdminViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Female",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -501,9 +511,13 @@ class AdminViewUserProfileTests(APITestCase):
             team="Development",
             salary={"gross": 2000},
             user_type="User",
-            reporting_to=admin,
             social_insurance_number="046 454 286",
             image="profile_image/default.png",
+        )
+        user.reporting_to.set(
+            [
+                admin.id,
+            ]
         )
         user.skills.add(react)
         user.skills.add(sql)
@@ -525,6 +539,7 @@ class AdminViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Female",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
@@ -534,9 +549,13 @@ class AdminViewUserProfileTests(APITestCase):
             team="Development",
             salary={"gross": 2000},
             user_type="Supervisor",
-            reporting_to=admin,
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
+        )
+        supervisor.reporting_to.set(
+            [
+                admin.id,
+            ]
         )
         supervisor.skills.add(react)
         supervisor.skills.add(sql)
@@ -564,21 +583,21 @@ class AdminViewUserProfileTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "jane@gmail.com", "password": "adminpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "john@outlook.com", "password": "userpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def test_get_all_users(self):
         "an admin can view all fields a supervisor can view of all users in addition to salary"
@@ -589,35 +608,31 @@ class AdminViewUserProfileTests(APITestCase):
         url = "/api/users/admin/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
-        self.assertEqual(len(response.data["data"]), 3)
-        self.assertEqual(response.data["data"][1]["full_name"], "John Blake")
+        self.assertEqual(len(response.data["results"]), 3)
+        self.assertEqual(response.data["results"][1]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"][1]["birthday"], "2000-12-30")
+        self.assertEqual(response.data["results"][1]["telegram_link"], "@johnblake")
+        self.assertEqual(response.data["results"][1]["email"], "john@outlook.com")
+        self.assertEqual(response.data["results"][1]["location"]["id"], 1)
+        self.assertEqual(response.data["results"][1]["reporting_to"][0]["id"], 1)
         self.assertEqual(
-            response.data["data"][1]["image"],
-            "http://testserver/profile_image/default.png",
-        )
-        self.assertEqual(response.data["data"][1]["birthday"], "2000-12-30")
-        self.assertEqual(response.data["data"][1]["telegram_link"], "@johnblake")
-        self.assertEqual(response.data["data"][1]["email"], "john@outlook.com")
-        self.assertEqual(response.data["data"][1]["location"], 1)
-        self.assertEqual(response.data["data"][1]["reporting_to"], 1)
-        self.assertEqual(response.data["data"][1]["skills"], [1, 2])
-        self.assertEqual(
-            response.data["data"][1]["user_certificates"][0]["name"],
+            response.data["results"][1]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
-        self.assertEqual(response.data["data"][1]["mobile_number"], "+201012345678")
+        self.assertEqual(response.data["results"][1]["mobile_number"], "+201012345678")
         self.assertEqual(
-            response.data["data"][1]["social_insurance_number"], "046 454 286"
+            response.data["results"][1]["social_insurance_number"], "046 454 286"
         )
-        self.assertEqual(response.data["data"][1]["team"], "Development")
+        self.assertEqual(response.data["results"][1]["team"], "Development")
         self.assertEqual(
-            response.data["data"][1]["user_company_properties"][0]["name"], "computer"
+            response.data["results"][1]["user_company_properties"][0]["name"],
+            "computer",
         )
         self.assertEqual(
-            response.data["data"][1]["user_evaluation"][0]["link"],
+            response.data["results"][1]["user_evaluation"][0]["link"],
             "https://evaluation2",
         )
-        self.assertEqual(response.data["data"][1]["salary"], {"gross": 2000})
+        self.assertEqual(response.data["results"][1]["salary"], {"gross": 2000})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_a_user(self):
@@ -625,33 +640,29 @@ class AdminViewUserProfileTests(APITestCase):
         url = "/api/users/admin/2/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
-        self.assertEqual(response.data["data"]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"]["birthday"], "2000-12-30")
+        self.assertEqual(response.data["results"]["telegram_link"], "@johnblake")
+        self.assertEqual(response.data["results"]["email"], "john@outlook.com")
+        self.assertEqual(response.data["results"]["location"]["id"], 1)
+        self.assertEqual(response.data["results"]["reporting_to"][0]["id"], 1)
         self.assertEqual(
-            response.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
-        )
-        self.assertEqual(response.data["data"]["birthday"], "2000-12-30")
-        self.assertEqual(response.data["data"]["telegram_link"], "@johnblake")
-        self.assertEqual(response.data["data"]["email"], "john@outlook.com")
-        self.assertEqual(response.data["data"]["location"], 1)
-        self.assertEqual(response.data["data"]["reporting_to"], 1)
-        self.assertEqual(response.data["data"]["skills"], [1, 2])
-        self.assertEqual(
-            response.data["data"]["user_certificates"][0]["name"],
+            response.data["results"]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
-        self.assertEqual(response.data["data"]["mobile_number"], "+201012345678")
+        self.assertEqual(response.data["results"]["mobile_number"], "+201012345678")
         self.assertEqual(
-            response.data["data"]["social_insurance_number"], "046 454 286"
+            response.data["results"]["social_insurance_number"], "046 454 286"
         )
-        self.assertEqual(response.data["data"]["team"], "Development")
+        self.assertEqual(response.data["results"]["team"], "Development")
         self.assertEqual(
-            response.data["data"]["user_company_properties"][0]["name"], "computer"
+            response.data["results"]["user_company_properties"][0]["name"], "computer"
         )
         self.assertEqual(
-            response.data["data"]["user_evaluation"][0]["link"], "https://evaluation2"
+            response.data["results"]["user_evaluation"][0]["link"],
+            "https://evaluation2",
         )
-        self.assertEqual(response.data["data"]["salary"], {"gross": 2000})
+        self.assertEqual(response.data["results"]["salary"], {"gross": 2000})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_a_user_not_found(self):
@@ -669,24 +680,20 @@ class AdminViewUserProfileTests(APITestCase):
             "telegram_link": "@userexample",
             "birthday": "1981-08-31",
             "social_insurance_number": "123 456 789",
-            "location": 2,
             "team": "Marketing",
-            "reporting_to": 3,
             "salary": {"gross": 9000},
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.put(url, data, format="json")
         getresponse = self.client.get(url, format="json")
-        self.assertEqual(response.data["data"]["email"], "user@example.com")
-        self.assertEqual(getresponse.data["data"]["salary"], {"gross": 9000})
-        self.assertEqual(response.data["data"]["telegram_link"], "@userexample")
+        self.assertEqual(response.data["results"]["email"], "user@example.com")
+        self.assertEqual(getresponse.data["results"]["salary"], {"gross": 9000})
+        self.assertEqual(response.data["results"]["telegram_link"], "@userexample")
         self.assertEqual(
-            response.data["data"]["social_insurance_number"], "123 456 789"
+            response.data["results"]["social_insurance_number"], "123 456 789"
         )
-        self.assertEqual(response.data["data"]["birthday"], "1981-08-31")
-        self.assertEqual(getresponse.data["data"]["reporting_to"], 3)
-        self.assertEqual(getresponse.data["data"]["team"], "Marketing")
-        self.assertEqual(getresponse.data["data"]["location"], 2)
+        self.assertEqual(response.data["results"]["birthday"], "1981-08-31")
+        self.assertEqual(getresponse.data["results"]["team"], "Marketing")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_a_user(self):
@@ -720,9 +727,8 @@ class AdminViewUserProfileTests(APITestCase):
             "telegram_link": "@userexample",
             "birthday": "1981-08-31",
             "social_insurance_number": "123 456 789",
-            "location": 2,
             "team": "Marketing",
-            "reporting_to": 3,
+            "reporting_to": [],
             "salary": {"gross": 9000},
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
@@ -764,7 +770,7 @@ class AdminViewUserProfileTests(APITestCase):
             "social_insurance_number": "123 456 789",
             "location": 2,
             "team": "Marketing",
-            "reporting_to": 3,
+            "reporting_to": [],
             "salary": {"gross": 9000},
         }
         self.client.credentials(
@@ -795,6 +801,7 @@ class SelfViewUserProfileTests(APITestCase):
         admin = User.objects.create(
             first_name="Jane",
             last_name="Brown",
+            gender="Female",
             telegram_link="@janebrown",
             email="jane@gmail.com",
             birthday="1998-08-24",
@@ -827,6 +834,7 @@ class SelfViewUserProfileTests(APITestCase):
         user = User.objects.create(
             first_name="John",
             last_name="Blake",
+            gender="Male",
             telegram_link="@johnblake",
             email="john@outlook.com",
             birthday="2000-12-30",
@@ -836,9 +844,13 @@ class SelfViewUserProfileTests(APITestCase):
             team="Development",
             salary={"gross": 2000},
             user_type="User",
-            reporting_to=admin,
             social_insurance_number="046 454 286",
             image="profile_image/default.png",
+        )
+        user.reporting_to.set(
+            [
+                admin.id,
+            ]
         )
         user.skills.add(react)
         user.skills.add(sql)
@@ -860,6 +872,7 @@ class SelfViewUserProfileTests(APITestCase):
         supervisor = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
+            gender="Female",
             telegram_link="@sarahpoland",
             email="sarah@hotmail.com",
             birthday="1996-03-12",
@@ -869,9 +882,13 @@ class SelfViewUserProfileTests(APITestCase):
             team="Development",
             salary={"gross": 2000},
             user_type="Supervisor",
-            reporting_to=admin,
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
+        )
+        supervisor.reporting_to.set(
+            [
+                admin.id,
+            ]
         )
         supervisor.skills.add(react)
         supervisor.skills.add(sql)
@@ -899,99 +916,50 @@ class SelfViewUserProfileTests(APITestCase):
         url = "/api/auth/login/"
         data = {"email": "jane@gmail.com", "password": "adminpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = "/api/auth/login/"
         data = {"email": "john@outlook.com", "password": "userpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def test_get_my_profile(self):
         "any user can view all the fields of their profile including salary"
         url = "/api/myprofile/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
-        self.assertEqual(response.data["data"]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"]["full_name"], "John Blake")
+        self.assertEqual(response.data["results"]["birthday"], "2000-12-30")
+        self.assertEqual(response.data["results"]["telegram_link"], "@johnblake")
+        self.assertEqual(response.data["results"]["email"], "john@outlook.com")
+        self.assertEqual(response.data["results"]["location"]["id"], 1)
         self.assertEqual(
-            response.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
+            response.data["results"]["reporting_to"][0]["email"], "jane@gmail.com"
         )
-        self.assertEqual(response.data["data"]["birthday"], "2000-12-30")
-        self.assertEqual(response.data["data"]["telegram_link"], "@johnblake")
-        self.assertEqual(response.data["data"]["email"], "john@outlook.com")
-        self.assertEqual(response.data["data"]["location"], 1)
         self.assertEqual(
-            response.data["data"]["reporting_to"]["email"], "jane@gmail.com"
-        )
-        self.assertEqual(response.data["data"]["skills"], [1, 2])
-        self.assertEqual(
-            response.data["data"]["user_certificates"][0]["name"],
+            response.data["results"]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
-        self.assertEqual(response.data["data"]["mobile_number"], "+201012345678")
+        self.assertEqual(response.data["results"]["mobile_number"], "+201012345678")
         self.assertEqual(
-            response.data["data"]["social_insurance_number"], "046 454 286"
+            response.data["results"]["social_insurance_number"], "046 454 286"
         )
-        self.assertEqual(response.data["data"]["team"], "Development")
+        self.assertEqual(response.data["results"]["team"], "Development")
         self.assertEqual(
-            response.data["data"]["user_company_properties"][0]["name"], "computer"
-        )
-        self.assertEqual(
-            response.data["data"]["user_evaluation"][0]["link"], "https://evaluation2"
-        )
-        self.assertEqual(response.data["data"]["salary"], {"gross": 2000})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_update_my_profile(self):
-        "any user can some fields of their profile"
-        url = "/api/myprofile/"
-        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
-        data = {
-            "email": "janjoun@example.com",
-            "telegram_link": "@janjounexample",
-            "birthday": "1981-08-31",
-            "social_insurance_number": "123 456 789",
-            "mobile_number": "+201093129222",
-        }
-        response = self.client.put(url, data, format="json")
-        getresponse = self.client.get(url, format="json")
-        self.assertEqual(getresponse.data["data"]["full_name"], "John Blake")
-        self.assertEqual(
-            getresponse.data["data"]["image"],
-            "http://testserver/profile_image/default.png",
-        )
-        self.assertEqual(getresponse.data["data"]["birthday"], "1981-08-31")
-        self.assertEqual(getresponse.data["data"]["telegram_link"], "@janjounexample")
-        self.assertEqual(getresponse.data["data"]["email"], "janjoun@example.com")
-        self.assertEqual(getresponse.data["data"]["location"], 1)
-        self.assertEqual(
-            getresponse.data["data"]["reporting_to"]["email"], "jane@gmail.com"
-        )
-        self.assertEqual(getresponse.data["data"]["skills"], [1, 2])
-        self.assertEqual(
-            getresponse.data["data"]["user_certificates"][0]["name"],
-            "Meta Back-End Developer",
-        )
-        self.assertEqual(getresponse.data["data"]["mobile_number"], "+201093129222")
-        self.assertEqual(
-            getresponse.data["data"]["social_insurance_number"], "123 456 789"
-        )
-        self.assertEqual(getresponse.data["data"]["team"], "Development")
-        self.assertEqual(
-            getresponse.data["data"]["user_company_properties"][0]["name"], "computer"
+            response.data["results"]["user_company_properties"][0]["name"], "computer"
         )
         self.assertEqual(
-            getresponse.data["data"]["user_evaluation"][0]["link"],
+            response.data["results"]["user_evaluation"][0]["link"],
             "https://evaluation2",
         )
-        self.assertEqual(getresponse.data["data"]["salary"], {"gross": 2000})
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.data["results"]["salary"], {"gross": 2000})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

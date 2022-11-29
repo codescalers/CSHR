@@ -1,0 +1,3 @@
+exec: sh -c "npm i && npm run build && npm start"
+after:
+  - config

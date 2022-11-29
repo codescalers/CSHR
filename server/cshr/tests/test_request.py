@@ -62,21 +62,21 @@ class RequestsTests(APITestCase):
         url = f'{"/api/auth/login/"}'
         data = {"email": "ahmed@gmail.com", "password": "ahmedpass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_user(self):
         """Get token for normal user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "andrew@gmail.com", "password": "andrewpass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def get_token_supervisor(self):
         """Get token for a supervisor user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "helmy@gmail.com", "password": "helmypass"}
         response = self.client.post(url, data, format="json")
-        return response.data["data"]["access_token"]
+        return response.data["results"]["access_token"]
 
     def test_get_request_admin_access(self) -> Dict:
         url = "/api/requests/"
@@ -92,7 +92,7 @@ class RequestsTests(APITestCase):
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.get(url, format="json")
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
 
     def test_get_request_supervisor_access(self) -> Dict:
         url = "/api/requests/"
@@ -100,4 +100,4 @@ class RequestsTests(APITestCase):
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = client.get(url, format="json")
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)

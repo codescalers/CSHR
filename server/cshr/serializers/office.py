@@ -9,4 +9,4 @@ class OfficeSerializer(ModelSerializer):
 
     class Meta:
         model = Office
-        fields = ["id", "name", "country"]
+        fields = ["id", "name", "country", "weekend"]
