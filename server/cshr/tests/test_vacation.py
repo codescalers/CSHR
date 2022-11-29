@@ -1,6 +1,5 @@
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from server.cshr.models.requests import STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.models.office import Office
 from server.cshr.models.vacations import Vacation
@@ -85,7 +84,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -97,14 +98,18 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_vacation_with_no_end_date(self) -> Vacation:
         url = "/api/vacations/"
         data = {"reason": "annual_leaves", "from_date": "2022-08-23", "change_log": 123}
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -118,7 +123,9 @@ class VacationsTests(APITestCase):
             "type": "vacations",
         }
         # data = {"reason": "annual_leaves", "end_date": "2022-08-23", "change_log": 123}
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -132,7 +139,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/1/"
@@ -149,7 +158,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/10/"
@@ -166,7 +177,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/1/"
@@ -183,7 +196,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/10/"
@@ -193,7 +208,9 @@ class VacationsTests(APITestCase):
     def test_get_all_vacation_requests(self) -> Vacation:
         """test to get all vacation requests"""
         url = "/api/vacations/"
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -206,7 +223,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/edit/1/"
@@ -223,7 +242,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_admin
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/edit/1/"
@@ -240,7 +261,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/user/"
@@ -248,7 +271,9 @@ class VacationsTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_vacations_for_user_without_data(self) -> Vacation:
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         url = "/api/vacations/user/"
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -262,7 +287,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/approve/1/"
@@ -278,7 +305,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_user
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/reject/1/"
@@ -294,7 +323,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/approve/1/"
@@ -310,7 +341,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/reject/1/"
@@ -326,7 +359,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/reject/-1/"
@@ -342,7 +377,9 @@ class VacationsTests(APITestCase):
             "end_date": "2022-08-23",
             "change_log": [],
         }
-        self.headers = client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor)
+        self.headers = client.credentials(
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+        )
         response = client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         url = "/api/vacations/approve/-1/"
