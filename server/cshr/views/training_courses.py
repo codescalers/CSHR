@@ -28,7 +28,7 @@ class BaseTrainingCoursesApiView(ListAPIView, GenericAPIView):
         """Method to create a Training course"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            current_user: User = get_user_by_id(request.data.get("user_id"))
+            current_user: User = get_user_by_id(request.user.id)
             serializer.save(user=current_user)
 
             return CustomResponse.success(

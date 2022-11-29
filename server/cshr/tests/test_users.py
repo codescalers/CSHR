@@ -168,10 +168,6 @@ class GeneralViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"][1]["location"]["id"], 1)
         self.assertEqual(response.data["results"][1]["reporting_to"][0]["id"], 1)
         self.assertEqual(
-            response.data["results"][1]["skills"],
-            [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
-        )
-        self.assertEqual(
             response.data["results"][1]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
@@ -202,10 +198,6 @@ class GeneralViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"]["email"], "john@outlook.com")
         self.assertEqual(response.data["results"]["location"]["id"], 1)
         self.assertEqual(response.data["results"]["reporting_to"][0]["id"], 1)
-        self.assertEqual(
-            response.data["results"]["skills"],
-            [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
-        )
         self.assertEqual(
             response.data["results"]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
@@ -384,10 +376,6 @@ class SupervisorViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"][1]["location"]["id"], 1)
         self.assertEqual(response.data["results"][1]["reporting_to"][0]["id"], 1)
         self.assertEqual(
-            response.data["results"][1]["skills"],
-            [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
-        )
-        self.assertEqual(
             response.data["results"][1]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
@@ -420,10 +408,6 @@ class SupervisorViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"]["email"], "john@outlook.com")
         self.assertEqual(response.data["results"]["location"]["id"], 1)
         self.assertEqual(response.data["results"]["reporting_to"][0]["id"], 1)
-        self.assertEqual(
-            response.data["results"]["skills"],
-            [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
-        )
         self.assertEqual(
             response.data["results"]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
@@ -632,10 +616,6 @@ class AdminViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"][1]["location"]["id"], 1)
         self.assertEqual(response.data["results"][1]["reporting_to"][0]["id"], 1)
         self.assertEqual(
-            response.data["results"][1]["skills"],
-            [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
-        )
-        self.assertEqual(
             response.data["results"][1]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
@@ -666,10 +646,6 @@ class AdminViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"]["email"], "john@outlook.com")
         self.assertEqual(response.data["results"]["location"]["id"], 1)
         self.assertEqual(response.data["results"]["reporting_to"][0]["id"], 1)
-        self.assertEqual(
-            response.data["results"]["skills"],
-            [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
-        )
         self.assertEqual(
             response.data["results"]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
@@ -970,10 +946,6 @@ class SelfViewUserProfileTests(APITestCase):
             response.data["results"]["reporting_to"][0]["email"], "jane@gmail.com"
         )
         self.assertEqual(
-            response.data["results"]["skills"],
-            [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
-        )
-        self.assertEqual(
             response.data["results"]["user_certificates"][0]["name"],
             "Meta Back-End Developer",
         )
@@ -991,50 +963,3 @@ class SelfViewUserProfileTests(APITestCase):
         )
         self.assertEqual(response.data["results"]["salary"], {"gross": 2000})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_update_my_profile(self):
-        "any user can some fields of their profile"
-        url = "/api/myprofile/"
-        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
-        data = {
-            "email": "janjoun@example.com",
-            "telegram_link": "@janjounexample",
-            "birthday": "1981-08-31",
-            "social_insurance_number": "123 456 789",
-            "mobile_number": "+201093129222",
-        }
-        response = self.client.put(url, data, format="json")
-        getresponse = self.client.get(url, format="json")
-        self.assertEqual(getresponse.data["results"]["full_name"], "John Blake")
-        self.assertEqual(getresponse.data["results"]["birthday"], "1981-08-31")
-        self.assertEqual(
-            getresponse.data["results"]["telegram_link"], "@janjounexample"
-        )
-        self.assertEqual(getresponse.data["results"]["email"], "janjoun@example.com")
-        self.assertEqual(getresponse.data["results"]["location"]["id"], 1)
-        self.assertEqual(
-            getresponse.data["results"]["reporting_to"][0]["email"], "jane@gmail.com"
-        )
-        self.assertEqual(
-            getresponse.data["results"]["skills"],
-            [{"id": 1, "name": "react"}, {"id": 2, "name": "sql"}],
-        )
-        self.assertEqual(
-            getresponse.data["results"]["user_certificates"][0]["name"],
-            "Meta Back-End Developer",
-        )
-        self.assertEqual(getresponse.data["results"]["mobile_number"], "+201093129222")
-        self.assertEqual(
-            getresponse.data["results"]["social_insurance_number"], "123 456 789"
-        )
-        self.assertEqual(getresponse.data["results"]["team"], "Development")
-        self.assertEqual(
-            getresponse.data["results"]["user_company_properties"][0]["name"],
-            "computer",
-        )
-        self.assertEqual(
-            getresponse.data["results"]["user_evaluation"][0]["link"],
-            "https://evaluation2",
-        )
-        self.assertEqual(getresponse.data["results"]["salary"], {"gross": 2000})
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

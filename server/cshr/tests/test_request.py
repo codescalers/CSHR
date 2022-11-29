@@ -92,7 +92,7 @@ class RequestsTests(APITestCase):
             HTTP_AUTHORIZATION="Bearer " + self.access_token_user
         )
         response = client.get(url, format="json")
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
 
     def test_get_request_supervisor_access(self) -> Dict:
         url = "/api/requests/"
@@ -100,4 +100,4 @@ class RequestsTests(APITestCase):
             HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = client.get(url, format="json")
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
