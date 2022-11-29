@@ -6,109 +6,78 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
-import replace from '@rollup/plugin-replace';
-import { config } from 'dotenv';
-import copy from "rollup-plugin-copy";
 
 const production = !process.env.ROLLUP_WATCH;
-const configToReplace = {};
-for (const [key, v] of Object.entries(config().parsed)) {
-  configToReplace[`process.env.${key}`] = `'${v}'`;
-}
 
 function serve() {
-  let server;
+	let server;
 
-  function toExit() {
-    if (server) server.kill(0);
-  }
+	function toExit() {
+		if (server) server.kill(0);
+	}
 
-  return {
-    writeBundle() {
-      if (server) return;
-      server = require('child_process').spawn(
-        'npm',
-        ['run', 'start', '--', '--dev'],
-        {
-          stdio: ['ignore', 'inherit', 'inherit'],
-          shell: true,
-        }
-      );
+	return {
+		writeBundle() {
+			if (server) return;
+			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
+				stdio: ['ignore', 'inherit', 'inherit'],
+				shell: true
+			});
 
-      process.on('SIGTERM', toExit);
-      process.on('exit', toExit);
-    },
-  };
+			process.on('SIGTERM', toExit);
+			process.on('exit', toExit);
+		}
+	};
 }
 
 export default {
-  input: 'src/main.ts',
-  output: {
-    sourcemap: true,
-    format: 'iife',
-    name: 'app',
-    file: 'public/build/bundle.js',
-  },
-  experimental: {
-    useVitePreprocess: true,
-  },
-  plugins: [
-    copy({
-      targets: [
-        {
-          src: "node_modules/bootstrap/dist/css/bootstrap.min.css",
-          dest: "public/vendor/bootstrap/css",
-        },
-        {
-          src: "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-          dest: "public/vendor/bootstrap/js",
-        },
-      ],
-    }),
-    svelte({
-      preprocess: sveltePreprocess({ sourceMap: !production }),
-      compilerOptions: {
-        // enable run-time checks when not in production
-        dev: !production,
-      },
-    }), // svelte plugin for .env
-    replace({
-      include: ['src/**/*.ts', 'src/**/*.svelte'],
-      preventAssignment: true,
-      values: configToReplace,
-    }),
-    // we'll extract any component CSS out into
-    // a separate file - better for performance
-    css({ output: 'bundle.css' }),
+	input: 'src/main.ts',
+	output: {
+		sourcemap: true,
+		format: 'iife',
+		name: 'app',
+		file: 'public/build/bundle.js'
+	},
+	plugins: [
+		svelte({
+			preprocess: sveltePreprocess({ sourceMap: !production }),
+			compilerOptions: {
+				// enable run-time checks when not in production
+				dev: !production
+			}
+		}),
+		// we'll extract any component CSS out into
+		// a separate file - better for performance
+		css({ output: 'bundle.css' }),
 
-    // If you have external dependencies installed from
-    // npm, you'll most likely need these plugins. In
-    // some cases you'll need additional configuration -
-    // consult the documentation for details:
-    // https://github.com/rollup/plugins/tree/master/packages/commonjs
-    resolve({
-      browser: true,
-      dedupe: ['svelte'],
-    }),
-    commonjs(),
-    typescript({
-      sourceMap: !production,
-      inlineSources: !production,
-    }),
+		// If you have external dependencies installed from
+		// npm, you'll most likely need these plugins. In
+		// some cases you'll need additional configuration -
+		// consult the documentation for details:
+		// https://github.com/rollup/plugins/tree/master/packages/commonjs
+		resolve({
+			browser: true,
+			dedupe: ['svelte']
+		}),
+		commonjs(),
+		typescript({
+			sourceMap: !production,
+			inlineSources: !production
+		}),
 
-    // In dev mode, call `npm run start` once
-    // the bundle has been generated
-    !production && serve(),
+		// In dev mode, call `npm run start` once
+		// the bundle has been generated
+		!production && serve(),
 
-    // Watch the `public` directory and refresh the
-    // browser on changes when not in production
-    !production && livereload('public'),
+		// Watch the `public` directory and refresh the
+		// browser on changes when not in production
+		!production && livereload('public'),
 
-    // If we're building for production (npm run build
-    // instead of npm run dev), minify
-    production && terser(),
-  ],
-  watch: {
-    clearScreen: false,
-  },
+		// If we're building for production (npm run build
+		// instead of npm run dev), minify
+		production && terser()
+	],
+	watch: {
+		clearScreen: false
+	}
 };

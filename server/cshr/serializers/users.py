@@ -311,6 +311,7 @@ class BaseUserSerializer(ModelSerializer):
             "team",
             "gender",
             "skills",
+            "job_title",
             "user_certificates",
         ]
 

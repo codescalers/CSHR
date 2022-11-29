@@ -45,13 +45,13 @@ class LandingPageHrLetterSerializer(ModelSerializer):
         """
         this function return request's applying user
         """
-        return BaseUserSerializer(obj.applying_user).data
+        return BaseUserSerializer(obj.applying_user).data or None
 
     def get_approval_user(self, obj: HrLetters) -> BaseUserSerializer:
         """
         this function return request's approval user
         """
-        return BaseUserSerializer(obj.approval_user).data
+        return BaseUserSerializer(obj.approval_user).data if obj.approval_user else None
 
 
 class UserDocumentsSerializer(ModelSerializer):

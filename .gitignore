@@ -1,6 +1,10 @@
 # client
 client/node_modules
+client/public/build/
 **/node_modules/**
+**/public/build/**
+client/.vscode/
+**client/.vscode/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

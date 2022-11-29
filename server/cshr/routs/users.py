@@ -12,6 +12,7 @@ from server.cshr.views.users import (
     TeamAPIView,
     SupervisorsAPIView,
     PostUserSkillsAPIView,
+    GetUsersBirthDatesAPIView
 )
 
 
@@ -21,6 +22,7 @@ urlpatterns = [
     path("supervisor/", BaseSupervisorUserAPIView.as_view()),
     path("admin/", BaseAdminUserAPIView.as_view()),
     path("teams/", TeamAPIView.as_view()),
+    path("birthdates/", GetUsersBirthDatesAPIView.as_view()),
     path("teams/supervisors/", SupervisorsAPIView.as_view()),
     path("supervisor/<str:id>/", SupervisorUserAPIView.as_view()),
     path("admin/<str:id>/", AdminUserAPIView.as_view()),

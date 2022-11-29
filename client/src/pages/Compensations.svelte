@@ -1,6 +1,6 @@
 <script lang="ts">
-    import Compensations from '../components/compensations/Compensations.svelte';
-    import Sidebar from '../components/sidebar/Sidebar.svelte';
+    import Compensations from '../componants/compensations/Compensations.svelte';
+    import Sidebar from '../componants/sidebar/Sidebar.svelte';
 </script>
   
 <Sidebar>

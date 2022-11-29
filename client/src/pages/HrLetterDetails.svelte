@@ -1,6 +1,6 @@
 <script lang="ts">
-    import HRLetterDetails from '../components/hr_letter/HRLetterDetails.svelte';
-    import Sidebar from '../components/sidebar/Sidebar.svelte';
+    import HRLetterDetails from '../componants/hr_letter/HRLetterDetails.svelte';
+    import Sidebar from '../componants/sidebar/Sidebar.svelte';
     export let isLoading = false;
     export let isError: boolean | null = null;
 </script>

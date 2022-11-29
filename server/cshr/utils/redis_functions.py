@@ -17,9 +17,6 @@ if os.environ.get("REDIS_HOST") is None:
     except Exception:
         raise ImproperlyConfigured("REDIS_HOST is not defined")
 else:
-    print(os.environ.get("DJANGO_DEBUG"))
-    print(os.environ.get("REDIS_HOST"))
-    print(os.environ.get("REDIS_HOST").replace("//", "").split(":"))
     _, R_HOST, R_PORT = os.environ.get("REDIS_HOST").replace("//", "").split(":")
 
 redis_instance = redis.StrictRedis(host=R_HOST, port=R_PORT, db=0)
@@ -117,5 +114,11 @@ def get_notifications(user: User):
     for key in keys:
         val = redis_instance.hgetall(key)
         dval = dict((k.decode("utf8"), v.decode("utf8")) for k, v in val.items())
-        notifications.append(dval)
+        print(json.loads(dval.get("user")))
+        noti_user_id: int = json.loads(dval.get("user"))["id"]
+        try:
+            User.objects.get(id = noti_user_id)
+            notifications.append(dval)
+        except User.DoesNotExist:
+            redis_instance.delete(key)
     return notifications

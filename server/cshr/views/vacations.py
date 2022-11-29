@@ -1,6 +1,7 @@
 from server.cshr.serializers.users import TeamSerializer
 from server.cshr.serializers.vacations import (
     AdminVacationBalanceSerializer,
+    CalculateBalanceSerializer,
     LandingPageVacationsSerializer,
     VacationsCommentsSerializer,
     VacationsSerializer,
@@ -25,6 +26,8 @@ from server.cshr.services.vacations import (
     get_balance_by_user,
     get_vacation_by_id,
     get_all_vacations,
+    send_vacation_to_calendar,
+    update_user_actual_balance,
 )
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
@@ -124,8 +127,10 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             )
             set_notification_request_redis(serializer.data)
             send_email_for_request(request.user.id, msg, "Vacation request")
+            response_date: Dict = send_vacation_to_calendar(saved)
             return CustomResponse.success(
-                status_code=201, message="Successfully Vacation Posted!"
+                status_code=201, message="Successfully Vacation Posted!",
+                data = response_date
             )
         return CustomResponse.bad_request(error=serializer.errors)
 
@@ -379,7 +384,7 @@ class UserVacationBalanceApiView(GenericAPIView):
         balance = v.check(user)
         request.data["user"] = TeamSerializer(user).data
         return CustomResponse.success(
-            message="Baance founded.", data=self.get_serializer(balance).data
+            message="Baance founded.", data=CalculateBalanceSerializer(balance).data
         )
 
     def put(self, request: Request) -> CustomResponse:
@@ -395,13 +400,19 @@ class UserVacationBalanceApiView(GenericAPIView):
         v: StanderdVacationBalance = StanderdVacationBalance()
         v.check(user)
         user_balance = get_balance_by_user(user)
+
+        # Set default values
+        request.data['compensation'] = 100
+        request.data['sick_leaves'] = 100
+        request.data['unpaid'] = 100
+
         serializer = self.get_serializer(user_balance, data=request.data)
         if serializer.is_valid():
-            print(user)
             if request.data.get("delete_old_balance") is True:
-                serializer.save(old_balance={}, user=user)
+                saved = serializer.save(old_balance={}, user=user)
             else:
-                serializer.save(user=user)
+                saved = serializer.save(user=user)
+            update_user_actual_balance(user_balance)
             return CustomResponse.success(
                 message="Successfully updated user balance",
                 status_code=202,

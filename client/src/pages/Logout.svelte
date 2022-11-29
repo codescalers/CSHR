@@ -1,5 +1,7 @@
 <script lang="ts">
-    localStorage.removeItem("accesstoken")
-    localStorage.removeItem("refreshtoken")
-    window.location.href = "/login"
+    import { navigate } from 'svelte-navigator';
+
+    localStorage.removeItem("accesstoken");
+    localStorage.removeItem("refreshtoken");
+    navigate('/login', { replace: true });
 </script>

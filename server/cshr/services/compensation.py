@@ -22,4 +22,4 @@ def filter_all_compensations_by_pinding_status() -> Compensation:
 
 def get_compensations_by_user(user: str) -> Compensation:
     "Return all compensations for certain user"
-    return Compensation.objects.filter(applying_user=user)
+    return Compensation.objects.filter(applying_user=user).order_by("-created_at")

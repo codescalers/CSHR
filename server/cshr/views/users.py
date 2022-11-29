@@ -12,6 +12,7 @@ from server.cshr.api.permission import (
 from server.cshr.utils.validations import Validator
 from server.cshr.api.response import CustomResponse
 from server.cshr.serializers.users import (
+    BaseUserSerializer,
     GeneralUserSerializer,
     PostUserSkillsSerializer,
     SupervisorUserSerializer,
@@ -21,6 +22,7 @@ from server.cshr.serializers.users import (
     UserSkillsSerializer,
 )
 from server.cshr.services.users import (
+    filter_users_by_birthdates,
     get_all_skills,
     get_user_by_id,
     get_or_create_skill_by_name,
@@ -250,3 +252,18 @@ class PostUserSkillsAPIView(GenericAPIView):
         return CustomResponse.bad_request(
             message=" data provided is corrupted", error=serializer.errors
         )
+
+class GetUsersBirthDatesAPIView(GenericAPIView):
+    """Class to filter all users birthdates based on requested day."""
+    serializer_class = BaseUserSerializer
+    permission_classes = [UserIsAuthenticated,]
+
+    def get(self, request: Request) -> Response:
+        """Get all users birthdates based on requested day that sent as a query param"""
+        if not request.query_params.get("day") or not request.query_params.get("month"):
+            return CustomResponse.bad_request(message="You must send [day, month] to filter based on it.")
+        month: int = (int(request.query_params.get("month")))
+        day: int = (int(request.query_params.get("day")))
+        users: List[User] = filter_users_by_birthdates(month, day)
+        serializer = self.serializer_class(users, many=True)
+        return CustomResponse.success(data=serializer.data, message="Users founded successfully.")

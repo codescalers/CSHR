@@ -51,7 +51,7 @@ class StanderdVacationBalance:
             balance = VacationBalance.objects.get(user=user)
             for field in balance._meta.fields:
                 actual_value: int = getattr(balance, field.name)
-                if type(actual_value) == dict and len(actual_value) > 0:
+                if type(actual_value) == dict and len(actual_value) > 0 and field.name != "actual_balance":
                     for k, v in actual_value.items():
                         balance_attr: int = getattr(balance, k)
                         if balance_attr + v < 100:
@@ -113,19 +113,20 @@ class StanderdVacationBalance:
         joining date like i.e sick_leaves.
         """
         values: Dict = self.create_new_balance_values(user=user)
-        balance: VacationBalance = (
-            VacationBalance.objects.create(
-                user=user,
-                annual_leaves=values["annual_leaves"],
-                compensation=values["compensation"],
-                sick_leaves=values["sick_leaves"],
-                emergency_leaves=values["emergency_leaves"],
-                public_holidays=values["public_holidays"],
-                leave_excuses=values["leave_excuses"],
-                unpaid=values["unpaid"],
-            ),
+        del values["year"]
+        balance: VacationBalance = VacationBalance.objects.create(
+            user=user,
+            annual_leaves=values["annual_leaves"],
+            compensation=values["compensation"],
+            sick_leaves=values["sick_leaves"],
+            emergency_leaves=values["emergency_leaves"],
+            public_holidays=values["public_holidays"],
+            leave_excuses=values["leave_excuses"],
+            unpaid=values["unpaid"],
+            actual_balance=values
         )
-        return balance[0]  # Create returns an instance of tuple
+
+        return balance
 
     def get_difference_between_two_days(self, start_date: datetime, end_date: datetime):
         return int((end_date - start_date).days + 1)

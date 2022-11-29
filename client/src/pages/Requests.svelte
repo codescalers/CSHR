@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Requests from '../components/requests/Requests.svelte';
-  import Sidebar from '../components/sidebar/Sidebar.svelte';
+  import Requests from '../componants/requests/Requests.svelte';
+  import Sidebar from '../componants/sidebar/Sidebar.svelte';
 </script>
 
 <Sidebar>
-  <section slot="content">
+  <div slot="content">
     <Requests />
-  </section>
+  </div>
 </Sidebar>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import CompensationsDetails from '../components/compensations/CompensationsDetails.svelte';
-    import Sidebar from '../components/sidebar/Sidebar.svelte';
+    import CompensationsDetails from '../componants/compensations/CompensationsDetails.svelte';
+    import Sidebar from '../componants/sidebar/Sidebar.svelte';
     export let isLoading = false;
     export let isError: boolean | null = null;
 </script>

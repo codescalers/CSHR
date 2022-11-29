@@ -52,6 +52,7 @@ class VacationBalance(models.Model):
     public_holidays = models.IntegerField()
     date = models.DateField(auto_now=True)
     old_balance = models.JSONField(default=dict, null=True)
+    actual_balance = models.JSONField(default=dict, null=True)
 
     def __str__(self):
         return str(self.user.email)

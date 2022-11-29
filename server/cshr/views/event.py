@@ -1,7 +1,9 @@
 import datetime
-from server.cshr.serializers.event import EventSerializer
+from typing import Dict, List
+from server.cshr.models.event import Event
+from server.cshr.serializers.event import EventOnDaySerializer, EventSerializer
 from server.cshr.api.permission import UserIsAuthenticated
-from server.cshr.services.event import get_all_events, get_event_by_id
+from server.cshr.services.event import filter_events_by_day, get_all_events, get_event_by_id, send_event_to_calendar
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -25,9 +27,10 @@ class BaseEventsAPIView(ListAPIView, GenericAPIView):
                 type(from_date_parsing) == datetime.datetime
                 and type(end_date_parsing) == datetime.datetime
             ):
-                serializer.save(from_date=from_date_parsing, end_date=end_date_parsing)
+                saved = serializer.save(from_date=from_date_parsing, end_date=end_date_parsing)
+                response_date: Dict = send_event_to_calendar(saved)
                 return CustomResponse.success(
-                    data=serializer.data,
+                    data=response_date,
                     message="event is created successfully",
                     status_code=201,
                 )
@@ -79,4 +82,21 @@ class EventApiView(GenericAPIView):
             )
         return CustomResponse.bad_request(
             data=serializer.errors, message="event failed to update"
+        )
+
+class GetEventOnDayAPIView(GenericAPIView):
+    """Class to filter all event based on requested day."""
+    serializer_class = EventOnDaySerializer
+    permission_classes = [UserIsAuthenticated,]
+
+    def get(self, request: Request) -> Response:
+        """Get all meetings based on requested day that sent as a query param"""
+        if not request.query_params.get("day"):
+            return CustomResponse.bad_request(message="You must send the day to filter based on it.")
+        day: int = (int(request.query_params.get("day")))
+        events: List[Event] = filter_events_by_day(day)
+        serializer = self.serializer_class(events, many=True)
+        return CustomResponse.success(
+            data=serializer.data,
+            message="Events founded successfully."
         )
