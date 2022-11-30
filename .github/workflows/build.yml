@@ -3,7 +3,7 @@ name: Build and push a docker image and a flist.
 
 on:
   push:
-    branches: [main, development_fix_homepage_endpoint]
+    branches: [main, development]
 
 jobs:
   build:
