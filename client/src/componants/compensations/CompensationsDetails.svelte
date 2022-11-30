@@ -55,7 +55,7 @@
     </div>
 {/if}
 {#if compensation}
-    <div class="container">
+    <div class="container pt-5">
         {#if $UserStore.user_type == "Supervisor"}
             <div class="mb-4" style="width: 20%;">
                 <ActionButton 

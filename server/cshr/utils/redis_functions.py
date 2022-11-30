@@ -1,9 +1,9 @@
 from typing import Dict
 from django.utils.dateparse import parse_datetime
 from django.core.exceptions import ImproperlyConfigured
-from server.cshr.models.requests import TYPE_CHOICES
+from server.cshr.models.requests import TYPE_CHOICES, Requests
 from server.cshr.models.users import USER_TYPE, User
-from server.cshr.serializers.users import TeamSerializer
+from server.cshr.serializers.users import BaseUserSerializer, TeamSerializer
 from server.cshr.services.users import get_user_by_id
 from server.components import config
 import redis
@@ -114,11 +114,18 @@ def get_notifications(user: User):
     for key in keys:
         val = redis_instance.hgetall(key)
         dval = dict((k.decode("utf8"), v.decode("utf8")) for k, v in val.items())
-        print(json.loads(dval.get("user")))
         noti_user_id: int = json.loads(dval.get("user"))["id"]
+        noti_id: int = int(json.loads(dval.get("event_id")))
         try:
-            User.objects.get(id=noti_user_id)
-            notifications.append(dval)
-        except User.DoesNotExist:
+            usernt = User.objects.get(
+                id=noti_user_id
+            )  # Check if the user is not deleted
+            dval["user"] = BaseUserSerializer(usernt).data
+        except User.DoesNotExist or Requests.DoesNotExist:
             redis_instance.delete(key)
+        try:
+            Requests.objects.get(id=noti_id)  # Check if the Request is not deleted
+        except Requests.DoesNotExist:
+            redis_instance.delete(key)
+        notifications.append(dval)
     return notifications

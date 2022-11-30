@@ -8,8 +8,8 @@ const app = new App({
 });
 
 interface AppConfigs {
+  SERVER_BASE_URL: string;
   SERVER_API_URL: string;
-  APP_BASE_API_URL: string;
 };
 
 declare global {

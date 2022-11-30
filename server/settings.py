@@ -12,10 +12,11 @@ CELERY_IMPORTS = ("server.cshr.celery.send_email",)
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
-    "cshrapp.herokuapp.com",
     "0.0.0.0",
-    "kaleidoscopic-churros-b700b5.netlify.app",
-    os.environ.get("CLIENT_IP") or config("CLIENT_IP"),  # Threefold client node ip
+    os.environ.get("SERVER_DOMAIN_NAME")
+    or config("SERVER_DOMAIN_NAME"),  # Server domain
+    os.environ.get("CLIENT_DOMAIN_NAME")
+    or config("CLIENT_DOMAIN_NAME"),  # Client domain
 ]
 
 # Application definition

@@ -21,11 +21,11 @@
                 <tr>
                     <td>
                     <div class="d-flex align-items-center">
-                        <ProfileImage user={JSON.parse(notification.user)}/>
+                        <ProfileImage user={notification.user}/>
                         <div class="ms-3">
-                        <p class="fw-bold mb-1">{JSON.parse(notification.user).full_name}</p>
+                        <p class="fw-bold mb-1">{notification.user.full_name}</p>
                         <p class="text-muted mb-0">
-                            {JSON.parse(notification.user).user_type}
+                            {notification.user.job_title}
                         </p>
                         </div>
                     </div>

@@ -21,7 +21,7 @@
                             <!-- svelte-ignore a11y-img-redundant-alt -->
                             <img
                                 class="cprop"
-                                src={window.configs.APP_BASE_API_URL +
+                                src={window.configs.SERVER_API_URL +
                                     company.image_of}
                                 alt="prop image"
                             />

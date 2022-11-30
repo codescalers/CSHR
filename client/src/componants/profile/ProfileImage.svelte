@@ -1,6 +1,5 @@
 <script lang="ts">
     import type { userDataType } from "../../utils/types"
-    import { Link } from 'svelte-navigator';
 
     export let user: userDataType|undefined;
     export let size: number = 50;
@@ -25,7 +24,7 @@
         {#if user.image.includes("profile_image") }
             <!-- svelte-ignore a11y-missing-attribute -->
             <img
-                src="{window.configs.APP_BASE_API_URL + user.image.replace('/', '')}"
+                src="{window.configs.SERVER_BASE_URL + user.image}"
                 class="user-profile-image rounded-circle"
                 style="width:{size}px; height:{size}px;"
             />
@@ -38,10 +37,10 @@
         {/if}
     {:else}
         <a href='/profile/{user.id}'>
-            {#if user.image.includes("profile_image") }
+            {#if user.image.includes("profile_image")}
                 <!-- svelte-ignore a11y-missing-attribute -->
                 <img
-                    src="{window.configs.APP_BASE_API_URL + user.image.replace('/', '')}"
+                    src="{window.configs.SERVER_BASE_URL + user.image}"
                     class="user-profile-image rounded-circle"
                     style="width:{size}px; height:{size}px;"
                 />

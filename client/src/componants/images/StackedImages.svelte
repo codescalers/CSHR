@@ -17,7 +17,7 @@
           class={`profile-image stacked_img my-2 ${
             itemIndex === index && stackedImages.length !== 1 ? "activate" : ""
           }`}
-          src={window.configs.APP_BASE_API_URL?.slice(0, -1) + image.image}
+          src={window.configs.SERVER_API_URL?.slice(0, -1) + image.image}
           on:click={() => (itemIndex = index)}
         />
       {:else}
@@ -25,7 +25,7 @@
           class={`stacked_img my-2 ${
             itemIndex === index && stackedImages.length !== 1 ? "activate" : ""
           }`}
-          style="background-image:url({window.configs.APP_BASE_API_URL +
+          style="background-image:url({window.configs.SERVER_API_URL +
             image.image});z-index:${100 - index};border:1.5px solid"
           data-bs-toggle="tooltip"
           title={image.full_name + " #" + image.team}

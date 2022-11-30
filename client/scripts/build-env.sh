@@ -7,14 +7,14 @@ else
     file="config.js"
 fi
 
-if [ -z "$SERVER_API_URL" ] || [ -z "$SERVER_BASE_URL" ]; then
+if [ -z "$SERVER_BASE_URL" ]; then
         echo "Error: Missing required env vars! Server intgration skipped."
         # exit 1
 else
     configs="
         window.configs = {
-            SERVER_API_URL: '$SERVER_API_URL',
             SERVER_BASE_URL: '$SERVER_BASE_URL',
+            SERVER_API_URL: '$SERVER_BASE_URL/api/',
         };
     "
 fi
