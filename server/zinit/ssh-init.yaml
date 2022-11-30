@@ -1,0 +1,2 @@
+exec: sh -c "/bin/bash server_dir/server/scripts/server.sh"
+log: stdout

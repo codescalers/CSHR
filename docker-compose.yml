@@ -1,8 +1,9 @@
 version: '3.7'
 services:
   server:
+    env_file: config/.env
     container_name: server
-    build: ./server
+    build: ./
     ports: 
       - '8000:8000'
 
