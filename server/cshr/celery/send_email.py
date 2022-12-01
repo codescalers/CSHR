@@ -11,13 +11,11 @@ from server.components import config
 import os
 
 REISHOST: str = None
-if os.environ.get("REDIS_HOST") is None:
-    try:
-        REISHOST = config("REDIS_HOST")
-    except Exception:
-        raise ImproperlyConfigured("REDIS_HOST is not defined")
-else:
-    REISHOST = os.environ.get("REDIS_HOST")
+try:
+    REISHOST = config("REDIS_HOST")
+except Exception:
+    raise ImproperlyConfigured("REDIS_HOST is not defined")
+
 
 app = Celery("tasks", broker=REISHOST)
 

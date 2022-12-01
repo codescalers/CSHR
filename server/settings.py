@@ -3,20 +3,18 @@ from server.components import BASE_DIR, config
 import os
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY") or config("DJANGO_SECRET_KEY")
+SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_DEBUG") == "ON" or config("DJANGO_DEBUG") == "ON"
+DEBUG = config("DJANGO_DEBUG") == "ON"
 
 CELERY_IMPORTS = ("server.cshr.celery.send_email",)
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "0.0.0.0",
-    os.environ.get("SERVER_DOMAIN_NAME")
-    or config("SERVER_DOMAIN_NAME"),  # Server domain
-    os.environ.get("CLIENT_DOMAIN_NAME")
-    or config("CLIENT_DOMAIN_NAME"),  # Client domain
+    config("SERVER_DOMAIN_NAME"),  # Server domain
+    config("CLIENT_DOMAIN_NAME"),  # Client domain
 ]
 
 # Application definition
@@ -179,11 +177,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "cshr.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = os.environ.get("EMAIL_HOST") or config("EMAIL_HOST")
+EMAIL_HOST = config("EMAIL_HOST")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get("EMAIL") or config("EMAIL")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD") or config("EMAIL_PASSWORD")
+EMAIL_HOST_USER = config("EMAIL")
+EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD")
 
 
 # import dj_database_url

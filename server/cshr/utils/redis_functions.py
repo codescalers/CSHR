@@ -11,13 +11,10 @@ import json
 import os
 
 
-if os.environ.get("REDIS_HOST") is None:
-    try:
-        _, R_HOST, R_PORT = config("REDIS_HOST").replace("//", "").split(":")
-    except Exception:
-        raise ImproperlyConfigured("REDIS_HOST is not defined")
-else:
-    _, R_HOST, R_PORT = os.environ.get("REDIS_HOST").replace("//", "").split(":")
+try:
+    _, R_HOST, R_PORT = config("REDIS_HOST").replace("//", "").split(":")
+except Exception:
+    raise ImproperlyConfigured("REDIS_HOST is not defined")
 
 redis_instance = redis.StrictRedis(host=R_HOST, port=R_PORT, db=0)
 

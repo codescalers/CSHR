@@ -1,0 +1,4 @@
+exec: sh -c "/bin/bash server_dir/server/scripts/config.sh"
+oneshot: true
+after:
+  - ssh-init

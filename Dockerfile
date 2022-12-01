@@ -18,6 +18,7 @@ COPY . /server_dir
 COPY server/zinit /etc/zinit
 
 RUN chmod +x server/scripts/server.sh
+RUN chmod +x server/scripts/config.sh
 
 EXPOSE 8000
 ENTRYPOINT  ["zinit", "init"]
