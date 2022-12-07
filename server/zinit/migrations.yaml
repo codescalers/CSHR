@@ -1,4 +1,4 @@
-exec: sh -c "poetry run python3 manage.py makemigrations && poetry run python3 manage.py migrate"
+exec: sh -c "cd server_dir && poetry run python3 manage.py makemigrations && poetry run python3 manage.py migrate"
 after:
   - config
 oneshot: true
