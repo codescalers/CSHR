@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CONFIG_DIR=./config
+CONFIG_DIR=server_dir/config
 ENV_DIR=${CONFIG_DIR}/.env
 DJANGO_SECRET_KEY=$(python3 -c 'from django.utils.crypto import get_random_string; print(get_random_string(50))')
 

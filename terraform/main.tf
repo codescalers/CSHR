@@ -8,16 +8,16 @@ terraform {
 
 provider "grid" {
     mnemonics = "actual reveal dish guilt inner film scheme between lonely myself material replace" 
-    network = "qa"
+    network = "dev"
 }
 
 data "grid_gateway_domain" "domain" {
-    node = 2
+    node = 14
     name = "cshr"
 }
 
 resource "grid_network" "net1" {
-    nodes = [2]
+    nodes = [14]
     ip_range = "10.1.0.0/16"
     name = "network"
     description = "newer network"
@@ -25,7 +25,7 @@ resource "grid_network" "net1" {
 }
 
 resource "grid_deployment" "d1" {
-    node = 2
+    node = 14
     network_name = grid_network.net1.name
     vms {
         name = "serverVM"
@@ -52,7 +52,7 @@ resource "grid_deployment" "d1" {
 }
 
 resource "grid_name_proxy" "p1" {
-    node = 2
+    node = 14
     name = "cshr"
     backends = [format("http://[%s]:8000", grid_deployment.d1.vms[0].ygg_ip)]
     tls_passthrough = false
