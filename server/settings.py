@@ -163,15 +163,13 @@ MEDIA_URL = "/media/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "cshr.User"
 
-""" CORS_ALLOW_CREDENTIALS: True
- """
-CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
-""" CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8080'  # for localhost (SVELTE Default)
-] """
-""" CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8080'  # for localhost (SVELTE Default)
-) """
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080", 
+    "http://127.0.0.1:8080",
+    f'https://{config("SERVER_DOMAIN_NAME")}',
+    f'https://{config("CLIENT_DOMAIN_NAME")}',
+]
+
 # email config
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "cshr.User"

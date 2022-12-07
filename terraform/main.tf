@@ -45,8 +45,8 @@ resource "grid_deployment" "d1" {
             REDIS_HOST="redis://localhost:6379"
             DJANGO_SUPERUSER_EMAIL="admin@gmail.com"
             DJANGO_SUPERUSER_PASSWORD="0000"
-            SERVER_DOMAIN_NAME=format("https://%s", data.grid_gateway_domain.domain.fqdn)
-            CLIENT_DOMAIN_NAME=format("https://%s", data.grid_gateway_domain.domain.fqdn)
+            SERVER_DOMAIN_NAME=format(data.grid_gateway_domain.domain.fqdn)
+            CLIENT_DOMAIN_NAME=format(data.grid_gateway_domain.domain.fqdn)
         }
     }
 }
