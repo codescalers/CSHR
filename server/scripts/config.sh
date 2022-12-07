@@ -7,7 +7,6 @@ DJANGO_SECRET_KEY=$(python3 -c 'from django.utils.crypto import get_random_strin
 
 exec |
 	# Touch the .env file
-	touch ${ENV_DIR}
 
 	echo 'DJANGO_SECRET_KEY'=$DJANGO_SECRET_KEY > ${ENV_DIR}
 	echo 'DJANGO_DEBUG'=$DJANGO_DEBUG >> ${ENV_DIR}
