@@ -3,14 +3,10 @@
 cd server_dir
 CONFIG_DIR=config
 ENV_DIR=${CONFIG_DIR}/.env
-ls
 poetry install 
-ls
 DJANGO_SECRET_KEY=$(poetry run python3 -c 'from django.utils.crypto import get_random_string; print(get_random_string(50))')
 
 exec |
-	# Touch the .env file
-
 	echo 'DJANGO_SECRET_KEY'=$DJANGO_SECRET_KEY > ${ENV_DIR}
 	echo 'DJANGO_DEBUG'=$DJANGO_DEBUG >> ${ENV_DIR}
 	echo 'EMAIL'=$EMAIL >> ${ENV_DIR}

@@ -172,6 +172,8 @@ CORS_ALLOWED_ORIGINS = [
     f'https://{config("CLIENT_DOMAIN_NAME")}',
 ]
 
+CSRF_TRUSTED_ORIGINS=[f'https://{config("SERVER_DOMAIN_NAME")}']
+
 # email config
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "cshr.User"
