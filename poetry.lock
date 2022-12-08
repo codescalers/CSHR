@@ -735,6 +735,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "whitenoise"
+version = "6.2.0"
+description = "Radically simplified static file serving for WSGI applications"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+brotli = ["brotli"]
+
+[[package]]
 name = "wrapt"
 version = "1.14.1"
 description = "Module for decorators, wrappers and monkey patching."
@@ -745,7 +756,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "05439674544354ea68d15f9710c5f93a9ab0aa2084c0c5d3ad8fa5511fe854e6"
+content-hash = "0bca3aea5f32c425e828c02671ba6c97dcb7daa47b7a262a41a558450643bf03"
 
 [metadata.files]
 amqp = []
@@ -902,4 +913,5 @@ uritemplate = [
 urllib3 = []
 vine = []
 wcwidth = []
+whitenoise = []
 wrapt = []

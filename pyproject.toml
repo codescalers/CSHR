@@ -19,6 +19,7 @@ tzdata = "^2022.2"
 django-celery-beat = "^2.3.0"
 python-decouple = "^3.6"
 redis = "^4.3.4"
+whitenoise = "^6.2.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"
