@@ -37,6 +37,7 @@ COPY . /client_dir
 COPY zinit /etc/zinit
 
 RUN chmod +x /client_dir/scripts/start.sh
+RUN chmod +x /client_dir/scripts/build-env.sh
 
 EXPOSE 8080
 ENTRYPOINT ["zinit", "init"]
