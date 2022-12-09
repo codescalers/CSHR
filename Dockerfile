@@ -17,8 +17,6 @@ RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download
 COPY . /server_dir
 COPY server/zinit /etc/zinit
 
-RUN chmod +x server/scripts/server.sh
-RUN chmod +x server/scripts/config.sh
-
+RUN chmod +x server/scripts/*.sh
 EXPOSE 8000
 ENTRYPOINT  ["zinit", "init"]

@@ -1,3 +1,4 @@
-exec: sh -c "cd client_dir && npm i && npm run build && npm start"
+exec: sh -c "/bin/bash /client_dir/scripts/runclient.sh"
+log: stdout
 after:
   - config
