@@ -1,4 +1,9 @@
-exec: sh -c "/bin/bash /client_dir/scripts/runclient.sh"
-log: stdout
+exec: |
+  bash -c '
+  cd client_dir
+  npm i 
+  npm run build
+  HOST=:: PORT=6000 npm start
+  '
 after:
   - config
