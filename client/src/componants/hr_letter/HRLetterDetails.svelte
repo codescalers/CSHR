@@ -3,7 +3,7 @@
     import { Route } from 'svelte-navigator';
     import { onMount } from 'svelte';
     import HRLetterDataService from "../../apis/hr_letter/hr_letter";
-    import LoadingComponent from '../ui/Loading.svelte';
+    import Loading from '../ui/Loading.svelte';
     import ProfileImage from '../profile/ProfileImage.svelte';
     import { RequestStatus } from '../../utils/enums';
     import { UserStore } from '../../utils/stores';
@@ -49,13 +49,12 @@
     </Route>
 {/if}
 
-{#if isLoading}
-    <div class="d-flex justify-content-center mt-4">
-        <LoadingComponent />
-    </div>
-{/if}
-{#if hrLetter}
-    <div class="container">
+<div class="container pt-5">
+    {#if isLoading}
+        <div class="height-100 d-flex justify-content-center align-items-center">
+            <Loading className={"loader"}/>
+        </div>
+    {:else if hrLetter}
         {#if $UserStore.user_type == "Supervisor"}
             <div class="mb-4" style="width: 20%;">
                 <ActionButton 
@@ -188,8 +187,8 @@
                 </div>
             </div>
         </div>
-    </div>
-{/if}
+    {/if}
+</div>
 
 <style>
     .display-buttons{

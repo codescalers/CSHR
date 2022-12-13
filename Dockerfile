@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC
 RUN mkdir -p /etc/zinit/
 RUN echo deb http://be.archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse >> /etc/apt/sources.list
 RUN apt-get -y update && \
-    apt-get -y install wget sudo ufw vim openssh-client openssh-server python3.8 python3-pip && \
+    apt-get -y install wget sudo redis ufw vim openssh-client openssh-server python3.8 python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /server_dir

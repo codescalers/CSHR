@@ -5,7 +5,7 @@
     export let isError: boolean | null = null;
 </script>
   
-<Sidebar bind:isLoading bind:isError>
+<Sidebar>
     <section class="fluid-container mt-5 content" slot="content">
         <HRLetterDetails bind:isLoading bind:isError />
     </section>

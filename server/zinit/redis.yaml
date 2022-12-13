@@ -1,0 +1,3 @@
+exec: bash -c "redis-server"
+after:
+  - migrations

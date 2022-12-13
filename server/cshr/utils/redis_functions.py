@@ -118,7 +118,7 @@ def get_notifications(user: User):
                 id=noti_user_id
             )  # Check if the user is not deleted
             dval["user"] = BaseUserSerializer(usernt).data
-        except User.DoesNotExist or Requests.DoesNotExist:
+        except User.DoesNotExist:
             redis_instance.delete(key)
         try:
             Requests.objects.get(id=noti_id)  # Check if the Request is not deleted
