@@ -185,7 +185,10 @@ def send_email_for_request(user_id, msg, mail_title) -> Response:
     if user is None:
         return False
     recievers: array[str] = get_email_recievers(user)
-    send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
+    try:
+        send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
+    except:
+        return False
     return True
 
 

@@ -33,7 +33,7 @@
         passwordValue
       );
       const loggingData: loggingData = response.results
-      successMessage = response.message.message
+      successMessage = response.message
 
       authStore.updateTokens(
         loggingData.access_token,
