@@ -11,14 +11,8 @@
   onMount(async () => {
     isLoading = true;
     try {
-      if ($AllUsersStore === undefined || $AllUsersStore.length === 0) {
-        const users: UserInterface[] = await usersDataService.getAll();
-        if ($AllUsersStore === undefined) {
-          $AllUsersStore = users;
-        } else {
-          AllUsersStore.set(users);
-        }
-      }
+      const users: UserInterface[] = await usersDataService.getAll();
+      $AllUsersStore = users;
     } catch (error) {
       isError = true;
     }

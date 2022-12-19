@@ -46,7 +46,7 @@ resource "grid_deployment" "d1" {
             EMAIL="codescalersinternship@gmail.com"
             EMAIL_PASSWORD="ubunyyzgxeoxhnze"
             EMAIL_HOST="smtp.gmail.com"
-            REDIS_HOST=format("redis://%s:6379", data.grid_gateway_domain.server_domain.fqdn)
+            REDIS_HOST="redis://localhost:6379"
             DJANGO_SUPERUSER_EMAIL="admin@gmail.com"
             DJANGO_SUPERUSER_PASSWORD="0000"
             SERVER_DOMAIN_NAME=format(data.grid_gateway_domain.server_domain.fqdn)

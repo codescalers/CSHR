@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Link } from 'svelte-navigator';
 
-  import type { UserInterface } from '../../utils/types';
+  import type { GeneralUserInterface } from '../../utils/types';
   import ProfileImage from '../profile/ProfileImage.svelte';
-  export let user: UserInterface;
+  export let user: GeneralUserInterface;
 </script>
 
 <Link class="card b-0" to={`../profile/${user.id}`}>

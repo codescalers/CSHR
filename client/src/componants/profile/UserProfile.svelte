@@ -18,6 +18,7 @@
     import ReportTo from './ReportTo.svelte';
     import UserDocuments from './UserDocuments.svelte';
     import VacationBalance from './VacationBalance.svelte';
+    import NotFound from '../../pages/Error.svelte';
   
     const params = useParams();
     let id: number = Number($params.id);
@@ -88,6 +89,10 @@
         </div>
       </div>
     </div>
+{:else if isError}
+  <div class="container height-100">
+    <NotFound error={404}/>
+  </div>
 {/if}
   
 <style>
