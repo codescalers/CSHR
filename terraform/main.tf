@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     grid = {
-      source = "threefoldtech/grid"
+      source = "threefoldtechdev.com/providers/grid"
     }
   }
 }
@@ -24,7 +24,7 @@ data "grid_gateway_domain" "client_domain" {
 resource "grid_network" "net1" {
     nodes = [14]
     ip_range = "10.1.0.0/16"
-    name = "network"
+    name = "cshr-network"
     description = "newer network"
     add_wg_access = true
 }
@@ -33,7 +33,7 @@ resource "grid_deployment" "d1" {
     node = 14
     network_name = grid_network.net1.name
     vms {
-        name = "serverVM"
+        name = "cshr-serverVM"
         flist = "https://hub.grid.tf/omda.3bot/codescalersinternship-cshr_server-latest.flist"
         cpu = 2 
         memory = 1024
@@ -59,7 +59,7 @@ resource "grid_deployment" "d2" {
     node = 14
     network_name = grid_network.net1.name
     vms {
-        name = "clientVM"
+        name = "cshr-clientVM"
         publicip = false
         planetary = true
         flist = "https://hub.grid.tf/omda.3bot/codescalersinternship-cshr_client-latest.flist"
@@ -86,11 +86,6 @@ resource "grid_name_proxy" "p2" {
     backends = [format("http://[%s]:6000", grid_deployment.d2.vms[0].ygg_ip)]
     tls_passthrough = false
 }
-
-
-# output "publicip_1" {
-#     value = grid_deployment.d1.vms[0].computedip
-# }
 
 output "server_domain" {
     value = data.grid_gateway_domain.server_domain.fqdn
