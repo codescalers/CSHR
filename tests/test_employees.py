@@ -15,7 +15,7 @@ def driver1_fixture():
     driver.quit()
 
 
-def login_and_employees_page(driver1):
+def to_login(driver1):
     """Function to login  then go to employees page in tests."""
     email_input = driver1.find_element(*Login.email)
     email_input.send_keys("A@test.cs")
@@ -24,6 +24,10 @@ def login_and_employees_page(driver1):
     login_button = driver1.find_element(*Login.login_button)
     login_button.click()
     time.sleep(2)
+
+
+def employees_page(driver1):
+    """Function to go to employees page in tests."""
     employees_button = driver1.find_element(*Employees.employees_button)
     employees_button.click()
     time.sleep(2)
@@ -31,7 +35,8 @@ def login_and_employees_page(driver1):
 
 def test_employees_displayed_on_page(driver1):
     """test for all Employees ."""
-    login_and_employees_page(driver1)
+    to_login(driver1)
+    employees_page(driver1)
     parent_element = driver1.find_element(*Employees.parent_element)
     profile_links = parent_element.find_elements(*Employees.profile_links)
     # Dictionary to track if the profile is present or not
@@ -52,7 +57,8 @@ def test_employees_displayed_on_page(driver1):
 
 def test_employee_information_displayed(driver1):
     """test for employee information ."""
-    login_and_employees_page(driver1)
+    to_login(driver1)
+    employees_page(driver1)
     random_profile = driver1.find_element(*Employees.random_profile)
     random_profile.click()
     profile = driver1.find_element(*Employees.email_profile)
@@ -61,7 +67,8 @@ def test_employee_information_displayed(driver1):
 
 def test_employee_information_accuracy(driver1):
     """test for my profile ."""
-    login_and_employees_page(driver1)
+    to_login(driver1)
+    employees_page(driver1)
     my_profile = driver1.find_element(*Employees.my_profile)
     my_profile.click()
     my_profile_email = driver1.find_element(*Employees.my_profile_email)
