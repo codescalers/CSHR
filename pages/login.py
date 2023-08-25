@@ -1,7 +1,9 @@
+"""page objects."""
 from selenium.webdriver.common.by import By
 
 
-class login:
+class Login:
+    """class Login."""
     email = (By.XPATH, '//*[@type="email"]')
     password = (By.XPATH, '//*[@type="password"]')
     login_button = (By.XPATH, '//button[text()="Login"]')
