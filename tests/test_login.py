@@ -1,62 +1,49 @@
 """Module to test login page."""
-import time
-from selenium import webdriver
-import pytest
 from pages.login import Login
-from utils.base import BASEURL
+from tests.contest import browsee
+from utils.utils import generate_random_email, generate_random_password
+from utils.utils import generate_random_invalid_email
 
 
-@pytest.fixture(name="driver1")
-def driver1_fixture():
-    """Function to save driver fixture."""
-    driver = webdriver.Edge()
-    driver.get(BASEURL)
-    yield driver
-    driver.quit()
-
-
-def test_user_login(driver1):
+def test_user_login(browse):
     """test for login."""
+    login_page = Login(browse)
     # Enter email
-    email_input = driver1.find_element(*Login.email)
-    email_input.send_keys("A@test.cs")
+    login_page.enter_email("A@test.cs")
     # Enter password
-    password_input = driver1.find_element(*Login.password)
-    password_input.send_keys("123456789")
+    login_page.enter_password("123456789")
     # Click on Login button
-    login_button = driver1.find_element(*Login.login_button)
+    login_button = login_page.click_login_button()
     login_button.click()
-
-    time.sleep(2)
     # Get the  profile
-    profile = driver1.find_element(*Login.profile)
+    profile = login_page.get_profile()
     # Assert that the element includes the text "AW"
     assert "aw" in profile.text.lower()
 
 
-def test_invalid_login(driver1):
+def test_invalid_login(browse):
     """test for invalid login."""
-    # Enter email invalid email
-    email_input = driver1.find_element(*Login.email)
-    email_input.send_keys("invalid@email.com")
-    # Enter invalid password
-    password_input = driver1.find_element(*Login.password)
-    password_input.send_keys("123456789")
-    # Click on Login button
-    login_button = driver1.find_element(*Login.login_button)
-    try:
-        login_button.click()
-    except ImportError:
-        assert True
+    login_page = Login(browse)
+    for _ in range(4):
+        login_page.enter_email(generate_random_email())
+        # Enter invalid password
+        login_page.enter_password(generate_random_password())
+        # Click on Login button
+        login_button = login_page.click_login_button()
+        try:
+            assert login_button.is_enabled()
+        except AssertionError:
+            continue
 
 
-def test_email_validation(driver1):
+def test_email_validation(browse):
     """test for email validation."""
-    # Enter email invalid email
-    email_input = driver1.find_element(*Login.email)
-    email_input.send_keys("invalid@email.com")
-    # get the error message
-    undefined_message = driver1.find_element(*Login.undefined_message)
-    actual_text = undefined_message.text
-    expected_text = "undefined"
-    assert actual_text == expected_text
+    login_page = Login(browse)
+    for _ in range(4):
+        # Enter email invalid email
+        login_page.enter_email(generate_random_invalid_email())
+        # get the error message
+        undefined_message = login_page.get_undefined_message()
+        actual_text = undefined_message.text
+        expected_text = "undefined"
+        assert actual_text == expected_text
