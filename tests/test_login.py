@@ -1,6 +1,5 @@
 """Module to test login page."""
 from pages.login import Login
-from tests.contest import browsee
 from utils.utils import generate_random_email, generate_random_password
 from utils.utils import generate_random_invalid_email
 
