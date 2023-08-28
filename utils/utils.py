@@ -39,3 +39,8 @@ def generate_random_invalid_email():
     invalid_char = random.choice(invalid_chars)
 
     return f"{random_string}{invalid_char}@{domain}.com"
+
+
+def get_random_invalid_email(num_number):
+    numbers = [generate_random_invalid_email() for _ in range(num_number)]
+    return numbers

@@ -2,6 +2,8 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from utils.utils import generate_random_emails, generate_random_passwords
+from utils.utils import get_random_invalid_email
 
 
 class Login:
@@ -12,6 +14,9 @@ class Login:
     xpath_profile = '//span[@class="user-profile-image rounded-circle svelte-1'
     profile = (By.XPATH, xpath_profile + '8t1c4h" and contains(text(), "AW")]')
     undefined_message = (By.XPATH, '//*[@id="liveToast"]/div[2]')
+    passwords = generate_random_passwords(2)
+    emails = generate_random_emails(2)
+    invalid_emails = get_random_invalid_email(2)
 
     def __init__(self, browser):
         self.browser = browser
