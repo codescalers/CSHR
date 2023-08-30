@@ -6,35 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from utils.utils import create_links, create_numbers
 
 
-class Login:
-    """login class."""
-    email = (By.XPATH, '//*[@type="email"]')
-    password = (By.XPATH, '//*[@type="password"]')
-    login_button = (By.XPATH, '//button[text()="Login"]')
-    undefined_message = (By.XPATH, '//*[@id="liveToast"]/div[2]')
-    my_email = "A@test.cs"
-
-    def __init__(self, browser):
-        self.browser = browser
-
-    def enter_email(self, email):
-        email_input = self.browser.find_element(*self.email)
-        email_input.clear()
-        email_input.send_keys(email)
-
-    def enter_password(self, password):
-        password_input = self.browser.find_element(*self.password)
-        password_input.clear()
-        password_input.send_keys(password)
-
-    def click_login_button(self):
-        return self.browser.find_element(*self.login_button)
-
-
 class Evaluation:
     """Evaluation class."""
-    # '/html/body/div[20]/div[1]/nav/div/div/a[5]'
-    # "//a[contains(@href, '/dashboard')]"
     dashboard_button = (By.XPATH, "//a[contains(@href, '/dashboard')]")
     eval_path = '//*[@id="v-tabs-user-eval"]/div/div/div/form/div/'
     select_user = (By.XPATH, eval_path+'div[1]/div/div/div')

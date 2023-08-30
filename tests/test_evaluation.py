@@ -1,23 +1,25 @@
 """Module to test Update User Vacation Balance functionality."""
 import validators
 import pytest
-from pages.evaluation import Login, Evaluation
+from pages.evaluation import Evaluation
+from pages.login import Login
+from utils.config import LOGIN_PASSWORD
 
 
-def to_login(browse):
+def setup_for_test(browse):
     """Function to login in tests."""
     login_page = Login(browse)
     login_page.enter_email(login_page.my_email)
-    login_page.enter_password("123456789")
-    login_button = login_page.click_login_button()
-    login_button.click()
+    login_page.enter_password(LOGIN_PASSWORD)
+    login_page.click_login_button()
+    evaluation_page = Evaluation(browse)
+    evaluation_page.click_dashboard_button()
+    return evaluation_page
 
 
 def test_form_submission(browse):
     """Function to test submission of form."""
-    to_login(browse)
-    evaluation_page = Evaluation(browse)
-    evaluation_page.click_dashboard_button()
+    evaluation_page = setup_for_test(browse)
     evaluation_page.click_select_user()
     evaluation_page.selected_usered()
     evaluation_page.select_evaluation_quartur()
@@ -30,9 +32,7 @@ def test_form_submission(browse):
 
 def test_user_selection(browse):
     """Function to test user selection in form."""
-    to_login(browse)
-    evaluation_page = Evaluation(browse)
-    evaluation_page.click_dashboard_button()
+    evaluation_page = setup_for_test(browse)
     evaluation_page.click_select_user()
     name_befor = evaluation_page.get_name_befor()
     name_befor = name_befor.text
@@ -43,9 +43,7 @@ def test_user_selection(browse):
 
 def test_evaluation_quarter_selection(browse):
     """Function to test evaluation quarter selection in form."""
-    to_login(browse)
-    evaluation_page = Evaluation(browse)
-    evaluation_page.click_dashboard_button()
+    evaluation_page = setup_for_test(browse)
     evaluation_page.select_evaluation_quartur()
     name_befor = evaluation_page.get_quartur_name_befor()
     name_befor = name_befor.text
@@ -57,9 +55,7 @@ def test_evaluation_quarter_selection(browse):
 @pytest.mark.parametrize("link", Evaluation.links)
 def test_link_input(browse, link):
     """Function to test link input validation in form."""
-    to_login(browse)
-    evaluation_page = Evaluation(browse)
-    evaluation_page.click_dashboard_button()
+    evaluation_page = setup_for_test(browse)
     evaluation_page.click_select_user()
     evaluation_page.selected_usered()
     evaluation_page.select_evaluation_quartur()
@@ -77,9 +73,7 @@ def test_link_input(browse, link):
 @pytest.mark.parametrize("number", Evaluation.numbers)
 def test_score_number_input(browse, number):
     """Function to test link input validation in form."""
-    to_login(browse)
-    evaluation_page = Evaluation(browse)
-    evaluation_page.click_dashboard_button()
+    evaluation_page = setup_for_test(browse)
     evaluation_page.click_select_user()
     evaluation_page.selected_usered()
     evaluation_page.select_evaluation_quartur()
