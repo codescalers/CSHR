@@ -4,13 +4,29 @@
 
     export let user: any;
 
-    let vacationBalance: any = null;
+    type BalanceValue = {
+        reserved: number;
+        all: number;
+    }
+
+    interface VacationBalance {
+        annual_leaves: BalanceValue;
+        compensation: BalanceValue;
+        emergency_leaves: BalanceValue;
+        leave_excuses: BalanceValue;
+        sick_leaves: BalanceValue;
+        unpaid: BalanceValue;
+    };
+
+    let balance: VacationBalance;
+
     onMount(async () => {
-        vacationBalance = await Vacation.balance(user.id);
+        balance = await Vacation.balance(user.id);
     });
+
 </script>
 
-{#if vacationBalance != null}
+{#if balance != null}
     <div class="card">
         <div class="card-header">Vacation Balance</div>
         <div class="card-body">
@@ -20,9 +36,9 @@
                 <div class="col-4 text-muted d-flex justify-content-center">Excuses</div>
             </div>
             <div class="row">
-                <div class="col-4 text-muted d-flex justify-content-center">{vacationBalance.annual_leaves[0]} / {vacationBalance.annual_leaves[1]}</div>
-                <div class="col-4 text-muted d-flex justify-content-center">{vacationBalance.emergency_leaves[0]} / {vacationBalance.emergency_leaves[1]}</div>
-                <div class="col-4 text-muted d-flex justify-content-center">{vacationBalance.leave_excuses[0]} / {vacationBalance.leave_excuses[1]}</div>
+                <div class="col-4 text-muted d-flex justify-content-center">{balance.annual_leaves.reserved} / {balance.annual_leaves.all}</div>
+                <div class="col-4 text-muted d-flex justify-content-center">{balance.emergency_leaves.reserved} / {balance.emergency_leaves.all}</div>
+                <div class="col-4 text-muted d-flex justify-content-center">{balance.leave_excuses.reserved} / {balance.leave_excuses.all}</div>
             </div>
         </div>
     </div>

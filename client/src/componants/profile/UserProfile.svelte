@@ -64,28 +64,28 @@
           </div>
   
           <ReportTo users={user.reporting_to}/>
-          {#if $UserStore.user_type === 'Admin' || $UserStore.user_type === 'Supervisor' || $UserStore.id === id}
+          <!-- RFV0.1 {#if $UserStore.user_type === 'Admin' || $UserStore.user_type === 'Supervisor' || $UserStore.id === id}
             <Evaluation {user}/>
             <UserDocuments user={user} />
-          {/if}
+          {/if} -->
         </div>
         <div class="col-lg-8">
           <UserData bind:user />
-          <div class="row">
+          <!-- RFV0.1 <div class="row">
             <Skills bind:skills={user.skills} />
             <Certificates bind:certificates={user.user_certificates} />
-          </div>
+          </div> -->
           {#if $UserStore.user_type === 'Admin' || $UserStore.user_type === 'Supervisor' || $UserStore.id === id}
             <div class="row">
               <Company bind:companies={user.user_company_properties} />
             </div>
             <VacationBalance user={user}/>
           {/if}
-          {#if $UserStore.user_type === 'Admin' || $UserStore.id === id}
+          <!-- RFV0.1 {#if $UserStore.user_type === 'Admin' || $UserStore.id === id}
             <div class="row">
               <Salary salaries={user.salary} />
             </div>
-          {/if}
+          {/if} -->
         </div>
       </div>
     </div>

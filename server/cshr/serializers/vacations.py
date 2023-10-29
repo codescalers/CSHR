@@ -8,7 +8,6 @@ from server.cshr.models.vacations import Vacation, VacationBalance
 from server.cshr.serializers.users import BaseUserSerializer, TeamSerializer
 from rest_framework import serializers
 
-
 class VacationsSerializer(ModelSerializer):
     class Meta:
         model = Vacation
@@ -120,6 +119,9 @@ class CalculateCurrentBalanceSerializer(serializers.Serializer):
         """This method to return user data instead of his id"""
         return TeamSerializer(obj.user).data
 
+class UserBalanceVlaueSerializer(serializers.Serializer):
+    reserved = serializers.IntegerField()
+    all = serializers.IntegerField()
 
 class CalculateBalanceSerializer(serializers.Serializer):
     user = serializers.SerializerMethodField()
@@ -147,24 +149,48 @@ class CalculateBalanceSerializer(serializers.Serializer):
 
     def get_sick_leaves(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.sick_leaves, obj.actual_balance.get("sick_leaves")]
+        value = {
+            "reserved": obj.actual_balance.get("sick_leaves") - obj.sick_leaves,
+            "all": obj.actual_balance.get("sick_leaves")
+        }
+        return UserBalanceVlaueSerializer(value).data
 
     def get_compensation(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.compensation, obj.actual_balance.get("compensation")]
+        value = {
+            "reserved": obj.actual_balance.get("compensation") - obj.compensation,
+            "all": obj.actual_balance.get("compensation")
+        }
+        return UserBalanceVlaueSerializer(value).data
 
     def get_unpaid(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.unpaid, obj.actual_balance.get("unpaid")]
+        value = {
+            "reserved": obj.actual_balance.get("unpaid") - obj.unpaid,
+            "all": obj.actual_balance.get("unpaid")
+        }
+        return UserBalanceVlaueSerializer(value).data
 
     def get_annual_leaves(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.annual_leaves, obj.actual_balance.get("annual_leaves")]
+        value = {
+            "reserved": obj.actual_balance.get("annual_leaves") - obj.annual_leaves,
+            "all": obj.actual_balance.get("annual_leaves")
+        }
+        return UserBalanceVlaueSerializer(value).data
 
     def get_emergency_leaves(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.emergency_leaves, obj.actual_balance.get("emergency_leaves")]
+        value = {
+            "reserved": obj.actual_balance.get("emergency_leaves") - obj.emergency_leaves,
+            "all": obj.actual_balance.get("emergency_leaves")
+        }
+        return UserBalanceVlaueSerializer(value).data
 
     def get_leave_excuses(self, obj: VacationBalance):
         """This method returns the actual user balance values."""
-        return [obj.leave_excuses, obj.actual_balance.get("leave_excuses")]
+        value = {
+            "reserved": obj.actual_balance.get("leave_excuses") - obj.leave_excuses,
+            "all": obj.actual_balance.get("leave_excuses")
+        }
+        return UserBalanceVlaueSerializer(value).data
