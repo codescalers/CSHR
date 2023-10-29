@@ -8,7 +8,7 @@
         <div class="card-header">Company properties</div>
         <div class="card-body">
             {#if typeof companies === "undefined" || !Array.isArray(companies) || companies.length === 0}
-                <p class="my-2 name">No companies found</p>
+                <p class="my-2 name">No properties found</p>
             {:else}
                 <div class="row">
                     {#each companies as company, index (index)}
