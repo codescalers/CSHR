@@ -8,6 +8,7 @@
   import Loading from '../Loading.svelte';
   import Requests from '../../../apis/requests/Requests';
   import { Link } from 'svelte-navigator';
+  import { createEventDispatcher } from 'svelte'
   export let showModal: boolean = false;
   
   export let clickedItemOnModal: calendarItemsType;
@@ -21,6 +22,8 @@
   let responseMessage: string;
   let responseClass: string; 
   let responseTitle: string;
+
+  const dispatch = createEventDispatcher()
 
   async function approveVacation(){    
     approveLoading = true;
@@ -58,9 +61,12 @@
       responseTitle = "Success!";
       responseClass = "success";
       showAlert = true;
+      dispatch('reject', true);
       setTimeout((
-        () => {showAlert = false;}
-      ), 5000);
+        () => {
+          showAlert = false;
+        }
+      ), 3000);
     } catch (error){
       responseMessage = error.message;
       responseTitle = "Error!";

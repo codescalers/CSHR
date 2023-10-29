@@ -142,3 +142,5 @@ dmypy.json
 
 profile_image/
 .vscode
+./terraform/state.json
+terraform/.terraform.lock.hcl

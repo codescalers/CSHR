@@ -6,8 +6,10 @@ terraform:=cd terraform
 docker-up:
 	docker-compose up --build -d
 install:
+	pip3 install poetry
 	poetry install
 	poetry check
+	cd client && yarn && cd ..
 runserver:
 	$(CMD) python3 manage.py runserver
 runclient:
@@ -22,7 +24,7 @@ migrate:
 user:
 	$(CMD) python3 manage.py createsuperuser
 	$(CMD) python3 manage.py runserver
-terraform-up:
+deploy:
 	$(terraform) && terraform init && terraform apply -auto-approve
-terraform-down:
+destroy:
 	$(terraform) && terraform destroy -auto-approve

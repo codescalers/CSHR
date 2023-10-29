@@ -25,6 +25,10 @@
     showModal = true
   }
 
+  const removeItem = () => {
+    items = items.filter((item) => item !== clickedItemOnModal);
+  }
+
   function next() {
 		month++;
 		if (month == 12) {
@@ -109,6 +113,7 @@
     bind:showModal 
     currentVacationActive={clickedItemOnModal.vacation[0]}
     currentVacationID={+clickedItemOnModal.vacation[0].id}
+    on:reject={removeItem}
   />
 {:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventTyoe.event}
   <CalendarEventDataModal
