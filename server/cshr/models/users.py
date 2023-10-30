@@ -52,6 +52,8 @@ class CshrBaseUserManger(BaseUserManager):
             birthday=datetime.datetime.now(),
             location=office,
             user_type=USER_TYPE.ADMIN,
+            first_name="Codescalers",
+            last_name="Admin",
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -65,7 +67,6 @@ class CshrBaseUserManger(BaseUserManager):
         user.is_staff = True
         user.save(using=self._db)
         return user
-
 
 class UserSkills(models.Model):
     name = models.CharField(max_length=50)
