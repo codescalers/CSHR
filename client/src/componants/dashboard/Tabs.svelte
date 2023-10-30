@@ -128,7 +128,7 @@
         <div class="height-100">
           <GreatAndHint 
             header={"This is the user balance of year " + date.getFullYear()}
-            hint={"The user also has an old balance object, we reset this old balance values to zeros on the first day of march month every year as a cron job, you can always check and if you find these values not zeros after `1/3/*years` you can delete all old balances by checking the checkbox below."} 
+            hint={""}
           />
           <UserVacationBalance />
         </div>
