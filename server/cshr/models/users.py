@@ -12,15 +12,13 @@ from server.cshr.utils.generate import generate_random_color
 
 class TEAM(models.TextChoices):
     """enum class for team options"""
-
-    # Dev-QA-Ops-Marketing-Management-Accounting
-
-    DEV = "Development"
-    QA = "Quality assurance"
-    OPS = "Operations"
-    MARKETING = "Marketing"
-    MANAGEMENT = "Management"
-    ACCOUNTING = "Accounting"
+    BusinessDevelopment = "Business Development"
+    Development = "Development"
+    HRAndFinance = "HR & Finance"
+    QA = "QA"
+    Marketing = "Marketing"
+    Operations = "Operations"
+    Support = "Support"
 
 
 class USER_TYPE(models.TextChoices):

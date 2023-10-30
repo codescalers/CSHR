@@ -7,6 +7,7 @@
   import VacationBalance from "../vacations/VacationBalance.svelte"
   import UserVacationBalance from "../vacations/UserVacationBalance.svelte"
   import GreatAndHint from "./GreatAndHint.svelte"
+  import UpdateProfile from '../settings/UpdateProfile.svelte';
   let date: Date = new Date();
 </script>
 
@@ -38,7 +39,7 @@
         aria-selected="false"
         >Update User Vacation Balance</a
       >
-      <a
+      <!-- RFNV1.0 <a
         class="nav-link navtab mb-2"
         id="v-tabs-home-tab"
         data-mdb-toggle="tab"
@@ -47,8 +48,8 @@
         aria-controls="v-tabs-home"
         aria-selected="true"
         >Evaluation Form</a
-      >
-      <a
+      > -->
+      <!-- RFNV1.0 <a
         class="nav-link navtab mb-2"
         id="v-tabs-user-eval-tab"
         data-mdb-toggle="tab"
@@ -57,8 +58,8 @@
         aria-controls="v-tabs-user-eval"
         aria-selected="false"
         >User Evaluation Form</a
-      >
-      <a
+      > -->
+      <!-- RFNV1.0 <a
         class="nav-link navtab mb-2"
         id="v-tabs-user-docs-tab"
         data-mdb-toggle="tab"
@@ -67,7 +68,7 @@
         aria-controls="v-tabs-user-docs"
         aria-selected="false"
         >User Documents</a
-      >
+      > -->
       <a
         class="nav-link navtab mb-2"
         id="v-tabs-office-tab"
@@ -88,6 +89,17 @@
         aria-selected="false"
         >Add new user</a
       >
+      <a
+        class="nav-link navtab mb-2"
+        id="v-tabs-update-user-tab"
+        data-mdb-toggle="tab"
+        href="#v-tabs-update-user"
+        role="tab"
+        aria-controls="v-tabs-update-user"
+        aria-selected="false"
+        >
+        Update user profile
+      </a>
     </div>
   </div>
   <div class="col-9">
@@ -115,13 +127,13 @@
       >
         <div class="height-100">
           <GreatAndHint 
-            header={"tThis is the user balance of year " + date.getFullYear()}
+            header={"This is the user balance of year " + date.getFullYear()}
             hint={"The user also has an old balance object, we reset this old balance values to zeros on the first day of march month every year as a cron job, you can always check and if you find these values not zeros after `1/3/*years` you can delete all old balances by checking the checkbox below."} 
           />
           <UserVacationBalance />
         </div>
       </div>
-      <div
+      <!-- RFNV1.0 <div
       class="tab-pane fade"
       id="v-tabs-home"
       role="tabpanel"
@@ -134,8 +146,8 @@
         />
         <Evaluation />
       </div>
-    </div>
-    <div
+    </div> -->
+    <!-- RFNV1.0 <div
       class="tab-pane fade"
       id="v-tabs-user-eval"
       role="tabpanel"
@@ -148,8 +160,8 @@
         />
         <UserEvaluation />
       </div>
-    </div>
-    <div
+    </div> -->
+    <!-- RFNV1.0 <div
       class="tab-pane fade"
       id="v-tabs-user-docs"
       role="tabpanel"
@@ -162,7 +174,7 @@
         />
         <UserDocuments />
       </div>
-    </div>
+    </div> -->
     <div
       class="tab-pane fade"
       id="v-tabs-office"
@@ -189,6 +201,20 @@
           hint={"You can add new user using this form."} 
         />
         <Register />
+      </div>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="v-tabs-update-user"
+      role="tabpanel"
+      aria-labelledby="v-tabs-update-user-tab"
+    >
+      <div class="height-100">
+        <GreatAndHint 
+          header={"Update user profile"}
+          hint={"You can update the user information using this form."} 
+        />
+        <UpdateProfile />
       </div>
     </div>
     </div>

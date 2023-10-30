@@ -6,5 +6,5 @@
 </script>
 
 <div class="container">
-    <AdminBalance user={$user}/>
+    <AdminBalance />
 </div>

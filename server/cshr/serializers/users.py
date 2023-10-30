@@ -62,12 +62,17 @@ class GeneralUserSerializer(ModelSerializer):
         model = User
         fields = [
             "id",
+            "first_name",
+            "last_name",
             "full_name",
             "email",
             "gender",
             "team",
             "image",
             "telegram_link",
+            "social_insurance_number",
+            "mobile_number",
+            "reporting_to",
             "birthday",
             "location",
             "skills",
@@ -77,6 +82,7 @@ class GeneralUserSerializer(ModelSerializer):
             "job_title",
             "address",
             "user_type",
+            "background_color",
         ]
 
     def get_user_certificates(self, obj):

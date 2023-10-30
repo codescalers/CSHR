@@ -6,9 +6,9 @@
 </script>
 
 <strong>
-Hello
+Hey
 <span class="text-primary">
-    {$UserStore.full_name}!,
+    {$UserStore.full_name.length > 2 ? $UserStore.full_name : 'There'}!,
 </span>
 {header}
 </strong>

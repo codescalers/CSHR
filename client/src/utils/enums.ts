@@ -48,12 +48,13 @@ export enum WeekendHolidaysEnum{
 };
 
 export enum TeamEnum{
+    BusinessDevelopment = "Business Development",
     Development = "Development",
-    Operations  = "Operations",
-    Marketing   = "Marketing",
-    Management  = "Management",
-    Accounting  = "Accounting",
-    QA          = "Q&A"
+    HRAndFinance = "HR & Finance",
+    QA = "QA",
+    Marketing = "Marketing",
+    Operations = "Operations",
+    Support = "Support",
 };
 
 export enum GenderEnum{

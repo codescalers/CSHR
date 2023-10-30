@@ -28,16 +28,20 @@ export const GenderChoice = [
 
 export const TeamChoice = [
     {
-        label: TeamEnum.Accounting,
-        value: TeamEnum.Accounting
+        label: TeamEnum.BusinessDevelopment,
+        value: TeamEnum.BusinessDevelopment
     },
     {
         label: TeamEnum.Development,
         value: TeamEnum.Development
     },
     {
-        label: TeamEnum.Management,
-        value: TeamEnum.Management
+        label: TeamEnum.HRAndFinance,
+        value: TeamEnum.HRAndFinance
+    },
+    {
+        label: TeamEnum.QA,
+        value: TeamEnum.QA
     },
     {
         label: TeamEnum.Marketing,
@@ -48,9 +52,9 @@ export const TeamChoice = [
         value: TeamEnum.Operations
     },
     {
-        label: TeamEnum.QA,
-        value: TeamEnum.QA
-    }
+        label: TeamEnum.Support,
+        value: TeamEnum.Support
+    },
 ];
 
 export const weekendHolidaysChoices =  [

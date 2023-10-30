@@ -35,6 +35,7 @@ export interface GeneralUserInterface {
   reporting_to: TeamType[];
   location: OfficeType;
   user_type: UserType;
+  remove_image?: boolean;
 }
 
 export interface SupervisorViewInterface extends GeneralUserInterface {

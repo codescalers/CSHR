@@ -23,11 +23,11 @@ class Users {
 		}
 	}
 
-	public async getUserByID(id: number) {
-        // Request to get user based on his user id.
+	public async getUserByID(id: number): Promise<UserInterface> {
+		// Request to get user based on his user id.
 		try {
 			return await (
-				await http.get(`/users?id=${id}`)
+				await http.get(`/users/${id}`)
 			).data.results;
 		} catch (error) {
 			throw new Error(error.response.data.message);
@@ -125,7 +125,7 @@ class Users {
 		}
 	}
 
-	async updateProfile(registerData: registeringData) {
+	async updateProfile(registerData: UserInterface) {
 		// Update user profile
 		try {
 			return await (

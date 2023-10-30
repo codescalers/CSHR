@@ -9,6 +9,7 @@ from server.cshr.api.permission import (
     IsUser,
     UserIsAuthenticated,
 )
+from server.cshr.services.office import get_office_by_id, get_office_by_name
 from server.cshr.utils.validations import Validator
 from server.cshr.api.response import CustomResponse
 from server.cshr.serializers.users import (
@@ -185,7 +186,7 @@ class SelfUserAPIView(ListAPIView, GenericAPIView):
 
 
 class UpdateUserProfileUserAPIView(GenericAPIView):
-    permission_classes = [IsUser | IsAdmin | IsSupervisor]
+    permission_classes = [ IsAdmin ]
     serializer_class = UpdateUserSerializer
 
     def put(self, request: Request, id: str, format=None) -> Response:
@@ -196,10 +197,15 @@ class UpdateUserProfileUserAPIView(GenericAPIView):
         remove_image: bool = request.data.get("remove_image")
         if request.data.get("image") == "":
             request.data["image"] = user.image if user.image else None
-
+            
         serializer = self.get_serializer(user, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save()
+            office = get_office_by_id(request.data.get("location"))
+            serializer.save(
+                team=request.data.get("team"),
+                gender=request.data.get("gender"),
+                location=office,
+            )
             if remove_image:
                 user.image.delete()
                 user.save()

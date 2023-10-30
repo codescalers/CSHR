@@ -4,7 +4,7 @@
 
 </script>
 
-<ColorInput bind:color className={"input"} title={color.toHexString()} showAlphaSlider />
+<ColorInput bind:color title={color.toHexString()} showAlphaSlider />
 
 <svelte:head>
     <style>
