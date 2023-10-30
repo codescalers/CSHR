@@ -7,6 +7,7 @@ from typing import Any, Union
 
 from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.office import Office
+from server.cshr.utils.dummy_data import create_locations
 from server.cshr.utils.generate import generate_random_color
 
 
@@ -44,13 +45,13 @@ class CshrBaseUserManger(BaseUserManager):
         """DMC method to create user"""
         if not email:
             raise ValueError("Users must have an email address")
-        office, created = Office.objects.get_or_create(
-            name="Codescalers", country="Egypt"
-        )
+
+        create_locations()
+
         user = self.model(
             email=self.normalize_email(email),
             birthday=datetime.datetime.now(),
-            location=office,
+            location=Office.objects.get(id=2), # Egypt office takes id 2
             user_type=USER_TYPE.ADMIN,
             first_name="Codescalers",
             last_name="Admin",

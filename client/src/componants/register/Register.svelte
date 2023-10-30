@@ -9,7 +9,7 @@
         validatePhoneNumber,
         validatePassword,
         validateTelegramLink,
-        validateSalary,
+        // validateSalary,
         validateBirthday
     } from '../../utils/validations';
     import MultiSelect from '../ui/select/MultiSelect.svelte';
@@ -33,15 +33,15 @@
         isErrorJobTitle: null | boolean,
         isErrorpass: null | boolean,
         isErrorLink: null | boolean,
-        isErrorBenefits: null | boolean,
+        // isErrorBenefits: null | boolean,
         isErrorBirthday: null | boolean,
         isErrorLocation: null | boolean,
         isErrorSuperuser: null | boolean,
         isErrorCurrentNetSalary: null | boolean,
         isErrorCurrentGrossSalary: null | boolean,
-        isErrorNetJoinningSalary: null | boolean,
-        isErrorGrossJoinningSalary: null | boolean,
-        isErrorNetBeforeJoinningSalary: null | boolean,
+        // isErrorNetJoinningSalary: null | boolean,
+        // isErrorGrossJoinningSalary: null | boolean,
+        // isErrorNetBeforeJoinningSalary: null | boolean,
         isErrorUserType: null | boolean,
         isErrorSocialNumber: null | boolean,
         isErrorAddress: null | boolean
@@ -65,9 +65,9 @@
     let locationSelected: SelectOptionType[] = [];
     let reportingToSelected: SelectOptionType[] = [];
 
-    let salaryField = [false,false,false,false]
-    let showaddbutton = true;
-    let thisSalaryInput: number = 0;
+    // let salaryField = [false,false,false,false]
+    // let showaddbutton = true;
+    // let thisSalaryInput: number = 0;
 </script>
 
 <div class="bg-white p-3 card">
