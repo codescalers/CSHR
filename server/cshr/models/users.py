@@ -52,6 +52,8 @@ class CshrBaseUserManger(BaseUserManager):
             birthday=datetime.datetime.now(),
             location=office,
             user_type=USER_TYPE.ADMIN,
+            first_name="Codescalers",
+            last_name="Admin",
         )
         user.set_password(password)
         user.save(using=self._db)
