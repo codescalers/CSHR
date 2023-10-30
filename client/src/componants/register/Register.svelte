@@ -141,15 +141,15 @@
             <div class="form-outline">
                 <Input
                     type="text"
-                    label={'Job Title'}
+                    label={'Role'}
                     bind:value={registeration.job_title}
                     handleInput={() => {
                         return false;
                     }}
                     size={150}
-                    errorMessage="job title is invalid"
-                    hint={'please write a valid job title'}
-                    placeholder={'please fill job title here'}
+                    errorMessage="Role is invalid"
+                    hint={'please write a valid role'}
+                    placeholder={'please fill role here'}
                     bind:isError={isErrorJobTitle}
                 />
             </div>
@@ -260,7 +260,7 @@
                     isTop={true}
                 />
             </div>
-            <div class="form-outline">
+            <!-- RFNV1.0 <div class="form-outline">
                 <Input
                     type="number"
                     label={'Net Current Salary'}
@@ -272,8 +272,8 @@
                     placeholder={'Enter the net current salary'}
                     bind:isError={isErrorCurrentNetSalary}
                 />
-            </div>
-            <div class="form-outline">
+            </div> -->
+            <!-- RFNV1.0 <div class="form-outline">
                 <Input
                     type="number"
                     label={'Gross Current Salary'}
@@ -285,8 +285,8 @@
                     placeholder={'Enter the gross current salary'}
                     bind:isError={isErrorCurrentGrossSalary}
                 />
-            </div>
-            {#if salaryField[0]==true}
+            </div> -->
+            <!-- RFNV1.0 {#if salaryField[0]==true}
                 <div class="form-outline">
                     <Input  
                         type="number"
@@ -300,8 +300,8 @@
                         bind:isError={isErrorNetJoinningSalary}
                     />
                 </div>
-            {/if}
-            {#if salaryField[1] == true}
+            {/if} -->
+            <!-- RFNV1.0 {#if salaryField[1] == true}
                 <div class="form-outline">
                     <Input
                         type="number"
@@ -315,8 +315,8 @@
                         bind:isError={isErrorGrossJoinningSalary}
                     />
                 </div>
-            {/if}
-            {#if salaryField[2] == true}
+            {/if} -->
+            <!-- RFNV1.0 {#if salaryField[2] == true}
                 <div class="form-outline">
                     <Input
                         type="number"
@@ -330,8 +330,8 @@
                         bind:isError={isErrorNetBeforeJoinningSalary}
                     />
                 </div>
-            {/if}
-            {#if salaryField[3] == true}
+            {/if} -->
+            <!-- RFNV1.0 {#if salaryField[3] == true}
                 <div class="form-outline mb-3">
                     <Input
                         type="text"
@@ -345,8 +345,8 @@
                         bind:isError={isErrorBenefits}
                     />
                 </div>
-            {/if}
-            {#if showaddbutton}
+            {/if} -->
+            <!-- RFNV1.0 {#if showaddbutton}
                 <div class="mb-4 d-flex justify-content-start mt-2">
                     <button type="button" class="btn btn-light minusbutton"
                         on:click|preventDefault={() => {
@@ -361,7 +361,7 @@
                     > Add More Salary
                     </button>
                 </div>
-            {/if}
+            {/if} -->
             <div class="row">
                 <div class="col-4">
                     <!-- svelte-ignore a11y-label-has-associated-control -->
