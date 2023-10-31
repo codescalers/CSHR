@@ -4,7 +4,7 @@
     import { AllUsersStore, UserStore } from '../../../utils/stores';
     import PeopleSlot from './UsersSlot.svelte';
     import MultiSelect from './MultiSelect.svelte';
-    import type { SelectOptionType } from '../../../utils/types';
+    import type { GeneralUserInterface, SelectOptionType } from '../../../utils/types';
     import LoadingComponent from '../../ui/Loading.svelte';
     export let placeholder = `Select Users`;
     export let removeAllTitle = 'Remove all users';
@@ -14,14 +14,20 @@
     export let isTop : boolean;
     export let multiple: boolean = true;
     export let selected: SelectOptionType[] = [];
+    export let usersInAdminOffice: boolean = false;
   
     let options: SelectOptionType[] = [];
+    let users: GeneralUserInterface[];
   
     onMount(async () => {
       isLoading = true;
       try {
         if ($AllUsersStore === undefined || $AllUsersStore.length === 0) {
-          const users = await usersDataService.getAll();
+          if (usersInAdminOffice){
+            users = await usersDataService.getOfficeUsers();
+          } else {
+            users = await usersDataService.getAll();
+          }
           if ($AllUsersStore === undefined) {
             $AllUsersStore = users;
           } else {

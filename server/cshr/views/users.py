@@ -24,6 +24,7 @@ from server.cshr.serializers.users import (
 )
 from server.cshr.services.users import (
     filter_users_by_birthdates,
+    get_admin_office_users,
     get_all_skills,
     get_user_by_id,
     get_or_create_skill_by_name,
@@ -125,6 +126,22 @@ class BaseAdminUserAPIView(ListAPIView, GenericAPIView):
         query_set = get_all_of_users()
         return query_set
 
+
+class GetUsersInAdminOfficeAPIView(ListAPIView, GenericAPIView):
+    """
+    Custom class to restrict access to admins working in the same office as the user.
+    For example, in the update user balance endpoint, there is a select area in the frontend where admins can load users
+    and update the balance for specific users. This permission ensures that only users working in the same office as the admin
+    are displayed for selection.
+    """
+
+    permission_classes = [IsAdmin]
+    serializer_class = GeneralUserSerializer
+
+    def get_queryset(self) -> Response:
+        """get all users in the system for a normal user"""
+        query_set = get_admin_office_users(self.request.user)
+        return query_set
 
 class AdminUserAPIView(ListAPIView, GenericAPIView):
     """

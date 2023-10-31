@@ -63,6 +63,7 @@
                     bind:selected={userSelected}
                     isTop={true}
                     multiple={false}
+                    usersInAdminOffice={true}
                 />
             {:else}
                 <div class="mb-2 d-flex">
@@ -122,16 +123,26 @@
                         Delete old balance
                     </label>
                 </div>
-                <div class="form-outline mt-4  d-flex justify-content-end">
+                <div class="form-outline mt-4 d-flex justify-content-end">
                     <Submit
-                        width={'15'}
-                        successMessage={'User created successfully!'}
-                        errorMessage={'User creation failed!'}
-                        label="Submit"
+                        width={'20'}
+                        successMessage={''}
+                        errorMessage={''}
+                        label="Change User"
+                        onClick={() => isUserLoaded = null}
+                        className="abtn btn-success mr-4"
+                    />
+
+                    <Submit
+                        width={'30'}
+                        successMessage={'User balance updated successfully!'}
+                        errorMessage={'User balance creation failed!'}
+                        label="Update Balance"
                         onClick={async () => {
                             isLoading = true;
                             try {
                                 Vacation.updateUserBalance(userBalance);
+                                isError = false;
                             } catch (error) {
                                 isError = true;
                             } finally {
@@ -139,18 +150,16 @@
                             }
                             return isError;
                         }}
-                    className=""
-                    bind:disabled={submitDisabled}
-                />
+                        className=""
+                        bind:disabled={submitDisabled}
+                    />
                 </div>
             {/if}
         </div>
         {#if userSelected.length > 0 && !isUserLoaded}
             <div class="mt-4 form-outline d-flex justify-content-center">
                 <button type="button" class="abtn btn-success" on:click={loadUserBalance}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-                    </svg>
+                    <i class="fa fa-plus"></i>
                     Load Balance
                 </button>
             </div>

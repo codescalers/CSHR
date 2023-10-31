@@ -2,6 +2,7 @@
 from django.contrib.auth.hashers import check_password
 from django.db.models import Q
 from typing import List, Union
+from server.cshr.models.office import Office
 
 from server.cshr.models.users import USER_TYPE, User, UserSkills
 
@@ -72,6 +73,11 @@ def get_users_filter(
 def get_all_of_users() -> User:
     """Return all users"""
     return User.objects.all()
+
+def get_admin_office_users(admin: User) -> User:
+    """Return all users who working in the same office of the admin"""
+    location = Office.objects.get(id=admin.location.id)
+    return User.objects.filter(location=location).exclude(id__in=[admin.id])
 
 
 def get_or_create_skill_by_name(name: str) -> UserSkills or bool:

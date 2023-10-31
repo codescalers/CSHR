@@ -1,22 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import Vacation from '../../apis/vacations/Vacation';
+    import type { VacationBalance } from '../../utils/types';
 
     export let user: any;
-
-    type BalanceValue = {
-        reserved: number;
-        all: number;
-    }
-
-    interface VacationBalance {
-        annual_leaves: BalanceValue;
-        compensation: BalanceValue;
-        emergency_leaves: BalanceValue;
-        leave_excuses: BalanceValue;
-        sick_leaves: BalanceValue;
-        unpaid: BalanceValue;
-    };
 
     let balance: VacationBalance;
 

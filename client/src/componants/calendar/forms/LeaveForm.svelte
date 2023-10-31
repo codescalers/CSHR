@@ -4,7 +4,7 @@
   import {onMount} from "svelte";
   import Vacations from '../../../apis/vacations/Vacation';
   import { UserStore } from '../../../utils/stores';
-  import type { CalculateVacationBalanceType, calendarItemsType } from '../../../utils/types';
+  import type { VacationBalance, calendarItemsType } from '../../../utils/types';
   import { createEventDispatcher } from 'svelte';
 
   export let startDate: string;
@@ -22,12 +22,12 @@
 
   let errorMessage: string = "", successMessage: string = "";
   let alertTitle: string, alertClass: string, alertMessage: string, showAlert: boolean;
-  let vBalance: CalculateVacationBalanceType;
+  let vBalance: VacationBalance;
   let responseVacation: calendarItemsType;
   const dispatch = createEventDispatcher();
 
   onMount(async ()=>{
-    vBalance = await Vacations.balance($UserStore.id);    
+    vBalance = await Vacations.balance($UserStore.id);
   });
   
 
@@ -45,7 +45,7 @@
           {#if vBalance}
             {#each Object.entries(vBalance) as [name, _value]}
                 {#if name != "user"}
-                  <option value={name}>{name} {_value[0]} / {_value[1]}</option>
+                  <option value={name}>{name} {_value.reserved} / {_value.all}</option>
                 {/if}
             {/each}
           {/if}
@@ -87,12 +87,12 @@
                 dispatch('message', {
                   postedVacation: responseVacation
                 });
+                vBalance[selectedReason].reserved = vBalance[selectedReason].reserved + calculatorValue
               }
             } catch (error) {
                 isError = true;
                 errorMessage = error.message
             } finally {
-                vBalance[selectedReason][0] = vBalance[selectedReason][0] - calculatorValue
                 isLoading = false;
             }
             return isError;

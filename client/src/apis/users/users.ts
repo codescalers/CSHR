@@ -23,6 +23,23 @@ class Users {
 		}
 	}
 
+	public async getOfficeUsers() {
+		try {
+			const { data, status, statusText } = await http.get("/users/admin/office_users/");
+			if (status === 404) {
+				throw new Error("Users not found");
+			} else if (status !== 200) {
+				throw new Error(
+					this.errorMessage + status + " wtih status text : " + statusText
+				);
+			}
+			return data.results;
+		} catch (error) {
+			console.error(error);
+			throw new Error(error);
+		}
+	}
+
 	public async getUserByID(id: number): Promise<UserInterface> {
 		// Request to get user based on his user id.
 		try {

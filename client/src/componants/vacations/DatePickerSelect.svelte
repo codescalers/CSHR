@@ -51,10 +51,10 @@
 
 <div class="col-12 mt-4  d-flex justify-content-end">
     <Submit
-        width={'15'}
+        width={'30'}
         successMessage={'Vacation Balance is Submitted'}
         errorMessage={' Vacation Balance Submission Failed'}
-        label="Submit"
+        label="Set Balance"
         onClick={async () => {
         isLoading = true;
         try {

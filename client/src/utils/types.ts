@@ -375,3 +375,17 @@ export type CalenderRequestFormResponseType = {
   message: string,
   isError: boolean
 }
+
+export type BalanceValue = {
+  reserved: number;
+  all: number;
+}
+
+export interface VacationBalance {
+  annual_leaves: BalanceValue;
+  compensation: BalanceValue;
+  emergency_leaves: BalanceValue;
+  leave_excuses: BalanceValue;
+  sick_leaves: BalanceValue;
+  unpaid: BalanceValue;
+};

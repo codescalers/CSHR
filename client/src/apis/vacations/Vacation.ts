@@ -11,7 +11,7 @@ class Vacation{
 				throw new Error("Balance not found");
 			} else if (data.status !== 200) {
 				throw new Error(data.data.message);
-			}
+			}			
 			return data.data.results;
 		} catch (error) {
 			throw new Error(error.response.data.message);
