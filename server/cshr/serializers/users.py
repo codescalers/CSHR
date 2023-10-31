@@ -336,6 +336,7 @@ class TeamSerializer(ModelSerializer):
     """Class team serilaizer to return user team leaders and team members."""
 
     image = SerializerMethodField()
+    location = SerializerMethodField()
 
     class Meta:
         model = User
@@ -349,10 +350,14 @@ class TeamSerializer(ModelSerializer):
             "user_type",
             "mobile_number",
             "address",
+            "location"
         ]
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color
+    
+    def get_location(self, obj):
+        return OfficeSerializer(obj.location).data
 
 
 class BasicUserSerializer(ModelSerializer):

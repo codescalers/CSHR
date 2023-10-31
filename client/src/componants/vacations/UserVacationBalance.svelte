@@ -72,6 +72,21 @@
                 </div>
                 <div class="form-outline">
                     <Input
+                        type="text"
+                        label={'Office location'}
+                        bind:value={userBalance.user.location.country}
+                        handleInput={() => {
+                            return false;
+                        }}
+                        size={25}
+                        errorMessage=""
+                        placeholder=""
+                        hint={''}
+                        disabled={true}
+                    />
+                </div>
+                <div class="form-outline">
+                    <Input
                         type="number"
                         label={'Annual leaves'}
                         bind:value={userBalance.annual_leaves}

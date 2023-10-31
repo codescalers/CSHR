@@ -21,6 +21,7 @@
     export let correctMessage: string = '';
     export let errorMessage: string;
     export let hint: string = '';
+    export let disabled: boolean = false;
     // if true the input is invalid && show error message
     // if false the input is valid && hide error message
     /// if null the input is not touched && hide error message
@@ -46,6 +47,7 @@
       <input
         use:ref
         bind:value
+        {disabled}
         class={`form-control ${
           isError !== null
             ? isError
