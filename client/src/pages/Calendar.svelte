@@ -80,6 +80,7 @@
 					bind:year
 					bind:eventNames
 					bind:items
+					bind:isLoading
 					{headers}
 					{days}
 					on:onDelete={(event) => {

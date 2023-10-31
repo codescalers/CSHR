@@ -1,6 +1,6 @@
 <script lang="ts">
   import { CalenderEventTyoe, CalenderEventEmojeTyoe } from "../../utils/enums"
-  import {createEventDispatcher} from 'svelte';
+  import {createEventDispatcher, onMount} from 'svelte';
   import type { calendarItemsType, eventNameType } from "../../utils/types";
   import { monthNames } from "../../utils/calendar";
   import CalendarBirthdayModel from '../ui/modals/CalendarBirthdayModel.svelte';
@@ -14,16 +14,36 @@
   export let eventNames: Set<eventNameType>;
   export let month: number;
   export let year: number;
+  export let isLoading: boolean;
 
   let clickedItemOnModal: calendarItemsType;
   let showModal: boolean = false;
-
+  
   let dispatch = createEventDispatcher();
-
+  
   const clickedItem = (item: calendarItemsType) => {
     clickedItemOnModal = item
     showModal = true
   }
+  
+  let loadingBoxBg = '#F8F5F5'
+  const displayLoadingBox = () => {
+    if (loadingBoxBg === "#F8F5F5") {
+      loadingBoxBg = "white";
+    } else {
+      loadingBoxBg = "#F8F5F5";
+    }
+  };
+
+  onMount(() => {
+    const intervalId = setInterval(() => {
+      if (isLoading) {
+        displayLoadingBox();
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 1000);
+  })
 
   const removeItem = () => {
     items = items.filter((item) => item !== clickedItemOnModal);
@@ -47,65 +67,77 @@
 	};
 </script>
 
-<div class="calendar-container mx-3 my-0">
-  <div class="calendar-header">
-    <h1>
-      <button class="icon-btn" on:click={() => prev()}>&lt;</button>
-        {monthNames[month]}
-        {year}
-      <button class="icon-btn" on:click={() => next()}>&gt;</button>
-    </h1>
+{#if isLoading}
+  <div class="loading-calender">
+    {#each [1,2,3,4,5,6,7] as row}
+      <div class="">
+        {#each [1,2,3,4,5] as col }
+          <div style="background-color: {loadingBoxBg};" class="calendar-loading-box"></div>
+        {/each}
+      </div>
+    {/each}
   </div>
-  <div class="calendar table-responsive table-responsive">
-    {#each headers as header}
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <span class="day-name" on:click={()=>dispatch('headerClick',header)}>{header}</span>
-    {/each}
-
-    {#each days as day}
-      {#if day.enabled}
+{:else}
+  <div class="calendar-container mx-3 my-0">
+    <div class="calendar-header">
+      <h1>
+        <button class="icon-btn" on:click={() => prev()}>&lt;</button>
+          {monthNames[month]}
+          {year}
+        <button class="icon-btn" on:click={() => next()}>&gt;</button>
+      </h1>
+    </div>
+    <div class="calendar table-responsive table-responsive">
+      {#each headers as header}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <span class="day" on:click={()=>dispatch('dayClick',day)}>{day.name}</span>
-      {:else}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <span class="day day-disabled" on:click={()=>dispatch('dayClick',day)}>{day.name}</span>
-      {/if}
-    {/each}
+        <span class="day-name" on:click={()=>dispatch('headerClick',header)}>{header}</span>
+      {/each}
 
-    {#if items.length > 0}
-      {#each items as item}
-        {#if eventNames.has(item.eventName)}
+      {#each days as day}
+        {#if day.enabled}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <section
-            on:click={()=>dispatch('itemClick',item)} 
-            class="task {item.className}"
-            style="grid-column: {item.startCol} / span {item.len};      
-            grid-row: {item.startRow};  
-            align-self: {item.isBottom?'end':'center'};"
-            >
-            <button
-              type="button"
-              class="modal-btn m-0 pl-0 "
-              style="text-align: left;"
-              on:click={() => {clickedItem(item)}}
-              >
-              {#if item.title == CalenderEventTyoe.vacation}
-                {CalenderEventEmojeTyoe.vacation} {item.title.toUpperCase()}
-              {:else if item.title == CalenderEventTyoe.event}
-                {CalenderEventEmojeTyoe.event} {item.title.toUpperCase()}
-              {:else if item.title == CalenderEventTyoe.birthday}
-                {CalenderEventEmojeTyoe.birthday} {item.title.toUpperCase()}
-              {:else if item.title == CalenderEventTyoe.meeting}
-                {CalenderEventEmojeTyoe.meeting} {item.title.toUpperCase()}
-              {/if}
-            </button>
-          </section>
-          <!--  -->
+          <span class="day" on:click={()=>dispatch('dayClick',day)}>{day.name}</span>
+        {:else}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <span class="day day-disabled" on:click={()=>dispatch('dayClick',day)}>{day.name}</span>
         {/if}
       {/each}
-    {/if}
-  </div> 
-</div>
+
+      {#if items.length > 0}
+        {#each items as item}
+          {#if eventNames.has(item.eventName)}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <section
+              on:click={()=>dispatch('itemClick',item)} 
+              class="task {item.className}"
+              style="grid-column: {item.startCol} / span {item.len};      
+              grid-row: {item.startRow};  
+              align-self: {item.isBottom?'end':'center'};"
+              >
+              <button
+                type="button"
+                class="modal-btn m-0 pl-0 "
+                style="text-align: left;"
+                on:click={() => {clickedItem(item)}}
+                >
+                {#if item.title == CalenderEventTyoe.vacation}
+                  {CalenderEventEmojeTyoe.vacation} {item.title.toUpperCase()}
+                {:else if item.title == CalenderEventTyoe.event}
+                  {CalenderEventEmojeTyoe.event} {item.title.toUpperCase()}
+                {:else if item.title == CalenderEventTyoe.birthday}
+                  {CalenderEventEmojeTyoe.birthday} {item.title.toUpperCase()}
+                {:else if item.title == CalenderEventTyoe.meeting}
+                  {CalenderEventEmojeTyoe.meeting} {item.title.toUpperCase()}
+                {/if}
+              </button>
+            </section>
+            <!--  -->
+          {/if}
+        {/each}
+      {/if}
+    </div> 
+  </div>
+{/if}
 
 {#if clickedItemOnModal && clickedItemOnModal.title == CalenderEventTyoe.vacation}
   <CalendarVacationDataModal 
@@ -161,6 +193,28 @@
     grid-template-columns: repeat(7, minmax(120px, 1fr));
     grid-template-rows: 50px;
     grid-auto-rows: 140px;
+  }
+  .calendar-loading-box{
+    width: 130px;
+    height: 140px;
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    transition: 0.7s;
+  }
+  .loading-calender{
+    /* width: 1200px !important; */
+    overflow: hidden;
+    height: 800px;
+    border: 1px solid rgb(202, 199, 199);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    /* justify-content: space-between; */
+    background-color: #ffffffbd;
   }
   .day {
     border-bottom: 1px solid rgba(166, 168, 179, 0.12);
