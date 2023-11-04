@@ -136,9 +136,7 @@ export function isValidDate(d: any) {
 	} else {
 		try {
 			const date = new Date(d);
-			console.log("date is: ", date);
-
-			return true;
+			return date.getDate() ? true : false
 		} catch {
 			return false;
 		};

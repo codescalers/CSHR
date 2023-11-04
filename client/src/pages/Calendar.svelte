@@ -2,10 +2,10 @@
     import Calendar from "../componants/calendar/Calender.svelte";
     import CalendarEventsFilter from "../componants/calendar/CalendarEventsFilter.svelte";
     import CalendarEventForm from "../componants/calendar/CalendarForm.svelte";
-	import { dayNames, monthNames, initMonthItems, initMonth} from "../utils/calendar"
-	import { findRowCol } from "../utils/calendar"
-    import type { calendarItemsType, eventItemType, eventNameType, meetingItemType, userDataType, vacationItemType } from '../utils/types';
-	import Sidebar from "../componants/sidebar/Sidebar.svelte"
+		import { dayNames, initMonthItems, initMonth} from "../utils/calendar"
+		import { findRowCol } from "../utils/calendar"
+    import type { calendarItemsType, eventNameType } from '../utils/types';
+		import Sidebar from "../componants/sidebar/Sidebar.svelte"
 	
     export let isLoading: boolean = false;
 
@@ -23,8 +23,8 @@
 	async function initContent() {
 		isLoading = true;
 		headers = dayNames;
-		days = initMonth(days, month, year);
-		items = await initMonthItems(isLoading, month, year, items, days);
+		days = initMonth(days, month, year);		
+		items = await initMonthItems(isLoading, month, year, items, days);		
 		isLoading = false;
 	}
 	
@@ -33,19 +33,18 @@
 		'vacation',
 		'meeting',
 		'birthday',
+		'public_holiday'
 	]);
 	
 	$: month, year, initContent();
 
 </script>
-<Sidebar bind:isLoading>
+<Sidebar>
 	<div slot="content">
-		<div>
-			<div
-			class="d-flex flex-column-reverse align-items-sm-center flex-xl-row gap-sm-4 gap-xl-1 content homapage"
-			>
-				<div class="mb-5 mb-xl-0 d-flex flex-lg-column flex-row-reverse mx-5 ">
-					<CalendarEventsFilter bind:eventNames/>
+		<div class="p-4">
+			<div class="row">
+				<div class="col-4">
+					<CalendarEventsFilter bind:eventNames />
 					<CalendarEventForm 
 						on:message={(event) => {
 							if (event.detail.postedVacation){
@@ -75,27 +74,23 @@
 						}}
 					/>
 				</div>
-				<Calendar
-					bind:month
-					bind:year
-					bind:eventNames
-					bind:items
-					bind:isLoading
-					{headers}
-					{days}
-					on:onDelete={(event) => {
-						if (items != undefined) {
-							items = items.filter((item) => item.id !== event.detail.id);
-						} // TODO: delete from server
-					}}
-				/>
+				<div class="col-8 d-flex align-center">
+					<Calendar
+						bind:month
+						bind:year
+						bind:eventNames
+						bind:items
+						bind:isLoading
+						{headers}
+						{days}
+						on:onDelete={(event) => {
+							if (items != undefined) {
+								items = items.filter((item) => item.id !== event.detail.id);
+							} // TODO: delete from server
+						}}
+					/>
+				</div>
 			</div>
 		</div>
 	</div>
 </Sidebar>
-
-<style>
-	.content {
-	  height: fit-content;
-	}
-</style>

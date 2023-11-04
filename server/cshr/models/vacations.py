@@ -1,8 +1,11 @@
 from django.db import models
+from server.cshr.models.abstracts import TimeStamp
+from server.cshr.models.office import Office
 
 from server.cshr.models.users import User
 
 from server.cshr.models.requests import Requests
+from django.core.exceptions import ValidationError
 
 
 class REASON_CHOICES(models.TextChoices):
@@ -56,3 +59,13 @@ class VacationBalance(models.Model):
 
     def __str__(self):
         return str(self.user.email)
+
+class PublicHoliday(TimeStamp):
+    location = models.ForeignKey(Office, on_delete=models.CASCADE)
+    holiday_date = models.DateField()
+
+    class Meta:
+        unique_together = ('holiday_date', 'location',)
+
+    def __str__(self):
+        return str(f"{self.location.country} - {self.holiday_date}")

@@ -144,6 +144,9 @@ class StanderdVacationBalance:
             if not day.strftime("%A") in weekend:
                 actual_days.append(day)
         return len(actual_days)
+    
+    def remove_holidays(self, user: User, start_date: datetime, end_date: datetime):
+        pass
 
     def vacation_update_balance(self, vacation: Vacation):
         """

@@ -13,7 +13,8 @@ export type eventNameType =
   | "vacation"
   | "meeting"
   | "event"
-  | "birthday";
+  | "birthday"
+  | "public_holiday";
 
 export interface GeneralUserInterface {
   id: number;

@@ -128,7 +128,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             
             set_notification_request_redis(serializer.data)
         
-            send_email_for_request(request.user.id, msg, "Vacation request")
+            # send_email_for_request(request.user.id, msg, "Vacation request")
             # if not sent:
             #     return CustomResponse.bad_request(message="Error in sending email, can not sent email with this request.")
             response_date: Dict = send_vacation_to_calendar(saved)
@@ -389,7 +389,7 @@ class UserVacationBalanceApiView(GenericAPIView):
         balance = v.check(user)
         request.data["user"] = TeamSerializer(user).data
         return CustomResponse.success(
-            message="Baance founded.", data=CalculateBalanceSerializer(balance).data
+            message="Sucess found balance.", data=CalculateBalanceSerializer(balance).data
         )
 
     def put(self, request: Request) -> CustomResponse:
@@ -450,4 +450,7 @@ class CalculateVacationDaysApiView(GenericAPIView):
         actual_days: int = v.remove_weekends(
             user, converted_from_date, converted_end_date
         )
-        return CustomResponse.success(message="Baance founded.", data=actual_days)
+        actual_days: int = v.remove_holidays(
+            user, converted_from_date, converted_end_date
+        )
+        return CustomResponse.success(message="Balance calculated.", data=actual_days)

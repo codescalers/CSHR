@@ -1,16 +1,19 @@
 """This file contains everything related to the landing page functionalty."""
 import datetime
+import json
 from server.cshr.api.response import CustomResponse
 from server.cshr.models.event import Event
 from server.cshr.models.meetings import Meetings
 from server.cshr.models.users import User
-from server.cshr.models.vacations import Vacation
+from server.cshr.models.vacations import PublicHoliday, Vacation
 from server.cshr.serializers.event import EventSerializer
 from server.cshr.serializers.meetings import MeetingsSerializer
+from server.cshr.serializers.public_holidays import PublicHolidaySerializer
 from server.cshr.serializers.users import BaseUserSerializer
 from server.cshr.serializers.vacations import LandingPageVacationsSerializer
 from server.cshr.services.event import filter_events_by_month_and_year
 from server.cshr.services.meetings import filter_meetings_by_month_and_year
+from server.cshr.services.public_holidays import filter_public_holidays_by_month_and_year
 from server.cshr.services.users import filter_users_by_berithday_month
 from server.cshr.services.vacations import filter_vacations_by_month_and_year
 from typing import Any, List, Dict, Union
@@ -20,12 +23,14 @@ from enum import Enum
 
 class LandingPageTypeEnum(Enum):
     VACATION = "vacation"
+    PUBLIC_HOLIDAY = "public_holiday"
     BIRTHDAY = "birthday"
     MEETING = "meeting"
     Event = "event"
 
 
 class LandingPageClassNameEnum(Enum):
+    PUBLIC_HOLIDAY = "task--success"
     VACATION = "task--warning"
     BIRTHDAY = "task--primary"
     MEETING = "task--danger"
@@ -48,9 +53,12 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
     users_birthdates: List[User] = filter_users_by_berithday_month(month).order_by(
         "-created_at"
     )
+    public_holidays: PublicHoliday = filter_public_holidays_by_month_and_year(user, year, month).order_by(
+        "-created_at"
+    )
 
     objects: Union[List[Any], None] = list(
-        chain(vacations, events, meetings, users_birthdates)
+        chain(public_holidays, vacations, events, meetings, users_birthdates)
     )
 
     response: List[Any] = []
@@ -69,6 +77,13 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
                 ),
                 many=True,
             ).data
+        elif isinstance(object, PublicHoliday):
+            obj["title"] = LandingPageTypeEnum.PUBLIC_HOLIDAY.value
+            obj["className"] = LandingPageClassNameEnum.PUBLIC_HOLIDAY.value
+            obj["eventName"] = LandingPageTypeEnum.PUBLIC_HOLIDAY.value
+            obj["holidays"] = PublicHolidaySerializer(public_holidays, many=True,).data
+            obj["date"] = object.holiday_date
+            obj["len"] = 1
         elif isinstance(object, Meetings):
             obj["title"] = LandingPageTypeEnum.MEETING.value
             obj["date"] = object.date

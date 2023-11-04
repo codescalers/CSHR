@@ -6,10 +6,11 @@ export enum CalenderEventTyoe {
 }
 
 export enum CalenderEventEmojeTyoe {
-    vacation    = "🌴", 
-    event       = "🎉",
-    birthday    = "🎂",
-    meeting     = "💼"
+    vacation        = "🌴", 
+    event           = "🎉",
+    birthday        = "🎂",
+    publicHoliday   = "💒",
+    meeting         = "💼"
 }
 
 export enum UserTypeEnum {

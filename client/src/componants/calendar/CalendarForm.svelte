@@ -22,7 +22,7 @@
   let datePickerDisabled = false;
   let VacationCalculator: number;
 
-  const handleVacationCalculator = (event: { detail: { text: number; }; }) => {
+  const handleVacationCalculator = (event: { detail: { text: number; }; }) => {    
     VacationCalculator = event.detail.text;
   };
 
@@ -32,7 +32,7 @@
   
   </script>
   
-  <div class="container">
+  <div class="card mt-4">
     <CalendarDatePicker
       onlyStart={formToggle === 1}
       bind:startDate

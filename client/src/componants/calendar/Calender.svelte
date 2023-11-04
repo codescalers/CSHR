@@ -20,8 +20,14 @@
   let showModal: boolean = false;
   
   let dispatch = createEventDispatcher();
-  
-  const clickedItem = (item: calendarItemsType) => {
+ 
+  const capitalize = (name: string) => {
+    if(name.includes("_")){
+      name = name.replace("_", " ")
+    }
+    return name[0].toLocaleUpperCase()+name.slice(1)
+  }
+  const clickedItem = (item: calendarItemsType) => {    
     clickedItemOnModal = item
     showModal = true
   }
@@ -68,7 +74,7 @@
 </script>
 
 {#if isLoading}
-  <div class="loading-calender">
+  <div class="loading-calender mt-4">
     {#each [1,2,3,4,5,6,7] as row}
       <div class="">
         {#each [1,2,3,4,5] as col }
@@ -78,7 +84,7 @@
     {/each}
   </div>
 {:else}
-  <div class="calendar-container mx-3 my-0">
+  <div class="calendar-container mx-3 my-0 mt-4">
     <div class="calendar-header">
       <h1>
         <button class="icon-btn" on:click={() => prev()}>&lt;</button>
@@ -105,33 +111,96 @@
 
       {#if items.length > 0}
         {#each items as item}
-          {#if eventNames.has(item.eventName)}
+          {#if eventNames.has(item.eventName) && item.eventName === 'public_holiday'}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <section
-              on:click={()=>dispatch('itemClick',item)} 
-              class="task {item.className}"
+              on:click={()=>dispatch('itemClick',item)}
+              class="task event__public_holiday {item.className}"
               style="grid-column: {item.startCol} / span {item.len};      
-              grid-row: {item.startRow};  
-              align-self: {item.isBottom?'end':'center'};"
-              >
-              <button
-                type="button"
-                class="modal-btn m-0 pl-0 "
-                style="text-align: left;"
-                on:click={() => {clickedItem(item)}}
+                grid-row: {item.startRow};  
+                align-self: {item.isBottom?'end':'center'};"
                 >
-                {#if item.title == CalenderEventTyoe.vacation}
-                  {CalenderEventEmojeTyoe.vacation} {item.title.toUpperCase()}
-                {:else if item.title == CalenderEventTyoe.event}
-                  {CalenderEventEmojeTyoe.event} {item.title.toUpperCase()}
-                {:else if item.title == CalenderEventTyoe.birthday}
-                  {CalenderEventEmojeTyoe.birthday} {item.title.toUpperCase()}
-                {:else if item.title == CalenderEventTyoe.meeting}
-                  {CalenderEventEmojeTyoe.meeting} {item.title.toUpperCase()}
-                {/if}
-              </button>
+                <button
+                  type="button"
+                  class="modal-btn m-0 pl-0 {item.className}"
+                  on:click={() => {clickedItem(item)}}
+                >
+                  {capitalize(item.title)} {CalenderEventEmojeTyoe.publicHoliday}
+                </button>
             </section>
-            <!--  -->
+          {:else if eventNames.has(item.eventName) && item.eventName === 'meeting'}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <section
+              title="Click to see all meetings today!"
+              on:click={()=>dispatch('itemClick',item)}
+              class="task event__meeting {item.className}"
+              style="grid-column: {item.startCol} / span {item.len};      
+                grid-row: {item.startRow};  
+                align-self: {item.isBottom?'end':'center'};"
+                >
+                <strong>
+                  
+                  <button
+                    type="button"
+                    class="modal-btn m-0 pl-0 {item.className}"
+                    on:click={() => {clickedItem(item)}}
+                  >
+                    {capitalize(item.title)} {CalenderEventEmojeTyoe.meeting}
+                  </button>
+
+                </strong>
+            </section>
+          {:else if eventNames.has(item.eventName) && item.eventName === "vacation"}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <section
+              on:click={()=>dispatch('itemClick',item)}
+              class="task event__vacation {item.className}"
+              style="grid-column: {item.startCol} / span {item.len};      
+                grid-row: {item.startRow};  
+                align-self: {item.isBottom?'end':'center'};"
+                >
+                <button
+                  type="button"
+                  class="modal-btn m-0 pl-0 {item.className}"
+                  on:click={() => {clickedItem(item)}}
+                >
+                  {capitalize(item.title)} {CalenderEventEmojeTyoe.vacation}
+                </button>
+            </section>
+          {:else if eventNames.has(item.eventName) && item.eventName === "event"}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <section
+              on:click={()=>dispatch('itemClick',item)}
+              class="task event__event {item.className}"
+              style="grid-column: {item.startCol} / span {item.len};      
+                grid-row: {item.startRow};  
+                align-self: {item.isBottom?'end':'center'};"
+                >
+                <button
+                  type="button"
+                  class="modal-btn m-0 pl-0 {item.className}"
+                  on:click={() => {clickedItem(item)}}
+                >
+                  {capitalize(item.title)} {CalenderEventEmojeTyoe.event}
+                </button>
+            </section>
+            {:else if eventNames.has(item.eventName) && item.eventName === "birthday"}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <section
+              on:click={()=>dispatch('itemClick',item)}
+              class="task event__birthday {item.className}"
+              style="grid-column: {item.startCol} / span {item.len};      
+                grid-row: {item.startRow};  
+                align-self: {item.isBottom?'end':'center'};"
+                >
+                <button
+                  type="button"
+                  class="modal-btn m-0 pl-0 {item.className}"
+                  on:click={() => {clickedItem(item)}}
+                >
+                  {CalenderEventEmojeTyoe.birthday}
+                </button>
+            </section>
           {/if}
         {/each}
       {/if}
@@ -287,16 +356,7 @@
   }
 
   .task {
-    border-left-width: 3px;
-    padding: 8px 12px;
-    margin: 10px;
-    border-left-style: solid;
-    font-size: 14px;
-    position: relative;
-    align-self: center;
     z-index: 2;
-    border-radius: 15px;
-    text-align: left;
     cursor: pointer;
   }
   .task:hover {
@@ -316,9 +376,15 @@
   :global(.task--warning) {
     border-left-color: #fdb44d;
     background: #fef0db;
-    color: #fc9b10;
+    color: #fc9b10 !important;
     align-self: flex-start!important;
-    margin-top: 5px!important;
+  }
+  :global(.task--success) {
+    border-left-color: #fef0db;
+    background: #5f84d0;
+    color: white !important;
+    /* align-self: flex-start!important; */
+    /* margin-top: 55px; */
   }
   :global(.task--danger) {
     border-left-color: #fa607e;

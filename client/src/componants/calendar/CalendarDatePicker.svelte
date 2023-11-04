@@ -63,7 +63,7 @@
     style={` opacity: ${isLoading ? '0.1' : '1'}`}
   >
     {#if errorMessage}
-      <div>
+      <div class="mt-3">
         <DatePicker
           bind:startDate
           bind:endDate

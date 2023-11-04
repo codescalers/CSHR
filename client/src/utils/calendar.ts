@@ -71,10 +71,11 @@ export async function initMonthItems(
 export function initMonth(days: any[], month: number, year: number) {
     days = [];
     let monthAbbrev = monthNames[month].slice(0,3);
-    let nextMonthAbbrev = monthNames[(month+1)%12].slice(0,3);
+    let nextMonthAbbrev = monthNames[(month+1)%12].slice(0,3);    
 
     //	find the last Monday of the previous month
     var firstDay = new Date(year, month, 1).getDay();
+    
     var daysInThisMonth = new Date(year, month+1, 0).getDate();
     var daysInLastMonth = new Date(year, month, 0).getDate();
     
@@ -114,8 +115,8 @@ export function initMonth(days: any[], month: number, year: number) {
         );
     };
 
-    //	show any days to fill up the last row (disabled) - always less than 7
-    for (let i = 0; days.length % 7; i++) {
+    //	show any days to fill up the last row (disabled) - always less than 10
+    for (let i = 0; days.length % 10; i++) {
         let d = new Date(
             (month == 11 ? year + 1 : year),
             ( month + 1 ) % 12, i + 1 

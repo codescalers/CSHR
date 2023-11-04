@@ -82,9 +82,7 @@
                     try {
                         CompensationData.from_date = startDate;
                         CompensationData.end_date = endDate;
-                        const axios = await CompensationsDataService.post(CompensationData);
-                        console.log(axios.data.results);
-                        
+                        const axios = await CompensationsDataService.post(CompensationData);                        
                         dispatch('message', {
                             postedCompensation: axios.data.results
                         });
