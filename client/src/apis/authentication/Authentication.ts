@@ -1,11 +1,11 @@
-import type { loginDataType } from "../../utils/types";
+import type { loginDataType, refreshData } from "../../utils/types";
 import httpAxios from "../../utils/axios";
 
 class Authentication{
-	async refresh(refresh: string) {
+	async refresh(refresh: string): Promise<refreshData> {
 		// Request for getting a refresh token when token expires.
 		try {
-			return await httpAxios.post("/auth/token/refresh/", { refresh: refresh })
+			return (await httpAxios.post("/auth/token/refresh/", { refresh: refresh })).data
 		} catch (error) {
 			throw new Error(error);
 		}

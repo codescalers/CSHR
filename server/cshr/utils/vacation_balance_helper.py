@@ -7,6 +7,8 @@ import datetime
 import os
 import json
 
+from server.cshr.services.public_holidays import get_user_holidays
+
 
 class StanderdVacationBalance:
     def __init__(self):
@@ -145,8 +147,12 @@ class StanderdVacationBalance:
                 actual_days.append(day)
         return len(actual_days)
     
-    def remove_holidays(self, user: User, start_date: datetime, end_date: datetime):
-        pass
+    def remove_holidays(self, user: User, start_date: datetime.datetime, end_date: datetime.datetime, days: int):
+        years = [start_date.year, end_date.year]
+        months = [start_date.month, end_date.month]
+        holidays = get_user_holidays(user, years, months)
+        actual_days = days - len(holidays)
+        return actual_days
 
     def vacation_update_balance(self, vacation: Vacation):
         """

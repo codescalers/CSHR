@@ -451,6 +451,6 @@ class CalculateVacationDaysApiView(GenericAPIView):
             user, converted_from_date, converted_end_date
         )
         actual_days: int = v.remove_holidays(
-            user, converted_from_date, converted_end_date
+            user, converted_from_date, converted_end_date, actual_days
         )
         return CustomResponse.success(message="Balance calculated.", data=actual_days)
