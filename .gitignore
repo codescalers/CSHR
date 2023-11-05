@@ -22,6 +22,7 @@ dist/
 downloads/
 *.backup
 .terraform/
+state.json
 *.tfstate
 eggs/
 .eggs/
