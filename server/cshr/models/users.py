@@ -7,9 +7,9 @@ from typing import Any, Union
 
 from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.office import Office
-from server.cshr.utils.dummy_data import create_locations
+from server.cshr.utils.dummy_data import create_locations, create_users
 from server.cshr.utils.generate import generate_random_color
-
+from server.components import config
 
 class TEAM(models.TextChoices):
     """enum class for team options"""
@@ -47,6 +47,8 @@ class CshrBaseUserManger(BaseUserManager):
             raise ValueError("Users must have an email address")
 
         create_locations()
+        if config("DJANGO_DEBUG") == "ON":
+            create_users()
 
         user = self.model(
             email=self.normalize_email(email),
