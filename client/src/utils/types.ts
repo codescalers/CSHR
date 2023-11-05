@@ -226,7 +226,7 @@ export type registeringData = {
   last_name: string;
   telegram_link: string;
   email: string;
-  birthday: Date;
+  birthday: Date | string;
   mobile_number: string;
   address: string;
   password: string;
@@ -236,7 +236,7 @@ export type registeringData = {
   user_type: string;
   social_insurance_number: string;
   reporting_to: number[];
-  image: HTMLImageElement;
+  image: string;
   gender: string;
   job_title: string;
 };
@@ -272,6 +272,13 @@ export type userDataType = {
   gender: string;
   job_title: string;
 };
+
+export type holidaysDataType = {
+  id: number;
+  location: OfficeType;
+  holiday_date: string;
+};
+
 export type birthDateItemType = {
   id: number;
   title: string;
@@ -290,7 +297,7 @@ export type meetingItemType = {
   meeting_link: string;
   invited_users: userDataType[];
   host_user: userDataType;
-  date: any;
+  date: BackendParsedDate;
   parsedDate: dateType;
   className: string;
   eventName: eventNameType;
@@ -307,6 +314,14 @@ export type stackedImageType = {
   team?: string;
 };
 
+export type BackendParsedDate = {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+}
+
 export type eventItemType = {
   id: number;
   name: string;
@@ -316,8 +331,8 @@ export type eventItemType = {
   location: string;
   from_time: string;
   end_time: string;
-  from_date: {year: number, month: number, day: number, hour: number, minute: number};
-  end_date: {year: number, month: number, day: number, hour: number, minute: number};
+  from_date: BackendParsedDate;
+  end_date: BackendParsedDate;
 };
 
 export type vacationItemType = {
@@ -370,6 +385,7 @@ export type calendarItemsType = {
   meeting?: meetingItemType[],
   event?: eventItemType[],
   users?: userDataType[],
+  holidays?: holidaysDataType[],
 }
 
 export type CalenderRequestFormResponseType = {

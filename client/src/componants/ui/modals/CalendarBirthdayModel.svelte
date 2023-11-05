@@ -17,9 +17,9 @@
 </script>
 
 <CalendarModal bind:showModal>
-    <header slot="header">
+    <header slot="header" class="text-center w-100">
         <h6 class="modal-title" id="exampleModalLongTitle">
-            {CalenderEventEmojeTyoe.birthday} {clickedItemOnModal.title.toUpperCase()}
+            <strong>{clickedItemOnModal.date} Birthdays {CalenderEventEmojeTyoe.birthday}</strong>
         </h6>
     </header>
     <div slot="body" class="bg-confetti-animated">
@@ -81,9 +81,11 @@
     </div>
     <div slot="modal-footer">
         <button type="button" class="abtn btn-secondary" on:click={() => {
-            document.getElementById("body-pd").style.overflow = "auto";
-            showModal = false;
-        }}>Close</button>
+          document.getElementById("body-pd").style.overflow = "auto";
+          showModal = false;
+        }}>
+          Close
+        </button>
     </div>
 </CalendarModal>
   

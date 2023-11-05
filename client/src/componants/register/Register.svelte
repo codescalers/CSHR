@@ -24,7 +24,8 @@
     export let isError: boolean = false;
 
     let image: HTMLImageElement;
-    let registeration: registeringData|any = registeringDataType
+    let imageSrc: string;
+    let registeration: registeringData = registeringDataType
 
     let isErrorfName: null | boolean,
         isErrorlName: null | boolean,
@@ -65,9 +66,12 @@
     let locationSelected: SelectOptionType[] = [];
     let reportingToSelected: SelectOptionType[] = [];
 
-    // let salaryField = [false,false,false,false]
-    // let showaddbutton = true;
-    // let thisSalaryInput: number = 0;
+    const defaultDate  = new Date(2000, 1, 1)
+    const year = defaultDate.getFullYear();
+    const month = String(defaultDate.getMonth() + 1).padStart(2, '0'); // Adding 1 to month since months are zero-based
+    const day = String(defaultDate.getDate()).padStart(2, '0');
+
+    let formattedDefaultDate = `${year}-${month}-${day}`;
 </script>
 
 <div class="bg-white p-3 card">
@@ -200,7 +204,7 @@
                 <Input
                     type="date"
                     label={'Birthday date'}
-                    bind:value={registeration.birthday}
+                    bind:value={formattedDefaultDate}
                     handleInput={validateBirthday}
                     size={150}
                     errorMessage="Invalid birthdate"
@@ -388,23 +392,26 @@
                         registeration.location = locationSelected[0].value;
                         registeration.gender = genderSelected[0].value;
                         registeration.user_type = userTypeSelected[0].value;
+                        registeration.birthday = formattedDefaultDate                        
                         if (image != undefined){
-                            registeration.image = image.src
+                            imageSrc = image.src
+                            registeration.image = imageSrc
                         } else {
                             registeration.image = ""
                         }
                         try {
-                            RegisterDataService.register(registeration);
-                        } catch (error) {
-                            isError = true;
-                        } finally {
-                            isLoading = false;
+                            isError = false;
+                            await RegisterDataService.register(registeration);
                             clearUserData(registeration)
                             userTypeSelected = []
                             genderSelected = []
                             locationSelected = []
                             teamSelected = []
                             reportingToSelected = []
+                        } catch (error) {
+                            isError = true;
+                        } finally {
+                            isLoading = false;
                         }
                         return isError;
                     }}

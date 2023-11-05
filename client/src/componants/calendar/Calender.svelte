@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CalenderEventTyoe, CalenderEventEmojeTyoe } from "../../utils/enums"
+  import { CalenderEventType, CalenderEventEmojeTyoe } from "../../utils/enums"
   import {createEventDispatcher, onMount} from 'svelte';
   import type { calendarItemsType, eventNameType } from "../../utils/types";
   import { monthNames } from "../../utils/calendar";
@@ -7,6 +7,7 @@
   import CalendarMeetingModel from '../ui/modals/CalendarMeetingModel.svelte';
   import CalendarEventDataModal from '../ui/modals/CalendarEventDataModal.svelte';
   import CalendarVacationDataModal from '../ui/modals/CalendarVacationDataModal.svelte';
+  import CalendarPublicHolidayModel from '../ui/modals/CalendarPublicHolidayModel.svelte';
 
   export var headers: string[] = [];
   export let days: any[] = [];
@@ -208,7 +209,7 @@
   </div>
 {/if}
 
-{#if clickedItemOnModal && clickedItemOnModal.title == CalenderEventTyoe.vacation}
+{#if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.vacation}
   <CalendarVacationDataModal 
     bind:clickedItemOnModal 
     bind:showModal 
@@ -216,25 +217,30 @@
     currentVacationID={+clickedItemOnModal.vacation[0].id}
     on:reject={removeItem}
   />
-{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventTyoe.event}
+{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.event}
   <CalendarEventDataModal
     bind:clickedItemOnModal 
     bind:showModal
     currentEventActive={clickedItemOnModal.event[0]}
   />
-{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventTyoe.birthday}
+{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.birthday}
   <CalendarBirthdayModel 
     bind:clickedItemOnModal 
     bind:showModal 
     currentUserActive={clickedItemOnModal.users[0]}
     currentUserID={clickedItemOnModal.users[0].id}
     />
-{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventTyoe.meeting}
+{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.meeting}
   <CalendarMeetingModel 
     bind:showModal
     bind:clickedItemOnModal 
     currentMeetingActive={clickedItemOnModal.meeting[0]}
     currentMeetingID={clickedItemOnModal.meeting[0].id}
+  />
+{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.publicHoliday}
+  <CalendarPublicHolidayModel
+    bind:showModal
+    bind:clickedItemOnModal
   />
 {/if}
 

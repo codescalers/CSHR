@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { CalenderEventEmojeTyoe } from "../../../utils/enums";
   import type {
     calendarItemsType,
     meetingItemType,
@@ -32,9 +33,15 @@
 </script>
 
 <CalendarModal bind:showModal>
-  <header slot="header">
+  <header slot="header" class="text-center w-100">
     <h6 class="modal-title" id="exampleModalLongTitle">
-      {clickedItemOnModal.title.toUpperCase()}
+      <strong>
+        {clickedItemOnModal.meeting[0].date.year} - 
+        {clickedItemOnModal.meeting[0].date.month} - 
+        {clickedItemOnModal.meeting[0].date.day} 
+        Meetings 
+        {CalenderEventEmojeTyoe.meeting}
+      </strong>
     </h6>
   </header>
   <div slot="body">
@@ -123,6 +130,14 @@
         </div>
       {/if}
     </div>
+  </div>
+  <div slot="modal-footer">
+    <button type="button" class="abtn btn-secondary" on:click={() => {
+      document.getElementById("body-pd").style.overflow = "auto";
+      showModal = false;
+    }}>
+      Close
+    </button>
   </div>
 </CalendarModal>
 

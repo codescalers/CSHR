@@ -1,5 +1,6 @@
 
 export default {
+    id: 0,
     first_name: "",
     last_name: "",
     telegram_link: "",

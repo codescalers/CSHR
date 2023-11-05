@@ -53,7 +53,7 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
     users_birthdates: List[User] = filter_users_by_berithday_month(month).order_by(
         "-created_at"
     )
-    public_holidays: PublicHoliday = filter_public_holidays_by_month_and_year(user, year, month).order_by(
+    public_holidays: PublicHoliday = filter_public_holidays_by_month_and_year(year, month).order_by(
         "-created_at"
     )
 
@@ -81,7 +81,13 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
             obj["title"] = LandingPageTypeEnum.PUBLIC_HOLIDAY.value
             obj["className"] = LandingPageClassNameEnum.PUBLIC_HOLIDAY.value
             obj["eventName"] = LandingPageTypeEnum.PUBLIC_HOLIDAY.value
-            obj["holidays"] = PublicHolidaySerializer(public_holidays, many=True,).data
+            obj["holidays"] = PublicHolidaySerializer(
+                public_holidays.filter(
+                    holiday_date__day=object.holiday_date.day,
+                    holiday_date__month=object.holiday_date.month,
+                ),
+                many=True,
+            ).data
             obj["date"] = object.holiday_date
             obj["len"] = 1
         elif isinstance(object, Meetings):

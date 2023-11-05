@@ -36,6 +36,7 @@
                     bind:selected={userSelected}
                     isTop={true}
                     multiple={false}
+                    usersInAdminOffice={true}
                 />
                 <div class="col-12">
                     <div class="form-outline mt-4  d-flex justify-content-center">

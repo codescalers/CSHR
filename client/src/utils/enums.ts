@@ -1,8 +1,9 @@
-export enum CalenderEventTyoe {
-    vacation    = "vacation", 
-    event       = "event",
-    birthday    = "birthday",
-    meeting     = "meeting"
+export enum CalenderEventType {
+    vacation        = "vacation", 
+    event           = "event",
+    birthday        = "birthday",
+    meeting         = "meeting",
+    publicHoliday   = "public_holiday"
 }
 
 export enum CalenderEventEmojeTyoe {

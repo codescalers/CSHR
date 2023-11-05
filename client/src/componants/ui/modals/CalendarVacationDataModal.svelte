@@ -3,7 +3,7 @@
   import ProfileImage from '../../profile/ProfileImage.svelte';
   import CalendarModal from './CalendarModal.svelte';
   import { UserStore } from '../../../utils/stores';
-  import { RequestStatus, UserTypeEnum } from "../../../utils/enums";
+  import { CalenderEventEmojeTyoe, RequestStatus, UserTypeEnum } from "../../../utils/enums";
   import Alert from "../Alert.svelte";
   import Loading from '../Loading.svelte';
   import Requests from '../../../apis/requests/Requests';
@@ -86,144 +86,159 @@
 </script>
 
 <CalendarModal bind:showModal>
-  <header slot="header">
+  <header slot="header" class="text-center w-100">
     <h6 class="modal-title" id="exampleModalLongTitle">
-      {clickedItemOnModal.title.toUpperCase()}
+      <strong>
+        <span class="text-primary">From</span>
+        {clickedItemOnModal.vacation[0].from_date}
+        <span class="text-primary">to</span>
+        {clickedItemOnModal.vacation[0].end_date}
+        <span class="text-primary">|</span>
+        Vacations {CalenderEventEmojeTyoe.vacation}
+      </strong>
     </h6>
   </header>
   <div slot="body">
-      <div class="pt-3 card-body px-4 card-hover">
-        <h5 class="card-title">
-          <div class="row m-0 justify-content-center">
-            {#each clickedItemOnModal.vacation as vacation}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <div class={`col-2 p-0 justify-content-center d-flex photo-active ${+vacation.id === currentVacationID ? 'active-user' : ''}`} on:click={
-                () => {
-                  activateVacation(vacation)
-                }
-              }>
-                  <ProfileImage size={70} user={vacation.applying_user} noLink={true}/>
-              </div>
-              {/each}
+    <div class="pt-3 card-body px-4 card-hover">
+      <h5 class="card-title">
+        <div class="row m-0 justify-content-center">
+          {#each clickedItemOnModal.vacation as vacation}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <div class={`col-2 p-0 justify-content-center d-flex photo-active ${+vacation.id === currentVacationID ? 'active-user' : ''}`} on:click={
+              () => {
+                activateVacation(vacation)
+              }
+            }>
+                <ProfileImage size={70} user={vacation.applying_user} noLink={true}/>
             </div>
-        </h5>
-          
-        <div class="text-center mt-4 mb-2 text-dark">{currentVacationActive.applying_user.full_name}</div>
-        <p class="w-100 text-center text-muted">
-          <span>{currentVacationActive.applying_user.job_title}</span>
-          <small class="blockquote-footer">
-            <cite title="Team">{currentVacationActive.applying_user.team}</cite>
-          </small><br/>
-          <small>
-            <cite>{currentVacationActive.applying_user.email}</cite>
-          </small>
-        </p>
+            {/each}
+          </div>
+      </h5>
+        
+      <div class="text-center mt-4 mb-2 text-dark">{currentVacationActive.applying_user.full_name}</div>
+      <p class="w-100 text-center text-muted">
+        <span>{currentVacationActive.applying_user.job_title}</span>
+        <small class="blockquote-footer">
+          <cite title="Team">{currentVacationActive.applying_user.team}</cite>
+        </small><br/>
+        <small>
+          <cite>{currentVacationActive.applying_user.email}</cite>
+        </small>
+      </p>
 
-        <div class="row dates mb-3">
-          <div class="col-6 d-flex">
-            <div class="col-6">
-              <strong>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-calendar-event mr-2" viewBox="0 0 16 16">
-                  <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
-                  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
-                </svg>
-                From
-              </strong>
-            </div>
-            <div class="col-6 d-flex justify-content-end">
-              {`${currentVacationActive.from_date}`}
-            </div>
+      <div class="row dates mb-3">
+        <div class="col-6 d-flex">
+          <div class="col-6">
+            <strong>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-calendar-event mr-2" viewBox="0 0 16 16">
+                <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+              </svg>
+              From
+            </strong>
           </div>
-    
-          <div class="col-6 d-flex">
-            <div class="col-6">
-              <strong>To</strong>
-            </div>
-            <div class="col-6 d-flex justify-content-end">
-              {`${currentVacationActive.end_date}`}
-            </div>
+          <div class="col-6 d-flex justify-content-end">
+            {`${currentVacationActive.from_date}`}
           </div>
-          <div class="col-6 d-flex">
-            <div class="col-6">
-              <strong>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cursor-fill" viewBox="0 0 16 16">
-                  <path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z"/>
-                </svg>
-                Reason
-              </strong>
-            </div>
-            <div class="col-6 d-flex justify-content-end">
-              {currentVacationActive.reason}
-            </div>
-          </div>
-    
-          <div class="col-6 d-flex">
-            <div class="col-6">
-              <strong>Status</strong>
-            </div>
-            <div class="col-6 d-flex justify-content-end">
-              {currentVacationActive.status}
-            </div>
-          </div>
-          {#if currentVacationActive.approval_user && currentVacationActive.approval_user.full_name}
-            <div class="col-12 d-flex">
-              <div class="col-6">
-                <strong>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-check" viewBox="0 0 16 16">
-                    <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                    <path fill-rule="evenodd" d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
-                  </svg>
-                  Approved by
-                </strong>
-              </div>
-              <div class="col-6 d-flex justify-content-end">
-                <Link to="/profile/{currentVacationActive.approval_user.id}">
-                  @{currentVacationActive.approval_user.full_name}
-                </Link>
-              </div>
-            </div>
-          {/if}
-          <br/>
         </div>
-        {#if showAlert}
-          <Alert 
-            title={responseTitle} 
-            message={responseMessage} 
-            className={responseClass}
-          />
-        {/if}
-
-        {#if $UserStore.user_type == UserTypeEnum.admin && currentVacationActive.status == RequestStatus.pinding}
-          <div class="buttons mt-4 mb-4">
-            <button 
-              class="abtn btn-success"
-              on:click={() => {
-                approveVacation();
-              }}
-              disabled={isDisable}
-              >
-              {#if approveLoading}
-                <Loading />
-              {:else}
-                Approve
-              {/if}
-            </button>
-            <button 
-              class="abtn btn-danger" 
-              on:click={() => {
-                rejactVacation();
-              }}
-              disabled={isDisable}
-              >
-              {#if rejactLoading}
-                <Loading />
-              {:else}
-                Rejact
-              {/if}
-            </button>
+  
+        <div class="col-6 d-flex">
+          <div class="col-6">
+            <strong>To</strong>
+          </div>
+          <div class="col-6 d-flex justify-content-end">
+            {`${currentVacationActive.end_date}`}
+          </div>
+        </div>
+        <div class="col-6 d-flex">
+          <div class="col-6">
+            <strong>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cursor-fill" viewBox="0 0 16 16">
+                <path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z"/>
+              </svg>
+              Reason
+            </strong>
+          </div>
+          <div class="col-6 d-flex justify-content-end">
+            {currentVacationActive.reason}
+          </div>
+        </div>
+  
+        <div class="col-6 d-flex">
+          <div class="col-6">
+            <strong>Status</strong>
+          </div>
+          <div class="col-6 d-flex justify-content-end">
+            {currentVacationActive.status}
+          </div>
+        </div>
+        {#if currentVacationActive.approval_user && currentVacationActive.approval_user.full_name}
+          <div class="col-12 d-flex">
+            <div class="col-6">
+              <strong>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-check" viewBox="0 0 16 16">
+                  <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                  <path fill-rule="evenodd" d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                </svg>
+                Approved by
+              </strong>
+            </div>
+            <div class="col-6 d-flex justify-content-end">
+              <Link to="/profile/{currentVacationActive.approval_user.id}">
+                @{currentVacationActive.approval_user.full_name}
+              </Link>
+            </div>
           </div>
         {/if}
+        <br/>
       </div>
+      {#if showAlert}
+        <Alert 
+          title={responseTitle} 
+          message={responseMessage} 
+          className={responseClass}
+        />
+      {/if}
+
+      {#if $UserStore.user_type == UserTypeEnum.admin && currentVacationActive.status == RequestStatus.pinding}
+        <div class="buttons mt-4 mb-4">
+          <button 
+            class="abtn btn-success"
+            on:click={() => {
+              approveVacation();
+            }}
+            disabled={isDisable}
+            >
+            {#if approveLoading}
+              <Loading />
+            {:else}
+              Approve
+            {/if}
+          </button>
+          <button 
+            class="abtn btn-danger" 
+            on:click={() => {
+              rejactVacation();
+            }}
+            disabled={isDisable}
+            >
+            {#if rejactLoading}
+              <Loading />
+            {:else}
+              Rejact
+            {/if}
+          </button>
+        </div>
+      {/if}
+    </div>
+  </div>
+  <div slot="modal-footer">
+    <button type="button" class="abtn btn-secondary" on:click={() => {
+      document.getElementById("body-pd").style.overflow = "auto";
+      showModal = false;
+    }}>
+      Close
+    </button>
   </div>
 </CalendarModal>
 
