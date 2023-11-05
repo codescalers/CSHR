@@ -168,12 +168,14 @@ export type SelectOptionType = {
 };
 
 export type VacationBalanceType = {
-  delete_old_balance: boolean;
-  user: UserInterface;
-  annual_leaves: number;
-  leave_excuses: number;
-  emergency_leaves: number;
-  public_holidays?: number[];
+  delete_old_balance?: boolean;
+  user?: UserInterface;
+  annual_leaves: number | BalanceValue;
+  leave_excuses: number | BalanceValue;
+  emergency_leaves: number | BalanceValue;
+  public_holidays?: string[];
+  year?: number;
+  location?: OfficeType;
 };
 
 export type VacationBalanceValuesType = {

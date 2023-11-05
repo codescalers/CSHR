@@ -16,9 +16,6 @@ class StanderdVacationBalance:
         self.abspath = os.path.abspath(os.path.dirname(__file__))
         self.file_path = os.path.join(f"{self.abspath}/vacation_balance.json")
         self.file_content = self.read_file()
-        self.emergency_year: int = 6
-        self.emergency_month: int = 2
-        self.extra_emergency: int = 1.5  # From annual balance.
 
     def read_file(self):
         """

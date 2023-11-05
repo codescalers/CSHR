@@ -60,14 +60,17 @@ class Vacation{
 		}
 	}
 
-	public async postAdminBalance(data: {
-		annual_leaves: number;
-		emergency_leaves: number;
-		leave_excuses: number;
-		public_holidays: string[];
-	}) {
+	public async postAdminBalance(data: VacationBalanceType) {
 		try {
-			await http.post("vacations/admin-balance/", data);
+			await http.post("vacations/post-admin-balance/", data);
+		} catch (err) {
+			throw new Error(err.response.data.message);
+		}
+	}
+
+	public async getAdminbalance() {
+		try {
+			return (await http.get("vacations/get-admin-balance/")).data.results;
 		} catch (err) {
 			throw new Error(err.response.data.message);
 		}

@@ -1,39 +1,14 @@
 <script lang="ts">
-    import Submit from '../ui/Button.svelte';
 	import Flatpickr from 'svelte-flatpickr'
 	import 'flatpickr/dist/flatpickr.css'
 	import 'flatpickr/dist/themes/light.css'
-    import Vacation from "../../apis/vacations/Vacation"
-    import { createEventDispatcher } from 'svelte';
 
-    const dispatch = createEventDispatcher();
-    
-    export let isLoading: boolean = false;
-    export let isError: boolean = false;
-    export let annualValue: number, leaveValue: number, emergencyValue: number = -1;
-
-    let date: any = null
-    let dates: string[] = []
+    export let date: any = null
 
 	const flatpickrOptions = {
         mode: "multiple",
 		element: '#my-picker'
 	}
-    
-    $:submitDisabled = 
-        annualValue == 0 || 
-        leaveValue == 0 || 
-        emergencyValue == 0
-
-    const handleDates = (dates_: string[]) => {
-        if (dates_ != null){
-            dates_.forEach(thisDate => {
-                let newdate = new Date(thisDate)
-                dates.push(`${newdate.getFullYear()}-${newdate.getMonth()+1}-${newdate.getDate()}`)
-            });
-        }    
-        return dates;
-    }
 </script>
 
 <Flatpickr options="{ flatpickrOptions }" bind:value={date} element="#my-picker">
@@ -48,40 +23,6 @@
         </div>
     </div>
 </Flatpickr>
-
-<div class="col-12 mt-4  d-flex justify-content-end">
-    <Submit
-        width={'30'}
-        successMessage={'Vacation Balance is Submitted'}
-        errorMessage={' Vacation Balance Submission Failed'}
-        label="Set Balance"
-        onClick={async () => {
-        isLoading = true;
-        try {
-            await Vacation.postAdminBalance({
-                annual_leaves: +annualValue,
-                leave_excuses: +leaveValue,
-                emergency_leaves: +emergencyValue,
-                public_holidays: handleDates(date),
-            });
-        } catch (error) {
-            isError = true;
-        } finally {
-            dispatch('message', {
-                annualValue: 0,
-                leaveValue: 0,
-                emergencyValue: 0,
-            });
-            isLoading = false;
-            date = null;
-            dates = [];
-        }
-        return isError;
-        }}
-        className=""
-        bind:disabled={submitDisabled}
-    />
-</div>
 
 <style>
     input {

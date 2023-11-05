@@ -4,7 +4,8 @@ from rest_framework.serializers import (
     SerializerMethodField,
 )
 from server.cshr.models.users import User
-from server.cshr.models.vacations import Vacation, VacationBalance
+from server.cshr.models.vacations import OfficeVacationBalance, PublicHoliday, Vacation, VacationBalance
+from server.cshr.serializers.office import OfficeSerializer
 from server.cshr.serializers.users import BaseUserSerializer, TeamSerializer
 from rest_framework import serializers
 
@@ -62,14 +63,41 @@ class LandingPageVacationsSerializer(ModelSerializer):
         return BaseUserSerializer(obj.approval_user).data
 
 
-class AdminVacationBalanceSerializer(serializers.Serializer):
-    sick_leaves = serializers.FloatField()
-    compensation = serializers.FloatField()
-    unpaid = serializers.FloatField()
-    annual_leaves = serializers.FloatField()
-    emergency_leaves = serializers.FloatField()
-    leave_excuses = serializers.FloatField()
+class GetOfficeVacationBalanceSerializer(ModelSerializer):
+    public_holidays = SerializerMethodField()
+    location = SerializerMethodField()
+
+    class Meta:
+        model = OfficeVacationBalance
+        fields = [
+            "annual_leaves",
+            "compensation",
+            "emergency_leaves",
+            "leave_excuses",
+            "year",
+            "public_holidays",
+            "location"
+        ]
+
+    def get_location(self, obj: OfficeVacationBalance):
+        return OfficeSerializer(obj.location).data
+
+    def get_public_holidays(self, obj: OfficeVacationBalance):
+        return PublicHoliday.objects.filter(id__in=obj.public_holidays.all()).values_list("holiday_date", flat=True)
+
+class PostOfficeVacationBalanceSerializer(ModelSerializer):
     public_holidays = serializers.JSONField(default=list)
+
+    class Meta:
+        model = OfficeVacationBalance
+        fields = [
+            "annual_leaves",
+            "compensation",
+            "emergency_leaves",
+            "leave_excuses",
+            "year",
+            "public_holidays",
+        ]
 
 
 class VacationBalanceSerializer(ModelSerializer):

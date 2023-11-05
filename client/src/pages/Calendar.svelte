@@ -42,9 +42,8 @@
 	function UserOldBalanceNotify() {
 		const currentDate = new Date();
 
-		oldBalanceMessage = "Just a friendly reminder: per our agreement, your balance will be automatically locked/deleted on the first day of March. Take a moment to check if you still have any remaining days on your balance and consider applying for a well-deserved vacation! 😊 Enjoy your time off! 🌴";
-		if (currentDate.getMonth() == 1 && $UserStore.user_type !== 'Admin') { // February is month 1
-			oldBalanceMessage = "Just a friendly reminder: per our agreement, your balance will be automatically locked/deleted on the first day of March. Take a moment to check if you still have any remaining days on your balance and consider applying for a well-deserved vacation! 😊 Enjoy your time off! 🌴";
+		if (currentDate.getMonth() == 2 && $UserStore.user_type !== 'Admin') { // March is month 2
+			oldBalanceMessage = "Just a friendly reminder: per our agreement, your balance will be automatically locked/deleted on the first day of April. Take a moment to check if you still have any remaining days on your balance and consider applying for a well-deserved vacation! 😊 Enjoy your time off! 🌴";
 		}
 	}
 

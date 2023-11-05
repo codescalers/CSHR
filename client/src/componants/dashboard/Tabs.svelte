@@ -10,6 +10,8 @@
   import UpdateProfile from '../settings/UpdateProfile.svelte';
 
   let date: Date = new Date();
+  let tab: number = 1;
+
 </script>
 
 <div class="row w-100 p-4">
@@ -28,6 +30,7 @@
         role="tab"
         aria-controls="v-tabs-vacation-balance"
         aria-selected="false"
+        on:click={() => tab = 1}
         >Update/Post vacations balance</a
       >
       <a
@@ -38,6 +41,7 @@
         role="tab"
         aria-controls="v-tabs-user-vacation-balance"
         aria-selected="false"
+        on:click={() => tab = 2}
         >Update User Vacation Balance</a
       >
       <!-- RFNV1.0 <a
@@ -78,6 +82,7 @@
         role="tab"
         aria-controls="v-tabs-office"
         aria-selected="false"
+        on:click={() => tab = 6}
         >Add new office</a
       >
       <a
@@ -88,6 +93,7 @@
         role="tab"
         aria-controls="v-tabs-new-user"
         aria-selected="false"
+        on:click={() => tab = 7}
         >Add new user</a
       >
       <a
@@ -98,6 +104,7 @@
         role="tab"
         aria-controls="v-tabs-update-user"
         aria-selected="false"
+        on:click={() => tab = 8}
         >
         Update user profile
       </a>
@@ -117,7 +124,7 @@
             hint={"You have to update the values every year"} 
             header={"this is vacation values of " + date.getFullYear()}
           />
-          <VacationBalance />
+          <VacationBalance bind:tab />
         </div>
       </div>
       <div

@@ -18,17 +18,7 @@
     = null;
 
     let userSelected: SelectOptionType[] = [];
-    
-    $: submitDisabled = 
-        isErrorAnunual == null ||
-        isErrorAnunual == true ||
-        isErrorLeave == null ||
-        isErrorLeave == true ||
-        isErrorEmergency == true || 
-        isErrorEmergency == null || 
-        userSelected.length == 0
 
-    
     let isErrorUserSelected: boolean|null = null;
     let userBalance: VacationBalanceType;
     let alertMessage: string, alertType: string, alertTitle: string;
@@ -39,6 +29,9 @@
         try{
             isLoading = true;
             userBalance = await Vacation.balance(userID);
+            userBalance.annual_leaves = Reflect.get(userBalance, "annual_leaves")["all"]
+            userBalance.emergency_leaves = Reflect.get(userBalance, "emergency_leaves")["all"]
+            userBalance.leave_excuses = Reflect.get(userBalance, "leave_excuses")["all"]
             showLoadButton = false;
         } catch (err){
             alertType = "danger";
@@ -49,10 +42,17 @@
             showAlert  = true;
         }
         isUserLoaded = true;
+        console.log("userBalance", userBalance);
     }
+
+    $: submitDisabled = 
+        isErrorAnunual == true ||
+        isErrorLeave == true ||
+        isErrorEmergency == true || 
+        userSelected.length == 0
 </script>
 
-<div class="bg-white p-3 card">
+<div class="bg-white card">
     <div class="card-body">
         <div class="form-outline">
             {#if !isUserLoaded}
@@ -138,7 +138,7 @@
                         Delete old balance
                     </label>
                 </div>
-                <div class="form-outline mt-4 d-flex justify-content-end">
+                <div class="form-outline w-100 mt-4 d-flex justify-content-end">
                     <Submit
                         width={'20'}
                         successMessage={''}
@@ -147,7 +147,6 @@
                         onClick={() => isUserLoaded = null}
                         className="abtn btn-success mr-4"
                     />
-
                     <Submit
                         width={'30'}
                         successMessage={'User balance updated successfully!'}

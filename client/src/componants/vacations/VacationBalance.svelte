@@ -1,10 +1,8 @@
 <script lang="ts">
     import AdminBalance from '../vacations/AdminBalance.svelte';
-    import { UserStore } from '../../utils/stores';
-
-    let user = UserStore
+    export let tab: number;
 </script>
 
 <div class="container">
-    <AdminBalance />
+    <AdminBalance bind:tab />
 </div>

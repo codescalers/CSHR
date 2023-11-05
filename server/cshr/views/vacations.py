@@ -1,6 +1,7 @@
 from server.cshr.serializers.users import TeamSerializer
 from server.cshr.serializers.vacations import (
-    AdminVacationBalanceSerializer,
+    PostOfficeVacationBalanceSerializer,
+    GetOfficeVacationBalanceSerializer,
     CalculateBalanceSerializer,
     LandingPageVacationsSerializer,
     VacationsCommentsSerializer,
@@ -43,7 +44,7 @@ from server.cshr.utils.email_messages_templates import (
 )
 from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
-from server.cshr.models.vacations import Vacation
+from server.cshr.models.vacations import OfficeVacationBalance, PublicHoliday, Vacation
 from server.cshr.services.vacations import get_vacations_by_user
 from server.cshr.utils.redis_functions import (
     notification_commented,
@@ -52,28 +53,66 @@ from server.cshr.utils.redis_functions import (
 )
 
 
-class AdminVacationBalanceApiView(GenericAPIView):
+class GetAdminVacationBalanceApiView(GenericAPIView):
     """Class VacationBalance to update or post vacation balance by only admin."""
 
-    serializer_class = AdminVacationBalanceSerializer
+    serializer_class = GetOfficeVacationBalanceSerializer
+    permission_classes = [IsAdmin]
+    
+    def get(self, request: Request) -> Response:
+        year = year=datetime.now().year
+        location = request.user.location
+        data = OfficeVacationBalance.objects.get_or_create(year=year, location=location)
+
+        return CustomResponse.success(
+            message="Successfully updated balance values.", data=self.serializer_class(data[0]).data
+        )
+
+class PostAdminVacationBalanceApiView(GenericAPIView):
+    """Class VacationBalance to update or post vacation balance by only admin."""
+
+    serializer_class = PostOfficeVacationBalanceSerializer
     permission_classes = [IsAdmin]
 
     def post(self, request: Request) -> Response:
-        v = StanderdVacationBalance()
-        request.data["sick_leaves"] = v.file_content["sick_leaves"]
-        request.data["compensation"] = v.file_content["compensation"]
-        request.data["unpaid"] = v.file_content["unpaid"]
-        request.data["year"] = datetime.today().year
         serializer = self.get_serializer(data=request.data)
+        year = year=datetime.now().year
+        location = request.user.location
+
         if serializer.is_valid():
-            for field, value in request.data.items():
-                v.write(field, value)
+            balance = OfficeVacationBalance.objects.filter(
+                year=year, location=location
+            )
+            public_holidays = request.data['public_holidays']
+            for holiday in public_holidays:
+                PublicHoliday.objects.get_or_create(location=location, holiday_date=holiday)
+
+            public_holidays = PublicHoliday.objects.filter(location=location, holiday_date__in=public_holidays).values_list("id", flat=True)
+
+            if len(balance) > 0:
+                balance[0].annual_leaves = serializer.validated_data.get('annual_leaves')
+                balance[0].leave_excuses = serializer.validated_data.get('leave_excuses')
+                balance[0].emergency_leaves = serializer.validated_data.get('emergency_leaves')
+                balance[0].public_holidays.set(public_holidays)
+                balance[0].save()
+            else:        
+                serializer.save(location=location, year=year, public_holidays=public_holidays[0])
             return CustomResponse.success(
                 message="Successfully updated balance values.", data=serializer.data
             )
+
         return CustomResponse.bad_request(
             message="Invalid balance values.", error=serializer.errors
         )
+        # v = StanderdVacationBalance()
+        # request.data["sick_leaves"] = v.file_content["sick_leaves"]
+        # request.data["compensation"] = v.file_content["compensation"]
+        # request.data["unpaid"] = v.file_content["unpaid"]
+        # request.data["year"] = datetime.today().year
+        # serializer = self.get_serializer(data=request.data)
+        # if serializer.is_valid():
+        #     for field, value in request.data.items():
+        #         v.write(field, value)
 
 
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
