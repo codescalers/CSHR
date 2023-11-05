@@ -52,7 +52,6 @@ class VacationBalance(models.Model):
     annual_leaves = models.IntegerField()
     emergency_leaves = models.IntegerField()
     leave_excuses = models.IntegerField()
-    public_holidays = models.IntegerField()
     date = models.DateField(auto_now=True)
     old_balance = models.JSONField(default=dict, null=True)
     actual_balance = models.JSONField(default=dict, null=True)
@@ -63,6 +62,7 @@ class VacationBalance(models.Model):
 class PublicHoliday(TimeStamp):
     location = models.ForeignKey(Office, on_delete=models.CASCADE)
     holiday_date = models.DateField()
+    expired = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('holiday_date', 'location',)

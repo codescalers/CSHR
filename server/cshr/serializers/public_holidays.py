@@ -11,7 +11,7 @@ class PublicHolidaySerializer(ModelSerializer):
 
     class Meta:
         model = PublicHoliday
-        fields = ["id", "location", "holiday_date"]
+        fields = ["id", "location", "holiday_date", "expired"]
         
     def get_location(self, obj: PublicHoliday):
       return OfficeSerializer(obj.location).data

@@ -18,7 +18,7 @@
   <div slot="body" class="card bg-confetti-animated">
     <div class="card-title title p-4 text-center">
       {#each clickedItemOnModal.holidays as holiday, index}
-        <strong>{holiday.location.country.trimEnd()}</strong>
+        <strong class="{clickedItemOnModal.holidays[index].expired ? 'expired' : ''}">{holiday.location.country.trimEnd()}</strong>
           {#if clickedItemOnModal.holidays.length > 1 && index + 1 != clickedItemOnModal.holidays.length }
         <strong><small class="--and">& </small></strong>
         {/if}
@@ -64,6 +64,20 @@
   margin-right: 10px;
   border-left-width: 15px;
   border-left: inset;
+}
+
+.expired{
+  background-color: #9d0d0d80;
+  padding: 6px;
+  border-radius: 5px;
+  color: wheat;
+}
+.expired::before{
+  content: "Expired";
+  font-size: 12px;
+  color: white;
+  font-weight: 700;
+  margin-right: 5px;
 }
 
 .bg-confetti-animated {

@@ -3,6 +3,7 @@ from typing import List
 from server.cshr.models.office import Office
 from server.cshr.models.users import User
 from server.cshr.models.vacations import PublicHoliday
+from datetime import datetime
 
 
 def filter_public_holidays_by_month_and_year(year: str, month: str):
@@ -11,13 +12,19 @@ def filter_public_holidays_by_month_and_year(year: str, month: str):
   """
   return PublicHoliday.objects.filter(holiday_date__year=year, holiday_date__month=month)
 
-def get_user_holidays(user: User, years: List[int], months: List[int]):
+def get_user_holidays(years: List[int], months: List[int]):
   """
     Filter holidays based on user location and the year and month to be displayed on the calander.
   """
-  location: Office = user.location
-  return PublicHoliday.objects.filter(
-    location=location,
+  today = datetime.now()
+  holidays = PublicHoliday.objects.filter(
     holiday_date__year__in=years,
     holiday_date__month__in=months
   )
+
+  for date in holidays:
+    if date.holiday_date.day == today.day:
+      date.expired = True
+      date.save()
+
+  return holidays

@@ -28,18 +28,18 @@
                         <i title="Team" class="fa fa-briefcase nav_icon" aria-hidden="true"></i>
                         <span class="nav_name">Team</span>
                     </Link>
-                    <Link to="/hr_letters/" class="nav_link">
+                    <!-- <Link to="/hr_letters/" class="nav_link">
                         <i title="HR letter" class="fa fa-newspaper nav_icon" aria-hidden="true"></i>
                         <span class="nav_name">HR letter</span>
                     </Link>
                     <Link to="/offcial-document/" class="nav_link">
                         <i title="Offcial document" class="fa fa-file-text nav_icon" aria-hidden="true"></i>
                         <span class="nav_name">Offcial document</span>
-                    </Link>
-                    <Link to="/compensations/" class="nav_link">
+                    </Link> -->
+                    <!-- <Link to="/compensations/" class="nav_link">
                         <i title="Compensations" class="fa fa-sticky-note nav_icon" aria-hidden="true"></i>
                         <span class="nav_name">Compensations</span>
-                    </Link>
+                    </Link> -->
                 {/if}
                 <Link to="/users/" class="nav_link">
                     <i title="Employees" class="fa-solid fa-users nav_icon" />

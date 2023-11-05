@@ -279,6 +279,7 @@ export type holidaysDataType = {
   id: number;
   location: OfficeType;
   holiday_date: string;
+  expired: boolean;
 };
 
 export type birthDateItemType = {

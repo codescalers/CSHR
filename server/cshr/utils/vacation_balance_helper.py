@@ -1,50 +1,19 @@
-from typing import Any, Dict, List
+from typing import Dict, List
 from server.cshr.api.response import CustomResponse
 from server.cshr.models.users import User
-from server.cshr.models.vacations import REASON_CHOICES, Vacation, VacationBalance
+from server.cshr.models.vacations import REASON_CHOICES, OfficeVacationBalance, Vacation, VacationBalance
 
 import datetime
 import os
 import json
 
 from server.cshr.services.public_holidays import get_user_holidays
-from server.cshr.utils.parse_date import get_dates_between_two_dates
 
 
 class StanderdVacationBalance:
     def __init__(self):
         self.abspath = os.path.abspath(os.path.dirname(__file__))
         self.file_path = os.path.join(f"{self.abspath}/vacation_balance.json")
-        self.file_content = self.read_file()
-
-    def read_file(self):
-        """
-        this function reads the json file in this directory.
-        it assumes its name will be vacation_balance.json
-        """
-        with open(self.file_path, "r") as f:
-            self.file_content = json.loads(f.read())
-            f.close()
-        return self.file_content
-
-    def write(self, key: str, new_value: Any) -> Dict:
-        """Write method that can write new values into balance Json file."""
-        founded: Any = self.file_content.get(key)
-        if founded is not None:
-            self.file_content[key] = new_value
-        return self.bulk_write(self.file_content)
-
-    def bulk_write(self, content: Dict) -> Dict:
-        if not type(content) == dict:
-            return CustomResponse.bad_request(
-                message="Invalid type {}".format(type(content))
-            )
-
-        with open(self.file_path, "w") as f:
-            f.write(json.dumps(content))
-            self.file_content = content
-            f.close()
-        return self.file_content
 
     def check(self, user) -> VacationBalance:
         try:
@@ -64,48 +33,26 @@ class StanderdVacationBalance:
         except VacationBalance.DoesNotExist:
             return self.create_new_balance(user)
 
-    def set_public_holidays(self, user):
-        """
-        Calculate and set the public holidays for the user,
-        .e.g. user who came at 7 of october not alled to tace this day.
-        """
-        user_joining_date: int = user.created_at
-        public_holidays: List[str] = self.file_content.get("public_holidays")
-        response_public_holidays: List[str] = []
-        today: datetime = datetime.datetime.today()
-        for day in public_holidays:
-            splited_day: List[str] = day.split("-")
-            formated_day: datetime = datetime.datetime(
-                year=int(splited_day[0]),
-                month=int(splited_day[1]),
-                day=int(splited_day[2]),
-            )
-            if formated_day.year == today.year:
-                if (
-                    formated_day.day >= user_joining_date.day
-                    and formated_day.month >= user_joining_date.month
-                ):
-                    response_public_holidays.append(formated_day.date())
-        return response_public_holidays
-
     def create_new_balance_values(self, user: User) -> Dict:
         # this help to divide to get the total days based on joining date
         month: int = 12 - user.created_at.month
+        balance = OfficeVacationBalance.objects.get(
+            year=datetime.datetime.now().year,
+            location=user.location
+        )
 
-        annual_leaves: int = round(self.file_content["annual_leaves"] / 12 * month)
-        leave_excuses: int = round(self.file_content["leave_excuses"] / 12 * month)
+        annual_leaves: int = round(balance.annual_leaves / 12 * month)
+        leave_excuses: int = round(balance.leave_excuses / 12 * month)
         emergency_leaves: int = round(
-            self.file_content["emergency_leaves"] / 12 * month
+            balance.emergency_leaves / 12 * month
         )
         calculated_values = {
             "annual_leaves": annual_leaves,
             "leave_excuses": leave_excuses,
             "emergency_leaves": emergency_leaves,
-            "sick_leaves": self.file_content["sick_leaves"],
-            "unpaid": self.file_content["unpaid"],
-            "compensation": self.file_content["compensation"],
-            "public_holidays": len(self.set_public_holidays(user)),
-            "year": self.file_content["year"],
+            "sick_leaves": balance.sick_leaves,
+            "unpaid": balance.unpaid,
+            "compensation": balance.compensation,
         }
         return calculated_values
 
@@ -117,14 +64,12 @@ class StanderdVacationBalance:
         joining date like i.e sick_leaves.
         """
         values: Dict = self.create_new_balance_values(user=user)
-        del values["year"]
         balance: VacationBalance = VacationBalance.objects.create(
             user=user,
             annual_leaves=values["annual_leaves"],
             compensation=values["compensation"],
             sick_leaves=values["sick_leaves"],
             emergency_leaves=values["emergency_leaves"],
-            public_holidays=values["public_holidays"],
             leave_excuses=values["leave_excuses"],
             unpaid=values["unpaid"],
             actual_balance=values,
@@ -150,7 +95,7 @@ class StanderdVacationBalance:
         removed_weekends = self.remove_weekends(user, start_date, end_date)
         years = [start_date.year, end_date.year]
         months = [start_date.month, end_date.month]
-        holidays = get_user_holidays(user, years, months)
+        holidays = get_user_holidays(years, months)
         _holydays = 0
         
         for date in removed_weekends:
@@ -203,8 +148,8 @@ class StanderdVacationBalance:
         vacation_days = self.remove_weekends(user, start_date, end_date)
         if hasattr(v, reason):
             curr_balance = getattr(v, reason)
-            if reason == "public_holidays":
-                return "You cannot apply for public holidays vacations, you take it automatically."
+            # if reason == "public_holidays":
+            #     return "You cannot apply for public holidays vacations, you take it automatically."
             if old_balance + curr_balance >= len(vacation_days):
                 new_value: int = curr_balance - len(vacation_days)
                 this_month: int = datetime.datetime.now().month
@@ -276,14 +221,13 @@ class StanderdVacationBalance:
         the old_balance field.
         """
         user_balance = self.check(user)
-        balance_format = self.read_file()
+        balance_format = {}
         balance_format["annual_leaves"] = user_balance.annual_leaves
         balance_format["sick_leaves"] = user_balance.sick_leaves
         balance_format["compensation"] = user_balance.compensation
         balance_format["unpaid"] = user_balance.unpaid
         balance_format["emergency_leaves"] = user_balance.emergency_leaves
         balance_format["leave_execuses"] = user_balance.leave_execuses
-        balance_format["public_holidays"] = {}
         balance_format["year"] = user_balance.date.year
 
         balance: VacationBalance = VacationBalance.objects.get(user=user)

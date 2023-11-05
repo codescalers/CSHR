@@ -7,7 +7,7 @@ from typing import Any, Union
 
 from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.office import Office
-from server.cshr.utils.dummy_data import create_locations, create_users
+from server.cshr.utils.dummy_data import create_locations, create_users, create_vacation_balance
 from server.cshr.utils.generate import generate_random_color
 
 class TEAM(models.TextChoices):
@@ -45,7 +45,10 @@ class CshrBaseUserManger(BaseUserManager):
         if not email:
             raise ValueError("Users must have an email address")
 
+        # Create locations and dummey values to avoid errors after migrating the database, the admins should update it later. 
         create_locations()
+        create_vacation_balance()
+
         from server.components import config
         if config("DJANGO_DEBUG") == "ON":
             create_users()

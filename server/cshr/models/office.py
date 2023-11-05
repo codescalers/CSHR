@@ -21,3 +21,6 @@ class Office(TimeStamp):
 
     def __str__(self) -> str:
         return f"{self.name}"
+
+    class Meta:
+        unique_together = ('name', 'country',)

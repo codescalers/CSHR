@@ -36,12 +36,12 @@
     <LoggedRoute path={'settings/'} component={Settings}/>
     <LoggedRoute path={"users/"} component={Users}/>
     <LoggedRoute path={"logout/"} component={Logout}/>
-    <LoggedRoute path={'hr_letters/'} component={HrLetter}/>
-    <LoggedRoute path={'hr_letters/:id/'} component={HrLetterDetails}/> 
-    <LoggedRoute path={'offcial-document/'} component={OffcialDocument}/>
-    <LoggedRoute path={'compensations/'} component={Compensations}/> 
-    <LoggedRoute path={'compensations/:id'} component={CompensationsDetails}/> 
-    <LoggedRoute path={'compensations/:id/update'} component={CompensationsUpdate}/>
+    <!-- <LoggedRoute path={'hr_letters/'} component={HrLetter}/> -->
+    <!-- <LoggedRoute path={'hr_letters/:id/'} component={HrLetterDetails}/>  -->
+    <!-- <LoggedRoute path={'offcial-document/'} component={OffcialDocument}/> -->
+    <!-- <LoggedRoute path={'compensations/'} component={Compensations}/>  -->
+    <!-- <LoggedRoute path={'compensations/:id'} component={CompensationsDetails}/>  -->
+    <!-- <LoggedRoute path={'compensations/:id/update'} component={CompensationsUpdate}/> -->
 
     <Route path={'login/'} component={Login} />
     <Route>
