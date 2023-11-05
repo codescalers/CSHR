@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Dict, Any
 from server.cshr.models.office import WEEKEND_DAYS, Office
 
@@ -58,6 +59,7 @@ def create_users():
       "address": "---",
       "job_title": "Manager",
       "gender" : GENDER_TYPE.MALE,
+      "birthday": datetime.date(year=2000, month=12, day=12)
     },
     {
       "first_name": "Nayer",
@@ -71,6 +73,7 @@ def create_users():
       "address": "---",
       "job_title": "Manager",
       "gender" : GENDER_TYPE.MALE,
+      "birthday": datetime.date(year=2000, month=12, day=12)
     },
     {
       "first_name": "Nayer",
@@ -84,6 +87,7 @@ def create_users():
       "address": "---",
       "job_title": "Manager",
       "gender" : GENDER_TYPE.MALE,
+      "birthday": datetime.date(year=2000, month=12, day=12)
     },
     {
       "first_name": "Rafik",
@@ -97,6 +101,7 @@ def create_users():
       "address": "---",
       "job_title": "HR",
       "gender" : GENDER_TYPE.MALE,
+      "birthday": datetime.date(year=2000, month=12, day=12)
     },
     {
       "first_name": "Rafik",
@@ -110,6 +115,7 @@ def create_users():
       "address": "---",
       "job_title": "HR",
       "gender" : GENDER_TYPE.MALE,
+      "birthday": datetime.date(year=2000, month=12, day=12)
     },
     {
       "first_name": "Rafik",
@@ -123,6 +129,7 @@ def create_users():
       "address": "---",
       "job_title": "HR",
       "gender" : GENDER_TYPE.MALE,
+      "birthday": datetime.date(year=2000, month=12, day=12)
     },
     {
       "first_name": "Evon",
@@ -136,6 +143,7 @@ def create_users():
       "address": "---",
       "job_title": "HR",
       "gender" : GENDER_TYPE.FEMALE,
+      "birthday": datetime.date(year=2000, month=12, day=12)
     },
     {
       "first_name": "Evon",
@@ -149,6 +157,7 @@ def create_users():
       "address": "---",
       "job_title": "HR",
       "gender" : GENDER_TYPE.FEMALE,
+      "birthday": datetime.date(year=2000, month=12, day=12)
     },
     {
       "first_name": "Evon",
@@ -162,10 +171,23 @@ def create_users():
       "address": "---",
       "job_title": "HR",
       "gender" : GENDER_TYPE.FEMALE,
+      "birthday": datetime.date(year=2000, month=12, day=12)
     },
   ]
 
+  index = 0
+
   for user in users:
+
+    if(index == 5):
+      index = 0
+
+    location = Office.objects.get_or_create(
+      name=locations[index].get("name"),
+      country=locations[index].get("country"),
+      weekend=locations[index].get("weekend")
+    )
+
     User.objects.create(
       first_name=user.get("first_name"),
       last_name=user.get("last_name"),
@@ -178,5 +200,8 @@ def create_users():
       address=user.get("address"),
       job_title=user.get("job_title"),
       gender=user.get("gender"),
+      birthday=user.get("birthday"),
+      location=location[0]
     )
+    index+=1
   

@@ -5,7 +5,7 @@ from server.cshr.models.office import Office
 from server.cshr.models.users import User
 
 from server.cshr.models.requests import Requests
-from django.core.exceptions import ValidationError
+import datetime
 
 
 class REASON_CHOICES(models.TextChoices):
@@ -69,3 +69,20 @@ class PublicHoliday(TimeStamp):
 
     def __str__(self):
         return str(f"{self.location.country} - {self.holiday_date}")
+
+class OfficeVacationBalance(TimeStamp):
+    location = models.ForeignKey(Office, on_delete=models.CASCADE)
+    year = models.IntegerField(default=datetime.datetime.now().year)
+    annual_leaves = models.IntegerField(default=20)
+    sick_leaves = models.IntegerField(default=100)
+    compensation = models.IntegerField(default=100)
+    unpaid = models.IntegerField(default=100)
+    leave_excuses = models.IntegerField(default=6)
+    emergency_leaves = models.IntegerField(default=6)
+    public_holidays = models.ManyToManyField('PublicHoliday', related_name="public_holidays")
+
+    class Meta:
+        unique_together = ('year', 'location',)
+    
+    def __str__(self):
+        return str(f"{self.location.country} - {self.year}")
