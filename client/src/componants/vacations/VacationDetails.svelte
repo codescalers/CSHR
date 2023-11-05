@@ -76,21 +76,27 @@
                 <ActionButton request = {vacation} on:message={handleActions}/>
             </div>
         {/if}
-        {#if $UserStore.user_type == "User" && vacation.status == RequestStatus.pinding}
-            <div class="d-flex display-buttons">
-                <Link to="/vacation/{vacation.id}/update" class="abtn btn-primary mb-2 custom-a"
-                    style="color: #fff"
-                    >
-                    <span class="nav_name">Update Vacation</span>
-                </Link>
-                <button on:click={async() => {
-                    await Requests.delete(vacation);
-                    navigate('/', { replace: true });
-                }} class="abtn btn-danger mb-2 custom-a"
-                    style="color: #fff"
-                    >
-                    <span class="nav_name">Delete vacation</span>
-                </button>
+        {#if $UserStore.id === vacation.applying_user.id && vacation.status == RequestStatus.pinding}
+            <div class="row">
+                <div class="col-3">
+                    <button on:click={async() => {
+                        navigate(`/vacations/${vacation.id}/update`, { replace: true });
+                    }} class="abtn btn-success mb-2 custom-a w-100"
+                        style="color: #fff"
+                        >
+                        <span class="nav_name">Update Vacation Request</span>
+                    </button>
+                </div>
+                <div class="col-3">
+                    <button on:click={async() => {
+                        await Requests.delete(vacation);
+                        navigate('/', { replace: true });
+                    }} class="abtn btn-danger mb-2 custom-a w-100"
+                        style="color: #fff"
+                        >
+                        <span class="nav_name">Delete Vacation Request</span>
+                    </button>
+                </div>
             </div>
             <small class="text-muted text-center">
                 Hint: Once you click on the delete button the request will delete without any confirmation

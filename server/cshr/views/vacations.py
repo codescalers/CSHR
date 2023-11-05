@@ -167,7 +167,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             
             set_notification_request_redis(serializer.data)
         
-            send_email_for_request(request.user.id, msg, "Vacation request")
+            # send_email_for_request(request.user.id, msg, "Vacation request")
             # if not sent:
             #     return CustomResponse.bad_request(message="Error in sending email, can not sent email with this request.")
             response_date: Dict = send_vacation_to_calendar(saved)

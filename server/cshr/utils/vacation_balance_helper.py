@@ -88,7 +88,6 @@ class StanderdVacationBalance:
             day = start_date + datetime.timedelta(days=i)
             if not day.strftime("%A") in weekend:
                 actual_days.append(day)
-        print("actual_days list", actual_days)
         return actual_days
     
     def remove_holidays(self, user: User, start_date: datetime.datetime, end_date: datetime.datetime, dates: List[datetime.date]):
@@ -116,6 +115,8 @@ class StanderdVacationBalance:
         old_days: int = self.remove_weekends(
             vacation.applying_user, vacation.from_date, vacation.end_date
         )
+        old_days = self.remove_holidays(vacation.applying_user, vacation.from_date, vacation.end_date, old_days)
+
         reason: str = vacation.reason
         this_month: int = datetime.datetime.now().month
         balance: VacationBalance = VacationBalance.objects.get(
@@ -129,6 +130,7 @@ class StanderdVacationBalance:
                 balance.old_balance.get(reason) + old_days,
                 taked_from_old_balance=vacation.taked_from_old_balance,
             )
+
         return self.update_user_balance(
             vacation.applying_user, reason, get_actual_reason_value + old_days
         )

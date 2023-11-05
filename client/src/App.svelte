@@ -31,7 +31,7 @@
     <LoggedRoute path={"profile/"} component={Profile} />
     <LoggedRoute path={"notifications/"} component={Notifications} />
     <LoggedRoute path={"vacations/:id"} component={VacationDetail}/>
-    <LoggedRoute path={"vacation/:id/update/"} component={VacationUpdate}/> 
+    <LoggedRoute path={"vacations/:id/update/"} component={VacationUpdate}/> 
     <LoggedRoute path={'dashboard/'} component={Dashboard}/>
     <LoggedRoute path={'settings/'} component={Settings}/>
     <LoggedRoute path={"users/"} component={Users}/>
