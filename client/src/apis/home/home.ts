@@ -24,9 +24,7 @@ class HomePage {
 		from_time: string;
 		location: string;
 	}) {
-		try {
-			console.log("e: ", e);
-			
+		try {			
 			if (
 				!e.name ||
 		// !e.people ||
@@ -69,9 +67,7 @@ class HomePage {
 				name: e.name,
 				description: e.description,
 				location: e.location,
-			};
-			console.log("data: ", data);
-			
+			};			
 			return await http.post("/event/", JSON.stringify(data));
 		} catch (error) {
 			console.error(

@@ -11,8 +11,6 @@
   export let clickedItemOnModal: calendarItemsType;
   export let currentEventActive: eventItemType;
   
-  // console.log("currentEventActive", currentEventActive.);
-  
   // let fromDate: Date = new Date(currentEventActive.from_date);
   // let endDate: Date = new Date(currentEventActive.end_date);
 

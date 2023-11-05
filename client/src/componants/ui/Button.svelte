@@ -2,7 +2,6 @@
     import { v4 as uuidv4 } from 'uuid';
     import Toast from './Toast.svelte';
   
-    export let showthis = true;
     export let disabled = false;
     export let className = '';
     export let label = '';
@@ -11,9 +10,9 @@
     export let errorMessage: string;
     export let id = uuidv4();
     export let success: Promise<boolean> | boolean = true;
-    export let show = false;
-    export let modalData: any = {};
     export let width:string = "100";
+
+    let showToast = false;
     let isLoading = false;
   </script>
   
@@ -24,9 +23,10 @@
     style="width: {width}%;"
     on:click|preventDefault={async () => {
     isLoading = true;
+    showToast = true;
     success = !(await onClick());
-    show = true;
     isLoading = false;
+    setTimeout(() => showToast = false, 4000)
     }}
     {disabled}
     >
@@ -36,14 +36,14 @@
             role="status"
             aria-hidden="true"
         />
-        Loading...
+        Requesting...
     {:else}
         {label}
     {/if}
 </button>
   
-{#if showthis}
-    <Toast {modalData} {successMessage} {errorMessage} {success} {show} />
+{#if showToast}
+    <Toast {successMessage} {errorMessage} {success} bind:show={showToast} />
 {/if}
 
 <style>

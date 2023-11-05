@@ -37,9 +37,7 @@
     });
   }
 
-  function validateDate(date: string): CalenderRequestFormResponseType {
-    console.log("Here....");
-    
+  function validateDate(date: string): CalenderRequestFormResponseType {    
     let validated: CalenderRequestFormResponseType = validateStartEndDates(
       date,
       startDate,
@@ -49,9 +47,7 @@
     if (validated.isError == false && calculate){
       calculateActualVacationBalance()
     }
-    errorMessage = validated.message
-    console.log(validated);
-    
+    errorMessage = validated.message    
     return validated
   }
 

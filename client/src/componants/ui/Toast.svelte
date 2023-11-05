@@ -2,8 +2,8 @@
     export let successMessage: string;
     export let errorMessage: string;
     export let success: Promise<boolean> | boolean = true;
-    export let show = false;
-    export let modalData: any = {};
+    export let show;
+    
 </script>
   
 <div class="position-fixed bottom-0 end-0 p-3 " style="z-index: 1100">
@@ -22,11 +22,6 @@
         } text-uppercase fw-bold `}
         >{success ? 'SuccessFully Submitted' : 'Error Occurred'}</strong
       >
-      <button
-        type="button"
-        class="btn-close"
-        on:click={() => show = false}
-      />
     </div>
     <div
       class={`toast-body text-${
