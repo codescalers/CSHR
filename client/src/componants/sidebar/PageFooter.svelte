@@ -1,6 +1,6 @@
 <footer>
     <div class="container footer-content mt-5 mb-4 pt-4">
-      Copyright Threefold ©
+      Copyright CodeScalers Egypt ©
     </div>
 </footer>
 
