@@ -82,8 +82,16 @@
                   </strong>
               </div>
               <div class="col-6">
-                  <a class="text-primary" href="{currentMeetingActive.meeting_link}" target="blank">
-                  @Meeting Link
+                  <a class="text-primary"
+                    href="{
+                      currentMeetingActive.meeting_link.startsWith('http') ? 
+                      currentMeetingActive.meeting_link : 
+                      'https://' + currentMeetingActive.meeting_link
+                    }" 
+                    target="_blank" rel="noreferrer"
+                  >
+                  <i class="fa fa-link"></i>
+                  Meeting Link
                   </a>
               </div>
             </div>
@@ -103,12 +111,14 @@
                 </tr>
               </tbody>
             </table>
-            <h4 class="text-center">Invited users</h4>
-            <div class="d-flex justify-content-center">
-              {#each currentMeetingActive.invited_users as user}
-                <ProfileImage size={50} {user}/>
-              {/each}
-            </div>
+            {#if currentMeetingActive.invited_users.length}
+              <h4 class="text-center">Invited users</h4>
+              <div class="d-flex justify-content-center">
+                {#each currentMeetingActive.invited_users as user}
+                  <ProfileImage size={50} {user}/>
+                {/each}
+              </div>
+            {/if}
           </div>
         </div>
       {/if}

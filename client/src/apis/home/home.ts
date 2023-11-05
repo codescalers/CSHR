@@ -25,17 +25,19 @@ class HomePage {
 		location: string;
 	}) {
 		try {
+			console.log("e: ", e);
+			
 			if (
 				!e.name ||
-		!e.people ||
-		e.people.length === 0 ||
+		// !e.people ||
+		// e.people.length === 0 ||
 		!e.end_date ||
-		!e.location ||
+		// !e.location ||
 		!e.end_time ||
 		!e.from_time
 			)
 				throw new Error("Invalid data");
-			if (e.people.length === 0) throw new Error("No invited users");
+			// if (e.people.length === 0) throw new Error("No invited users");
 			let [fromHour, fromMinute] = e.from_time.split(":");			
 			let [fromYear, fromMonth, fromDay] = e.from_date.split("-");
 			let [endHour, endMinute] = e.end_time.split(":");
@@ -49,7 +51,7 @@ class HomePage {
 			};
 
 			const data = {
-				people: e.people,
+				people: [],
 				from_date: {
 					year: Number(fromYear),
 					month: Number(fromMonth),
@@ -68,6 +70,8 @@ class HomePage {
 				description: e.description,
 				location: e.location,
 			};
+			console.log("data: ", data);
+			
 			return await http.post("/event/", JSON.stringify(data));
 		} catch (error) {
 			console.error(
@@ -94,7 +98,7 @@ class HomePage {
 		!e.date
 			)
 				throw new Error("Invalid data");
-			if (e.invitedUsers.length === 0) throw new Error("No invited users");
+			// if (e.invitedUsers.length === 0) throw new Error("No invited users");
 			if (e.invitedUsers.includes(e.hostedUserID))
 				throw new Error("Hosted user is also invited");
 			let [hour, minute] = e.time.split(":");

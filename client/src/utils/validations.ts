@@ -51,7 +51,7 @@ export const validateBackgroundColor = (e: any): boolean => {
 	if (e.target.value[0] == "#" && isNaN(e.target.value.slice(1, -1))) return false;
 	return true;
 }
-
+// 
 export const validateStartEndDates = (date: string, startDate: string, endDate: string) => {
 	let response: CalenderRequestFormResponseType = {
 		message: "Success!",

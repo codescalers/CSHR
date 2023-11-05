@@ -4,12 +4,13 @@
     import Submit from '../../ui/Button.svelte';
     //import ModalCloseButton from '../modal/ModalCloseButton.svelte';
     import Modal from '../../ui/modals/SimpleModal.svelte';
-    import PeopleSelect from '../../ui/select/UsersMultiSelect.svelte';
+    // import PeopleSelect from '../../ui/select/UsersMultiSelect.svelte';
     import CalendarDataService from '../../../apis/home/home';
     import { UserStore } from '../../../utils/stores';
     import type { calendarItemsType, SelectOptionType } from '../../../utils/types';
     import { createEventDispatcher } from 'svelte';
     import { isValidDate } from '../../../utils/validations';
+    // import { isValidDate } from '../../../utils/validations';
   
     export let startDate: string;
     export let isError: boolean = false;
@@ -22,8 +23,8 @@
     let responseMeeting: calendarItemsType;
     const dispatch = createEventDispatcher();
 
-    let meetingLocationValue: string;
-    let meetingLocationIsError: boolean | null = null;
+    // let meetingLocationValue: string;
+    // let meetingLocationIsError: boolean | null = null;
     let meetingLinkValue: string;
     let meetingLinkIsError: boolean | null = null;
     let meetingTimeValue: string;
@@ -33,12 +34,10 @@
   
     let peopleSelected: SelectOptionType[] = [];
     $: fillDisabled =
-      meetingLocationIsError === null ||
-      meetingLocationIsError === true ||
+      !isValidDate(startDate) ||
       meetingPeopleIsError === null ||
       meetingPeopleIsError === true ||
-      datePickerDisabled ||
-      peopleSelected.length === 0;
+      datePickerDisabled;
 
     let submitDisabled = true;
 
@@ -47,8 +46,7 @@
       meetingLinkIsError === null ||
       meetingLinkIsError === true ||
       meetingTimeIsError === true ||
-      meetingTimeIsError === null ||
-      peopleSelected.length === 0;
+      meetingTimeIsError === null;
     const modalData = {
       'data-bs-dismiss': 'modal',
       'data-bs-target': `#modal${modalID}`,
@@ -57,13 +55,13 @@
 </script>
 
 <form>
-    <PeopleSelect
+    <!-- <PeopleSelect
         isTop={true}
         placeholder={"Select Users.."}
         bind:isError={meetingPeopleIsError}
         bind:selected={peopleSelected}
-    />
-    <Input
+    /> -->
+    <!-- <Input
         type="text"
         label={'Location'}
         bind:value={meetingLocationValue}
@@ -75,7 +73,7 @@
         hint={'please write a valid location'}
         placeholder={'Meeting Location'}
         bind:isError={meetingLocationIsError}
-    />
+    /> -->
     <div class="width-100 mt-4">
         <ModalOpenButton width={100} label="Fill" bind:disabled={fillDisabled} {modalID} />
     </div>
@@ -89,6 +87,15 @@
     doneText={'Done'}
     deleteText={'Delete'}
     isClose={true}
+    on:close={() => {
+      meetingTimeValue = '';
+      meetingLinkValue = '';
+      peopleSelected = [];
+      isError = false;
+      isLoading = false;
+      meetingLinkIsError = false;
+      meetingTimeIsError = false;
+    }}
 >
     <header slot="header">
         <h6>💼 Meeting Form</h6>
@@ -142,35 +149,38 @@
         onClick={async () => {
           isLoading = true;
           try {
-            const invited_people = peopleSelected.map((person) =>
-              Number(person.value)
-            );
+            isError = false;
+            // const invited_people = peopleSelected.map((person) =>
+            //   Number(person.value)
+            // );
             let time = meetingTimeValue;
             if (time.split(':')[0] == "00"){
               time.split(':')[0] = "12"
             };
+            // location: meetingLocationValue,
             const axios = await CalendarDataService.postMeeting({
               hostedUserID: $UserStore.id,
               date: startDate,
-              invitedUsers: invited_people,
-              location: meetingLocationValue,
+              invitedUsers: [],
+              location: 'Remote',
               meetingLink: meetingLinkValue,
               time: time,
             });
             isLoading = false;
-            meetingLocationValue = '';
+            // meetingLocationValue = '';
             meetingTimeValue = '';
             meetingLinkValue = '';
             peopleSelected = [];
+            
             responseMeeting = axios.data.results
             dispatch('message', {
                 postedMeeting: responseMeeting
             });
-          } catch (error) {
+          } catch (error) {            
             isError = true;
           } finally {
             isLoading = false;
-            meetingLocationValue = '';
+            // meetingLocationValue = '';
             meetingTimeValue = '';
             meetingLinkValue = '';
             peopleSelected = [];

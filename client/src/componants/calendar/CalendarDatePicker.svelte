@@ -38,6 +38,8 @@
   }
 
   function validateDate(date: string): CalenderRequestFormResponseType {
+    console.log("Here....");
+    
     let validated: CalenderRequestFormResponseType = validateStartEndDates(
       date,
       startDate,
@@ -48,6 +50,8 @@
       calculateActualVacationBalance()
     }
     errorMessage = validated.message
+    console.log(validated);
+    
     return validated
   }
 
@@ -89,6 +93,7 @@
           }}
           size={20}
           placeholder={'Start Date'}
+          disabled={true}
         />
 
         {#if !onlyStart}
@@ -103,6 +108,7 @@
             }}
             size={20}
             placeholder={'End Date'}
+            disabled={true}
           />
         {/if}
         <slot name="form" />

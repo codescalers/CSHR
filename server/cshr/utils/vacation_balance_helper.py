@@ -8,6 +8,7 @@ import os
 import json
 
 from server.cshr.services.public_holidays import get_user_holidays
+from server.cshr.utils.parse_date import get_dates_between_two_dates
 
 
 class StanderdVacationBalance:
@@ -145,14 +146,25 @@ class StanderdVacationBalance:
             day = start_date + datetime.timedelta(days=i)
             if not day.strftime("%A") in weekend:
                 actual_days.append(day)
-        return len(actual_days)
+        print("actual_days list", actual_days)
+        return actual_days
     
-    def remove_holidays(self, user: User, start_date: datetime.datetime, end_date: datetime.datetime, days: int):
+    def remove_holidays(self, user: User, start_date: datetime.datetime, end_date: datetime.datetime, dates: List[datetime.date]):
+        removed_weekends = self.remove_weekends(user, start_date, end_date)
         years = [start_date.year, end_date.year]
         months = [start_date.month, end_date.month]
         holidays = get_user_holidays(user, years, months)
-        actual_days = days - len(holidays)
-        return actual_days
+        _holydays = 0
+        
+        for date in removed_weekends:
+            if date not in dates:
+                dates.append(date)
+
+        for day in holidays:
+            if day.holiday_date in removed_weekends:
+                _holydays += 1
+
+        return len(dates) - _holydays
 
     def vacation_update_balance(self, vacation: Vacation):
         """
@@ -196,15 +208,15 @@ class StanderdVacationBalance:
             curr_balance = getattr(v, reason)
             if reason == "public_holidays":
                 return "You cannot apply for public holidays vacations, you take it automatically."
-            if old_balance + curr_balance >= vacation_days:
-                new_value: int = curr_balance - vacation_days
+            if old_balance + curr_balance >= len(vacation_days):
+                new_value: int = curr_balance - len(vacation_days)
                 this_month: int = datetime.datetime.now().month
-                if old_balance >= vacation_days and this_month < 3:
+                if old_balance >= len(vacation_days) and this_month < 3:
                     self.set_taked_from_old_balance(vacation)
                     return self.update_user_balance(
                         user,
                         reason,
-                        old_balance - vacation_days,
+                        old_balance - len(vacation_days),
                         taked_from_old_balance=vacation.taked_from_old_balance,
                     )
                 return self.update_user_balance(user, reason, new_value)

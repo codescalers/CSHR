@@ -32,7 +32,7 @@
   
 
   $: submitDisabled =
-    selectedReason == 0 || datePickerDisabled == true
+    selectedReason == 0 || datePickerDisabled == true || calculatorValue === 0
 
 </script>
 
@@ -55,7 +55,16 @@
   {/if}
   {#if showCalclator}
     <div class="alert alert-light p-0 text-center">
-      Actual value after deducting weekend holidays {calculatorValue}
+      <br />
+      {#if calculatorValue === 0}
+        <small class="text-red">
+          " It seems like the chosen day might be a holiday or a weekend break. Please verify this on your calendar. "
+        </small>
+      {:else}
+        <small class="text-dark">
+          The final count after excluding weekends and holidays is {calculatorValue} { calculatorValue > 1 ? 'days' : 'day'}.
+        </small>
+      {/if}
     </div>
   {/if}
   {#if withSubmit}
@@ -67,6 +76,7 @@
         onClick={async () => {
           isLoading = true;
             try {
+              isError = false;
               if(isUpdate && vacationID != ""){
                 const axios = await Vacations.update(vacationID, {
                   end_date: endDate,
@@ -125,6 +135,9 @@
   appearance: none;
   border-radius: 0.375rem;
   transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.text-red{
+  color: red;
 }
 select{
   margin-top: 0.3cm;

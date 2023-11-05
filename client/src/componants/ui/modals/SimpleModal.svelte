@@ -11,10 +11,13 @@
 
   let dispatch = createEventDispatcher();
   function onDelete() {
-    dispatch('onDelete', { id: id });
+    dispatch('delete', { id: id });
+  }
+  function onClose() {
+    dispatch('close', { id: id });
   }
   function onDone() {
-    dispatch('onDone', { id: id });
+    dispatch('done', { id: id });
   }    
 </script>
   
@@ -54,6 +57,7 @@
               class="abtn btn-secondary"
               data-bs-dismiss="modal"
               data-bs-target="#modal"
+              on:click={onClose}
             >
               {closeText}
             </button>

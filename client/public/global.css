@@ -360,18 +360,17 @@ h1, h2, h3, h4, h5, h6 {
     color: white;
     margin-top: 20px !important;
 }
-.event__birthday{
+.event__birthday {
     text-align: center;
     color: white;
-    margin-top: -95px !important;
-    width: 30px;
+    margin-top: -100px !important;
+    width: 35px;
     border-radius: 50%;
-    height: 30px;
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 125px;
-    /* padding: 20px; */
+    margin-left: 115px;
 }
 .p-relative{
     position: relative;

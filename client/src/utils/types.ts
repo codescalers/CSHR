@@ -316,8 +316,8 @@ export type eventItemType = {
   location: string;
   from_time: string;
   end_time: string;
-  from_date: Date;
-  end_date: Date;
+  from_date: {year: number, month: number, day: number, hour: number, minute: number};
+  end_date: {year: number, month: number, day: number, hour: number, minute: number};
 };
 
 export type vacationItemType = {

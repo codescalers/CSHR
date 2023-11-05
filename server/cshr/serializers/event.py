@@ -5,24 +5,24 @@ from server.cshr.serializers.users import BaseUserSerializer
 
 
 class EventSerializer(ModelSerializer):
-    custom_people = SerializerMethodField()
+    # custom_people = SerializerMethodField()
     from_date = SerializerMethodField()
     end_date = SerializerMethodField()
 
     class Meta:
         model = Event
         fields = [
-            "people",
-            "custom_people",
+            # "people",
+            # "custom_people",
             "name",
             "description",
-            "location",
+            # "location",
             "from_date",
             "end_date",
         ]
 
-    def get_custom_people(self, obj: Event) -> BaseUserSerializer:
-        return BaseUserSerializer(obj.people.all(), many=True).data
+    # def get_custom_people(self, obj: Event) -> BaseUserSerializer:
+    #     return BaseUserSerializer(obj.people.all(), many=True).data
 
     def get_from_date(self, obj: Event) -> Dict:
         return {
@@ -44,19 +44,19 @@ class EventSerializer(ModelSerializer):
 
 
 class EventOnDaySerializer(ModelSerializer):
-    custom_people = SerializerMethodField()
+    # custom_people = SerializerMethodField()
 
     class Meta:
         model = Event
         fields = [
-            "people",
-            "custom_people",
+            # "people",
+            # "custom_people",
             "name",
             "description",
-            "location",
+            # "location",
             "from_date",
             "end_date",
         ]
 
-    def get_custom_people(self, obj: Event) -> BaseUserSerializer:
-        return BaseUserSerializer(obj.people.all(), many=True).data
+    # def get_custom_people(self, obj: Event) -> BaseUserSerializer:
+    #     return BaseUserSerializer(obj.people.all(), many=True).data

@@ -3,24 +3,24 @@
     calendarItemsType,
     eventItemType,
   } from "../../../utils/types";
-  import ProfileImage from "../../profile/ProfileImage.svelte";
+  // import ProfileImage from "../../profile/ProfileImage.svelte";
   import CalendarModal from "./CalendarModal.svelte";
 
   export let showModal: boolean = false;
   export let clickedItemOnModal: calendarItemsType;
   export let currentEventActive: eventItemType;
   
-  let fromDate: Date = new Date(currentEventActive.from_date);
-  let endDate: Date = new Date(currentEventActive.end_date);
+  // console.log("currentEventActive", currentEventActive.);
+  
+  // let fromDate: Date = new Date(currentEventActive.from_date);
+  // let endDate: Date = new Date(currentEventActive.end_date);
 
-  function formatAMPM(date: Date) {
-    var hours = date.getHours();
-    var minutes: number | string = date.getMinutes();
+  function formatAMPM(hours: number, minutes: number) {
     var ampm = hours >= 12 ? 'pm' : 'am';
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0' +minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
+    let _minutes = minutes < 10 ? '0' +minutes : minutes;
+    var strTime = hours + ':' + _minutes + ' ' + ampm;
     return strTime;
   };
 
@@ -50,7 +50,7 @@
                   {currentEventActive.description}
                 </p>
               </div>
-              <div class="col-12">
+              <!-- <div class="col-12">
                 <strong>
                   Location
                 </strong>
@@ -59,7 +59,7 @@
                 <p class="text-muted">
                   {currentEventActive.location}
                 </p>
-              </div>
+              </div> -->
             </div>
           </div>
           <div class="card-footer">
@@ -74,19 +74,21 @@
               </thead>
               <tbody>
                 <tr>
-                  <td class="align-middle">{fromDate.getFullYear()} - {fromDate.getMonth()} - {fromDate.getDate()}</td>
-                  <td class="align-middle">{endDate.getFullYear()} - {endDate.getMonth()} - {endDate.getDate()}</td>
-                  <td class="align-middle">{formatAMPM(fromDate)}</td>
-                  <td class="align-middle">{formatAMPM(endDate)}</td>
+                  <td class="align-middle">{currentEventActive.from_date.year} - {currentEventActive.from_date.month} - {currentEventActive.from_date.day}</td>
+                  <td class="align-middle">{currentEventActive.end_date.year} - {currentEventActive.end_date.month} - {currentEventActive.end_date.day}</td>
+                  <td class="align-middle">{formatAMPM(currentEventActive.from_date.hour, currentEventActive.from_date.minute)}</td>
+                  <td class="align-middle">{formatAMPM(currentEventActive.end_date.hour, currentEventActive.end_date.minute)}</td>
                 </tr>
               </tbody>
             </table>
-            <h4 class="text-center">Invited users</h4>
-            <div class="d-flex justify-content-center">
-              {#each currentEventActive.custom_people as user}
-                <ProfileImage size={50} {user}/>
-              {/each}
-            </div>
+            <!-- {#if currentEventActive.custom_people.length}
+              <h4 class="text-center">Invited users</h4>
+              <div class="d-flex justify-content-center">
+                {#each currentEventActive.custom_people as user}
+                  <ProfileImage size={50} {user}/>
+                {/each}
+              </div>
+            {/if} -->
           </div>
         </div>
       {/if}
