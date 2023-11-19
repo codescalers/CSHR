@@ -8,8 +8,8 @@
     'Name',
     'Email',
     'Phone',
-    'Address',
-    'Posation',
+    // 'Address',
+    'Position',
   ];
 </script>
 
@@ -23,7 +23,7 @@
           <td>{supervisor.full_name}</td>
           <td>{supervisor.email}</td>
           <td>{supervisor.mobile_number || '---'}</td>
-          <td>{supervisor.address || '---'}</td>
+          <!-- <td>{supervisor.address || '---'}</td> -->
           <td>{supervisor.job_title || '---'}</td>
         </tr>
     {/each}

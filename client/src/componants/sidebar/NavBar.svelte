@@ -19,14 +19,14 @@
                     <i title="Notifications" class="fa fa-bell nav_icon" />
                     <span class="nav_name">Notifications</span>
                 </Link>
-                <Link to="/requests" class="nav_link">
+                <!-- <Link to="/requests" class="nav_link">
                     <i title="Requests" class="fa-solid fa-code-pull-request nav_icon"></i>
                     <span class="nav_name">Requests</span>
-                </Link>
+                </Link> -->
                 {#if $UserStore && $UserStore.user_type === "User"}
                     <Link to="/team/" class="nav_link">
-                        <i title="Team" class="fa fa-briefcase nav_icon" aria-hidden="true"></i>
-                        <span class="nav_name">Team</span>
+                        <i title="My team" class="fa fa-briefcase nav_icon" aria-hidden="true"></i>
+                        <span class="nav_name">My team</span>
                     </Link>
                     <!-- <Link to="/hr_letters/" class="nav_link">
                         <i title="HR letter" class="fa fa-newspaper nav_icon" aria-hidden="true"></i>
@@ -42,8 +42,8 @@
                     </Link> -->
                 {/if}
                 <Link to="/users/" class="nav_link">
-                    <i title="Employees" class="fa-solid fa-users nav_icon" />
-                    <span class="nav_name">Employees</span>
+                    <i title="Threefold team" class="fa-solid fa-users nav_icon" />
+                    <span class="nav_name">Threefold team</span>
                 </Link>
                 {#if $UserStore && $UserStore.user_type === "Admin"}
                     <Link to="/dashboard/" class="nav_link">

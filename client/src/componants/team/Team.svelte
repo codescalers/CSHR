@@ -38,7 +38,7 @@
   {:else if supervisors && members}
     <div class="row pt-5">
       <div class="col-12">
-          <h4>Supervisors</h4>
+          <h4>Reporting to</h4>
         </div>
           <div class="col-12">
             <Supervisors supervisors={supervisors} />

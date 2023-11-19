@@ -11,8 +11,8 @@
     'Name',
     'Email',
     'Phone',
-    'Address',
-    'Posation',
+    // 'Address',
+    'Position',
   ];
 </script>
 
@@ -27,7 +27,7 @@
           <td>{member.full_name}</td>
           <td>{member.email}</td>
           <td>{member.mobile_number || '---'}</td>
-          <td>{member.address || '---'}</td>
+          <!-- <td>{member.address || '---'}</td> -->
           <td>{member.job_title || '---'}</td>
         </tr>
     {/each}
