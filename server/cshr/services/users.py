@@ -72,7 +72,7 @@ def get_users_filter(
 
 def get_all_of_users() -> User:
     """Return all users"""
-    return User.objects.all()
+    return User.objects.all().order_by('-is_active')
 
 def get_admin_office_users(admin: User) -> User:
     """Return all users who working in the same office of the admin"""

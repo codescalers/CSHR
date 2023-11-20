@@ -6,23 +6,28 @@
   export let user: GeneralUserInterface;
 </script>
 
-<Link class="card b-0" to={`../profile/${user.id}`}>
-  <div class="card-body px-4 card-hover">
-    <h5 class="card-title">
-      <div class="d-flex justify-content-center">
-        <ProfileImage {user} size={80} />
-      </div>
-      <div class="text-center mt-4 mb-2 text-dark">{user.full_name}</div>
-    </h5>
-    <p class="w-100 text-center text-muted">
-      <span>{user.job_title}</span>
-      <small class="blockquote-footer">
-        <cite title="Team">{user.team}</cite>
-      </small><br />
-      <small>
-        <cite>{user.email}</cite>
-      </small>
-    </p>
+<Link to={`../profile/${user.id}`}>
+  <div class="card b-0 {!user.is_active ? 'inactive-bg' : 'active-bg'}">
+    <div class="card-body px-4 card-hover">
+      <h5 class="card-title">
+        <div class="d-flex justify-content-center">
+          <ProfileImage {user} size={80} />
+        </div>
+        <div class="text-center mt-4 mb-2 text-dark">{user.full_name}</div>
+      </h5>
+      {#if !user.is_active}
+        <p class="w-100 text-center text-danger mb-0">inactive user</p>
+      {/if}
+      <p class="w-100 text-center text-muted">
+        <span>{user.job_title}</span>
+        <small class="blockquote-footer">
+          <cite title="Team">{user.team}</cite>
+        </small><br />
+        <small>
+          <cite>{user.email}</cite>
+        </small>
+      </p>
+    </div>
   </div>
 </Link>
 
@@ -47,7 +52,15 @@
     border-radius: inherit;
   }
   .card {
-    border: none;
-    background: transparent !important;
+    height: 280px;
+    padding: 15px;
+    border: 1px solid #5526;
+    border-radius: 4px;
+  }
+  .inactive-bg {
+    background: rgba(243, 156, 156, 0.342) !important;
+  }
+  .active-bg {
+    background: rgba(230, 222, 222, 0.342) !important;
   }
 </style>
