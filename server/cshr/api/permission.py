@@ -13,7 +13,7 @@ class UserIsAuthenticated(permissions.BasePermission):
     """
 
     def has_permission(self, request: Request, view: APIView) -> bool:
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.is_active:
             return True
         raise PermissionDenied
 

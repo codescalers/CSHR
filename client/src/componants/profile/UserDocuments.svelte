@@ -1,38 +1,35 @@
 <script lang="ts">
-  import type { UserDocuments } from '../../utils/types';
-  import { UserTypeEnum } from '../../utils/enums';
-  import {onMount} from "svelte";
-  import Users from '../../apis/users/users';
-  import { UserStore } from "../../utils/stores"; 
+  import type { UserDocuments } from "../../utils/types";
+  import { UserTypeEnum } from "../../utils/enums";
+  import { onMount } from "svelte";
+  import Users from "../../apis/users/users";
+  import { UserStore } from "../../utils/stores";
   export let user: any;
 
   let documents: UserDocuments[];
-  onMount(async ()=>{
-    if($UserStore.user_type == UserTypeEnum.admin || $UserStore.user_type == UserTypeEnum.supervisor){
+  onMount(async () => {
+    if (
+      $UserStore.user_type == UserTypeEnum.admin ||
+      $UserStore.user_type == UserTypeEnum.supervisor
+    ) {
       documents = await Users.getUserDocuments(user.id);
     }
   });
 </script>
-{#if $UserStore.user_type == UserTypeEnum.admin || $UserStore.user_type == UserTypeEnum.supervisor }
+
+{#if $UserStore.user_type == UserTypeEnum.admin || $UserStore.user_type == UserTypeEnum.supervisor}
   <div class="col-md-12 my-2">
     <div class="card mb-4 mb-md-0">
-      <div class="card-header">
-        Documents
-      </div>
+      <div class="card-header">Documents</div>
       <div class="card-body">
-
         {#if documents && documents.length > 0}
           <div class="row">
-            <div class="col-4 text-muted mb-2">
-              Name
-            </div>
-            <div class="col-4 text-muted mb-2">
-              Status
-            </div>
+            <div class="col-4 text-muted mb-2">Name</div>
+            <div class="col-4 text-muted mb-2">Status</div>
             <div class="col-4 d-flex text-muted mb-2 justify-content-end">
               Copy Image
-            </div> 
-            {#each documents as document }
+            </div>
+            {#each documents as document}
               <div class="col-4">
                 {document.name}
               </div>
@@ -44,16 +41,16 @@
                 {#if document.image == null}
                   ---
                 {:else}
-                  <img class="cprop"src="{document.image}" alt="doc image">
+                  <img class="cprop" src={document.image} alt="doc image" />
                 {/if}
               </div>
             {/each}
           </div>
         {:else}
           <div class="alert alert-light text-center p-1 mb-0">
-            There are no documents yet for 
+            There are no documents yet for
             <span class="text-primary">
-              {user.full_name.split(' ')[0]}
+              {user.full_name.split(" ")[0]}
             </span>
           </div>
         {/if}
@@ -63,7 +60,7 @@
 {/if}
 
 <style>
-  .cprop{
+  .cprop {
     width: 80px;
     height: 50px;
     border-radius: 4px;

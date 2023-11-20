@@ -173,7 +173,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             response_date: Dict = send_vacation_to_calendar(saved)
             return CustomResponse.success(
                 status_code=201,
-                message="Successfully Vacation Posted!",
+                message="The vacation has been posted successfully.",
                 data=response_date,
             )
         return CustomResponse.bad_request(error=serializer.errors)

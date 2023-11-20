@@ -1,30 +1,29 @@
 <script lang="ts">
-  import Requests from "../../apis/requests/Requests"
-  import { createEventDispatcher } from 'svelte';
-  import { RequestStatus } from '../../utils/enums';
+  import Requests from "../../apis/requests/Requests";
+  import { createEventDispatcher } from "svelte";
+  import { RequestStatus } from "../../utils/enums";
   export let request: any;
   const dispatch = createEventDispatcher();
   let isApproveLoading: boolean = false;
   let isRejactLoading: boolean = false;
-  
-  async function approve_btn(request: any){
+
+  async function approve_btn(request: any) {
     isApproveLoading = true;
     await Requests.approve(request, request.id);
-    dispatch('message', {
-			text: {"status": RequestStatus.approved, "request": request}
-		});
+    dispatch("message", {
+      text: { status: RequestStatus.approved, request: request },
+    });
     isApproveLoading = false;
-  };
-  
-  async function reject_btn(request: any){
+  }
+
+  async function reject_btn(request: any) {
     isRejactLoading = true;
     await Requests.reject(request, request.id);
-    dispatch('message', {
-			text: {"status": RequestStatus.rejected, "request": request}
-		});
+    dispatch("message", {
+      text: { status: RequestStatus.rejected, request: request },
+    });
     isRejactLoading = false;
-  };
-
+  }
 </script>
 
 <div class="row align-items-center">
@@ -32,7 +31,9 @@
     <button
       type="button"
       on:click={() => approve_btn(request)}
-      class="border-0 p-1 text-light btn-success btn-border btn-sm w-100 mb-1" disabled={isApproveLoading}>
+      class="border-0 p-1 text-light btn-success btn-border btn-sm w-100 mb-1"
+      disabled={isApproveLoading}
+    >
       {#if isApproveLoading}
         loading...
       {:else}
@@ -42,14 +43,15 @@
     <button
       type="button"
       on:click={() => reject_btn(request)}
-      class="border-0 p-1 text-light btn-danger btn-border btn-sm w-100" disabled={isRejactLoading}>
+      class="border-0 p-1 text-light btn-danger btn-border btn-sm w-100"
+      disabled={isRejactLoading}
+    >
       {#if isRejactLoading}
         loading...
       {:else}
-      Reject
+        Reject
       {/if}
-      </button
-    >
+    </button>
   </div>
 </div>
 

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Link } from 'svelte-navigator';
+  import { Link } from "svelte-navigator";
 
-  import type { GeneralUserInterface } from '../../utils/types';
-  import ProfileImage from '../profile/ProfileImage.svelte';
+  import type { GeneralUserInterface } from "../../utils/types";
+  import ProfileImage from "../profile/ProfileImage.svelte";
   export let user: GeneralUserInterface;
 </script>
 
@@ -10,7 +10,7 @@
   <div class="card-body px-4 card-hover">
     <h5 class="card-title">
       <div class="d-flex justify-content-center">
-        <ProfileImage user={user} size={80}/>
+        <ProfileImage {user} size={80} />
       </div>
       <div class="text-center mt-4 mb-2 text-dark">{user.full_name}</div>
     </h5>
@@ -18,7 +18,7 @@
       <span>{user.job_title}</span>
       <small class="blockquote-footer">
         <cite title="Team">{user.team}</cite>
-      </small><br/>
+      </small><br />
       <small>
         <cite>{user.email}</cite>
       </small>
@@ -46,7 +46,7 @@
     transform: scale(1.01);
     border-radius: inherit;
   }
-  .card{
+  .card {
     border: none;
     background: transparent !important;
   }

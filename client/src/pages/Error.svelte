@@ -1,9 +1,9 @@
 <script lang="ts">
-    export let error: number;
+  export let error: number;
 </script>
 
 {#if error}
-<div class="error">
+  <div class="error">
     <div class="error-text">
       <img
         src="https://icon-library.com/images/not-found-icon/not-found-icon-20.jpg"
@@ -13,13 +13,13 @@
       <p>Sorry, but the page you were trying to view does not exist.</p>
     </div>
   </div>
-  
+
   <style>
     * {
       line-height: 1.2;
       margin: 0;
     }
-  
+
     .error {
       color: #888;
       display: table;
@@ -53,5 +53,4 @@
       }
     }
   </style>
-  
 {/if}

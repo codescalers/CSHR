@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { CalenderEventType, CalenderEventEmojeTyoe } from "../../utils/enums"
-  import {createEventDispatcher, onMount} from 'svelte';
+  import { CalenderEventType, CalenderEventEmojeTyoe } from "../../utils/enums";
+  import { createEventDispatcher, onMount } from "svelte";
   import type { calendarItemsType, eventNameType } from "../../utils/types";
   import { monthNames } from "../../utils/calendar";
-  import CalendarBirthdayModel from '../ui/modals/CalendarBirthdayModel.svelte';
-  import CalendarMeetingModel from '../ui/modals/CalendarMeetingModel.svelte';
-  import CalendarEventDataModal from '../ui/modals/CalendarEventDataModal.svelte';
-  import CalendarVacationDataModal from '../ui/modals/CalendarVacationDataModal.svelte';
-  import CalendarPublicHolidayModel from '../ui/modals/CalendarPublicHolidayModel.svelte';
+  import CalendarBirthdayModel from "../ui/modals/CalendarBirthdayModel.svelte";
+  import CalendarMeetingModel from "../ui/modals/CalendarMeetingModel.svelte";
+  import CalendarEventDataModal from "../ui/modals/CalendarEventDataModal.svelte";
+  import CalendarVacationDataModal from "../ui/modals/CalendarVacationDataModal.svelte";
+  import CalendarPublicHolidayModel from "../ui/modals/CalendarPublicHolidayModel.svelte";
 
   export var headers: string[] = [];
   export let days: any[] = [];
@@ -19,21 +19,21 @@
 
   let clickedItemOnModal: calendarItemsType;
   let showModal: boolean = false;
-  
+
   let dispatch = createEventDispatcher();
- 
+
   const capitalize = (name: string) => {
-    if(name.includes("_")){
-      name = name.replace("_", " ")
+    if (name.includes("_")) {
+      name = name.replace("_", " ");
     }
-    return name[0].toLocaleUpperCase()+name.slice(1)
-  }
-  const clickedItem = (item: calendarItemsType) => {    
-    clickedItemOnModal = item
-    showModal = true
-  }
-  
-  let loadingBoxBg = '#F8F5F5'
+    return name[0].toLocaleUpperCase() + name.slice(1);
+  };
+  const clickedItem = (item: calendarItemsType) => {
+    clickedItemOnModal = item;
+    showModal = true;
+  };
+
+  let loadingBoxBg = "#F8F5F5";
   const displayLoadingBox = () => {
     if (loadingBoxBg === "#F8F5F5") {
       loadingBoxBg = "white";
@@ -50,36 +50,39 @@
         clearInterval(intervalId);
       }
     }, 1000);
-  })
+  });
 
   const removeItem = () => {
     items = items.filter((item) => item !== clickedItemOnModal);
-  }
+  };
 
   function next() {
-		month++;
-		if (month == 12) {
-			year++;
-			month=0;
-		};
-	};
+    month++;
+    if (month == 12) {
+      year++;
+      month = 0;
+    }
+  }
 
-	function prev() {
-		if (month==0) {
-			month=11;
-			year--;
-		} else {
-			month--;
-		};
-	};
+  function prev() {
+    if (month == 0) {
+      month = 11;
+      year--;
+    } else {
+      month--;
+    }
+  }
 </script>
 
 {#if isLoading}
   <div class="loading-calender mt-4">
-    {#each [1,2,3,4,5,6,7] as row}
+    {#each [1, 2, 3, 4, 5, 6, 7] as row}
       <div class="">
-        {#each [1,2,3,4,5] as col }
-          <div style="background-color: {loadingBoxBg};" class="calendar-loading-box"></div>
+        {#each [1, 2, 3, 4, 5] as col}
+          <div
+            style="background-color: {loadingBoxBg};"
+            class="calendar-loading-box"
+          />
         {/each}
       </div>
     {/each}
@@ -89,159 +92,175 @@
     <div class="calendar-header">
       <h1>
         <button class="icon-btn" on:click={() => prev()}>&lt;</button>
-          {monthNames[month]}
-          {year}
+        {monthNames[month]}
+        {year}
         <button class="icon-btn" on:click={() => next()}>&gt;</button>
       </h1>
     </div>
     <div class="calendar table-responsive table-responsive">
       {#each headers as header}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <span class="day-name" on:click={()=>dispatch('headerClick',header)}>{header}</span>
+        <span class="day-name" on:click={() => dispatch("headerClick", header)}
+          >{header}</span
+        >
       {/each}
 
       {#each days as day}
         {#if day.enabled}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <span class="day" on:click={()=>dispatch('dayClick',day)}>{day.name}</span>
+          <span class="day" on:click={() => dispatch("dayClick", day)}
+            >{day.name}</span
+          >
         {:else}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <span class="day day-disabled" on:click={()=>dispatch('dayClick',day)}>{day.name}</span>
+          <span
+            class="day day-disabled"
+            on:click={() => dispatch("dayClick", day)}>{day.name}</span
+          >
         {/if}
       {/each}
 
       {#if items.length > 0}
         {#each items as item}
-          {#if eventNames.has(item.eventName) && item.eventName === 'public_holiday'}
+          {#if eventNames.has(item.eventName) && item.eventName === "public_holiday"}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <section
-              on:click={()=>dispatch('itemClick',item)}
+              on:click={() => dispatch("itemClick", item)}
               class="task event__public_holiday {item.className}"
               style="grid-column: {item.startCol} / span {item.len};      
                 grid-row: {item.startRow};  
-                align-self: {item.isBottom?'end':'center'};"
-                >
-                <button
-                  type="button"
-                  class="modal-btn m-0 pl-0 {item.className}"
-                  on:click={() => {clickedItem(item)}}
-                >
-                  {capitalize(item.title)} {CalenderEventEmojeTyoe.publicHoliday}
-                </button>
+                align-self: {item.isBottom ? 'end' : 'center'};"
+            >
+              <button
+                type="button"
+                class="modal-btn m-0 pl-0 {item.className}"
+                on:click={() => {
+                  clickedItem(item);
+                }}
+              >
+                {capitalize(item.title)}
+                {CalenderEventEmojeTyoe.publicHoliday}
+              </button>
             </section>
-          {:else if eventNames.has(item.eventName) && item.eventName === 'meeting'}
+          {:else if eventNames.has(item.eventName) && item.eventName === "meeting"}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <section
               title="Click to see all meetings today!"
-              on:click={()=>dispatch('itemClick',item)}
+              on:click={() => dispatch("itemClick", item)}
               class="task event__meeting {item.className}"
               style="grid-column: {item.startCol} / span {item.len};      
                 grid-row: {item.startRow};  
-                align-self: {item.isBottom?'end':'center'};"
+                align-self: {item.isBottom ? 'end' : 'center'};"
+            >
+              <strong>
+                <button
+                  type="button"
+                  class="modal-btn m-0 pl-0 {item.className}"
+                  on:click={() => {
+                    clickedItem(item);
+                  }}
                 >
-                <strong>
-                  
-                  <button
-                    type="button"
-                    class="modal-btn m-0 pl-0 {item.className}"
-                    on:click={() => {clickedItem(item)}}
-                  >
-                    {capitalize(item.title)} {CalenderEventEmojeTyoe.meeting}
-                  </button>
-
-                </strong>
+                  {capitalize(item.title)}
+                  {CalenderEventEmojeTyoe.meeting}
+                </button>
+              </strong>
             </section>
           {:else if eventNames.has(item.eventName) && item.eventName === "vacation"}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <section
-              on:click={()=>dispatch('itemClick',item)}
+              on:click={() => dispatch("itemClick", item)}
               class="task event__vacation {item.className}"
               style="grid-column: {item.startCol} / span {item.len};      
                 grid-row: {item.startRow};  
-                align-self: {item.isBottom?'end':'center'};"
-                >
-                <button
-                  type="button"
-                  class="modal-btn m-0 pl-0 {item.className}"
-                  on:click={() => {clickedItem(item)}}
-                >
-                  {capitalize(item.title)} {CalenderEventEmojeTyoe.vacation}
-                </button>
+                align-self: {item.isBottom ? 'end' : 'center'};"
+            >
+              <button
+                type="button"
+                class="modal-btn m-0 pl-0 {item.className}"
+                on:click={() => {
+                  clickedItem(item);
+                }}
+              >
+                {capitalize(item.title)}
+                {CalenderEventEmojeTyoe.vacation}
+              </button>
             </section>
           {:else if eventNames.has(item.eventName) && item.eventName === "event"}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <section
-              on:click={()=>dispatch('itemClick',item)}
+              on:click={() => dispatch("itemClick", item)}
               class="task event__event {item.className}"
               style="grid-column: {item.startCol} / span {item.len};      
                 grid-row: {item.startRow};  
-                align-self: {item.isBottom?'end':'center'};"
-                >
-                <button
-                  type="button"
-                  class="modal-btn m-0 pl-0 {item.className}"
-                  on:click={() => {clickedItem(item)}}
-                >
-                  {capitalize(item.title)} {CalenderEventEmojeTyoe.event}
-                </button>
+                align-self: {item.isBottom ? 'end' : 'center'};"
+            >
+              <button
+                type="button"
+                class="modal-btn m-0 pl-0 {item.className}"
+                on:click={() => {
+                  clickedItem(item);
+                }}
+              >
+                {capitalize(item.title)}
+                {CalenderEventEmojeTyoe.event}
+              </button>
             </section>
-            {:else if eventNames.has(item.eventName) && item.eventName === "birthday"}
+          {:else if eventNames.has(item.eventName) && item.eventName === "birthday"}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <section
-              on:click={()=>dispatch('itemClick',item)}
+              on:click={() => dispatch("itemClick", item)}
               class="task event__birthday {item.className}"
               style="grid-column: {item.startCol} / span {item.len};      
                 grid-row: {item.startRow};  
-                align-self: {item.isBottom?'end':'center'};"
-                >
-                <button
-                  type="button"
-                  class="modal-btn m-0 pl-0 {item.className}"
-                  on:click={() => {clickedItem(item)}}
-                >
-                  {CalenderEventEmojeTyoe.birthday}
-                </button>
+                align-self: {item.isBottom ? 'end' : 'center'};"
+            >
+              <button
+                type="button"
+                class="modal-btn m-0 pl-0 {item.className}"
+                on:click={() => {
+                  clickedItem(item);
+                }}
+              >
+                {CalenderEventEmojeTyoe.birthday}
+              </button>
             </section>
           {/if}
         {/each}
       {/if}
-    </div> 
+    </div>
   </div>
 {/if}
 
 {#if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.vacation}
-  <CalendarVacationDataModal 
-    bind:clickedItemOnModal 
-    bind:showModal 
+  <CalendarVacationDataModal
+    bind:clickedItemOnModal
+    bind:showModal
     currentVacationActive={clickedItemOnModal.vacation[0]}
     currentVacationID={+clickedItemOnModal.vacation[0].id}
     on:reject={removeItem}
   />
 {:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.event}
   <CalendarEventDataModal
-    bind:clickedItemOnModal 
+    bind:clickedItemOnModal
     bind:showModal
     currentEventActive={clickedItemOnModal.event[0]}
   />
 {:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.birthday}
-  <CalendarBirthdayModel 
-    bind:clickedItemOnModal 
-    bind:showModal 
+  <CalendarBirthdayModel
+    bind:clickedItemOnModal
+    bind:showModal
     currentUserActive={clickedItemOnModal.users[0]}
     currentUserID={clickedItemOnModal.users[0].id}
-    />
+  />
 {:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.meeting}
-  <CalendarMeetingModel 
+  <CalendarMeetingModel
     bind:showModal
-    bind:clickedItemOnModal 
+    bind:clickedItemOnModal
     currentMeetingActive={clickedItemOnModal.meeting[0]}
     currentMeetingID={clickedItemOnModal.meeting[0].id}
   />
 {:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.publicHoliday}
-  <CalendarPublicHolidayModel
-    bind:showModal
-    bind:clickedItemOnModal
-  />
+  <CalendarPublicHolidayModel bind:showModal bind:clickedItemOnModal />
 {/if}
 
 <style>
@@ -269,7 +288,7 @@
     grid-template-rows: 50px;
     grid-auto-rows: 140px;
   }
-  .calendar-loading-box{
+  .calendar-loading-box {
     width: 130px;
     height: 140px;
     margin: 20px;
@@ -279,7 +298,7 @@
     border-radius: 3px;
     transition: 0.7s;
   }
-  .loading-calender{
+  .loading-calender {
     /* width: 1200px !important; */
     overflow: hidden;
     height: 800px;
@@ -383,7 +402,7 @@
     border-left-color: #fdb44d;
     background: #fef0db;
     color: #fc9b10 !important;
-    align-self: flex-start!important;
+    align-self: flex-start !important;
   }
   :global(.task--success) {
     border-left-color: #fef0db;
@@ -426,7 +445,7 @@
     bottom: 100%;
     left: 30%;
     border: solid transparent;
-    content: ' ';
+    content: " ";
     height: 0;
     width: 0;
     position: absolute;
@@ -448,7 +467,7 @@
     background: rgb(255 255 255);
     border: solid 0.5px rgb(43 81 95 / 19%);
     border-radius: 6px;
-}
+  }
   .calendar-header {
     text-align: center;
     padding: 20px 0;

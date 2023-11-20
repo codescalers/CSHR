@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from "svelte";
   export let id: string,
     isDelete: boolean,
     deleteText: string,
@@ -7,26 +7,26 @@
     doneText: string,
     isFooter: boolean = true,
     isClose = true,
-    closeText = 'Close';
+    closeText = "Close";
 
   let dispatch = createEventDispatcher();
   function onDelete() {
-    dispatch('delete', { id: id });
+    dispatch("delete", { id: id });
   }
   function onClose() {
-    dispatch('close', { id: id });
+    dispatch("close", { id: id });
   }
   function onDone() {
-    dispatch('done', { id: id });
-  }    
+    dispatch("done", { id: id });
+  }
 </script>
-  
+
 <div
-    class="modal modal-lg"
-    id={`modal${id}`}
-    aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true"
-  >
+  class="modal modal-lg"
+  id={`modal${id}`}
+  aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true"
+>
   <div
     class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
     role="document"

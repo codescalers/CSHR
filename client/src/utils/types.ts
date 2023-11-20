@@ -180,18 +180,18 @@ export type VacationBalanceType = {
 };
 
 export type VacationBalanceValuesType = {
-  annual_leaves: number,
-  compensation: number,
-  emergency_leaves: number,
-  leave_excuses: number,
-  sick_leaves: number,
-  unpaid: number
-}
+  annual_leaves: number;
+  compensation: number;
+  emergency_leaves: number;
+  leave_excuses: number;
+  sick_leaves: number;
+  unpaid: number;
+};
 
 export type CalculateVacationBalanceType = {
-  current: VacationBalanceValuesType,
-  taked: VacationBalanceValuesType
-}
+  current: VacationBalanceValuesType;
+  taked: VacationBalanceValuesType;
+};
 
 export type HRLetterType = {
   applying_user?: UserInterface;
@@ -221,7 +221,7 @@ export interface IVacationBalance {
   leave_excuses: number;
   emergency_leaves: number;
   public_holidays: number[];
-};
+}
 
 export type registeringData = {
   id: number;
@@ -324,7 +324,7 @@ export type BackendParsedDate = {
   day: number;
   hour: number;
   minute: number;
-}
+};
 
 export type eventItemType = {
   id: number;
@@ -373,34 +373,34 @@ export type calendarOutputItemType =
   | { birthDates: birthDateItemType; className: classType };
 
 export type calendarItemsType = {
-  title: string,
-  className: string,
-  eventName: eventNameType
-  date: Date,
-  len: number,
-  isBottom?: boolean,
-  startCol?: number,
-  startRow?: number,
-  id?: number,
-  status?: string,
-  detailHeader?: string,
-  detailContent?: string,
-  vacation?: vacationItemType[],
-  meeting?: meetingItemType[],
-  event?: eventItemType[],
-  users?: userDataType[],
-  holidays?: holidaysDataType[],
-}
+  title: string;
+  className: string;
+  eventName: eventNameType;
+  date: Date;
+  len: number;
+  isBottom?: boolean;
+  startCol?: number;
+  startRow?: number;
+  id?: number;
+  status?: string;
+  detailHeader?: string;
+  detailContent?: string;
+  vacation?: vacationItemType[];
+  meeting?: meetingItemType[];
+  event?: eventItemType[];
+  users?: userDataType[];
+  holidays?: holidaysDataType[];
+};
 
 export type CalenderRequestFormResponseType = {
-  message: string,
-  isError: boolean
-}
+  message: string;
+  isError: boolean;
+};
 
 export type BalanceValue = {
   reserved: number;
   all: number;
-}
+};
 
 export interface VacationBalance {
   annual_leaves: BalanceValue;
@@ -409,4 +409,4 @@ export interface VacationBalance {
   leave_excuses: BalanceValue;
   sick_leaves: BalanceValue;
   unpaid: BalanceValue;
-};
+}

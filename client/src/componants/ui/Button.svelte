@@ -5,8 +5,8 @@
   export let className = "";
   export let label = "";
   export let onClick: () => boolean | Promise<boolean> | void | Promise<void>;
-  export let successMessage: string;
-  export let errorMessage: string;
+  export let successMessage: string | undefined = undefined;
+  export let errorMessage: string | undefined = undefined;
   export let width: string = "100";
 
   let showToast = false;

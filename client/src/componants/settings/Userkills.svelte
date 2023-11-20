@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Tags from 'svelte-tags-input'
-  import { onMount } from 'svelte';
-  import SkillsDataService from "../../apis/skills/skills"
-  import Submit from '../ui/Button.svelte';
-  import { UserStore } from "../../utils/stores"
+  import Tags from "svelte-tags-input";
+  import { onMount } from "svelte";
+  import SkillsDataService from "../../apis/skills/skills";
+  import Submit from "../ui/Button.svelte";
+  import { UserStore } from "../../utils/stores";
 
   export let isLoading: boolean = false;
   export let isError: boolean = false;
@@ -15,16 +15,17 @@
     const skillsApi = await SkillsDataService.getAll();
     for (let skill in skillsApi) {
       skills.push(skillsApi[skill].name);
-    };
+    }
   });
-  
-  function handleTags(event: { detail: { tags: string; }; }) {
-      tag = event.detail.tags;
+
+  function handleTags(event: { detail: { tags: string } }) {
+    tag = event.detail.tags;
   }
 
-  $: submitDisabled = 
-    tag == "" || tag == null || tag == undefined;
+  $: submitDisabled = tag == "" || tag == null || tag == undefined;
 
+  let successMessage: string;
+  let errorMessage: string;
 </script>
 
 <h5>This section related to <span class="text-primary">User Skills</span></h5>
@@ -37,43 +38,46 @@
     </div>
     <div class="col-8 pt-2">
       <Tags
-          on:tags={handleTags}
-          maxTags={8}
-          allowPaste={true}
-          allowDrop={true}
-          splitWith={"/"}
-          onlyUnique={true}
-          placeholder={"Select skill or choices on from suggestions"}
-          autoComplete={skills}
-          name={"custom-name"}
-          id={"custom-id"}
-          allowBlur={true}
-          disable={false}
-          minChars={1}          
+        on:tags={handleTags}
+        maxTags={8}
+        allowPaste={true}
+        allowDrop={true}
+        splitWith={"/"}
+        onlyUnique={true}
+        placeholder={"Select skill or choices on from suggestions"}
+        autoComplete={skills}
+        name={"custom-name"}
+        id={"custom-id"}
+        allowBlur={true}
+        disable={false}
+        minChars={1}
       />
     </div>
   </div>
 </div>
 <div class="col-12">
   <div class="absolute form-outline">
-      <Submit
-          width={'30'}
-          successMessage={'Skills Added!'}
-          errorMessage={'Skills added failed!'}
-          label="Submit"
-          onClick={async () => {
-            isLoading = true;
-            let tags = String(tag).split(',')
-              try {
-                await SkillsDataService.postSkills($UserStore, tags);
-              } catch (error) {
-                  isError = true;
-              } finally {
-                  isLoading = false;
-                  tag = "";
-              }
-              return isError;
-          }}
+    <Submit
+      width={"30"}
+      bind:successMessage
+      bind:errorMessage
+      label="Submit"
+      onClick={async () => {
+        isLoading = true;
+        let tags = String(tag).split(",");
+        try {
+          await SkillsDataService.postSkills($UserStore, tags);
+          successMessage = "The new skills have been added successfully.";
+        } catch (error) {
+          errorMessage =
+            "Error while trying to add the new skills, please check the provided data and try again.";
+          isError = true;
+        } finally {
+          isLoading = false;
+          tag = "";
+        }
+        return isError;
+      }}
       className=""
       bind:disabled={submitDisabled}
     />
@@ -81,7 +85,7 @@
 </div>
 
 <style>
-  .absolute{
+  .absolute {
     position: absolute;
     bottom: -10px;
     left: 0px;

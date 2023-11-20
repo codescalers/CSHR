@@ -14,7 +14,7 @@ class Vacation{
 			}			
 			return data.data.results;
 		} catch (error) {
-			throw new Error(error.response.data.message);
+			throw new Error(error.response.data.message || error.response.data.detail);
 		}
 	}
 
@@ -56,7 +56,7 @@ class Vacation{
 			}
 			return data.data.results;
 		} catch (error) {
-			throw new Error(error);
+			throw new Error(error.response.data.message || error.response.data.detail);
 		}
 	}
 
@@ -64,7 +64,7 @@ class Vacation{
 		try {
 			await http.post("vacations/post-admin-balance/", data);
 		} catch (err) {
-			throw new Error(err.response.data.message);
+			throw new Error(err.response.data.message || err.response.data.detail);
 		}
 	}
 
@@ -72,7 +72,7 @@ class Vacation{
 		try {
 			return (await http.get("vacations/get-admin-balance/")).data.results;
 		} catch (err) {
-			throw new Error(err.response.data.message);
+			throw new Error(err.response.data.message || err.response.data.detail);
 		}
 	}
 
@@ -80,7 +80,7 @@ class Vacation{
 		try {
 			await http.put(`/vacations/balance/?user_id=${userBalance.user.id}`, userBalance);
 		} catch (err) {
-			throw new Error(err.response.data.message);
+			throw new Error(err.response.data.message || err.response.data.detail);
 		}
 	}
 
@@ -105,7 +105,7 @@ class Vacation{
 			);
 			return axios
 		} catch (error) {
-			this.errorMessage = error.response.data.message
+			this.errorMessage = error.response.data.message || error.response.data.detail
 			throw new Error(this.errorMessage)
 		}
 	}
@@ -116,7 +116,7 @@ class Vacation{
 				await http.put(`/vacations/edit/${vacationID}/`, data)
 			).data;
 		} catch (error) {
-			this.errorMessage = error.response.data.message
+			this.errorMessage = error.response.data.message || error.response.data.detail
 			throw new Error(this.errorMessage)
 		}
 	}

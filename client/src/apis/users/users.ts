@@ -47,7 +47,7 @@ class Users {
 				await http.get(`/users/${id}`)
 			).data.results;
 		} catch (error) {
-			throw new Error(error.response.data.message);
+			throw new Error(error.response.data.message || error.response.data.detail);
 		}
 	}
 
@@ -82,7 +82,7 @@ class Users {
 				await http.get(`/hr_letters/docs/${id}/`)
 			).data.results;
 		} catch (error) {
-			throw new Error(error.response.data.message);
+			throw new Error(error.response.data.message || error.response.data.detail);
 		}
 	}
 
@@ -93,7 +93,7 @@ class Users {
 				await http.get("myprofile/")
 			).data.results;
 		} catch (error) {
-			throw new Error(error.response.data.message);
+			throw new Error(error.response.data.message || error.response.data.detail);
 		}
 	}
 
@@ -106,7 +106,7 @@ class Users {
 		try {
 			await http.post("hr_letters/docs/", data);
 		} catch (error) {
-			throw new Error(error.response.data.message);
+			throw new Error(error.response.data.message || error.response.data.detail);
 		}
 	}
 

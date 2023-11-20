@@ -1,23 +1,23 @@
 <script lang="ts">
-  import type { SelectOptionType } from '../../utils/types';
-  import MultiSelect from '../ui/select/MultiSelect.svelte';
-  import Submit from '../ui/Button.svelte';
-  import Input from '../ui/Input.svelte';
-  import evaluationDataService from '../../apis/evaluation/Evaluation';
-  import {validateLink} from "../../utils/validations";
+  import type { SelectOptionType } from "../../utils/types";
+  import MultiSelect from "../ui/select/MultiSelect.svelte";
+  import Submit from "../ui/Button.svelte";
+  import Input from "../ui/Input.svelte";
+  import evaluationDataService from "../../apis/evaluation/Evaluation";
+  import { validateLink } from "../../utils/validations";
   export let isLoading: boolean = false;
   export let isError: boolean = false;
 
   let evaluation_form_options: SelectOptionType[] = [
-    { label: 'Peer 2 Peer Form', value: 'Peer 2 Peer Form' },
-    { label: 'Reverse Form', value: 'Reverse Form' },
+    { label: "Peer 2 Peer Form", value: "Peer 2 Peer Form" },
+    { label: "Reverse Form", value: "Reverse Form" },
   ];
 
   let evaluation_quartur_options: SelectOptionType[] = [
-    { label: '1 : 3', value: '1 : 3' },
-    { value: '4 : 6', label: '4 : 6' },
-    { value: '7 : 9', label: '7 : 9' },
-    { value: '10 : 12', label: '10 : 12' },
+    { label: "1 : 3", value: "1 : 3" },
+    { value: "4 : 6", label: "4 : 6" },
+    { value: "7 : 9", label: "7 : 9" },
+    { value: "10 : 12", label: "10 : 12" },
   ];
 
   let evaluation_form_selected: SelectOptionType[] = [];
@@ -30,8 +30,10 @@
     evaluationLinkIsError === true ||
     evaluation_form_selected.length === 0 ||
     evaluation_quartur_selected.length === 0;
-</script>
 
+  let successMessage: string;
+  let errorMessage: string;
+</script>
 
 <div class="bg-white p-3 card">
   <div class="card-body">
@@ -61,21 +63,21 @@
       <div class="col-12">
         <Input
           type="url"
-          label={'Evaluation Link'}
+          label={"Evaluation Link"}
           bind:value={evaluationLinkValue}
           handleInput={validateLink}
           size={20}
           errorMessage="Evaluation Link is invalid"
-          hint={'please write a valid link'}
+          hint={"please write a valid link"}
           bind:isError={evaluationLinkIsError}
           placeholder="Enter Evaluation Link"
         />
       </div>
-      <div class="col-12 mt-4  d-flex justify-content-end">
+      <div class="col-12 mt-4 d-flex justify-content-end">
         <Submit
-          width={'15'}
-          successMessage={'Evaluation is Submitted'}
-          errorMessage={' Evaluation Submission Failed'}
+          width={"15"}
+          bind:successMessage
+          bind:errorMessage
           label="Submit"
           onClick={async () => {
             isLoading = true;
@@ -85,11 +87,13 @@
                 quarter: evaluation_quartur_selected[0].value,
                 link: evaluationLinkValue,
               });
+              successMessage = "The new evaluation is submitted successfully.";
             } catch (error) {
+              errorMessage = "The new evaluation submission failed.";
               isError = true;
             } finally {
               isLoading = false;
-              evaluationLinkValue = '';
+              evaluationLinkValue = "";
               evaluation_form_selected = [];
               evaluation_quartur_selected = [];
             }

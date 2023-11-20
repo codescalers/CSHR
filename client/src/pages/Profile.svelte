@@ -1,22 +1,22 @@
 <script lang="ts">
-    import Profile from '../componants/profile/UserProfile.svelte';
-    import Sidebar from '../componants/sidebar/Sidebar.svelte';
+  import Profile from "../componants/profile/UserProfile.svelte";
+  import Sidebar from "../componants/sidebar/Sidebar.svelte";
 
-    export let isLoading = false;
-    export let isError: boolean | null = null;
+  export let isLoading = false;
+  export let isError: boolean | null = null;
 </script>
-  
+
 <Sidebar>
-    <section class="fluid-container mt-5 content" slot="content">
-        <Profile bind:isLoading bind:isError />
-    </section>
+  <section class="fluid-container mt-5 content" slot="content">
+    <Profile bind:isLoading bind:isError />
+  </section>
 </Sidebar>
-  
+
 <style>
-    .content {
-        height: fit-content;
-    }
-    section {
-        background-color: transparent;
-    }
+  .content {
+    height: fit-content;
+  }
+  section {
+    background-color: transparent;
+  }
 </style>

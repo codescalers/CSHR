@@ -1,13 +1,12 @@
 <script lang="ts">
-  import type { eventNameType } from '../../utils/types';
-  import { CalenderEventEmojeTyoe } from "../../utils/enums"
+  import type { eventNameType } from "../../utils/types";
+  import { CalenderEventEmojeTyoe } from "../../utils/enums";
   export let eventNames: Set<eventNameType>;
 
-  function eventChanger(event: eventNameType) {      
+  function eventChanger(event: eventNameType) {
     if (eventNames.has(event)) {
       eventNames.delete(event);
       eventNames = new Set([...eventNames]);
-      
     } else {
       eventNames.add(event);
       eventNames = new Set([...eventNames]);
@@ -24,11 +23,14 @@
   <div class="row align-items-center p-4">
     <div class="col-6 d-flex justify-content-start">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <div class="task--danger hint-labels d-flex flex-row justify-content-between"
-        on:click={() => {eventChanger('meeting');}}
+      <div
+        class="task--danger hint-labels d-flex flex-row justify-content-between"
+        on:click={() => {
+          eventChanger("meeting");
+        }}
       >
         <span>Meetings {CalenderEventEmojeTyoe.meeting}</span>
-        <span> {eventNames.has('meeting') ? '✔️' : '❌'} </span>
+        <span> {eventNames.has("meeting") ? "✔️" : "❌"} </span>
       </div>
     </div>
     <div class="col-6 d-flex justify-content-end">
@@ -36,11 +38,11 @@
       <div
         class="task--info hint-labels d-flex flex-row justify-content-between"
         on:click={() => {
-          eventChanger('event');
+          eventChanger("event");
         }}
       >
         <span>Events {CalenderEventEmojeTyoe.event}</span>
-        <span> {eventNames.has('event') ? '✔️' : '❌'} </span>
+        <span> {eventNames.has("event") ? "✔️" : "❌"} </span>
       </div>
     </div>
     <div class="col-6 d-flex mt-2 justify-content-start">
@@ -48,11 +50,11 @@
       <div
         class="task--warning hint-labels d-flex flex-row justify-content-between"
         on:click={() => {
-          eventChanger('vacation');
+          eventChanger("vacation");
         }}
       >
         <span>Vacations {CalenderEventEmojeTyoe.vacation}</span>
-        <span> {eventNames.has('vacation') ? '✔️' : '❌'} </span>
+        <span> {eventNames.has("vacation") ? "✔️" : "❌"} </span>
       </div>
     </div>
     <div class="col-6 d-flex mt-2 justify-content-end">
@@ -60,11 +62,11 @@
       <div
         class="task--success hint-labels d-flex flex-row justify-content-between"
         on:click={() => {
-          eventChanger('public_holiday');
+          eventChanger("public_holiday");
         }}
       >
         <span>Public-Holidays {CalenderEventEmojeTyoe.publicHoliday}</span>
-        <span> {eventNames.has('public_holiday') ? '✔️' : '❌'} </span>
+        <span> {eventNames.has("public_holiday") ? "✔️" : "❌"} </span>
       </div>
     </div>
     <div class="col-6 d-flex mt-2 justify-content-center">
@@ -72,11 +74,11 @@
       <div
         class="task--primary hint-labels d-flex flex-row justify-content-between"
         on:click={() => {
-          eventChanger('birthday');
+          eventChanger("birthday");
         }}
       >
         <span>Birthday {CalenderEventEmojeTyoe.birthday}</span>
-        <span> {eventNames.has('birthday') ? '✔️' : '❌'} </span>
+        <span> {eventNames.has("birthday") ? "✔️" : "❌"} </span>
       </div>
     </div>
   </div>

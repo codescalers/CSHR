@@ -1,6 +1,6 @@
 <script lang="ts">
   // import UpdateProfile from "./UpdateProfile.svelte"
-  import ChangePassword from "./ChangePassword.svelte"
+  import ChangePassword from "./ChangePassword.svelte";
   // import { UserStore } from "../../utils/stores"
   // import AddtionalInfo from "./AddtionalInfo.svelte";
 </script>
@@ -28,8 +28,7 @@
           href="#ex2-tabs-2"
           role="tab"
           aria-controls="ex2-tabs-2"
-          aria-selected="false"
-          >Change Password</a
+          aria-selected="false">Change Password</a
         >
       </li>
       <!-- <li RFNV1.0 class="nav-item" role="presentation">
@@ -74,18 +73,16 @@
   </div>
 </div>
 
-
-
 <style>
   .nav {
-      height: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      overflow: hidden;
-      border-bottom: none !important;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    overflow: hidden;
+    border-bottom: none !important;
   }
-  .navlink{
+  .navlink {
     padding: 15px;
     border-radius: 5px !important;
   }

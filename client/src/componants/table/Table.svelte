@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { v4 as uuidv4 } from 'uuid';
+  import { v4 as uuidv4 } from "uuid";
   // headers array
   export let headers: string[];
   // table class
-  export let tableClass: string = '';
+  export let tableClass: string = "";
   // table id
   export let tableId: string = uuidv4();
 </script>
