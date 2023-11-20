@@ -7,6 +7,8 @@ from server.cshr.views.users import (
     GeneralUserAPIView,
     BaseGeneralUserAPIView,
     GetUsersInAdminOfficeAPIView,
+    SetActiveUserAPIView,
+    SetInActiveUserAPIView,
     SupervisorUserAPIView,
     BaseSupervisorUserAPIView,
     UserSkillsAPIView,
@@ -18,6 +20,9 @@ from server.cshr.views.users import (
 
 
 urlpatterns = [
+    path("", BaseGeneralUserAPIView.as_view()),
+    path("set_inactive/", SetInActiveUserAPIView.as_view()),
+    path("set_active/", SetActiveUserAPIView.as_view()),
     path("skills/", UserSkillsAPIView.as_view()),
     path("skills/add_skill/", PostUserSkillsAPIView.as_view()),
     path("supervisor/", BaseSupervisorUserAPIView.as_view()),
@@ -28,6 +33,5 @@ urlpatterns = [
     path("teams/supervisors/", SupervisorsAPIView.as_view()),
     path("supervisor/<str:id>/", SupervisorUserAPIView.as_view()),
     path("admin/<str:id>/", AdminUserAPIView.as_view()),
-    path("", BaseGeneralUserAPIView.as_view()),
     path("<str:id>/", GeneralUserAPIView.as_view()),
 ]

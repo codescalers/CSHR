@@ -39,7 +39,6 @@
     async function loadValues(){
         isLoading = true;
         balanceValues = await Vacation.getAdminbalance();
-        console.log(balanceValues);
         isLoading = false;
     }
 

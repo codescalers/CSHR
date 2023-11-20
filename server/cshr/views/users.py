@@ -6,13 +6,13 @@ from server.cshr.models.users import User, UserSkills
 from server.cshr.api.permission import (
     IsAdmin,
     IsSupervisor,
-    IsUser,
     UserIsAuthenticated,
 )
 from server.cshr.services.office import get_office_by_id, get_office_by_name
 from server.cshr.utils.validations import Validator
 from server.cshr.api.response import CustomResponse
 from server.cshr.serializers.users import (
+    ActiveUserSerializer,
     BaseUserSerializer,
     GeneralUserSerializer,
     PostUserSkillsSerializer,
@@ -112,7 +112,6 @@ class SupervisorUserAPIView(ListAPIView, GenericAPIView):
             )
         return CustomResponse.not_found(message="User not found", status_code=404)
 
-
 class BaseAdminUserAPIView(ListAPIView, GenericAPIView):
     """
     admin have full control over a user account
@@ -185,7 +184,6 @@ class AdminUserAPIView(ListAPIView, GenericAPIView):
             )
         return CustomResponse.not_found(message="User not found", status_code=404)
 
-
 class SelfUserAPIView(ListAPIView, GenericAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = SelfUserSerializer
@@ -201,6 +199,53 @@ class SelfUserAPIView(ListAPIView, GenericAPIView):
             )
         return CustomResponse.not_found(message="User not found", status_code=404)
 
+class SetActiveUserAPIView(GenericAPIView):
+    """Class to set the user as an active user."""
+
+    serializer_class = ActiveUserSerializer
+    permission_classes = [
+        IsAdmin,
+    ]
+
+    def put(self, request: Request) -> Response:
+        """Set user as an active user."""
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user_id = serializer.validated_data.get('user_id')
+            user = get_user_by_id(user_id)
+            if(not user):
+                return CustomResponse.not_found("User not found.")
+            user.is_active = True
+            user.save()
+            return CustomResponse.success(data=serializer.data, message="User noe active user")
+        return CustomResponse.bad_request(
+            message="Failed to set the user as an active user, Please make sure that you entered valid data.",
+            error=serializer.errors,
+        )
+
+class SetInActiveUserAPIView(GenericAPIView):
+    """Class to set the user as an inactive user."""
+
+    serializer_class = ActiveUserSerializer
+    permission_classes = [
+        IsAdmin,
+    ]
+
+    def put(self, request: Request) -> Response:
+        """Set user as an inactive user."""
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user_id = serializer.validated_data.get('user_id')
+            user = get_user_by_id(user_id)
+            if(not user):
+                return CustomResponse.not_found("User not found.")
+            user.is_active = False
+            user.save()
+            return CustomResponse.success(data=serializer.data, message="User now inactive user")
+        return CustomResponse.bad_request(
+            message="Failed to set the user as an inactive user, Please make sure that you entered valid data.",
+            error=serializer.errors,
+        )
 
 class UpdateUserProfileUserAPIView(GenericAPIView):
     permission_classes = [ IsAdmin ]

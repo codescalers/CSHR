@@ -6,6 +6,8 @@ from rest_framework.serializers import (
     DateTimeField,
     JSONField,
     ListField,
+    Serializer,
+    IntegerField
 )
 from server.cshr.models.users import User, UserSkills
 from server.cshr.serializers.Image_upload import Base64ImageField
@@ -19,6 +21,10 @@ from server.cshr.services.evaluations import get_evaluations_for_a_user
 from server.cshr.serializers.userEvaluation import UserEvaluationSerializer
 from server.cshr.serializers.office import OfficeSerializer
 
+
+class ActiveUserSerializer(Serializer):
+    """This class is used for setting user as an active/inactive user."""
+    user_id = IntegerField()
 
 class UserSkillsSerializer(ModelSerializer):
     """
@@ -83,6 +89,7 @@ class GeneralUserSerializer(ModelSerializer):
             "address",
             "user_type",
             "background_color",
+            "is_active"
         ]
 
     def get_user_certificates(self, obj):

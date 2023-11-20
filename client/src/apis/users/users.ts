@@ -152,6 +152,28 @@ class Users {
 			throw new Error(`Error while registering${error}`);
 		}
 	}
+
+	async setAsActive(userID: number) {
+		// Update user profile
+		try {
+			return await (
+				await http.put(`/users/set_active/`, JSON.stringify({"user_id": userID}))
+			).data;
+		} catch (error) {
+			throw new Error(`Error while setting user as active user due: ${error}`);
+		}
+	}
+
+	async setAsInactive(userID: number) {
+		// Update user profile
+		try {
+			return await (
+				await http.put(`/users/set_inactive/`, JSON.stringify({"user_id": userID}))
+			).data;
+		} catch (error) {
+			throw new Error(`Error while setting user as an inactive user due: ${error}`);
+		}
+	}
 }
 
 const usersAPI = new Users();

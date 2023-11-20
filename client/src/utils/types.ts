@@ -37,6 +37,7 @@ export interface GeneralUserInterface {
   location: OfficeType;
   user_type: UserType;
   remove_image?: boolean;
+  is_active: boolean;
 }
 
 export interface SupervisorViewInterface extends GeneralUserInterface {
