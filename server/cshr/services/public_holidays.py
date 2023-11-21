@@ -19,11 +19,12 @@ def get_user_holidays(years: List[int], months: List[int]):
   today = datetime.now()
   holidays = PublicHoliday.objects.filter(
     holiday_date__year__in=years,
-    holiday_date__month__in=months
+    holiday_date__month__in=months,
+    expired=False,
   )
 
   for date in holidays:
-    if date.holiday_date.day == today.day:
+    if date.holiday_date.day <= today.day:
       date.expired = True
       date.save()
 

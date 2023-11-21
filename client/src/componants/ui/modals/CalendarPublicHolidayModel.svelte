@@ -2,42 +2,54 @@
   import type { calendarItemsType } from "../../../utils/types";
   import CalendarModal from "./CalendarModal.svelte";
   import { CalenderEventEmojeTyoe } from "../../../utils/enums";
+  import { onMount } from "svelte";
 
   export let showModal: boolean = false;
   export let clickedItemOnModal: calendarItemsType;
+
+  function getHolidayClass(holiday) {
+    return holiday.expired ? "expired" : "";
+  }
+
 </script>
 
 <CalendarModal bind:showModal>
   <header slot="header" class="text-center w-100">
     <h6 class="modal-title" id="exampleModalLongTitle">
-      <strong
-        >{clickedItemOnModal.date} Public holidays {CalenderEventEmojeTyoe.publicHoliday}</strong
-      >
+      <strong>
+        {clickedItemOnModal.date} is a public holiday {CalenderEventEmojeTyoe.publicHoliday}
+        in {#each clickedItemOnModal.holidays as holiday}
+          <strong>{holiday.location.country + ", "}</strong>
+        {/each}
+      </strong>
     </h6>
   </header>
 
   <div slot="body" class="card bg-confetti-animated">
     <div class="card-title title p-4 text-center">
       {#each clickedItemOnModal.holidays as holiday, index}
-        <strong
-          class={clickedItemOnModal.holidays[index].expired ? "expired" : ""}
-          >{holiday.location.country.trimEnd()}</strong
-        >
+        <strong class={getHolidayClass(holiday)}>
+          {holiday.location.country.trimEnd()}
+        </strong>
         {#if clickedItemOnModal.holidays.length > 1 && index + 1 != clickedItemOnModal.holidays.length}
           <strong><small class="--and">& </small></strong>
         {/if}
       {/each}
-      Public holidays
     </div>
+
     <div class="card-body body">
-      On the {#each clickedItemOnModal.holidays as holiday}<strong
-          >{holiday.location.country + ", "}</strong
-        >{/each}
-      {clickedItemOnModal.holidays.length > 1 ? "calendars" : "calendar"},the
-      date <strong>{clickedItemOnModal.holidays[0].holiday_date}</strong> is a
-      public holiday in Egypt. We hope you and your family have a peaceful and
-      enjoyable holiday. Please be aware that our Egypt office will be closed on
-      this date.
+      {clickedItemOnModal.date} is a public holiday in
+      {#each clickedItemOnModal.holidays as holiday}
+        <strong>{holiday.location.country + ", "}</strong>
+      {/each}
+
+      We hope you and your family have a peaceful and enjoyable holiday.
+      <strong>Please be aware</strong> that our
+      {clickedItemOnModal.holidays.length > 1 ? "offices" : "office"} in
+      {#each clickedItemOnModal.holidays as holiday}
+        <strong>{holiday.location.country + ", "}</strong>
+      {/each}
+      will be closed on this date.
 
       <strong>Thank you! :)</strong>
     </div>
@@ -84,13 +96,6 @@
     padding: 6px;
     border-radius: 5px;
     color: wheat;
-  }
-  .expired::before {
-    content: "Expired";
-    font-size: 12px;
-    color: white;
-    font-weight: 700;
-    margin-right: 5px;
   }
 
   .bg-confetti-animated {
