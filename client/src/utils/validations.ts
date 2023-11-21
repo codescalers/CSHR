@@ -15,6 +15,12 @@ export const validateName = (e: any): boolean => {
   return !re.test(String(e.target.value));
 };
 
+export function validateSpcialEmptyString(e: any): boolean {
+  if (e.target.value.length < 2) return true
+  const re = /^[a-zA-Z]+$/;
+  return !re.test(String(e.target.value));
+}
+
 export const validateLink = (e: any): boolean => {
   let urlPattern = new RegExp(
     "^(https?:\\/\\/)?" + // validate protocol

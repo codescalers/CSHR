@@ -11,6 +11,7 @@
     validateTelegramLink,
     // validateSalary,
     validateBirthday,
+    validateSpcialEmptyString,
   } from "../../utils/validations";
   import MultiSelect from "../ui/select/MultiSelect.svelte";
   import {
@@ -65,10 +66,14 @@
     isErrorfName == true ||
     isErrorAddress == true ||
     isErrorAddress == null ||
+
     locationSelected.length == 0 ||
     teamSelected.length == 0 ||
     genderSelected.length == 0 ||
-    userTypeSelected.length == 0;
+    userTypeSelected.length == 0 ||
+    registeration.job_title.trim().length < 3 ||
+    registeration.social_insurance_number.trim().length < 3 ||
+    !registeration.address.trim().length;
 
   let teamSelectOptions: SelectOptionType[] = TeamChoice;
   let genderSelectOptions: SelectOptionType[] = GenderChoice;
@@ -163,9 +168,7 @@
           type="text"
           label={"Role"}
           bind:value={registeration.job_title}
-          handleInput={() => {
-            return false;
-          }}
+          handleInput={validateSpcialEmptyString}
           size={150}
           errorMessage="Role is invalid"
           hint={"please write a valid role"}
@@ -178,9 +181,7 @@
           type="text"
           label={"Address"}
           bind:value={registeration.address}
-          handleInput={() => {
-            return false;
-          }}
+          handleInput={validateSpcialEmptyString}
           size={150}
           errorMessage="Address is invalid"
           hint={"please write a valid address"}
@@ -193,9 +194,7 @@
           type="text"
           label={"Social insurance number"}
           bind:value={registeration.social_insurance_number}
-          handleInput={() => {
-            return false;
-          }}
+          handleInput={validateSpcialEmptyString}
           size={150}
           errorMessage="Social insurance number isinvalid"
           hint={"please write a valid Social insurance number"}

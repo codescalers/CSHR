@@ -9,6 +9,7 @@
     validateEmail,
     validateName,
     validatePhoneNumber,
+    validateSpcialEmptyString,
     validateTelegramLink,
   } from "../../../utils/validations";
   import {
@@ -92,7 +93,10 @@
     locationSelected.length < 1 ||
     genderSelected.length < 1 ||
     teamSelected.length < 1 ||
-    userTypeSelected.length < 1;
+    userTypeSelected.length < 1 ||
+    user.social_insurance_number.trim().length < 1 ||
+    user.address.trim().length < 1 ||
+    user.job_title.trim().length < 1;
 
   for (let i in user.reporting_to) {
     reportingToSelected.push({
@@ -160,9 +164,7 @@
               type="text"
               label={"Social insurance number"}
               bind:value={user.social_insurance_number}
-              handleInput={() => {
-                return false;
-              }}
+              handleInput={validateSpcialEmptyString}
               size={150}
               errorMessage="Social insurance number isinvalid"
               hint={"please write a valid Social insurance number"}
@@ -284,9 +286,7 @@
             type="text"
             label={"Role"}
             bind:value={user.job_title}
-            handleInput={() => {
-              return false;
-            }}
+            handleInput={validateSpcialEmptyString}
             size={150}
             errorMessage="Role is invalid"
             hint={"please write a valid role"}
@@ -301,9 +301,7 @@
             type="text"
             label={"Address"}
             bind:value={user.address}
-            handleInput={() => {
-              return false;
-            }}
+            handleInput={validateSpcialEmptyString}
             size={150}
             errorMessage="Address is invalid"
             hint={"please write a valid address"}

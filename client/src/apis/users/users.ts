@@ -8,7 +8,7 @@ class Users {
 	errorMessage = "Error in Users Data Service:  with status ";
 	public async getAll(usersOptions?: UserOptionsFilter) {
 		try {
-			const { data, status, statusText } = await http.get(`/users/?location_id=${usersOptions.locationId}`);
+			const { data, status, statusText } = await http.get(`/users/?location_id=${usersOptions ? usersOptions.locationId : ''}`);
 			if (status === 404) {
 				throw new Error("Users not found");
 			} else if (status !== 200) {
