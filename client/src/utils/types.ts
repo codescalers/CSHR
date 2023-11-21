@@ -410,3 +410,7 @@ export interface VacationBalance {
   sick_leaves: BalanceValue;
   unpaid: BalanceValue;
 }
+
+export interface UserOptionsFilter {
+  locationId?: number;
+}

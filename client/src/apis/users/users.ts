@@ -1,4 +1,4 @@
-import type { AdminViewInterface, UserInterface, SupervisorViewInterface, registeringData } from './../../utils/types';
+import type { AdminViewInterface, UserInterface, SupervisorViewInterface, registeringData, UserOptionsFilter } from './../../utils/types';
 import http from "../../utils/axios";
 import type { UserType } from "../../utils/types";
 
@@ -6,9 +6,9 @@ import type { UserType } from "../../utils/types";
 
 class Users {
 	errorMessage = "Error in Users Data Service:  with status ";
-	public async getAll() {
+	public async getAll(usersOptions?: UserOptionsFilter) {
 		try {
-			const { data, status, statusText } = await http.get("/users/");
+			const { data, status, statusText } = await http.get(`/users/?location_id=${usersOptions.locationId}`);
 			if (status === 404) {
 				throw new Error("Users not found");
 			} else if (status !== 200) {

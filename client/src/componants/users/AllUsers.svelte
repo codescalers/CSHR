@@ -30,8 +30,7 @@
 
   const loadUsers = async () => {
     isLoading = true;
-    users = await usersDataService.getAll();
-    users = users.filter((user) => user.location.id === userOffice.id);
+    users = await usersDataService.getAll({locationId: userOffice.id});
     isLoading = false;
   };
 
