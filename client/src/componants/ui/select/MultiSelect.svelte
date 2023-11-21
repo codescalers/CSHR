@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import type { SelectOptionType } from "../../../utils/types";
   import { v4 as uuidv4 } from "uuid";
 
@@ -19,6 +20,7 @@
     show: boolean = false;
 
   let id: string = uuidv4();
+  const dispatch = createEventDispatcher();
 
   function select(e: any, option: SelectOptionType) {
     e.stopPropagation();
@@ -32,8 +34,11 @@
       }
     } else {
       selected = [option];
-      show = false;
     }
+    dispatch("select", {
+      selected: selected[0],
+    });
+    show = false;
   }
 
   let highlightedIndex: number = 1;

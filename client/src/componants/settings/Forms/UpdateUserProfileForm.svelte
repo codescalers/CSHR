@@ -233,9 +233,9 @@
               bind:options={userTypeOptions}
               bind:selected={userTypeSelected}
               isLabel={true}
-              label="User Type"
-              placeholder="Select user type"
-              removeAllTitle="Remove user type"
+              label="Role"
+              placeholder="Select user role"
+              removeAllTitle="Remove user role"
               multiple={false}
               bind:isError={isErrorUserType}
             />

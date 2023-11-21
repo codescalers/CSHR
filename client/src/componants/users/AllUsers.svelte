@@ -1,24 +1,73 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { UserInterface } from "../../utils/types";
+  import type {
+    OfficeType,
+    SelectOptionType,
+    UserInterface,
+  } from "../../utils/types";
   import User from "./User.svelte";
-  import { AllUsersStore } from "../../utils/stores";
   import usersDataService from "../../apis/users/users";
   import Loading from "../ui/Loading.svelte";
+  import MultiSelect from "../ui/select/MultiSelect.svelte";
+  import { OfficeStore, UserStore } from "../../utils/stores";
+  import officeDataService from "../../apis/offices/Office";
 
   export let isLoading = false;
   export let isError: boolean | null = null;
 
   let users: UserInterface[];
+  let userOffice = $UserStore.location;
+
+  const changeOffice = (selectedOffice: SelectOptionType) => {
+    const office = $OfficeStore.filter(
+      (_office: OfficeType) => _office.id === selectedOffice.value
+    )[0]; // Value is the id.
+    if(userOffice.id != office.id){
+      userOffice = office;
+      loadUsers();
+    }
+  };
+
+  const loadUsers = async () => {
+    isLoading = true;
+    users = await usersDataService.getAll();
+    users = users.filter((user) => user.location.id === userOffice.id);
+    isLoading = false;
+  };
+
   onMount(async () => {
     isLoading = true;
     try {
-      users = await usersDataService.getAll();
+      if ($OfficeStore === undefined || $OfficeStore.length === 0) {
+        const offices = await officeDataService.getAll();
+        if ($OfficeStore === undefined) {
+          $OfficeStore = offices;
+        } else {
+          OfficeStore.set(offices);
+        }
+      }
+      $OfficeStore.forEach((office: OfficeType) => {
+        if (office.id === userOffice.id) {
+          locationSelected.push({
+            value: office.id,
+            label: office.name,
+          });
+        }
+        locationOptions.push({
+          value: office.id,
+          label: office.name,
+        });
+      });
+      loadUsers();
     } catch (error) {
       isError = true;
     }
     isLoading = false;
   });
+
+  let locationOptions: SelectOptionType[] = [];
+  let locationSelected: SelectOptionType[] = [];
+  let isErrorLocation: null | boolean;
 </script>
 
 {#if isLoading}
@@ -26,17 +75,50 @@
     <Loading className={"loader"} />
   </div>
 {:else if !isLoading && !isError && users}
-  <div class="container">
-    <div class="d-flex flex-column justify-content-between">
-      <div>
-        <div class="row justify-content-between">
-          {#each users as user}
-            <div class="col-12 col-md-6 col-lg-4 my-4">
-              <User bind:user />
-            </div>
-          {/each}
+  <div class="container height-100">
+    <div class="card office-selection" style="margin-top: 15px;">
+      <small>
+        You can change the selected office to discover the team in other
+        offices, current elected office is your office.
+      </small>
+      <MultiSelect
+        bind:options={locationOptions}
+        bind:selected={locationSelected}
+        isLabel={true}
+        label="Select Office"
+        placeholder="Select user role"
+        removeAllTitle="Remove user role"
+        multiple={false}
+        bind:isError={isErrorLocation}
+        on:select={(e) => changeOffice(e.detail.selected)}
+      />
+    </div>
+    {#if users.length}
+      <div class="d-flex flex-column justify-content-between">
+        <div>
+          <div class="row justify-content-between">
+            {#each users as user}
+              <div class="col-12 col-md-6 col-lg-4 my-4">
+                <User bind:user />
+              </div>
+            {/each}
+          </div>
         </div>
       </div>
-    </div>
+    {:else}
+      <div class="d-flex justify-content-center align-items-center">
+        <div class="alert alert-warning">
+          It appears that there are no users in this office
+        </div>
+      </div>
+    {/if}
   </div>
 {/if}
+
+<style scoped>
+  .office-selection {
+    margin-top: 100px !important;
+    margin-bottom: 16px;
+    padding: 15px;
+  }
+</style>

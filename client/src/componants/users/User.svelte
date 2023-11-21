@@ -22,9 +22,12 @@
         <span>{user.job_title}</span>
         <small class="blockquote-footer">
           <cite title="Team">{user.team}</cite>
-        </small><br />
+        </small>
+        <br />
         <small>
           <cite>{user.email}</cite>
+          <br />
+          <cite>{user.location.country}</cite>
         </small>
       </p>
     </div>

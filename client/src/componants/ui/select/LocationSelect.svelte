@@ -15,6 +15,7 @@
   export let mylabel = "People";
   export let isTop: boolean;
   export let selected: SelectOptionType[];
+
   let options: SelectOptionType[] = [];
 
   onMount(async () => {
