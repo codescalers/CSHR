@@ -1,11 +1,14 @@
 from typing import Dict, List
-from server.cshr.api.response import CustomResponse
 from server.cshr.models.users import User
-from server.cshr.models.vacations import REASON_CHOICES, OfficeVacationBalance, Vacation, VacationBalance
+from server.cshr.models.vacations import (
+    REASON_CHOICES,
+    OfficeVacationBalance,
+    Vacation,
+    VacationBalance,
+)
 
 import datetime
 import os
-import json
 
 from server.cshr.services.public_holidays import get_user_holidays
 
@@ -37,15 +40,12 @@ class StanderdVacationBalance:
         # this help to divide to get the total days based on joining date
         month: int = 12 - user.created_at.month
         balance = OfficeVacationBalance.objects.get(
-            year=datetime.datetime.now().year,
-            location=user.location
+            year=datetime.datetime.now().year, location=user.location
         )
 
         annual_leaves: int = round(balance.annual_leaves / 12 * month)
         leave_excuses: int = round(balance.leave_excuses / 12 * month)
-        emergency_leaves: int = round(
-            balance.emergency_leaves / 12 * month
-        )
+        emergency_leaves: int = round(balance.emergency_leaves / 12 * month)
         calculated_values = {
             "annual_leaves": annual_leaves,
             "leave_excuses": leave_excuses,
@@ -89,14 +89,20 @@ class StanderdVacationBalance:
             if not day.strftime("%A") in weekend:
                 actual_days.append(day)
         return actual_days
-    
-    def remove_holidays(self, user: User, start_date: datetime.datetime, end_date: datetime.datetime, dates: List[datetime.date]):
+
+    def remove_holidays(
+        self,
+        user: User,
+        start_date: datetime.datetime,
+        end_date: datetime.datetime,
+        dates: List[datetime.date],
+    ):
         removed_weekends = self.remove_weekends(user, start_date, end_date)
         years = [start_date.year, end_date.year]
         months = [start_date.month, end_date.month]
         holidays = get_user_holidays(years, months)
         _holydays = 0
-        
+
         for date in removed_weekends:
             if date not in dates:
                 dates.append(date)
@@ -115,7 +121,9 @@ class StanderdVacationBalance:
         old_days: int = self.remove_weekends(
             vacation.applying_user, vacation.from_date, vacation.end_date
         )
-        old_days = self.remove_holidays(vacation.applying_user, vacation.from_date, vacation.end_date, old_days)
+        old_days = self.remove_holidays(
+            vacation.applying_user, vacation.from_date, vacation.end_date, old_days
+        )
 
         reason: str = vacation.reason
         this_month: int = datetime.datetime.now().month

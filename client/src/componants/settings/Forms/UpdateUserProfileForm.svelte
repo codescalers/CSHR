@@ -209,7 +209,7 @@
               isLabel={true}
               label="Team"
               placeholder="Select team"
-              removeAllTitle="Remove all teams"
+              removeAllTitle="Remove all team"
               multiple={false}
             />
           </div>

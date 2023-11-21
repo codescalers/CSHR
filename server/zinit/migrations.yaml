@@ -1,4 +1,9 @@
-exec: sh -c "cd server_dir && poetry run python3 manage.py makemigrations && poetry run python3 manage.py migrate && poetry run python3 manage.py collectstatic --skip-checks"
+# The users keyword should be removed from the command of creating locations and users in production.
+exec: sh -c "
+  cd server_dir && poetry run python3 manage.py makemigrations &&
+  poetry run python3 manage.py migrate &&
+  poetry run python3 manage.py create locations users &&
+  poetry run python3 manage.py collectstatic --skip-checks"
 after:
   - config
 oneshot: true

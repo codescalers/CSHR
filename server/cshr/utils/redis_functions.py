@@ -8,7 +8,6 @@ from server.cshr.services.users import get_user_by_id
 from server.components import config
 import redis
 import json
-import os
 
 
 try:

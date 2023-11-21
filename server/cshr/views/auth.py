@@ -50,8 +50,10 @@ class LoginByTokenApiView(TokenObtainPairView):
         if serializer.is_valid():
             user_email = serializer.validated_data.get("email")
             user = get_user_by_email(user_email)
-            if(not user.is_active):
-                return CustomResponse.unauthorized(message="You don't have permission to perform this action.")
+            if not user.is_active:
+                return CustomResponse.unauthorized(
+                    message="You don't have permission to perform this action."
+                )
             return CustomResponse.success(
                 data=serializer.custom_token(data=serializer.data),
                 message="User logged in successfully",

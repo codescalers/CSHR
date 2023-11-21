@@ -5,14 +5,14 @@ class TeamDataService {
 	errorMessage = "Error in Team Data Service: ";
 	public async getTeams(){
 		try {
-			return await http.get("/users/teams/");
+			return await http.get("/users/team/");
 		} catch (err) {
 			throw new Error(err.response.data.message);
 		}
 	}
 	public async getSupervisor(){
 		try {
-			return await http.get("/users/teams/supervisors/");
+			return await http.get("/users/team/supervisors/");
 		} catch (err) {
 			throw new Error(err.response.data.message);
 		}

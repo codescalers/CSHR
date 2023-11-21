@@ -8,7 +8,6 @@ from celery import shared_task
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework.response import Response
 from server.components import config
-import os
 
 REISHOST: str = None
 try:
@@ -186,8 +185,10 @@ def send_email_for_request(user_id, msg, mail_title) -> Response:
         return False
     recievers: array[str] = get_email_recievers(user)
     try:
-        send_mail(mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False)
-    except:
+        send_mail(
+            mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False
+        )
+    except Exception:
         return False
     return True
 

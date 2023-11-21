@@ -7,7 +7,7 @@ from rest_framework.serializers import (
     JSONField,
     ListField,
     Serializer,
-    IntegerField
+    IntegerField,
 )
 from server.cshr.models.users import User, UserSkills
 from server.cshr.serializers.Image_upload import Base64ImageField
@@ -24,7 +24,9 @@ from server.cshr.serializers.office import OfficeSerializer
 
 class ActiveUserSerializer(Serializer):
     """This class is used for setting user as an active/inactive user."""
+
     user_id = IntegerField()
+
 
 class UserSkillsSerializer(ModelSerializer):
     """
@@ -89,7 +91,7 @@ class GeneralUserSerializer(ModelSerializer):
             "address",
             "user_type",
             "background_color",
-            "is_active"
+            "is_active",
         ]
 
     def get_user_certificates(self, obj):
@@ -357,12 +359,12 @@ class TeamSerializer(ModelSerializer):
             "user_type",
             "mobile_number",
             "address",
-            "location"
+            "location",
         ]
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color
-    
+
     def get_location(self, obj):
         return OfficeSerializer(obj.location).data
 

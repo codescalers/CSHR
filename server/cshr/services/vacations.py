@@ -13,8 +13,16 @@ def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
     This function will filter all of vacations based on its yesr, month.
     """
     vacations: List[Vacation] = Vacation.objects.filter(
-        Q(from_date__month=month, from_date__year=year, status__in = [STATUS_CHOICES.PENDING, STATUS_CHOICES.APPROVED])
-        | Q(end_date__month=month, end_date__year=year, status__in = [STATUS_CHOICES.PENDING, STATUS_CHOICES.APPROVED])
+        Q(
+            from_date__month=month,
+            from_date__year=year,
+            status__in=[STATUS_CHOICES.PENDING, STATUS_CHOICES.APPROVED],
+        )
+        | Q(
+            end_date__month=month,
+            end_date__year=year,
+            status__in=[STATUS_CHOICES.PENDING, STATUS_CHOICES.APPROVED],
+        )
     )
     return vacations
 

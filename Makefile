@@ -17,6 +17,7 @@ runclient:
 test:
 	$(CMD) python3 manage.py test
 lint:
+	$(CMD) black .  --exclude=__init__.py
 	$(CMD) flake8 .  --exclude=__init__.py
 migrate:
 	$(CMD) python3 manage.py makemigrations

@@ -32,7 +32,7 @@
                     <i title="Requests" class="fa-solid fa-code-pull-request nav_icon"></i>
                     <span class="nav_name">Requests</span>
                 </Link> -->
-        {#if $UserStore && $UserStore.user_type === "User"}
+        <!-- {#if $UserStore && $UserStore.user_type === "User"} -->
           <Link to="/team/" class="nav_link">
             <i
               title="My team"
@@ -53,7 +53,7 @@
                         <i title="Compensations" class="fa fa-sticky-note nav_icon" aria-hidden="true"></i>
                         <span class="nav_name">Compensations</span>
                     </Link> -->
-        {/if}
+        <!-- {/if} -->
         <Link to="/users/" class="nav_link">
           <i title="Threefold team" class="fa-solid fa-users nav_icon" />
           <span class="nav_name">Threefold team</span>

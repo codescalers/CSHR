@@ -36,7 +36,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -158,7 +158,8 @@ USE_TZ = False
 STATIC_URL = "static/"
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "mediafiles")
 MEDIA_URL = "/media/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') ##specify static root
+# specify static root
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 
 # Default primary key field type
@@ -168,13 +169,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "cshr.User"
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080", 
+    "http://localhost:8080",
     "http://127.0.0.1:8080",
     f'https://{config("SERVER_DOMAIN_NAME")}',
     f'https://{config("CLIENT_DOMAIN_NAME")}',
 ]
 
-CSRF_TRUSTED_ORIGINS=[f'https://{config("SERVER_DOMAIN_NAME")}']
+CSRF_TRUSTED_ORIGINS = [f'https://{config("SERVER_DOMAIN_NAME")}']
 
 # email config
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

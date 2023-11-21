@@ -8,7 +8,7 @@ from server.cshr.api.permission import (
     IsSupervisor,
     UserIsAuthenticated,
 )
-from server.cshr.services.office import get_office_by_id, get_office_by_name
+from server.cshr.services.office import get_office_by_id
 from server.cshr.utils.validations import Validator
 from server.cshr.api.response import CustomResponse
 from server.cshr.serializers.users import (
@@ -42,9 +42,9 @@ class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):
     def get_queryset(self) -> Response:
         """get all users in the system for a normal user"""
         # print()
-        if(self.request.query_params.get('location_id')):
-            location_id = self.request.query_params.get('location_id')
-            options = {'location': {'id': location_id}}
+        if self.request.query_params.get("location_id"):
+            location_id = self.request.query_params.get("location_id")
+            options = {"location": {"id": location_id}}
             query_set = get_all_of_users(options)
         else:
             query_set = get_all_of_users()
@@ -118,6 +118,7 @@ class SupervisorUserAPIView(ListAPIView, GenericAPIView):
             )
         return CustomResponse.not_found(message="User not found", status_code=404)
 
+
 class BaseAdminUserAPIView(ListAPIView, GenericAPIView):
     """
     admin have full control over a user account
@@ -147,6 +148,7 @@ class GetUsersInAdminOfficeAPIView(ListAPIView, GenericAPIView):
         """get all users in the system for a normal user"""
         query_set = get_admin_office_users(self.request.user)
         return query_set
+
 
 class AdminUserAPIView(ListAPIView, GenericAPIView):
     """
@@ -190,6 +192,7 @@ class AdminUserAPIView(ListAPIView, GenericAPIView):
             )
         return CustomResponse.not_found(message="User not found", status_code=404)
 
+
 class SelfUserAPIView(ListAPIView, GenericAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = SelfUserSerializer
@@ -205,6 +208,7 @@ class SelfUserAPIView(ListAPIView, GenericAPIView):
             )
         return CustomResponse.not_found(message="User not found", status_code=404)
 
+
 class SetActiveUserAPIView(GenericAPIView):
     """Class to set the user as an active user."""
 
@@ -217,17 +221,20 @@ class SetActiveUserAPIView(GenericAPIView):
         """Set user as an active user."""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            user_id = serializer.validated_data.get('user_id')
+            user_id = serializer.validated_data.get("user_id")
             user = get_user_by_id(user_id)
-            if(not user):
+            if not user:
                 return CustomResponse.not_found("User not found.")
             user.is_active = True
             user.save()
-            return CustomResponse.success(data=serializer.data, message="User noe active user")
+            return CustomResponse.success(
+                data=serializer.data, message="User noe active user"
+            )
         return CustomResponse.bad_request(
             message="Failed to set the user as an active user, Please make sure that you entered valid data.",
             error=serializer.errors,
         )
+
 
 class SetInActiveUserAPIView(GenericAPIView):
     """Class to set the user as an inactive user."""
@@ -241,20 +248,23 @@ class SetInActiveUserAPIView(GenericAPIView):
         """Set user as an inactive user."""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            user_id = serializer.validated_data.get('user_id')
+            user_id = serializer.validated_data.get("user_id")
             user = get_user_by_id(user_id)
-            if(not user):
+            if not user:
                 return CustomResponse.not_found("User not found.")
             user.is_active = False
             user.save()
-            return CustomResponse.success(data=serializer.data, message="User now inactive user")
+            return CustomResponse.success(
+                data=serializer.data, message="User now inactive user"
+            )
         return CustomResponse.bad_request(
             message="Failed to set the user as an inactive user, Please make sure that you entered valid data.",
             error=serializer.errors,
         )
 
+
 class UpdateUserProfileUserAPIView(GenericAPIView):
-    permission_classes = [ IsAdmin ]
+    permission_classes = [IsAdmin]
     serializer_class = UpdateUserSerializer
 
     def put(self, request: Request, id: str, format=None) -> Response:
@@ -265,7 +275,7 @@ class UpdateUserProfileUserAPIView(GenericAPIView):
         remove_image: bool = request.data.get("remove_image")
         if request.data.get("image") == "":
             request.data["image"] = user.image if user.image else None
-            
+
         serializer = self.get_serializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             office = get_office_by_id(request.data.get("location"))

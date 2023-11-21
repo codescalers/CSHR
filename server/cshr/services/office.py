@@ -10,6 +10,7 @@ def get_office_by_id(id: str) -> Office:
     except Office.DoesNotExist:
         return None
 
+
 def get_office_by_name(name: str) -> Office:
     try:
         return Office.objects.get(name=name)

@@ -59,16 +59,21 @@ class VacationBalance(models.Model):
     def __str__(self):
         return str(self.user.email)
 
+
 class PublicHoliday(TimeStamp):
     location = models.ForeignKey(Office, on_delete=models.CASCADE)
     holiday_date = models.DateField()
     expired = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('holiday_date', 'location',)
+        unique_together = (
+            "holiday_date",
+            "location",
+        )
 
     def __str__(self):
         return str(f"{self.location.country} - {self.holiday_date}")
+
 
 class OfficeVacationBalance(TimeStamp):
     location = models.ForeignKey(Office, on_delete=models.CASCADE)
@@ -79,10 +84,15 @@ class OfficeVacationBalance(TimeStamp):
     unpaid = models.IntegerField(default=100)
     leave_excuses = models.IntegerField(default=6)
     emergency_leaves = models.IntegerField(default=6)
-    public_holidays = models.ManyToManyField('PublicHoliday', related_name="public_holidays")
+    public_holidays = models.ManyToManyField(
+        "PublicHoliday", related_name="public_holidays"
+    )
 
     class Meta:
-        unique_together = ('year', 'location',)
-    
+        unique_together = (
+            "year",
+            "location",
+        )
+
     def __str__(self):
         return str(f"{self.location.country} - {self.year}")

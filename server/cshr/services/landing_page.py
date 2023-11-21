@@ -1,6 +1,5 @@
 """This file contains everything related to the landing page functionalty."""
 import datetime
-import json
 from server.cshr.api.response import CustomResponse
 from server.cshr.models.event import Event
 from server.cshr.models.meetings import Meetings
@@ -13,7 +12,9 @@ from server.cshr.serializers.users import BaseUserSerializer
 from server.cshr.serializers.vacations import LandingPageVacationsSerializer
 from server.cshr.services.event import filter_events_by_month_and_year
 from server.cshr.services.meetings import filter_meetings_by_month_and_year
-from server.cshr.services.public_holidays import filter_public_holidays_by_month_and_year
+from server.cshr.services.public_holidays import (
+    filter_public_holidays_by_month_and_year,
+)
 from server.cshr.services.users import filter_users_by_berithday_month
 from server.cshr.services.vacations import filter_vacations_by_month_and_year
 from typing import Any, List, Dict, Union
@@ -53,9 +54,9 @@ def landing_page_calendar_functionality(user: User, month: str, year: str):
     users_birthdates: List[User] = filter_users_by_berithday_month(month).order_by(
         "-created_at"
     )
-    public_holidays: PublicHoliday = filter_public_holidays_by_month_and_year(year, month).order_by(
-        "-created_at"
-    )
+    public_holidays: PublicHoliday = filter_public_holidays_by_month_and_year(
+        year, month
+    ).order_by("-created_at")
 
     objects: Union[List[Any], None] = list(
         chain(public_holidays, vacations, events, meetings, users_birthdates)

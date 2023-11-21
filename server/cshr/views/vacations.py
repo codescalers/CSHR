@@ -39,10 +39,11 @@ from server.cshr.utils.update_change_log import (
     update_vacation_change_log,
 )
 from server.cshr.utils.email_messages_templates import (
-    get_vacation_request_email_template,
+    # get_vacation_request_email_template,
     get_vacation_reply_email_template,
 )
-from server.cshr.celery.send_email import send_email_for_request
+
+# from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
 from server.cshr.models.vacations import OfficeVacationBalance, PublicHoliday, Vacation
 from server.cshr.services.vacations import get_vacations_by_user
@@ -58,15 +59,17 @@ class GetAdminVacationBalanceApiView(GenericAPIView):
 
     serializer_class = GetOfficeVacationBalanceSerializer
     permission_classes = [IsAdmin]
-    
+
     def get(self, request: Request) -> Response:
-        year = year=datetime.now().year
+        year = year = datetime.now().year
         location = request.user.location
         data = OfficeVacationBalance.objects.get_or_create(year=year, location=location)
 
         return CustomResponse.success(
-            message="Successfully updated balance values.", data=self.serializer_class(data[0]).data
+            message="Successfully updated balance values.",
+            data=self.serializer_class(data[0]).data,
         )
+
 
 class PostAdminVacationBalanceApiView(GenericAPIView):
     """Class VacationBalance to update or post vacation balance by only admin."""
@@ -76,27 +79,37 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
 
     def post(self, request: Request) -> Response:
         serializer = self.get_serializer(data=request.data)
-        year = year=datetime.now().year
+        year = year = datetime.now().year
         location = request.user.location
 
         if serializer.is_valid():
-            balance = OfficeVacationBalance.objects.filter(
-                year=year, location=location
-            )
-            public_holidays = request.data['public_holidays']
+            balance = OfficeVacationBalance.objects.filter(year=year, location=location)
+            public_holidays = request.data["public_holidays"]
             for holiday in public_holidays:
-                PublicHoliday.objects.get_or_create(location=location, holiday_date=holiday)
+                PublicHoliday.objects.get_or_create(
+                    location=location, holiday_date=holiday
+                )
 
-            public_holidays = PublicHoliday.objects.filter(location=location, holiday_date__in=public_holidays).values_list("id", flat=True)
+            public_holidays = PublicHoliday.objects.filter(
+                location=location, holiday_date__in=public_holidays
+            ).values_list("id", flat=True)
 
             if len(balance) > 0:
-                balance[0].annual_leaves = serializer.validated_data.get('annual_leaves')
-                balance[0].leave_excuses = serializer.validated_data.get('leave_excuses')
-                balance[0].emergency_leaves = serializer.validated_data.get('emergency_leaves')
+                balance[0].annual_leaves = serializer.validated_data.get(
+                    "annual_leaves"
+                )
+                balance[0].leave_excuses = serializer.validated_data.get(
+                    "leave_excuses"
+                )
+                balance[0].emergency_leaves = serializer.validated_data.get(
+                    "emergency_leaves"
+                )
                 balance[0].public_holidays.set(public_holidays)
                 balance[0].save()
-            else:        
-                serializer.save(location=location, year=year, public_holidays=public_holidays[0])
+            else:
+                serializer.save(
+                    location=location, year=year, public_holidays=public_holidays[0]
+                )
             return CustomResponse.success(
                 message="Successfully updated balance values.", data=serializer.data
             )
@@ -161,12 +174,12 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             )
             if balance is not True:
                 return CustomResponse.bad_request(message=balance)
-            msg = get_vacation_request_email_template(
-                request.user, serializer.data, saved.id
-            )
-            
+            # get_vacation_request_email_template(
+            #     request.user, serializer.data, saved.id
+            # )
+
             set_notification_request_redis(serializer.data)
-        
+
             # send_email_for_request(request.user.id, msg, "Vacation request")
             # if not sent:
             #     return CustomResponse.bad_request(message="Error in sending email, can not sent email with this request.")
@@ -428,7 +441,8 @@ class UserVacationBalanceApiView(GenericAPIView):
         balance = v.check(user)
         request.data["user"] = TeamSerializer(user).data
         return CustomResponse.success(
-            message="Sucess found balance.", data=CalculateBalanceSerializer(balance).data
+            message="Sucess found balance.",
+            data=CalculateBalanceSerializer(balance).data,
         )
 
     def put(self, request: Request) -> CustomResponse:
