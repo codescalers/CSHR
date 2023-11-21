@@ -87,11 +87,10 @@ class User(AbstractBaseUser, TimeStamp):
     telegram_link = models.CharField(max_length=100)
     birthday = models.DateField()
     team = models.CharField(max_length=20, choices=TEAM.choices)
-    salary = models.JSONField(default=dict)
+    salary = models.JSONField(default=dict, null=True, blank=True)
     location = models.ForeignKey(Office, on_delete=models.CASCADE)
     skills = models.ManyToManyField(
-        UserSkills,
-        related_name="skills",
+        UserSkills, related_name="skills", null=True, blank=True
     )
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
     gender = models.CharField(max_length=20, choices=GENDER_TYPE.choices)

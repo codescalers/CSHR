@@ -18,7 +18,7 @@
         <tr>
           <th scope="col">#</th>
           {#each headers as header, index (index)}
-            <th scope="col">{header}</th>
+            <th class="text-center" scope="col">{header}</th>
           {/each}
         </tr>
       </thead>

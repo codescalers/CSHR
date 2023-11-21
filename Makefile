@@ -24,7 +24,8 @@ migrate:
 	$(CMD) python3 manage.py migrate
 user:
 	$(CMD) python3 manage.py createsuperuser
-	$(CMD) python3 manage.py runserver
+data:
+	$(CMD) python3 manage.py create locations users
 deploy:
 	$(terraform) && terraform init && terraform apply -auto-approve
 destroy:

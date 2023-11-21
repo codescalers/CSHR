@@ -36,21 +36,9 @@
       <Loading className={"loader"} />
     </div>
   {:else if supervisors && members}
-    <div class="row pt-5">
-      <div class="col-12">
-        <h4>Reporting to</h4>
-      </div>
-      <div class="col-12">
-        <Supervisors {supervisors} />
-      </div>
-    </div>
     <div class="row">
-      <div class="col-12">
-        <h4>Members</h4>
-      </div>
-      <div class="col-12">
-        <Members {members} />
-      </div>
+      <Supervisors {supervisors} />
+      <Members {members} />
     </div>
   {/if}
 </div>

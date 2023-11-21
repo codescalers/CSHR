@@ -4,7 +4,7 @@ from django.db.models import Q
 from typing import List, Union
 from server.cshr.models.office import Office
 
-from server.cshr.models.users import USER_TYPE, User, UserSkills
+from server.cshr.models.users import User, UserSkills
 
 
 def get_user_by_id(id: str) -> User:
@@ -92,9 +92,8 @@ def get_or_create_skill_by_name(name: str) -> UserSkills or bool:
 
 def get_user_team_members(user: User) -> List[User]:
     """Return a list of members and team leaders"""
-    members: List[User] = User.objects.filter(
-        team=user.team, user_type=USER_TYPE.USER
-    ).order_by("-created_at")
+    # , user_type=USER_TYPE.USER
+    members: List[User] = User.objects.filter(team=user.team).order_by("-created_at")
     return members
 
 
