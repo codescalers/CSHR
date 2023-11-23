@@ -77,7 +77,7 @@ class Vacation {
 
   public async updateUserBalance(userBalance: VacationBalanceType) {
     try {
-      await http.put(`/vacations/balance/?user_id=${userBalance.user!.id}`, userBalance);
+      await http.put(`/vacations/balance/?user_id=${userBalance.user?.id}`, userBalance);
     } catch (err: any) {
       throw new Error(err.response.data.message || err.response.data.detail);
     }

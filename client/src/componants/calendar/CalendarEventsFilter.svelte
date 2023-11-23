@@ -23,6 +23,7 @@
   <div class="row align-items-center p-4">
     <div class="col-6 d-flex justify-content-start">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="task--danger hint-labels d-flex flex-row justify-content-between"
         on:click={() => {
@@ -35,6 +36,7 @@
     </div>
     <div class="col-6 d-flex justify-content-end">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="task--info hint-labels d-flex flex-row justify-content-between"
         on:click={() => {
@@ -47,6 +49,7 @@
     </div>
     <div class="col-6 d-flex mt-2 justify-content-start">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="task--warning hint-labels d-flex flex-row justify-content-between"
         on:click={() => {
@@ -59,6 +62,7 @@
     </div>
     <div class="col-6 d-flex mt-2 justify-content-end">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="task--success hint-labels d-flex flex-row justify-content-between"
         on:click={() => {
@@ -71,6 +75,7 @@
     </div>
     <div class="col-6 d-flex mt-2 justify-content-center">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class="task--primary hint-labels d-flex flex-row justify-content-between"
         on:click={() => {

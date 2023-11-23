@@ -98,15 +98,18 @@
     <div class="calendar table-responsive table-responsive">
       {#each headers as header}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
         <span class="day-name" on:click={() => dispatch("headerClick", header)}>{header}</span>
       {/each}
 
       {#each days as day}
         {#if day.enabled}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y-no-static-element-interactions -->
           <span class="day" on:click={() => dispatch("dayClick", day)}>{day.name}</span>
         {:else}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y-no-static-element-interactions -->
           <span class="day day-disabled" on:click={() => dispatch("dayClick", day)}>{day.name}</span>
         {/if}
       {/each}
@@ -115,6 +118,7 @@
         {#each items as item}
           {#if eventNames.has(item.eventName) && item.eventName === "public_holiday"}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <section
               on:click={() => dispatch("itemClick", item)}
               class="task event__public_holiday {item.className}"
@@ -135,6 +139,7 @@
             </section>
           {:else if eventNames.has(item.eventName) && item.eventName === "meeting"}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <section
               title="Click to see all meetings today!"
               on:click={() => dispatch("itemClick", item)}
@@ -158,6 +163,7 @@
             </section>
           {:else if eventNames.has(item.eventName) && item.eventName === "vacation"}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <section
               on:click={() => dispatch("itemClick", item)}
               class="task event__vacation {item.className}"
@@ -178,6 +184,7 @@
             </section>
           {:else if eventNames.has(item.eventName) && item.eventName === "event"}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <section
               on:click={() => dispatch("itemClick", item)}
               class="task event__event {item.className}"
@@ -198,6 +205,7 @@
             </section>
           {:else if eventNames.has(item.eventName) && item.eventName === "birthday"}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <section
               on:click={() => dispatch("itemClick", item)}
               class="task event__birthday {item.className}"
@@ -222,7 +230,7 @@
   </div>
 {/if}
 
-{#if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.vacation}
+{#if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.vacation && clickedItemOnModal.vacation && clickedItemOnModal.vacation.length}
   <CalendarVacationDataModal
     bind:clickedItemOnModal
     bind:showModal
@@ -230,16 +238,16 @@
     currentVacationID={+clickedItemOnModal.vacation[0].id}
     on:reject={removeItem}
   />
-{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.event}
+{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.event && clickedItemOnModal.event && clickedItemOnModal.event.length}
   <CalendarEventDataModal bind:clickedItemOnModal bind:showModal currentEventActive={clickedItemOnModal.event[0]} />
-{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.birthday}
+{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.birthday && clickedItemOnModal.users && clickedItemOnModal.users.length}
   <CalendarBirthdayModel
     bind:clickedItemOnModal
     bind:showModal
     currentUserActive={clickedItemOnModal.users[0]}
     currentUserID={clickedItemOnModal.users[0].id}
   />
-{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.meeting}
+{:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.meeting && clickedItemOnModal.meeting && clickedItemOnModal.meeting.length}
   <CalendarMeetingModel
     bind:showModal
     bind:clickedItemOnModal

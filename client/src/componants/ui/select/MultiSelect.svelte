@@ -33,12 +33,12 @@
   function select(e: any, option: SelectOptionType) {
     e.stopPropagation();
     if (options.multiple) {
-      if (options.selected.includes(option)) {
+      if (options.selected?.includes(option)) {
         options.selected = options.selected.filter(item => item.value !== option.value);
 
         options.selected = options.selected.filter(item => item.value !== option.value);
       } else {
-        options.selected = [...options.selected, option];
+        options.selected = [...options.selected!, option];
       }
     } else {
       options.selected = [option];
@@ -60,14 +60,14 @@
           options.show = true;
           e.preventDefault();
           if (highlightedIndex === 0) {
-            highlightedIndex = options.optionsList.length - 1;
+            highlightedIndex = options.optionsList!.length - 1;
           } else {
             highlightedIndex--;
           }
           break;
         case "ArrowDown":
           options.show = true;
-          if (highlightedIndex === options.optionsList.length - 1) {
+          if (highlightedIndex === options.optionsList!.length - 1) {
             highlightedIndex = 0;
           } else {
             highlightedIndex++;
@@ -91,6 +91,7 @@
 
   <div class={`${options.isTop ? "col-sm-8" : "col-sm-12"}`}>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       use:ref
       on:blur={() => (options.show = false)}
@@ -106,7 +107,7 @@
                 class="option-badge"
                 on:click={e => {
                   e.stopPropagation();
-                  options.selected = options.selected.filter(o => o.value !== option.value);
+                  options.selected = options.selected?.filter(o => o.value !== option.value);
                   dispatch("removeItem", {
                     selected: options.selected,
                   });
@@ -135,8 +136,9 @@
       <ul class="options {options.show ? 'show' : ''}">
         {#if options.optionsList}
           {#each options.optionsList as option, index (index + +"" + option.value + "" + index)}
+            <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
             <li
-              class={`option ${options.selected.includes(option) ? "selected" : ""} ${
+              class={`option ${options.selected?.includes(option) ? "selected" : ""} ${
                 highlightedIndex === index ? "highlighted" : ""
               }`}
               data-value={option.value}

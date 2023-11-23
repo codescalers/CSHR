@@ -33,6 +33,7 @@
         <div class="row m-0 justify-content-center">
           {#each clickedItemOnModal.users as user}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <div
               class={`col-2 p-0 justify-content-center d-flex photo-active ${
                 user.id === currentUserID ? "active-user" : ""
@@ -83,7 +84,10 @@
       type="button"
       class="abtn btn-secondary"
       on:click={() => {
-        document.getElementById("body-pd").style.overflow = "auto";
+        const body = document.getElementById("body-pd");
+        if (body) {
+          body.style.overflow = "auto";
+        }
         showModal = false;
       }}
     >

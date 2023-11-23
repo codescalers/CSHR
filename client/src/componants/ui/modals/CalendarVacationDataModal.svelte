@@ -40,7 +40,7 @@
       setTimeout(() => {
         showAlert = false;
       }, 5000);
-    } catch (error) {
+    } catch (error: any) {
       responseMessage = error.message;
       responseTitle = "Error!";
       responseClass = "danger";
@@ -66,7 +66,7 @@
       setTimeout(() => {
         showAlert = false;
       }, 3000);
-    } catch (error) {
+    } catch (error: any) {
       responseMessage = error.message;
       responseTitle = "Error!";
       responseClass = "danger";
@@ -86,34 +86,39 @@
 <CalendarModal bind:showModal>
   <header slot="header" class="text-center w-100">
     <h6 class="modal-title" id="exampleModalLongTitle">
-      <strong>
-        <span class="text-primary">From</span>
-        {clickedItemOnModal.vacation[0].from_date}
-        <span class="text-primary">to</span>
-        {clickedItemOnModal.vacation[0].end_date}
-        <span class="text-primary">|</span>
-        Vacations {CalenderEventEmojeTyoe.vacation}
-      </strong>
+      {#if clickedItemOnModal.vacation}
+        <strong>
+          <span class="text-primary">From</span>
+          {clickedItemOnModal.vacation[0].from_date}
+          <span class="text-primary">to</span>
+          {clickedItemOnModal.vacation[0].end_date}
+          <span class="text-primary">|</span>
+          Vacations {CalenderEventEmojeTyoe.vacation}
+        </strong>
+      {/if}
     </h6>
   </header>
   <div slot="body">
     <div class="pt-3 card-body px-4 card-hover">
       <h5 class="card-title">
-        <div class="row m-0 justify-content-center">
-          {#each clickedItemOnModal.vacation as vacation}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div
-              class={`col-2 p-0 justify-content-center d-flex photo-active ${
-                +vacation.id === currentVacationID ? "active-user" : ""
-              }`}
-              on:click={() => {
-                activateVacation(vacation);
-              }}
-            >
-              <ProfileImage size={70} user={vacation.applying_user} noLink={true} />
-            </div>
-          {/each}
-        </div>
+        {#if clickedItemOnModal.vacation}
+          <div class="row m-0 justify-content-center">
+            {#each clickedItemOnModal.vacation as vacation}
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <!-- svelte-ignore a11y-no-static-element-interactions -->
+              <div
+                class={`col-2 p-0 justify-content-center d-flex photo-active ${
+                  +vacation.id === currentVacationID ? "active-user" : ""
+                }`}
+                on:click={() => {
+                  activateVacation(vacation);
+                }}
+              >
+                <ProfileImage size={70} user={vacation.applying_user} noLink={true} />
+              </div>
+            {/each}
+          </div>
+        {/if}
       </h5>
 
       <div class="text-center mt-4 mb-2 text-dark">
@@ -266,7 +271,10 @@
       type="button"
       class="abtn btn-secondary"
       on:click={() => {
-        document.getElementById("body-pd").style.overflow = "auto";
+        const body = document.getElementById("body-pd");
+        if (body) {
+          body.style.overflow = "auto";
+        }
         showModal = false;
       }}
     >

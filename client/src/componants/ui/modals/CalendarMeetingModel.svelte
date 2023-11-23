@@ -21,7 +21,7 @@
     var ampm = hours >= 12 ? "pm" : "am";
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? "0" + minutes : minutes;
+    minutes = +minutes < 10 ? "0" + minutes : minutes;
     var strTime = hours + ":" + minutes + " " + ampm;
     return strTime;
   }
@@ -30,32 +30,37 @@
 <CalendarModal bind:showModal>
   <header slot="header" class="text-center w-100">
     <h6 class="modal-title" id="exampleModalLongTitle">
-      <strong>
-        {clickedItemOnModal.meeting[0].date.year} -
-        {clickedItemOnModal.meeting[0].date.month} -
-        {clickedItemOnModal.meeting[0].date.day}
-        Meetings
-        {CalenderEventEmojeTyoe.meeting}
-      </strong>
+      {#if clickedItemOnModal.meeting}
+        <strong>
+          {clickedItemOnModal.meeting[0].date.year} -
+          {clickedItemOnModal.meeting[0].date.month} -
+          {clickedItemOnModal.meeting[0].date.day}
+          Meetings
+          {CalenderEventEmojeTyoe.meeting}
+        </strong>
+      {/if}
     </h6>
   </header>
   <div slot="body">
     <div class="container d-flex flex-column gap-5 px-5 my-5">
       <h4 class="mx-auto text-muted text-center">Meetings available, Created by.</h4>
       <div class="row m-0 justify-content-center">
-        {#each clickedItemOnModal.meeting as meeting}
-          <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <div
-            class={`col-2 p-0 justify-content-center d-flex photo-active ${
-              meeting.id === currentMeetingID ? "active-user" : ""
-            }`}
-            on:click={() => {
-              activateUser(meeting);
-            }}
-          >
-            <ProfileImage size={70} user={meeting.host_user} noLink={true} />
-          </div>
-        {/each}
+        {#if clickedItemOnModal.meeting}
+          {#each clickedItemOnModal.meeting as meeting}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div
+              class={`col-2 p-0 justify-content-center d-flex photo-active ${
+                meeting.id === currentMeetingID ? "active-user" : ""
+              }`}
+              on:click={() => {
+                activateUser(meeting);
+              }}
+            >
+              <ProfileImage size={70} user={meeting.host_user} noLink={true} />
+            </div>
+          {/each}
+        {/if}
       </div>
       {#if currentMeetingActive}
         <div class="card">
@@ -130,7 +135,10 @@
       type="button"
       class="abtn btn-secondary"
       on:click={() => {
-        document.getElementById("body-pd").style.overflow = "auto";
+        const body = document.getElementById("body-pd");
+        if (body) {
+          body.style.overflow = "auto";
+        }
         showModal = false;
       }}
     >

@@ -13,6 +13,7 @@
     {#if image.image.includes("profile_image")}
       {#if image.image[0] == "/"}
         <!-- svelte-ignore a11y-missing-attribute -->
+        <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
         <img
           class={`profile-image stacked_img my-2 ${
             itemIndex === index && stackedImages.length !== 1 ? "activate" : ""
@@ -21,6 +22,7 @@
           on:click={() => (itemIndex = index)}
         />
       {:else}
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div
           class={`stacked_img my-2 ${itemIndex === index && stackedImages.length !== 1 ? "activate" : ""}`}
           style="background-image:url({window.configs.SERVER_API_URL + image.image});z-index:${100 -
@@ -31,6 +33,7 @@
         />
       {/if}
     {:else}
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
         class={`stacked_img my-2 ${itemIndex === index && stackedImages.length !== 1 ? "activate" : ""}`}
         style="background-color:{image.image};z-index:${100 - index};color: #fff"
