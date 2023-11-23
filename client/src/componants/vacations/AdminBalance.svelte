@@ -1,15 +1,15 @@
 <script lang="ts">
+  import Vacation from "../../apis/vacations/Vacation";
   import type { VacationBalanceType } from "../../utils/types";
+  import Submit from "../ui/Button.svelte";
   import Input from "../ui/Input.svelte";
   import DatePickerSelect from "./DatePickerSelect.svelte";
-  import Vacation from "../../apis/vacations/Vacation";
-  import Submit from "../ui/Button.svelte";
 
   export let tab: number;
 
   let year: number = new Date().getFullYear();
-  let isLoading: boolean = false;
-  let isError: boolean = false;
+  let isLoading = false;
+  let isError = false;
 
   let dates: string[] = [];
 
@@ -27,13 +27,9 @@
 
   const handleDates = (dates_: string[]) => {
     if (dates_ != null) {
-      dates_.forEach((thisDate) => {
+      dates_.forEach(thisDate => {
         let newdate = new Date(thisDate);
-        dates.push(
-          `${newdate.getFullYear()}-${
-            newdate.getMonth() + 1
-          }-${newdate.getDate()}`
-        );
+        dates.push(`${newdate.getFullYear()}-${newdate.getMonth() + 1}-${newdate.getDate()}`);
       });
     }
     return dates;
@@ -62,10 +58,8 @@
     <div class="card-body">
       <div class="text-center">
         <small>
-          The displayed values reflect the current year's data for the
-          respective office. If you wish to generate new values, please change
-          the year. Otherwise, the existing data for <strong>{year}</strong> will
-          be modified.
+          The displayed values reflect the current year's data for the respective office. If you wish to generate new
+          values, please change the year. Otherwise, the existing data for <strong>{year}</strong> will be modified.
         </small>
       </div>
       <div class="form-outline">
@@ -140,10 +134,7 @@
         />
       </div>
 
-      <DatePickerSelect
-        on:selectedDate={removeValues}
-        bind:date={balanceValues.public_holidays}
-      />
+      <DatePickerSelect on:selectedDate={removeValues} bind:date={balanceValues.public_holidays} />
 
       <div class="col-12 mt-4 d-flex justify-content-end">
         <Submit
@@ -163,8 +154,7 @@
                 year: balanceValues.year,
                 location: balanceValues.location,
               });
-              successMessage =
-                "The vacation balances have been added/updated successfully.";
+              successMessage = "The vacation balances have been added/updated successfully.";
               await loadValues();
             } catch (error) {
               errorMessage =

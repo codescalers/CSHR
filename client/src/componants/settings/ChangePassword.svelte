@@ -1,22 +1,20 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
   import { navigate } from "svelte-navigator";
-  import Submit from "../ui/Button.svelte";
-  import { validatePassword } from "../../utils/validations";
-  import UserDataService from "../../apis/users/users";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  import UserDataService from "../../apis/users/users";
+  import { validatePassword } from "../../utils/validations";
+  import Submit from "../ui/Button.svelte";
+  import Input from "../ui/Input.svelte";
+
+  export let isLoading = false;
+  export let isError = false;
 
   let oldPassword: string, newPassword: string;
   let isErrorOldPass: null | boolean,
     isErrorNewPass: null | boolean = null;
 
   $: submitDisabled =
-    isErrorOldPass == true ||
-    isErrorOldPass == null ||
-    isErrorNewPass == true ||
-    isErrorNewPass == null;
+    isErrorOldPass == true || isErrorOldPass == null || isErrorNewPass == true || isErrorNewPass == null;
 
   let errorMessage: string;
   let successMessage: string;

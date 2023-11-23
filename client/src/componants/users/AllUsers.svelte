@@ -1,37 +1,35 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type {
-    OfficeType,
-    SelectOptionType,
-    UserInterface,
-  } from "../../utils/types";
-  import User from "./User.svelte";
+
+  import officeDataService from "../../apis/offices/Office";
   import usersDataService from "../../apis/users/users";
+  import { OfficeStore, UserStore } from "../../utils/stores";
+  import type { OfficeType, SelectOptionsComponent, SelectOptionType, UserInterface } from "../../utils/types";
   import Loading from "../ui/Loading.svelte";
   import MultiSelect from "../ui/select/MultiSelect.svelte";
-  import { OfficeStore, UserStore } from "../../utils/stores";
-  import officeDataService from "../../apis/offices/Office";
+  import User from "./User.svelte";
 
   export let isLoading = false;
   export let isError: boolean | null = null;
 
   let users: UserInterface[];
   let userOffice = $UserStore.location;
+  let isLoadingUsers = false;
 
   const changeOffice = (selectedOffice: SelectOptionType) => {
-    const office = $OfficeStore.filter(
-      (_office: OfficeType) => _office.id === selectedOffice.value
-    )[0]; // Value is the id.
-    if(userOffice.id != office.id){
+    const office = $OfficeStore.filter((_office: OfficeType) => _office.id === selectedOffice.value)[0]; // Value is the id.
+    if (userOffice.id != office.id) {
       userOffice = office;
       loadUsers();
     }
   };
 
   const loadUsers = async () => {
-    isLoading = true;
-    users = await usersDataService.getAll({locationId: userOffice.id});
-    isLoading = false;
+    isLoadingUsers = true;
+    options.disabled = true;
+    users = await usersDataService.getAll({ locationId: userOffice.id });
+    options.disabled = false;
+    isLoadingUsers = false;
   };
 
   onMount(async () => {
@@ -67,6 +65,17 @@
   let locationOptions: SelectOptionType[] = [];
   let locationSelected: SelectOptionType[] = [];
   let isErrorLocation: null | boolean;
+
+  let options: SelectOptionsComponent = {
+    optionsList: locationOptions,
+    selected: locationSelected,
+    isLabel: true,
+    label: "Select Office",
+    placeholder: "Select Office.",
+    multiple: false,
+    isError: isErrorLocation,
+    isTop: true,
+  };
 </script>
 
 {#if isLoading}
@@ -77,22 +86,15 @@
   <div class="container height-100">
     <div class="card office-selection" style="margin-top: 15px;">
       <small>
-        You can change the selected office to discover the team in other
-        offices, current elected office is your office.
+        You can change the selected office to discover the team in other offices, current elected office is your office.
       </small>
-      <MultiSelect
-        bind:options={locationOptions}
-        bind:selected={locationSelected}
-        isLabel={true}
-        label="Select Office"
-        placeholder="Select user role"
-        removeAllTitle="Remove user role"
-        multiple={false}
-        bind:isError={isErrorLocation}
-        on:select={(e) => changeOffice(e.detail.selected)}
-      />
+      <MultiSelect bind:options on:select={e => changeOffice(e.detail.selected)} />
     </div>
-    {#if users.length}
+    {#if isLoadingUsers}
+      <div class="mt-5 d-flex justify-content-center align-items-center">
+        <Loading className={"loader"} />
+      </div>
+    {:else if users.length}
       <div class="d-flex flex-column justify-content-between">
         <div>
           <div class="row justify-content-between">
@@ -106,9 +108,7 @@
       </div>
     {:else}
       <div class="d-flex justify-content-center align-items-center">
-        <div class="alert alert-warning">
-          It appears that there are no users in this office
-        </div>
+        <div class="alert alert-warning">It appears that there are no users in this office</div>
       </div>
     {/if}
   </div>

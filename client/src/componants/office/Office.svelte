@@ -1,19 +1,17 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
-  import Submit from "../ui/Button.svelte";
-  import MultiSelect from "../ui/select/MultiSelect.svelte";
-  import { weekendHolidaysChoices } from "../../utils/choices";
-  import type { SelectOptionType } from "../../utils/types";
   import OfficeDataService from "../../apis/offices/Office";
+  import { weekendHolidaysChoices } from "../../utils/choices";
+  import type { SelectOptionsComponent } from "../../utils/types";
   import { validateName } from "../../utils/validations";
+  import Submit from "../ui/Button.svelte";
+  import Input from "../ui/Input.svelte";
+  import MultiSelect from "../ui/select/MultiSelect.svelte";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  export let isLoading = false;
+  export let isError = false;
 
   let officeName: string;
   let officeCountry: string;
-  let weekendHolidays: SelectOptionType[] = weekendHolidaysChoices;
-  let weekendHolidaysSelected: SelectOptionType[] = [];
   let successMessage: string;
   let errorMessage: string;
 
@@ -24,7 +22,18 @@
     officeCountry == "" ||
     officeCountry == undefined ||
     officeCountry == null ||
-    weekendHolidaysSelected.length == 0;
+    weekendOptions.selected.length == 0;
+
+  let weekendOptions: SelectOptionsComponent = {
+    optionsList: weekendHolidaysChoices,
+    selected: [],
+    isLabel: true,
+    label: "Weekend Holidays",
+    placeholder: "Select Weekend Holidays",
+    removeAllTitle: "Remove all Weekend Holidays",
+    isTop: true,
+    multiple: false,
+  };
 </script>
 
 <div class="bg-white p-3 card">
@@ -55,15 +64,7 @@
         />
       </div>
       <div class="form-outline">
-        <MultiSelect
-          bind:options={weekendHolidays}
-          bind:selected={weekendHolidaysSelected}
-          isLabel={true}
-          label="Weekend Holidays"
-          placeholder="Select Weekend Holidays"
-          removeAllTitle="Remove all Weekend Holidays"
-          multiple={false}
-        />
+        <MultiSelect bind:options={weekendOptions} />
       </div>
       <div class="form-outline mt-4 d-flex justify-content-end">
         <Submit
@@ -75,7 +76,7 @@
             isLoading = true;
             try {
               await OfficeDataService.post({
-                weekend: weekendHolidaysSelected[0].value,
+                weekend: weekendOptions.selected[0].value,
                 name: officeName,
                 country: officeCountry,
               });
@@ -88,7 +89,7 @@
               isLoading = false;
               officeName = "";
               officeCountry = "";
-              weekendHolidaysSelected = [];
+              weekendOptions.selected = [];
             }
             return isError;
           }}

@@ -3,17 +3,14 @@
   // headers array
   export let headers: string[];
   // table class
-  export let tableClass: string = "";
+  export let tableClass = "";
   // table id
   export let tableId: string = uuidv4();
 </script>
 
 <div class="container d-flex flex-column justify-content-between">
   <div class="table-responsive">
-    <table
-      id={tableId}
-      class={`table table-striped  table-hover table-sm ${tableClass}`}
-    >
+    <table id={tableId} class={`table table-striped  table-hover table-sm ${tableClass}`}>
       <thead class="thead-dark">
         <tr>
           <th scope="col">#</th>

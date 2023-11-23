@@ -1,8 +1,8 @@
 <script lang="ts">
   import Loading from "../Loading.svelte";
-  export let showModal: boolean = false;
+  export let showModal = false;
 
-  let isLoading: boolean = false;
+  let isLoading = false;
   const displayLoading = () => {
     if (showModal) {
       document.getElementById("body-pd").style.overflow = "hidden";

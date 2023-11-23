@@ -1,18 +1,18 @@
 <script lang="ts">
-  import Error from "../../pages/Error.svelte";
   import { onMount } from "svelte";
-  import { Route } from "svelte-navigator";
-  import Loading from "../ui/Loading.svelte";
-  import Vacation from "../../apis/vacations/Vacation";
-  import ProfileImage from "../profile/ProfileImage.svelte";
-  import { RequestStatus } from "../../utils/enums";
-  import Submit from "../ui/Button.svelte";
-  import { UserStore } from "../../utils/stores";
   import { tweened } from "svelte/motion";
-  import ActionButton from "../requests/requestsButtons.svelte";
-  import { Link } from "svelte-navigator";
+  import { Route } from "svelte-navigator";
   import { navigate } from "svelte-navigator";
+
   import Requests from "../../apis/requests/Requests";
+  import Vacation from "../../apis/vacations/Vacation";
+  import Error from "../../pages/Error.svelte";
+  import { RequestStatus } from "../../utils/enums";
+  import { UserStore } from "../../utils/stores";
+  import ProfileImage from "../profile/ProfileImage.svelte";
+  import ActionButton from "../requests/requestsButtons.svelte";
+  import Submit from "../ui/Button.svelte";
+  import Loading from "../ui/Loading.svelte";
 
   export let isLoading = false;
   export let isError: boolean | null = null;
@@ -108,8 +108,7 @@
         </div>
       </div>
       <small class="text-muted text-center">
-        Hint: Once you click on the delete button the request will delete
-        without any confirmation
+        Hint: Once you click on the delete button the request will delete without any confirmation
       </small>
     {/if}
     <div class="card p-4 d-flex justify-content-center">
@@ -194,9 +193,7 @@
                 <path
                   d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0z"
                 />
-                <path
-                  d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z"
-                />
+                <path d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z" />
               </svg>
             {:else}
               <!-- Rejacted -->
@@ -219,15 +216,9 @@
         <form>
           <div class="form-group">
             <label for="comment" class="mb-4">Leave Comment</label>
-            <textarea
-              bind:value={thisComment}
-              class="form-control"
-              id="comment"
-            />
+            <textarea bind:value={thisComment} class="form-control" id="comment" />
           </div>
-          <div
-            class="mt-3 pt-3 d-flex justify-content-center align-items-center w-100"
-          >
+          <div class="mt-3 pt-3 d-flex justify-content-center align-items-center w-100">
             <Submit
               width={"20"}
               bind:disabled={formDisable}
@@ -255,7 +246,7 @@
                   isLoading = false;
                   thisComment = "";
                 }
-                return isError;
+                // return isError;
               }}
             />
           </div>
@@ -268,9 +259,7 @@
         <div class="row">
           {#each vacation.change_log as comment}
             {#if comment.user.id == $UserStore.id}
-              <div
-                class="col-12 mt-4 d-flex card p-4 d-flex justify-content-end left-card"
-              >
+              <div class="col-12 mt-4 d-flex card p-4 d-flex justify-content-end left-card">
                 <div class="row">
                   <div class="col-12 d-flex">
                     <ProfileImage user={comment.user} />
@@ -292,9 +281,7 @@
                 </div>
               </div>
             {:else}
-              <div
-                class="col-12 mt-4 d-flex card p-4 d-flex justify-content-center right-card"
-              >
+              <div class="col-12 mt-4 d-flex card p-4 d-flex justify-content-center right-card">
                 <div class="row">
                   <div class="col-12 d-flex">
                     <ProfileImage user={comment.user} />
@@ -333,8 +320,8 @@
   .custom-a:hover {
     color: #fff !important;
   }
-  .display-buttons {
+  /* .display-buttons {
     flex-direction: column;
     width: 20%;
-  }
+  } */
 </style>

@@ -1,14 +1,10 @@
 <script lang="ts">
   import { CalenderEventEmojeTyoe } from "../../../utils/enums";
-  import type {
-    calendarItemsType,
-    meetingItemType,
-    dateType,
-  } from "../../../utils/types";
+  import type { calendarItemsType, dateType, meetingItemType } from "../../../utils/types";
   import ProfileImage from "../../profile/ProfileImage.svelte";
   import CalendarModal from "./CalendarModal.svelte";
 
-  export let showModal: boolean = false;
+  export let showModal = false;
   export let clickedItemOnModal: calendarItemsType;
   export let currentMeetingActive: meetingItemType;
   export let currentMeetingID: number = currentMeetingActive.id;
@@ -45,9 +41,7 @@
   </header>
   <div slot="body">
     <div class="container d-flex flex-column gap-5 px-5 my-5">
-      <h4 class="mx-auto text-muted text-center">
-        Meetings available, Created by.
-      </h4>
+      <h4 class="mx-auto text-muted text-center">Meetings available, Created by.</h4>
       <div class="row m-0 justify-content-center">
         {#each clickedItemOnModal.meeting as meeting}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -113,12 +107,8 @@
               </thead>
               <tbody>
                 <tr>
-                  <td class="align-middle"
-                    >{meetingDate.year} - {meetingDate.month} - {meetingDate.day}</td
-                  >
-                  <td class="align-middle"
-                    >{formatAMPM(meetingDate.hour, meetingDate.minute)}</td
-                  >
+                  <td class="align-middle">{meetingDate.year} - {meetingDate.month} - {meetingDate.day}</td>
+                  <td class="align-middle">{formatAMPM(meetingDate.hour, meetingDate.minute)}</td>
                 </tr>
               </tbody>
             </table>

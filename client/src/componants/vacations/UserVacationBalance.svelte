@@ -1,16 +1,13 @@
 <script lang="ts">
-  import type {
-    SelectOptionType,
-    VacationBalanceType,
-  } from "../../utils/types";
-  import PeopleSelect from "../ui/select/UsersMultiSelect.svelte";
+  import Vacation from "../../apis/vacations/Vacation";
+  import type { SelectOptionsComponent, VacationBalanceType } from "../../utils/types";
+  import ProfileImage from "../profile/ProfileImage.svelte";
   import Alert from "../ui/Alert.svelte";
   import Submit from "../ui/Button.svelte";
   import Input from "../ui/Input.svelte";
-  import Vacation from "../../apis/vacations/Vacation";
-  import ProfileImage from "../profile/ProfileImage.svelte";
+  import PeopleSelect from "../ui/select/UsersMultiSelect.svelte";
 
-  let isLoading: boolean = false;
+  let isLoading = false;
   let isUserLoaded = false;
 
   let isError: boolean | null = false;
@@ -19,64 +16,56 @@
     isErrorLeave: boolean | null,
     isErrorEmergency: boolean | null = null;
 
-  let userSelected: SelectOptionType[] = [];
+  // let userSelected: SelectOptionType[] = [];
 
   let isErrorUserSelected: boolean | null = null;
   let userBalance: VacationBalanceType;
   let alertMessage: string, alertType: string, alertTitle: string;
-  let showLoadButton: boolean = true;
+  let showLoadButton = true;
 
   async function loadUserBalance() {
-    const userID = userSelected[0].value;
+    const userID = usersOptions.selected[0].value;
     try {
       isLoading = true;
       userBalance = await Vacation.balance(userID);
-      userBalance.annual_leaves = Reflect.get(userBalance, "annual_leaves")[
-        "all"
-      ];
-      userBalance.emergency_leaves = Reflect.get(
-        userBalance,
-        "emergency_leaves"
-      )["all"];
-      userBalance.leave_excuses = Reflect.get(userBalance, "leave_excuses")[
-        "all"
-      ];
+      userBalance.annual_leaves = Reflect.get(userBalance, "annual_leaves")["all"];
+      userBalance.emergency_leaves = Reflect.get(userBalance, "emergency_leaves")["all"];
+      userBalance.leave_excuses = Reflect.get(userBalance, "leave_excuses")["all"];
       showLoadButton = false;
+      isUserLoaded = true;
     } catch (err) {
       alertType = "danger";
       alertTitle = "Error while trying to get user balance";
       alertMessage = err.message;
-      isLoading = false;
       isError = true;
       showAlert = true;
+    } finally {
+      isLoading = false;
     }
-    isUserLoaded = true;
-    console.log("userBalance", userBalance);
   }
 
   $: submitDisabled =
-    isErrorAnunual == true ||
-    isErrorLeave == true ||
-    isErrorEmergency == true ||
-    userSelected.length == 0;
+    isErrorAnunual == true || isErrorLeave == true || isErrorEmergency == true || usersOptions.selected.length == 0;
 
   let successMessage: string;
   let errorMessage: string;
+
+  let usersOptions: SelectOptionsComponent = {
+    label: "User",
+    optionsList: [],
+    selected: [],
+    isTop: true,
+    multiple: false,
+    placeholder: "Select User...",
+    isError: isErrorUserSelected,
+  };
 </script>
 
 <div class="bg-white card">
   <div class="card-body">
     <div class="form-outline">
       {#if !isUserLoaded}
-        <PeopleSelect
-          mylabel={"User"}
-          placeholder={"Select User..."}
-          bind:isError={isErrorUserSelected}
-          bind:selected={userSelected}
-          isTop={true}
-          multiple={false}
-          usersInAdminOffice={true}
-        />
+        <PeopleSelect bind:options={usersOptions} usersInAdminOffice={true} />
       {:else}
         <div class="mb-2 d-flex">
           <ProfileImage user={userBalance.user} />
@@ -150,9 +139,7 @@
             value=""
             id="flexCheckDefault"
           />
-          <label class="form-check-label" for="flexCheckDefault">
-            Delete old balance
-          </label>
+          <label class="form-check-label" for="flexCheckDefault"> Delete old balance </label>
         </div>
         <div class="form-outline w-100 mt-4 d-flex justify-content-end">
           <Submit
@@ -161,6 +148,7 @@
             onClick={() => (isUserLoaded = null)}
             className="abtn btn-success mr-4"
           />
+          <div style="margin-left: 5px; margin-right: 5px;" />
           <Submit
             width={"30"}
             bind:successMessage
@@ -171,8 +159,7 @@
               isLoading = true;
               try {
                 Vacation.updateUserBalance(userBalance);
-                successMessage =
-                  "The user balance has been updated successfully.";
+                successMessage = "The user balance has been updated successfully.";
               } catch (error) {
                 errorMessage =
                   "Error while trying to update the user balance, please check the entered data and try again.";
@@ -188,13 +175,9 @@
         </div>
       {/if}
     </div>
-    {#if userSelected.length > 0 && !isUserLoaded}
+    {#if usersOptions.selected.length > 0 && !isUserLoaded}
       <div class="mt-4 form-outline d-flex justify-content-center">
-        <button
-          type="button"
-          class="abtn btn-success"
-          on:click={loadUserBalance}
-        >
+        <button type="button" class="abtn btn-success" on:click={loadUserBalance}>
           <i class="fa fa-plus" />
           Load Balance
         </button>

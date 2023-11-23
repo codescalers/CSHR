@@ -1,11 +1,12 @@
 <script lang="ts">
-  import Requests from "../../apis/requests/Requests";
   import { createEventDispatcher } from "svelte";
+
+  import Requests from "../../apis/requests/Requests";
   import { RequestStatus } from "../../utils/enums";
   export let request: any;
   const dispatch = createEventDispatcher();
-  let isApproveLoading: boolean = false;
-  let isRejactLoading: boolean = false;
+  let isApproveLoading = false;
+  let isRejactLoading = false;
 
   async function approve_btn(request: any) {
     isApproveLoading = true;

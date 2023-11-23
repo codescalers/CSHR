@@ -1,14 +1,14 @@
 <script lang="ts">
-  import PeopleSelect from "../ui/select/UsersMultiSelect.svelte";
+  import evaluationDataService from "../../apis/evaluation/Evaluation";
   import type { SelectOptionType } from "../../utils/types";
-  import MultiSelect from "../ui/select/MultiSelect.svelte";
+  import { validateLink } from "../../utils/validations";
   import Submit from "../ui/Button.svelte";
   import Input from "../ui/Input.svelte";
-  import evaluationDataService from "../../apis/evaluation/Evaluation";
-  import { validateLink } from "../../utils/validations";
+  import MultiSelect from "../ui/select/MultiSelect.svelte";
+  import PeopleSelect from "../ui/select/UsersMultiSelect.svelte";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  export let isLoading = false;
+  export let isError = false;
 
   let evaluation_quartur_options: SelectOptionType[] = [
     { label: "1 : 3", value: "1 : 3" },
@@ -105,8 +105,7 @@
                   score: evaluationScoreValue,
                 });
 
-                successMessage =
-                  "The new user evaluation is submitted successfully.";
+                successMessage = "The new user evaluation is submitted successfully.";
               } catch (error) {
                 errorMessage = "The new user evaluation submission failed.";
                 isError = true;

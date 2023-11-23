@@ -1,14 +1,15 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
-  import Submit from "../ui/Button.svelte";
-  import CalendarLeaveForm from "../calendar/forms/LeaveForm.svelte";
-  import CalendarDatePicker from "../calendar/CalendarDatePicker.svelte";
-  import CompensationsDataService from "../../apis/compensation/compensations";
-  import type { CompensationType } from "../../utils/types";
   import { onMount } from "svelte";
-  import { RequestStatus } from "../../utils/enums";
   import { Route } from "svelte-navigator";
+
+  import CompensationsDataService from "../../apis/compensation/compensations";
   import Error from "../../pages/Error.svelte";
+  import { RequestStatus } from "../../utils/enums";
+  import type { CompensationType } from "../../utils/types";
+  import CalendarDatePicker from "../calendar/CalendarDatePicker.svelte";
+  import CalendarLeaveForm from "../calendar/forms/LeaveForm.svelte";
+  import Submit from "../ui/Button.svelte";
+  import Input from "../ui/Input.svelte";
 
   export let isLoading: boolean | null = false;
   export let isError: boolean | null = false;
@@ -23,12 +24,9 @@
   }
 
   onMount(async function () {
-    const CompensationDataAPI = await CompensationsDataService.getByID(
-      +compensationID
-    );
+    const CompensationDataAPI = await CompensationsDataService.getByID(+compensationID);
     CompensationData = CompensationDataAPI.data.results;
-    CompensationData.applying_user =
-      CompensationDataAPI.data.results.applying_user.id;
+    CompensationData.applying_user = CompensationDataAPI.data.results.applying_user.id;
     startDate = CompensationData.from_date;
     endDate = CompensationData.end_date;
   });
@@ -52,13 +50,7 @@
     <div class="col-12">
       <div class="container" style="width: 30%;">
         {#if startDate && endDate}
-          <CalendarDatePicker
-            onlyStart={false}
-            bind:startDate
-            bind:endDate
-            bind:datePickerDisabled
-            calculate={false}
-          >
+          <CalendarDatePicker onlyStart={false} bind:startDate bind:endDate bind:datePickerDisabled calculate={false}>
             <div slot="form">
               <div class="form-outline">
                 <Input
@@ -101,10 +93,7 @@
             try {
               CompensationData.from_date = startDate;
               CompensationData.end_date = endDate;
-              const axios = await CompensationsDataService.update(
-                CompensationData,
-                +compensationID
-              );
+              const axios = await CompensationsDataService.update(CompensationData, +compensationID);
               successMessage = axios.data.message;
               isError = false;
             } catch (error) {

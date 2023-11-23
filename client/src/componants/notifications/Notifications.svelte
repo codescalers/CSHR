@@ -1,7 +1,8 @@
 <script lang="ts">
   export let notifications: any;
-  import ProfileImage from "../profile/ProfileImage.svelte";
   import { Link } from "svelte-navigator";
+
+  import ProfileImage from "../profile/ProfileImage.svelte";
 </script>
 
 <div>
@@ -35,10 +36,7 @@
             </td>
             {#if notification.type != "official-document"}
               <td>
-                <Link
-                  class="text-dark"
-                  to="/{notification.type}/{notification.event_id}"
-                >
+                <Link class="text-dark" to="/{notification.type}/{notification.event_id}">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="22"
@@ -62,9 +60,7 @@
       </tbody>
     </table>
   {:else}
-    <div
-      class="mt-4 d-flex height-100 justify-content-center align-items-center"
-    >
+    <div class="mt-4 d-flex height-100 justify-content-center align-items-center">
       <div class="row">
         <div class="col-12 d-flex justify-content-center">
           <svg

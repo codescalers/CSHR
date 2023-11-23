@@ -1,17 +1,18 @@
 <script lang="ts">
-  import Error from "../../pages/Error.svelte";
-  import { Route } from "svelte-navigator";
   import { onMount } from "svelte";
+  import { Route } from "svelte-navigator";
+  import { Link } from "svelte-navigator";
+  import { navigate } from "svelte-navigator";
+
   import HRLetterDataService from "../../apis/hr_letter/hr_letter";
-  import Loading from "../ui/Loading.svelte";
-  import ProfileImage from "../profile/ProfileImage.svelte";
+  import Requests from "../../apis/requests/Requests";
+  import Error from "../../pages/Error.svelte";
   import { RequestStatus } from "../../utils/enums";
   import { UserStore } from "../../utils/stores";
-  import ActionButton from "../requests/requestsButtons.svelte";
-  import { Link } from "svelte-navigator";
   import type { HRLetterType } from "../../utils/types";
-  import { navigate } from "svelte-navigator";
-  import Requests from "../../apis/requests/Requests";
+  import ProfileImage from "../profile/ProfileImage.svelte";
+  import ActionButton from "../requests/requestsButtons.svelte";
+  import Loading from "../ui/Loading.svelte";
 
   export let isLoading = false;
   export let isError: boolean | null = null;
@@ -62,11 +63,7 @@
     {/if}
     {#if $UserStore.user_type == "User" && hrLetter.status == RequestStatus.pinding}
       <div class="d-flex display-buttons">
-        <Link
-          to="/hrLetters/{hrLetter.id}/update"
-          class="abtn btn-primary mb-2 custom-a"
-          style="color: #fff"
-        >
+        <Link to="/hrLetters/{hrLetter.id}/update" class="abtn btn-primary mb-2 custom-a" style="color: #fff">
           <span class="nav_name">Update hrLetter</span>
         </Link>
         <button
@@ -81,8 +78,7 @@
         </button>
       </div>
       <small class="text-muted text-center">
-        Hint: Once you click on the delete button the request will delete
-        without any confirmation
+        Hint: Once you click on the delete button the request will delete without any confirmation
       </small>
     {/if}
     <div class="card p-4 d-flex justify-content-center">
@@ -169,9 +165,7 @@
               <path
                 d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0z"
               />
-              <path
-                d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z"
-              />
+              <path d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z" />
             </svg>
             Yes
           {/if}
@@ -206,9 +200,7 @@
               <path
                 d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0z"
               />
-              <path
-                d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z"
-              />
+              <path d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z" />
             </svg>
             Yes
           {/if}
@@ -243,9 +235,7 @@
                 <path
                   d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0z"
                 />
-                <path
-                  d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z"
-                />
+                <path d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z" />
               </svg>
             {:else}
               <!-- Rejacted -->

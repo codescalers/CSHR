@@ -1,9 +1,5 @@
 <script lang="ts">
-  export let className: string = "";
+  export let className = "";
 </script>
 
-<span
-  class="spinner-border spinner-border-sm {className}"
-  role="status"
-  aria-hidden="true"
-/>
+<span class="spinner-border spinner-border-sm {className}" role="status" aria-hidden="true" />

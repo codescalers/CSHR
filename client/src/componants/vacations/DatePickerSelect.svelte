@@ -1,7 +1,8 @@
 <script lang="ts">
-  import Flatpickr from "svelte-flatpickr";
   import "flatpickr/dist/flatpickr.css";
   import "flatpickr/dist/themes/light.css";
+
+  import Flatpickr from "svelte-flatpickr";
 
   export let date: any = null;
 
@@ -15,18 +16,10 @@
   <div class="flatpickr form-outline mb-4" id="my-picker">
     <div class="form-group row">
       <div class="col-4">
-        <label class="col-sm-4 col-form-label py-3" for="datePickerInput"
-          >Public holidays</label
-        >
+        <label class="col-sm-4 col-form-label py-3" for="datePickerInput">Public holidays</label>
       </div>
       <div class="col-sm-8">
-        <input
-          class="form-control"
-          id="datePickerInput"
-          type="text"
-          placeholder="Select Date.."
-          data-input
-        />
+        <input class="form-control" id="datePickerInput" type="text" placeholder="Select Date.." data-input />
       </div>
     </div>
   </div>

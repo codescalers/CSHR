@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import CompensationForm from "./CompensationForm.svelte";
-  import CompensationList from "./CompensationList.svelte";
+
   import CompensationsDataService from "../../apis/compensation/compensations";
   import type { CompensationType } from "../../utils/types";
+  import CompensationForm from "./CompensationForm.svelte";
+  import CompensationList from "./CompensationList.svelte";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  export let isLoading = false;
+  export let isError = false;
 
   let allUserCompensation: CompensationType[];
   onMount(async () => {
@@ -36,8 +37,7 @@
               aria-expanded="true"
               aria-controls="collapseOne"
             >
-              Apply for compensation days, Admin will see your request as soon
-              as he/she can
+              Apply for compensation days, Admin will see your request as soon as he/she can
             </button>
           </div>
           <div class="col-1 d-flex justify-content-end align-items-center">
@@ -62,7 +62,7 @@
           <CompensationForm
             bind:isLoading
             bind:isError
-            on:message={(event) => {
+            on:message={event => {
               allUserCompensation.splice(0, 0, event.detail.postedCompensation);
             }}
           />
@@ -101,11 +101,7 @@
       </div>
       <div id="collapseTwo" class="collapse">
         <div class="card-body">
-          <CompensationList
-            bind:allUserCompensation
-            bind:isLoading
-            bind:isError
-          />
+          <CompensationList bind:allUserCompensation bind:isLoading bind:isError />
         </div>
       </div>
     </div>

@@ -1,31 +1,25 @@
 <script lang="ts">
-  import type {
-    calendarItemsType,
-    vacationItemType,
-  } from "../../../utils/types";
-  import ProfileImage from "../../profile/ProfileImage.svelte";
-  import CalendarModal from "./CalendarModal.svelte";
+  import { createEventDispatcher } from "svelte";
+  import { Link } from "svelte-navigator";
+
+  import Requests from "../../../apis/requests/Requests";
+  import { CalenderEventEmojeTyoe, RequestStatus, UserTypeEnum } from "../../../utils/enums";
   import { UserStore } from "../../../utils/stores";
-  import {
-    CalenderEventEmojeTyoe,
-    RequestStatus,
-    UserTypeEnum,
-  } from "../../../utils/enums";
+  import type { calendarItemsType, vacationItemType } from "../../../utils/types";
+  import ProfileImage from "../../profile/ProfileImage.svelte";
   import Alert from "../Alert.svelte";
   import Loading from "../Loading.svelte";
-  import Requests from "../../../apis/requests/Requests";
-  import { Link } from "svelte-navigator";
-  import { createEventDispatcher } from "svelte";
-  export let showModal: boolean = false;
+  import CalendarModal from "./CalendarModal.svelte";
+  export let showModal = false;
 
   export let clickedItemOnModal: calendarItemsType;
   export let currentVacationActive: vacationItemType;
   export let currentVacationID: number = +currentVacationActive.id;
 
-  let approveLoading: boolean = false;
-  let rejactLoading: boolean = false;
-  let isDisable: boolean = false;
-  let showAlert: boolean = false;
+  let approveLoading = false;
+  let rejactLoading = false;
+  let isDisable = false;
+  let showAlert = false;
   let responseMessage: string;
   let responseClass: string;
   let responseTitle: string;
@@ -36,10 +30,7 @@
     approveLoading = true;
     isDisable = true;
     try {
-      const response = await Requests.approve(
-        currentVacationActive,
-        +currentVacationActive.id
-      );
+      const response = await Requests.approve(currentVacationActive, +currentVacationActive.id);
       currentVacationActive.status = RequestStatus.approved;
       currentVacationActive.approval_user = $UserStore;
       responseMessage = response.data.message;
@@ -64,10 +55,7 @@
     rejactLoading = true;
     isDisable = true;
     try {
-      const response = await Requests.reject(
-        currentVacationActive,
-        +currentVacationActive.id
-      );
+      const response = await Requests.reject(currentVacationActive, +currentVacationActive.id);
       responseMessage = response.data.message;
       currentVacationActive.status = RequestStatus.rejected;
       currentVacationActive.approval_user = $UserStore;
@@ -122,11 +110,7 @@
                 activateVacation(vacation);
               }}
             >
-              <ProfileImage
-                size={70}
-                user={vacation.applying_user}
-                noLink={true}
-              />
+              <ProfileImage size={70} user={vacation.applying_user} noLink={true} />
             </div>
           {/each}
         </div>
@@ -157,9 +141,7 @@
                 class="bi bi-calendar-event mr-2"
                 viewBox="0 0 16 16"
               >
-                <path
-                  d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"
-                />
+                <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z" />
                 <path
                   d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"
                 />
@@ -244,11 +226,7 @@
         <br />
       </div>
       {#if showAlert}
-        <Alert
-          title={responseTitle}
-          message={responseMessage}
-          className={responseClass}
-        />
+        <Alert title={responseTitle} message={responseMessage} className={responseClass} />
       {/if}
 
       {#if $UserStore.user_type == UserTypeEnum.admin && currentVacationActive.status == RequestStatus.pinding}

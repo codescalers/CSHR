@@ -2,8 +2,8 @@
   import type { userDataType } from "../../utils/types";
 
   export let user: userDataType | undefined;
-  export let size: number = 50;
-  export let noLink: boolean = false;
+  export let size = 50;
+  export let noLink = false;
 
   let username: string[];
   let logo: string;

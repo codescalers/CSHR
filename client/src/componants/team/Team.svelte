@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Members from "./Members.svelte";
-  import Supervisors from "./Supervisors.svelte";
-
   import { onMount } from "svelte";
+
   import teamDataService from "../../apis/team/TeamDataService";
   import type { SupervisorType, TeamType } from "../../utils/types";
   import Loading from "../ui/Loading.svelte";
+  import Members from "./Members.svelte";
+  import Supervisors from "./Supervisors.svelte";
 
   export let isLoading = false;
   export let isError: boolean | null = null;

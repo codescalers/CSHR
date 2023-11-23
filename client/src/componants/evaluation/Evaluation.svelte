@@ -1,12 +1,12 @@
 <script lang="ts">
+  import evaluationDataService from "../../apis/evaluation/Evaluation";
   import type { SelectOptionType } from "../../utils/types";
-  import MultiSelect from "../ui/select/MultiSelect.svelte";
+  import { validateLink } from "../../utils/validations";
   import Submit from "../ui/Button.svelte";
   import Input from "../ui/Input.svelte";
-  import evaluationDataService from "../../apis/evaluation/Evaluation";
-  import { validateLink } from "../../utils/validations";
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  import MultiSelect from "../ui/select/MultiSelect.svelte";
+  export let isLoading = false;
+  export let isError = false;
 
   let evaluation_form_options: SelectOptionType[] = [
     { label: "Peer 2 Peer Form", value: "Peer 2 Peer Form" },

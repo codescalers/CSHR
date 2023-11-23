@@ -17,8 +17,9 @@ runclient:
 test:
 	$(CMD) python3 manage.py test
 lint:
-	$(CMD) black .  --exclude=__init__.py
-	$(CMD) flake8 .  --exclude=__init__.py
+	$(CMD) black server/  --exclude=__init__.py
+	$(CMD) flake8 server/  --exclude=__init__.py
+	$(client) && yarn lint
 migrate:
 	$(CMD) python3 manage.py makemigrations
 	$(CMD) python3 manage.py migrate

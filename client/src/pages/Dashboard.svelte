@@ -1,9 +1,10 @@
 <script lang="ts">
   import { Route } from "svelte-navigator";
+
+  import Tabs from "../componants/dashboard/Tabs.svelte";
+  import Sidebar from "../componants/sidebar/Sidebar.svelte";
   import { UserStore } from "../utils/stores";
   import Error from "./Error.svelte";
-  import Sidebar from "../componants/sidebar/Sidebar.svelte";
-  import Tabs from "../componants/dashboard/Tabs.svelte";
 </script>
 
 {#if $UserStore.user_type != "Admin"}

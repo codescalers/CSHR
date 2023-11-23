@@ -1,9 +1,4 @@
-import {
-  WeekendHolidaysEnum,
-  GenderEnum,
-  TeamEnum,
-  UserTypeEnum,
-} from "./enums";
+import { GenderEnum, TeamEnum, UserTypeEnum, WeekendHolidaysEnum } from "./enums";
 
 export const UserTypeChoice = [
   {

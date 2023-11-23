@@ -3,14 +3,14 @@
   // import UserEvaluation from '../evaluation/UserEvaluation.svelte';
   import Office from "../office/Office.svelte";
   import Register from "../register/Register.svelte";
+  import UpdateProfile from "../settings/UpdateProfile.svelte";
+  import UserVacationBalance from "../vacations/UserVacationBalance.svelte";
   // import UserDocuments from "../userdocuments/UserDocuments.svelte"
   import VacationBalance from "../vacations/VacationBalance.svelte";
-  import UserVacationBalance from "../vacations/UserVacationBalance.svelte";
   import GreatAndHint from "./GreatAndHint.svelte";
-  import UpdateProfile from "../settings/UpdateProfile.svelte";
 
   let date: Date = new Date();
-  let tab: number = 1;
+  let tab = 1;
 </script>
 
 <div class="row w-100 p-4">
@@ -129,10 +129,7 @@
         aria-labelledby="v-tabs-user-vacation-balance-tab"
       >
         <div class="height-100">
-          <GreatAndHint
-            header={"This is the user balance of year " + date.getFullYear()}
-            hint={""}
-          />
+          <GreatAndHint header={"This is the user balance of year " + date.getFullYear()} hint={""} />
           <UserVacationBalance />
         </div>
       </div>
@@ -178,45 +175,21 @@
         <UserDocuments />
       </div>
     </div> -->
-      <div
-        class="tab-pane fade"
-        id="v-tabs-office"
-        role="tabpanel"
-        aria-labelledby="v-tabs-office-tab"
-      >
+      <div class="tab-pane fade" id="v-tabs-office" role="tabpanel" aria-labelledby="v-tabs-office-tab">
         <div class="height-100">
-          <GreatAndHint
-            header={"New Office"}
-            hint={"You can add office .e.g. `Codescalers` using this form."}
-          />
+          <GreatAndHint header={"New Office"} hint={"You can add office .e.g. `Codescalers` using this form."} />
           <Office />
         </div>
       </div>
-      <div
-        class="tab-pane fade"
-        id="v-tabs-new-user"
-        role="tabpanel"
-        aria-labelledby="v-tabs-new-user-tab"
-      >
+      <div class="tab-pane fade" id="v-tabs-new-user" role="tabpanel" aria-labelledby="v-tabs-new-user-tab">
         <div>
-          <GreatAndHint
-            header={"New User"}
-            hint={"You can add new user using this form."}
-          />
+          <GreatAndHint header={"New User"} hint={"You can add new user using this form."} />
           <Register />
         </div>
       </div>
-      <div
-        class="tab-pane fade"
-        id="v-tabs-update-user"
-        role="tabpanel"
-        aria-labelledby="v-tabs-update-user-tab"
-      >
+      <div class="tab-pane fade" id="v-tabs-update-user" role="tabpanel" aria-labelledby="v-tabs-update-user-tab">
         <div class="height-100">
-          <GreatAndHint
-            header={"Update user profile"}
-            hint={"You can update the user information using this form."}
-          />
+          <GreatAndHint header={"Update user profile"} hint={"You can update the user information using this form."} />
           <UpdateProfile />
         </div>
       </div>

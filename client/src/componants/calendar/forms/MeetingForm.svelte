@@ -1,24 +1,22 @@
 <script lang="ts">
-  import Input from "../../ui/Input.svelte";
-  import ModalOpenButton from "../../ui/modals/ModalOpenButton.svelte";
-  import Submit from "../../ui/Button.svelte";
-  //import ModalCloseButton from '../modal/ModalCloseButton.svelte';
-  import Modal from "../../ui/modals/SimpleModal.svelte";
+  import { createEventDispatcher } from "svelte";
+
   // import PeopleSelect from '../../ui/select/UsersMultiSelect.svelte';
   import CalendarDataService from "../../../apis/home/home";
   import { UserStore } from "../../../utils/stores";
-  import type {
-    calendarItemsType,
-    SelectOptionType,
-  } from "../../../utils/types";
-  import { createEventDispatcher } from "svelte";
+  import type { calendarItemsType, SelectOptionType } from "../../../utils/types";
   import { isValidDate } from "../../../utils/validations";
+  import Submit from "../../ui/Button.svelte";
+  import Input from "../../ui/Input.svelte";
+  import ModalOpenButton from "../../ui/modals/ModalOpenButton.svelte";
+  //import ModalCloseButton from '../modal/ModalCloseButton.svelte';
+  import Modal from "../../ui/modals/SimpleModal.svelte";
   // import { isValidDate } from '../../../utils/validations';
 
   export let startDate: string;
-  export let isError: boolean = false;
-  export let datePickerDisabled: boolean = false;
-  export let isLoading: boolean = false;
+  export let isError = false;
+  export let datePickerDisabled = false;
+  export let isLoading = false;
 
   // if true the disable submit button
   const modalID = 129981;
@@ -37,10 +35,7 @@
 
   let peopleSelected: SelectOptionType[] = [];
   $: fillDisabled =
-    !isValidDate(startDate) ||
-    meetingPeopleIsError === null ||
-    meetingPeopleIsError === true ||
-    datePickerDisabled;
+    !isValidDate(startDate) || meetingPeopleIsError === null || meetingPeopleIsError === true || datePickerDisabled;
 
   let submitDisabled = true;
 
@@ -50,11 +45,6 @@
     meetingLinkIsError === true ||
     meetingTimeIsError === true ||
     meetingTimeIsError === null;
-  const modalData = {
-    "data-bs-dismiss": "modal",
-    "data-bs-target": `#modal${modalID}`,
-    "aria-label": "Close",
-  };
 
   let successMessage: string;
   let errorMessage: string;
@@ -81,12 +71,7 @@
         bind:isError={meetingLocationIsError}
     /> -->
   <div class="width-100 mt-4">
-    <ModalOpenButton
-      width={100}
-      label="Fill"
-      bind:disabled={fillDisabled}
-      {modalID}
-    />
+    <ModalOpenButton width={100} label="Fill" bind:disabled={fillDisabled} {modalID} />
   </div>
 </form>
 

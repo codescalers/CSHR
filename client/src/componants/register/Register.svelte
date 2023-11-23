@@ -1,32 +1,28 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
-  import Submit from "../ui/Button.svelte";
+  import RegisterDataService from "../../apis/users/users";
+  import { GenderChoice, TeamChoice, UserTypeChoice } from "../../utils/choices";
+  import { clearUserData } from "../../utils/helpers";
   import registeringDataType from "../../utils/registeringData";
-  import type { registeringData, SelectOptionType } from "../../utils/types";
+  import type { registeringData, SelectOptionsComponent } from "../../utils/types";
   import {
-    validateName,
-    validateEmail,
-    validatePhoneNumber,
-    validatePassword,
-    validateTelegramLink,
     // validateSalary,
     validateBirthday,
+    validateEmail,
+    validateName,
+    validatePassword,
+    validatePhoneNumber,
     validateSpcialEmptyString,
+    validateTelegramLink,
   } from "../../utils/validations";
-  import MultiSelect from "../ui/select/MultiSelect.svelte";
-  import {
-    TeamChoice,
-    GenderChoice,
-    UserTypeChoice,
-  } from "../../utils/choices";
+  import Submit from "../ui/Button.svelte";
+  import Input from "../ui/Input.svelte";
   import LocationSelect from "../ui/select/LocationSelect.svelte";
-  import PeopleSelect from "../ui/select/UsersMultiSelect.svelte";
-  import RegisterDataService from "../../apis/users/users";
+  import MultiSelect from "../ui/select/MultiSelect.svelte";
   import SelectImage from "../ui/select/SelectImage.svelte";
-  import { clearUserData } from "../../utils/helpers";
+  import PeopleSelect from "../ui/select/UsersMultiSelect.svelte";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  export let isLoading = false;
+  export let isError = false;
 
   let image: HTMLImageElement;
   let imageSrc: string;
@@ -41,14 +37,13 @@
     isErrorLink: null | boolean,
     // isErrorBenefits: null | boolean,
     isErrorBirthday: null | boolean,
-    isErrorLocation: null | boolean,
-    isErrorSuperuser: null | boolean,
+    // isErrorLocation: null | boolean,
+    // isErrorSuperuser: null | boolean,
     isErrorCurrentNetSalary: null | boolean,
     isErrorCurrentGrossSalary: null | boolean,
     // isErrorNetJoinningSalary: null | boolean,
     // isErrorGrossJoinningSalary: null | boolean,
     // isErrorNetBeforeJoinningSalary: null | boolean,
-    isErrorUserType: null | boolean,
     isErrorSocialNumber: null | boolean,
     isErrorAddress: null | boolean = null;
 
@@ -66,24 +61,23 @@
     isErrorfName == true ||
     isErrorAddress == true ||
     isErrorAddress == null ||
-
-    locationSelected.length == 0 ||
-    teamSelected.length == 0 ||
-    genderSelected.length == 0 ||
-    userTypeSelected.length == 0 ||
+    locationOptions.selected.length == 0 ||
+    departmentOptions.selected.length == 0 ||
+    genderOptions.selected.length == 0 ||
+    userTypeOptions.selected.length == 0 ||
     registeration.job_title.trim().length < 3 ||
     registeration.social_insurance_number.trim().length < 3 ||
     !registeration.address.trim().length;
 
-  let teamSelectOptions: SelectOptionType[] = TeamChoice;
-  let genderSelectOptions: SelectOptionType[] = GenderChoice;
-  let userTypeOptions: SelectOptionType[] = UserTypeChoice;
+  // let teamSelectOptions: SelectOptionType[] = TeamChoice;
+  // let genderSelectOptions: SelectOptionType[] = GenderChoice;
+  // let userTypeOptions: SelectOptionType[] = UserTypeChoice;
 
-  let teamSelected: SelectOptionType[] = [];
-  let genderSelected: SelectOptionType[] = [];
-  let userTypeSelected: SelectOptionType[] = [];
-  let locationSelected: SelectOptionType[] = [];
-  let reportingToSelected: SelectOptionType[] = [];
+  // let teamSelected: SelectOptionType[] = [];
+  // let genderSelected: SelectOptionType[] = [];
+  // let userTypeSelected: SelectOptionType[] = [];
+  // let locationSelected: SelectOptionType[] = [];
+  // let reportingToSelected: SelectOptionType[] = [];
 
   const defaultDate = new Date(2000, 1, 1);
   const year = defaultDate.getFullYear();
@@ -93,6 +87,50 @@
   let formattedDefaultDate = `${year}-${month}-${day}`;
   let errorMessage: string;
   let successMessage: string;
+
+  let departmentOptions: SelectOptionsComponent = {
+    optionsList: TeamChoice,
+    selected: [TeamChoice[0]],
+    isLabel: true,
+    label: "Department",
+    placeholder: "Select department",
+    isTop: true,
+  };
+
+  let genderOptions: SelectOptionsComponent = {
+    optionsList: GenderChoice,
+    selected: [GenderChoice[0]],
+    isLabel: true,
+    label: "Gender",
+    placeholder: "Select gender",
+    isTop: true,
+  };
+
+  let userTypeOptions: SelectOptionsComponent = {
+    optionsList: UserTypeChoice,
+    selected: [],
+    isLabel: true,
+    label: "User type",
+    placeholder: "Select user type",
+    isTop: true,
+  };
+
+  let locationOptions: SelectOptionsComponent = {
+    optionsList: [],
+    selected: [],
+    isLabel: true,
+    label: "Location",
+    placeholder: "Select location",
+    isTop: true,
+  };
+
+  let usersOptions: SelectOptionsComponent = {
+    optionsList: [],
+    label: "Reporting to",
+    selected: [],
+    isTop: true,
+    multiple: true,
+  };
 </script>
 
 <div class="bg-white p-3 card">
@@ -229,55 +267,19 @@
         />
       </div>
       <div class="form-outline">
-        <MultiSelect
-          bind:options={teamSelectOptions}
-          bind:selected={teamSelected}
-          isLabel={true}
-          label="Team"
-          placeholder="Select team"
-          removeAllTitle="Remove all team"
-          multiple={false}
-        />
+        <MultiSelect bind:options={departmentOptions} />
       </div>
       <div class="form-outline">
-        <MultiSelect
-          bind:options={genderSelectOptions}
-          bind:selected={genderSelected}
-          isLabel={true}
-          label="Gender"
-          placeholder="Select gender"
-          removeAllTitle="Remove gender"
-          multiple={false}
-        />
+        <MultiSelect bind:options={genderOptions} />
       </div>
       <div class="form-outline">
-        <MultiSelect
-          bind:options={userTypeOptions}
-          bind:selected={userTypeSelected}
-          isLabel={true}
-          label="Role"
-          placeholder="Select user role"
-          removeAllTitle="Remove user role"
-          multiple={false}
-          bind:isError={isErrorUserType}
-        />
+        <MultiSelect bind:options={userTypeOptions} />
       </div>
       <div class="form-outline">
-        <LocationSelect
-          mylabel={"Location"}
-          bind:isError={isErrorLocation}
-          bind:selected={locationSelected}
-          isTop={true}
-        />
+        <LocationSelect bind:options={locationOptions} />
       </div>
       <div class="form-outline">
-        <PeopleSelect
-          multiple={true}
-          mylabel={"Reporting to"}
-          bind:isError={isErrorSuperuser}
-          bind:selected={reportingToSelected}
-          isTop={true}
-        />
+        <PeopleSelect bind:options={usersOptions} />
       </div>
       <!-- RFNV1.0 <div class="form-outline">
                 <Input
@@ -400,13 +402,13 @@
           label="Submit"
           onClick={async () => {
             isLoading = true;
-            for (var i in reportingToSelected) {
-              registeration.reporting_to[i] = reportingToSelected[i].value;
+            for (var i in usersOptions.selected) {
+              registeration.reporting_to[i] = usersOptions.selected[i].value;
             }
-            registeration.team = teamSelected[0].value;
-            registeration.location = locationSelected[0].value;
-            registeration.gender = genderSelected[0].value;
-            registeration.user_type = userTypeSelected[0].value;
+            registeration.team = departmentOptions.selected[0].value;
+            registeration.location = locationOptions.selected[0].value;
+            registeration.gender = genderOptions.selected[0].value;
+            registeration.user_type = userTypeOptions.selected[0].value;
             registeration.birthday = formattedDefaultDate;
             if (image != undefined) {
               imageSrc = image.src;
@@ -419,14 +421,8 @@
               await RegisterDataService.register(registeration);
               successMessage = "The user has been created successfully.";
               clearUserData(registeration);
-              userTypeSelected = [];
-              genderSelected = [];
-              locationSelected = [];
-              teamSelected = [];
-              reportingToSelected = [];
             } catch (error) {
-              errorMessage =
-                "Fail to create a new user, please check what is missing in the data and try again.";
+              errorMessage = "Fail to create a new user, please check what is missing in the data and try again.";
               isError = true;
             } finally {
               isLoading = false;

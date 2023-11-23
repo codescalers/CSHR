@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Userkills from "./Userkills.svelte";
   import TrainingAndCourses from "./TrainingAndCourses.svelte";
+  import Userkills from "./Userkills.svelte";
 </script>
 
 <div class="card">

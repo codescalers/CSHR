@@ -1,23 +1,19 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
-  import Submit from "../ui/Button.svelte";
-  import CalendarLeaveForm from "../calendar/forms/LeaveForm.svelte";
-  import CalendarDatePicker from "../calendar/CalendarDatePicker.svelte";
-  import type { HRLetterType } from "../../utils/types";
   import HRLetterDataService from "../../apis/hr_letter/hr_letter";
+  import type { HRLetterType } from "../../utils/types";
+  import CalendarDatePicker from "../calendar/CalendarDatePicker.svelte";
+  import CalendarLeaveForm from "../calendar/forms/LeaveForm.svelte";
+  import Submit from "../ui/Button.svelte";
+  import Input from "../ui/Input.svelte";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  export let isLoading = false;
+  export let isError = false;
 
   let isErrorAddress: boolean | null = null;
   let thisDate: Date = new Date();
-  let startDate = `${thisDate.getFullYear()}-${
-    thisDate.getMonth() + 1
-  }-${thisDate.getDate()}`;
-  let endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${
-    thisDate.getDate() + 2
-  }`;
-  let formToggle: number = 0;
+  let startDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate()}`;
+  let endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate() + 2}`;
+  let formToggle = 0;
   let datePickerDisabled = false;
   let successMessage: string;
   let errorMessage: string;
@@ -42,9 +38,7 @@
 <div class="container mt-5 pt-5">
   <div class="card">
     <div class="card-title pt-3">
-      <h5 class="text-center text-muted">
-        Apply for hr letter, Admin will see your request as soon as he/she can
-      </h5>
+      <h5 class="text-center text-muted">Apply for hr letter, Admin will see your request as soon as he/she can</h5>
     </div>
     <div class="card-body">
       <div class="row mt-4 d-flex justify-content-center">
@@ -72,9 +66,7 @@
               id="salary-mention"
               bind:checked={hrLetterData.with_salary_mentioned}
             />
-            <label class="form-check-label" for="salary-mention">
-              salary should be mentioned
-            </label>
+            <label class="form-check-label" for="salary-mention"> salary should be mentioned </label>
           </div>
           <div class="form-check">
             <input
@@ -84,9 +76,7 @@
               value=""
               id="date-mention"
             />
-            <label class="form-check-label" for="date-mention">
-              with date mentioned
-            </label>
+            <label class="form-check-label" for="date-mention"> with date mentioned </label>
           </div>
           {#if hrLetterData.with_date}
             {#if startDate && endDate}
@@ -116,9 +106,7 @@
           {/if}
         </div>
         <div class="col-12">
-          <div
-            class="card-body form-outline mt-4 d-flex justify-content-center"
-          >
+          <div class="card-body form-outline mt-4 d-flex justify-content-center">
             <Submit
               width={"30"}
               bind:successMessage

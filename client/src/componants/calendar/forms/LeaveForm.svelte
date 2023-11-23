@@ -1,34 +1,29 @@
 <script lang="ts">
-  import Submit from "../../ui/Button.svelte";
-  import Alert from "../../ui/Alert.svelte";
   import { onMount } from "svelte";
+  import { createEventDispatcher } from "svelte";
+
   import Vacations from "../../../apis/vacations/Vacation";
   import { UserStore } from "../../../utils/stores";
-  import type {
-    VacationBalance,
-    calendarItemsType,
-  } from "../../../utils/types";
-  import { createEventDispatcher } from "svelte";
+  import type { calendarItemsType, VacationBalance } from "../../../utils/types";
+  import Alert from "../../ui/Alert.svelte";
+  import Submit from "../../ui/Button.svelte";
 
   export let startDate: string;
   export let endDate: string;
   export let isLoading = false;
   export let isError = false;
   export let datePickerDisabled = false;
-  export let calculatorValue: number = 0;
+  export let calculatorValue = 0;
   export let isUpdate = false;
   export let selectedReason: any = 0;
-  export let vacationID: string = "";
-  export let withReason: boolean = true;
-  export let withSubmit: boolean = true;
-  export let showCalclator: boolean = true;
+  export let vacationID = "";
+  export let withReason = true;
+  export let withSubmit = true;
+  export let showCalclator = true;
 
-  let errorMessage: string = "",
-    successMessage: string = "";
-  let alertTitle: string,
-    alertClass: string,
-    alertMessage: string,
-    showAlert: boolean;
+  let errorMessage = "",
+    successMessage = "";
+  let alertTitle: string, alertClass: string, alertMessage: string, showAlert: boolean;
   let vBalance: VacationBalance;
   let responseVacation: calendarItemsType;
   const dispatch = createEventDispatcher();
@@ -37,8 +32,7 @@
     vBalance = await Vacations.balance($UserStore.id);
   });
 
-  $: submitDisabled =
-    selectedReason == 0 || datePickerDisabled == true || calculatorValue === 0;
+  $: submitDisabled = selectedReason == 0 || datePickerDisabled == true || calculatorValue === 0;
 </script>
 
 <form>
@@ -55,9 +49,7 @@
           {#if vBalance}
             {#each Object.entries(vBalance) as [name, _value]}
               {#if name != "user"}
-                <option value={name}
-                  >{name} {_value.reserved} / {_value.all}</option
-                >
+                <option value={name}>{name} {_value.reserved} / {_value.all}</option>
               {/if}
             {/each}
           {/if}
@@ -70,8 +62,7 @@
       <br />
       {#if calculatorValue === 0}
         <small class="text-red">
-          " It seems like the chosen day might be a holiday or a weekend break.
-          Please verify this on your calendar. "
+          " It seems like the chosen day might be a holiday or a weekend break. Please verify this on your calendar. "
         </small>
       {:else}
         <small class="text-dark">
@@ -111,8 +102,7 @@
               dispatch("message", {
                 postedVacation: responseVacation,
               });
-              vBalance[selectedReason].reserved =
-                vBalance[selectedReason].reserved + calculatorValue;
+              vBalance[selectedReason].reserved = vBalance[selectedReason].reserved + calculatorValue;
             }
           } catch (error) {
             isError = true;

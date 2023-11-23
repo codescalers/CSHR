@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ProfileImage from "../profile/ProfileImage.svelte";
   import Table from "../../componants/table/Table.svelte";
+  import ProfileImage from "../profile/ProfileImage.svelte";
   import Alert from "../ui/Alert.svelte";
 
   export let supervisors: any;
@@ -20,9 +20,7 @@
             </th>
             <td class="text-center td-col">{supervisor.full_name}</td>
             <td class="text-center td-col">{supervisor.email}</td>
-            <td class="text-center td-col"
-              >{supervisor.mobile_number || "---"}</td
-            >
+            <td class="text-center td-col">{supervisor.mobile_number || "---"}</td>
             <td class="text-center td-col">{supervisor.job_title || "---"}</td>
             <td class="text-center td-col">{supervisor.team || "---"}</td>
           </tr>

@@ -1,18 +1,18 @@
-import { Writable, writable, get } from "svelte/store";
+import { get, Writable, writable } from "svelte/store";
+
 import isAuthenticated from "../apis/authentication/IsAuthenticated";
 import Users from "../apis/users/users";
-
 import type {
-  SettingsInterface,
-  UserInterface,
   GeneralUserInterface,
-  OfficeType,
-  NotificationType,
-  TeamType,
-  PaginatedInterface,
   IAuthStore,
-  SupervisorType,
   NotifacationCreatedInterface,
+  NotificationType,
+  OfficeType,
+  PaginatedInterface,
+  SettingsInterface,
+  SupervisorType,
+  TeamType,
+  UserInterface,
 } from "./types";
 
 export const SettingsStore: Writable<SettingsInterface> = writable({
@@ -25,25 +25,21 @@ export const AllUsersStore: Writable<GeneralUserInterface[]> = writable([]);
 export const UserStore: Writable<UserInterface> = writable();
 
 export const OfficeStore: Writable<OfficeType[]> = writable([]);
-export const NotificationStore: Writable<NotificationType[]> = writable([
-  { id: 1 },
-]);
+export const NotificationStore: Writable<NotificationType[]> = writable([{ id: 1 }]);
 
 export const TeamStore: Writable<PaginatedInterface<TeamType>> = writable();
-export const NotifacationStore: Writable<NotifacationCreatedInterface> =
-  writable();
-export const SupervisorStore: Writable<PaginatedInterface<SupervisorType>> =
-  writable();
+export const NotifacationStore: Writable<NotifacationCreatedInterface> = writable();
+export const SupervisorStore: Writable<PaginatedInterface<SupervisorType>> = writable();
 
 function createAuthStore() {
   const store = writable<IAuthStore>({});
   const { subscribe, update } = store;
 
-  isAuthenticated().then((res) => {
+  isAuthenticated().then(res => {
     if (res && res.token && res.refreshtoken) {
       updateTokens(res.token, res.refreshtoken);
     } else {
-      return update((s) => {
+      return update(s => {
         s.token = undefined;
         s.refreshtoken = undefined;
         return s;
@@ -90,7 +86,7 @@ function createAuthStore() {
       }
     }
 
-    return update((s) => {
+    return update(s => {
       s.token = token;
       s.refreshtoken = refresh;
 

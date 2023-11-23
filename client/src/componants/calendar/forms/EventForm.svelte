@@ -1,13 +1,14 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
+  import CalendarDataService from "../../../apis/home/home";
+  // import PeopleSelect from '../../ui/select/UsersMultiSelect.svelte';
+  import type { calendarItemsType } from "../../../utils/types";
+  import { isValidDate } from "../../../utils/validations";
+  import Submit from "../../ui/Button.svelte";
   import Input from "../../ui/Input.svelte";
   import ModalOpenButton from "../../ui/modals/ModalOpenButton.svelte";
   import Modal from "../../ui/modals/SimpleModal.svelte";
-  // import PeopleSelect from '../../ui/select/UsersMultiSelect.svelte';
-  import type { calendarItemsType } from "../../../utils/types";
-  import CalendarDataService from "../../../apis/home/home";
-  import Submit from "../../ui/Button.svelte";
-  import { createEventDispatcher } from "svelte";
-  import { isValidDate } from "../../../utils/validations";
 
   export let startDate: string;
   export let endDate: string;
@@ -29,8 +30,8 @@
   // let eventPeopleIsError: boolean | null = null;
 
   // let peopleSelected: SelectOptionType[] = [];
-  let isLoading: boolean = false;
-  let isError: boolean = false;
+  let isLoading = false;
+  let isError = false;
 
   // if true the disable submit button
   // let locationIsError: boolean | null = null;
@@ -66,12 +67,7 @@
       bind:isError={locationIsError}
     /> -->
   <div class="width-100 mt-4">
-    <ModalOpenButton
-      width={100}
-      label="Fill"
-      disabled={fillDisabled}
-      {modalID}
-    />
+    <ModalOpenButton width={100} label="Fill" disabled={fillDisabled} {modalID} />
   </div>
 </div>
 
@@ -197,8 +193,7 @@
             postedEvent: responseEvent,
           });
         } catch (error) {
-          errorMessage =
-            "Error while trying to post a new event, please check your data and try again.";
+          errorMessage = "Error while trying to post a new event, please check your data and try again.";
           isError = true;
         } finally {
           isLoading = false;

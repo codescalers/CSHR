@@ -1,36 +1,29 @@
 <script lang="ts">
-  import type {
-    AdminViewInterface,
-    SupervisorViewInterface,
-    UserInterface,
-  } from "../../utils/types";
   import { onMount } from "svelte";
   import { useParams } from "svelte-navigator";
-  import { UserStore } from "../../utils/stores";
+
   import usersAPI from "../../apis/users/users";
-  import Skills from "./UserSkills.svelte";
-  import Certificates from "./Certificates.svelte";
-  import UserData from "./UserData.svelte";
-  import Evaluation from "./Evaluation.svelte";
+  import NotFound from "../../pages/Error.svelte";
+  import { UserStore } from "../../utils/stores";
+  import type { AdminViewInterface, SupervisorViewInterface, UserInterface } from "../../utils/types";
+  // import Certificates from "./Certificates.svelte";
   import Company from "./Company.svelte";
-  import Salary from "./Salary.svelte";
+  // import Evaluation from "./Evaluation.svelte";
   import ProfileImage from "./ProfileImage.svelte";
   import ReportTo from "./ReportTo.svelte";
-  import UserDocuments from "./UserDocuments.svelte";
+  // import Salary from "./Salary.svelte";
+  import UserData from "./UserData.svelte";
+  // import UserDocuments from "./UserDocuments.svelte";
+  // import Skills from "./UserSkills.svelte";
   import VacationBalance from "./VacationBalance.svelte";
-  import NotFound from "../../pages/Error.svelte";
 
   const params = useParams();
-  let id: number = Number($params.id);
+  let id = Number($params.id);
 
   export let isLoading = false;
   export let isError: boolean | null = null;
 
-  let user:
-    | AdminViewInterface
-    | SupervisorViewInterface
-    | UserInterface
-    | null = null;
+  let user: AdminViewInterface | SupervisorViewInterface | UserInterface | null = null;
 
   onMount(async () => {
     document.getElementById("body-pd").style.overflow = "auto";

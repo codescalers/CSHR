@@ -7,7 +7,7 @@
   export let onClick: () => boolean | Promise<boolean> | void | Promise<void>;
   export let successMessage: string | undefined = undefined;
   export let errorMessage: string | undefined = undefined;
-  export let width: string = "100";
+  export let width = "100";
 
   let showToast = false;
   let isLoading = false;
@@ -31,11 +31,7 @@
   {disabled}
 >
   {#if isLoading}
-    <span
-      class="spinner-border spinner-border-sm"
-      role="status"
-      aria-hidden="true"
-    />
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
     Requesting...
   {:else}
     {label}

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import VacationDetails from "../componants/vacations/VacationDetails.svelte";
   import Sidebar from "../componants/sidebar/Sidebar.svelte";
+  import VacationDetails from "../componants/vacations/VacationDetails.svelte";
   export let isLoading = false;
   export let isError: boolean | null = null;
 </script>

@@ -1,10 +1,10 @@
 <script lang="ts">
   export let image: HTMLImageElement;
-  export let styleOnRow: string = "";
+  export let styleOnRow = "";
   let input: HTMLInputElement;
   let container: HTMLDivElement;
   let placeholder: HTMLSpanElement;
-  let showImage: boolean = false;
+  let showImage = false;
 
   function onChange() {
     const file = input.files[0];

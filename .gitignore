@@ -146,3 +146,6 @@ profile_image/
 ./terraform/state.json
 terraform/.terraform.lock.hcl
 terraform/.terraform.tfstate.lock.info
+terraform/.terraform.script
+yarn.lock
+node_modules

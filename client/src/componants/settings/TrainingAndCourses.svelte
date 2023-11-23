@@ -1,22 +1,18 @@
 <script lang="ts">
-  import { validateLink } from "../../utils/validations";
   import TrainingAndCourses from "../../apis/training_and_courses/trainingAndCourses";
-  import Input from "../ui/Input.svelte";
-  import Submit from "../ui/Button.svelte";
   import { UserStore } from "../../utils/stores";
+  import { validateLink } from "../../utils/validations";
+  import Submit from "../ui/Button.svelte";
+  import Input from "../ui/Input.svelte";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  export let isLoading = false;
+  export let isError = false;
 
   let isErrorName: null | boolean,
     isErrorLink: null | boolean = null;
   let CourseName: string, certificateLink: string;
 
-  $: submitDisabled =
-    isErrorName == true ||
-    isErrorName == null ||
-    isErrorLink == true ||
-    isErrorLink == null;
+  $: submitDisabled = isErrorName == true || isErrorName == null || isErrorLink == true || isErrorLink == null;
 
   let errorMessage: string;
   let successMessage: string;
@@ -75,8 +71,7 @@
             });
             successMessage = "A new course has been added successfully.";
           } catch (error) {
-            errorMessage =
-              "an error happened while adding a new course, please check the data and try again.";
+            errorMessage = "an error happened while adding a new course, please check the data and try again.";
             isError = true;
           } finally {
             CourseName = "";

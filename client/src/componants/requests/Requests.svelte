@@ -1,11 +1,12 @@
 <script lang="ts">
-  import Requests from "../../apis/requests/Requests";
-  import ActionButton from "./requestsButtons.svelte";
   import { onMount } from "svelte";
-  import ProfileImage from "../profile/ProfileImage.svelte";
-  import { UserStore } from "../../utils/stores";
   import { Link } from "svelte-navigator";
+
+  import Requests from "../../apis/requests/Requests";
+  import { UserStore } from "../../utils/stores";
+  import ProfileImage from "../profile/ProfileImage.svelte";
   import Loading from "../ui/Loading.svelte";
+  import ActionButton from "./requestsButtons.svelte";
 
   const handleActions = (event: { detail: { text: any } }) => {
     const sRequest = event.detail.text.request;
@@ -19,7 +20,7 @@
   };
 
   let requests: any = [];
-  let isLoading: boolean = false;
+  let isLoading = false;
 
   onMount(async () => {
     isLoading = true;
@@ -48,9 +49,7 @@
           <th scope="col">Name</th>
           <th>Type</th>
           <th>Date</th>
-          <th class="d-flex justify-content-center align-items-center"
-            >Actions</th
-          >
+          <th class="d-flex justify-content-center align-items-center">Actions</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -102,12 +101,7 @@
                   <ActionButton {request} on:message={handleActions} />
                 {/if}
                 {#if request.type != "Official documents"}
-                  <Link
-                    class="text-dark"
-                    to="/{request.type
-                      .toLowerCase()
-                      .replace(' ', '_')}/{request.id}"
-                  >
+                  <Link class="text-dark" to="/{request.type.toLowerCase().replace(' ', '_')}/{request.id}">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="22"
@@ -134,10 +128,7 @@
     </table>
   </div>
 {:else}
-  <div
-    class="d-flex height-100 justify-content-center align-items-center"
-    style="flex-direction: column;"
-  >
+  <div class="d-flex height-100 justify-content-center align-items-center" style="flex-direction: column;">
     <div class="text-center">
       <h4 class="mb-4">There are no requests to view.</h4>
     </div>

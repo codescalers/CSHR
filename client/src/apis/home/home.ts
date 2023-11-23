@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import http from "../../utils/axios";
 class HomePage {
   private errorMessage = "Error in Office Data Service: ";
@@ -8,10 +9,8 @@ class HomePage {
       return await (
         await http.get(`/home/?month=${month}&year=${year}`)
       ).data;
-    } catch (error) {
-      throw new Error(
-        error.response.data.message || error.response.data.detail
-      );
+    } catch (error: any) {
+      throw new Error(error.response.data.message || error.response.data.detail);
     }
   }
 
@@ -38,9 +37,9 @@ class HomePage {
         throw new Error("Invalid data");
       // if (e.people.length === 0) throw new Error("No invited users");
       let [fromHour, fromMinute] = e.from_time.split(":");
-      let [fromYear, fromMonth, fromDay] = e.from_date.split("-");
+      const [fromYear, fromMonth, fromDay] = e.from_date.split("-");
       let [endHour, endMinute] = e.end_time.split(":");
-      let [endYear, endMonth, endDay] = e.end_date.split("-");
+      const [endYear, endMonth, endDay] = e.end_date.split("-");
       if (fromHour == "00") {
         fromHour = "12";
       }
@@ -70,10 +69,8 @@ class HomePage {
         location: e.location,
       };
       return await http.post("/event/", JSON.stringify(data));
-    } catch (error) {
-      console.error(
-        `${this.errorMessage} Error while posting event data ${error}`
-      );
+    } catch (error: any) {
+      console.error(`${this.errorMessage} Error while posting event data ${error}`);
       return error;
     }
   }
@@ -87,17 +84,9 @@ class HomePage {
     location: string;
   }) {
     try {
-      if (
-        !e.hostedUserID ||
-        !e.invitedUsers ||
-        !e.meetingLink ||
-        !e.time ||
-        !e.date
-      )
-        throw new Error("Invalid data");
+      if (!e.hostedUserID || !e.invitedUsers || !e.meetingLink || !e.time || !e.date) throw new Error("Invalid data");
       // if (e.invitedUsers.length === 0) throw new Error("No invited users");
-      if (e.invitedUsers.includes(e.hostedUserID))
-        throw new Error("Hosted user is also invited");
+      if (e.invitedUsers.includes(e.hostedUserID)) throw new Error("Hosted user is also invited");
       let [hour, minute] = e.time.split(":");
       if (hour == "00") {
         hour = "12";
@@ -117,12 +106,10 @@ class HomePage {
           },
           meeting_link: e.meetingLink,
           location: e.location,
-        })
+        }),
       );
-    } catch (error) {
-      console.error(
-        `${this.errorMessage} Error while posting meeting data ${error}`
-      );
+    } catch (error: any) {
+      console.error(`${this.errorMessage} Error while posting meeting data ${error}`);
       return error;
     }
   }

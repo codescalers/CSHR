@@ -1,9 +1,10 @@
 <script lang="ts">
-  import Input from "../../ui/Input.svelte";
-  import Submit from "../../ui/Button.svelte";
-  import MultiSelect from "../../ui/select/MultiSelect.svelte";
+  import { Color } from "color-picker-svelte";
+
+  import RegisterDataService from "../../../apis/users/users";
+  import { GenderChoice, TeamChoice, UserTypeChoice } from "../../../utils/choices";
   import { UserStore } from "../../../utils/stores";
-  import type { SelectOptionType, UserInterface } from "../../../utils/types";
+  import type { SelectOptionsComponent, SelectOptionType, UserInterface } from "../../../utils/types";
   import {
     validateBirthday,
     validateEmail,
@@ -12,21 +13,17 @@
     validateSpcialEmptyString,
     validateTelegramLink,
   } from "../../../utils/validations";
-  import {
-    TeamChoice,
-    GenderChoice,
-    UserTypeChoice,
-  } from "../../../utils/choices";
+  import Submit from "../../ui/Button.svelte";
+  import Input from "../../ui/Input.svelte";
   import LocationSelect from "../../ui/select/LocationSelect.svelte";
-  import PeopleSelect from "../../ui/select/UsersMultiSelect.svelte";
+  import MultiSelect from "../../ui/select/MultiSelect.svelte";
   import SelectImage from "../../ui/select/SelectImage.svelte";
+  import PeopleSelect from "../../ui/select/UsersMultiSelect.svelte";
   import ColorPicker from "../ColorPicker.svelte";
-  import { Color } from "color-picker-svelte";
-  import RegisterDataService from "../../../apis/users/users";
   import RemoveImage from "../RemoveImage.svelte";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  export let isLoading = false;
+  export let isError = false;
 
   export let user: UserInterface;
   // RFNV0.1 let defaultNetSalary: number;
@@ -35,24 +32,24 @@
   let image: HTMLImageElement;
 
   let color = new Color(user.background_color);
-  let removeImage: boolean = false;
+  let removeImage = false;
 
-  let teamSelectOptions: SelectOptionType[] = TeamChoice;
-  let genderSelectOptions: SelectOptionType[] = GenderChoice;
-  let userTypeOptions: SelectOptionType[] = UserTypeChoice;
+  // let teamSelectOptions: SelectOptionType[] = TeamChoice;
+  // let genderSelectOptions: SelectOptionType[] = GenderChoice;
+  // let userTypeOptions: SelectOptionType[] = UserTypeChoice;
 
-  let teamSelected: SelectOptionType[] = [
-    { label: user.team, value: user.team },
-  ];
-  let genderSelected: SelectOptionType[] = [
-    { label: user.gender, value: user.gender },
-  ];
-  let userTypeSelected: SelectOptionType[] = [
-    { label: user.user_type, value: user.user_type },
-  ];
-  let locationSelected: SelectOptionType[] = [
-    { label: user.location.name, value: user.location.id },
-  ];
+  // let teamSelected: SelectOptionType[] = [
+  //   { label: user.team, value: user.team },
+  // ];
+  // let genderSelected: SelectOptionType[] = [
+  //   { label: user.gender, value: user.gender },
+  // ];
+  // let userTypeSelected: SelectOptionType[] = [
+  //   { label: user.user_type, value: user.user_type },
+  // ];
+  // let locationSelected: SelectOptionType[] = [
+  //   { label: user.location.name, value: user.location.id },
+  // ];
   let reportingToSelected: SelectOptionType[] = [];
 
   // RFNV0.1 if (user.salary.current_salary){
@@ -75,9 +72,9 @@
     isErrorAddress: null | boolean,
     isErrorLink: null | boolean,
     isErrorSocialNumber: null | boolean,
-    isErrorUserType: null | boolean,
+    // isErrorUserType: null | boolean,
     isErrorLocation: null | boolean,
-    isErrorSuperuser: null | boolean,
+    // isErrorSuperuser: null | boolean,
     isErrorBirthday: null | boolean = null;
 
   $: submitDisabled =
@@ -90,10 +87,10 @@
     isErrorfName == true ||
     isErrorAddress == true ||
     isErrorLocation == true ||
-    locationSelected.length < 1 ||
-    genderSelected.length < 1 ||
-    teamSelected.length < 1 ||
-    userTypeSelected.length < 1 ||
+    locationOptions.selected.length < 1 ||
+    genderOptions.selected.length < 1 ||
+    userTypeOptions.selected.length < 1 ||
+    // reportingToOptions.selected.length < 1 ||
     user.social_insurance_number.trim().length < 1 ||
     user.address.trim().length < 1 ||
     user.job_title.trim().length < 1;
@@ -107,6 +104,59 @@
 
   let successMessage: string;
   let errorMessage: string;
+
+  let departmentOptions: SelectOptionsComponent = {
+    optionsList: TeamChoice,
+    selected: [{ label: user.team, value: user.team }],
+    isLabel: true,
+    label: "Department",
+    placeholder: "Select department",
+    isTop: true,
+  };
+
+  let genderOptions: SelectOptionsComponent = {
+    optionsList: GenderChoice,
+    selected: [{ label: user.gender, value: user.gender }],
+    isLabel: true,
+    label: "Gender",
+    placeholder: "Select gender",
+    isTop: true,
+  };
+
+  let userTypeOptions: SelectOptionsComponent = {
+    optionsList: UserTypeChoice,
+    selected: [{ label: user.user_type, value: user.user_type }],
+    isLabel: true,
+    label: "User type",
+    placeholder: "Select user type",
+    isTop: true,
+  };
+
+  let locationOptions: SelectOptionsComponent = {
+    optionsList: [],
+    selected: [{ label: user.location.name, value: user.location.id }],
+    isLabel: true,
+    label: "Location",
+    placeholder: "Select location",
+    isTop: true,
+  };
+
+  let selectedReportingTo: SelectOptionType[] = [];
+
+  user.reporting_to.forEach(user =>
+    selectedReportingTo.push({
+      value: user.id,
+      label: user.full_name,
+    }),
+  );
+
+  let reportingToOptions: SelectOptionsComponent = {
+    optionsList: [],
+    label: "Reporting to",
+    selected: selectedReportingTo,
+    isTop: true,
+    multiple: true,
+  };
 </script>
 
 <div class="card">
@@ -205,62 +255,34 @@
               </div> -->
         <div class="col-6">
           <div class="form-outline">
-            <MultiSelect
-              bind:options={teamSelectOptions}
-              bind:selected={teamSelected}
-              isLabel={true}
-              label="Team"
-              placeholder="Select team"
-              removeAllTitle="Remove all team"
-              multiple={false}
-            />
+            <MultiSelect bind:options={departmentOptions} />
           </div>
         </div>
         <div class="col-6">
           <div class="form-outline">
-            <MultiSelect
-              bind:options={genderSelectOptions}
-              bind:selected={genderSelected}
-              isLabel={true}
-              label="Gender"
-              placeholder="Select gender"
-              removeAllTitle="Remove gender"
-              multiple={false}
-            />
+            <MultiSelect bind:options={genderOptions} />
           </div>
         </div>
         <div class="col-6">
           <div class="form-outline">
-            <MultiSelect
-              bind:options={userTypeOptions}
-              bind:selected={userTypeSelected}
-              isLabel={true}
-              label="Role"
-              placeholder="Select user role"
-              removeAllTitle="Remove user role"
-              multiple={false}
-              bind:isError={isErrorUserType}
-            />
+            <MultiSelect bind:options={userTypeOptions} />
           </div>
         </div>
         <div class="col-6">
           <div class="form-outline">
-            <LocationSelect
-              mylabel={"Location"}
-              bind:isError={isErrorLocation}
-              bind:selected={locationSelected}
-              isTop={true}
-            />
+            <LocationSelect bind:options={locationOptions} />
           </div>
         </div>
         <div class="col-6">
           <div class="form-outline">
             <PeopleSelect
-              multiple={true}
-              mylabel={"Reporting to"}
-              bind:isError={isErrorSuperuser}
-              bind:selected={reportingToSelected}
-              isTop={true}
+              bind:options={reportingToOptions}
+              on:removeAllItems={e => {
+                reportingToOptions.selected = e.detail.selected;
+              }}
+              on:removeItem={e => {
+                reportingToOptions.selected = e.detail.selected;
+              }}
             />
           </div>
         </div>
@@ -343,9 +365,7 @@
       <div class="col-6 mt-3">
         <div class="form-outline">
           <div class="row">
-            <div class="col-4 d-flex align-items-center">
-              Background Logo color
-            </div>
+            <div class="col-4 d-flex align-items-center">Background Logo color</div>
             <div class="col-8">
               <ColorPicker bind:color />
             </div>
@@ -355,7 +375,7 @@
       {#if user.image.includes("profile_image")}
         <div class="col-6 mt-3">
           <RemoveImage
-            on:message={(event) => {
+            on:message={event => {
               removeImage = event.detail.text;
             }}
             buttonBackgraound={user.background_color}
@@ -380,51 +400,19 @@
         <div class="form-outline mt-4 d-flex justify-content-center">
           <div class="col-12 d-flex justify-content-end">
             <Submit
-              width={"15"}
-              bind:successMessage
-              bind:errorMessage
-              label="Submit"
-              onClick={async () => {
-                isLoading = true;
-
-                for (var i in reportingToSelected) {
-                  user.reporting_to[i] = reportingToSelected[i].value;
-                }
-
-                user.background_color = color.toHexString();
-                user.team = teamSelected[0].value;
-                user.location = locationSelected[0].value;
-                user.gender = genderSelected[0].value;
-                user.user_type = userTypeSelected[0].value;
-                user.remove_image = removeImage;
-                if (image != undefined) {
-                  user.image = image.src;
-                } else {
-                  user.image = "";
-                }
-                try {
-                  await RegisterDataService.updateProfile(user);
-                  successMessage =
-                    "The user profile has been updated successfully.";
-                } catch (error) {
-                  isError = true;
-                  errorMessage = "Failed to update the user profile.";
-                } finally {
-                  isLoading = false;
-                }
-                return isError;
+              width={"17"}
+              label="Change User"
+              onClick={() => {
+                user = null;
               }}
-              className=""
-              bind:disabled={submitDisabled}
+              className="abtn btn-success mr-4"
             />
             <div style="margin-left: 5px; margin-right: 5px;" />
             <Submit
               width={"17"}
               bind:successMessage
               bind:errorMessage
-              label={user.is_active
-                ? "Set as inactive user"
-                : "Set as active user"}
+              label={user.is_active ? "Set as inactive user" : "Set as active user"}
               onClick={async () => {
                 isLoading = true;
                 try {
@@ -453,6 +441,49 @@
                 }
               }}
               className={user.is_active ? "btn-danger" : "btn-success"}
+            />
+            <div style="margin-left: 5px; margin-right: 5px;" />
+            <Submit
+              width={"17"}
+              bind:successMessage
+              bind:errorMessage
+              label="Submit"
+              onClick={async () => {
+                isLoading = true;
+
+                user.reporting_to = [];
+
+                for (var i in reportingToOptions.selected) {
+                  console.log(reportingToOptions.selected[i].value);
+                  if (!user.reporting_to.includes(reportingToOptions.selected[i].value)) {
+                    user.reporting_to.push(reportingToOptions.selected[i].value);
+                  }
+                }
+
+                user.background_color = color.toHexString();
+                user.team = departmentOptions.selected[0].value;
+                user.location = locationOptions.selected[0].value;
+                user.gender = genderOptions.selected[0].value;
+                user.user_type = userTypeOptions.selected[0].value;
+                user.remove_image = removeImage;
+                if (image != undefined) {
+                  user.image = image.src;
+                } else {
+                  user.image = "";
+                }
+                try {
+                  await RegisterDataService.updateProfile(user);
+                  successMessage = "The user profile has been updated successfully.";
+                } catch (error) {
+                  isError = true;
+                  errorMessage = "Failed to update the user profile.";
+                } finally {
+                  isLoading = false;
+                }
+                return isError;
+              }}
+              className=""
+              bind:disabled={submitDisabled}
             />
           </div>
         </div>

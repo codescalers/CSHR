@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { eventNameType } from "../../utils/types";
   import { CalenderEventEmojeTyoe } from "../../utils/enums";
+  import type { eventNameType } from "../../utils/types";
   export let eventNames: Set<eventNameType>;
 
   function eventChanger(event: eventNameType) {

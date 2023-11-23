@@ -1,15 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
+
+  import Evaluation from "../../apis/evaluation/Evaluation";
+  import { EvaluationQuarter } from "../../utils/enums";
   import type { UserEvaluationType } from "../../utils/types";
   import Quarter from "./EvaluationQuarter.svelte";
-  import { EvaluationQuarter } from "../../utils/enums";
-  import Evaluation from "../../apis/evaluation/Evaluation";
   export let user: any;
 
   let evaluations: UserEvaluationType[];
   let date: Date = new Date();
   let year: number = date.getFullYear();
-  let isLoading: boolean = false;
+  let isLoading = false;
 
   async function plusOneYear() {
     isLoading = true;
@@ -43,10 +44,7 @@
     <div class="card-body">
       <div class="row">
         <div class="col-2">
-          <button
-            class="c-btn d-flex justify-content-center align-items-center"
-            on:click={minusOneYear}
-          >
+          <button class="c-btn d-flex justify-content-center align-items-center" on:click={minusOneYear}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -65,10 +63,7 @@
           <p class="text-center text-muted year">{year}</p>
         </div>
         <div class="col-2">
-          <button
-            class="c-btn justify-content-center align-items-center"
-            on:click={plusOneYear}
-          >
+          <button class="c-btn justify-content-center align-items-center" on:click={plusOneYear}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"

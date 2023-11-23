@@ -1,5 +1,6 @@
 <script>
   import { Route } from "svelte-navigator";
+
   import Login from "../pages/Login.svelte";
   import { authStore } from "../utils/stores";
   import { UserStore } from "../utils/stores";

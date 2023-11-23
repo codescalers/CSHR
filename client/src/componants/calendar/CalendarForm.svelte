@@ -1,31 +1,23 @@
 <script lang="ts">
-  import CalendarMeetingForm from "./forms/MeetingForm.svelte";
+  import { createEventDispatcher } from "svelte";
+
+  import CalendarDatePicker from "./CalendarDatePicker.svelte";
   import CalendarEventForm from "./forms/EventForm.svelte";
   import CalendarLeaveForm from "./forms/LeaveForm.svelte";
-  import CalendarDatePicker from "./CalendarDatePicker.svelte";
-  import { createEventDispatcher } from "svelte";
+  import CalendarMeetingForm from "./forms/MeetingForm.svelte";
 
   const dispatch = createEventDispatcher();
 
-  let formToggle: number = 0;
+  let formToggle = 0;
   let thisDate: Date = new Date();
   let endDate: string;
-  let startDate = `${thisDate.getFullYear()}-${
-    thisDate.getMonth() + 1
-  }-${thisDate.getDate()}`;
-  const daysInCurrentMonth = getDaysInMonth(
-    thisDate.getFullYear(),
-    thisDate.getMonth() + 1
-  );
+  let startDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate()}`;
+  const daysInCurrentMonth = getDaysInMonth(thisDate.getFullYear(), thisDate.getMonth() + 1);
 
   if (thisDate.getDate() + 2 > daysInCurrentMonth) {
-    endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 2}-${
-      thisDate.getDate() + 2 - daysInCurrentMonth
-    }`;
+    endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 2}-${thisDate.getDate() + 2 - daysInCurrentMonth}`;
   } else {
-    endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${
-      thisDate.getDate() + 2
-    }`;
+    endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate() + 2}`;
   }
 
   let datePickerDisabled = false;
@@ -79,7 +71,7 @@
           bind:endDate
           bind:datePickerDisabled
           calculatorValue={VacationCalculator}
-          on:message={(event) => {
+          on:message={event => {
             dispatch("message", {
               postedVacation: event.detail.postedVacation,
             });
@@ -90,7 +82,7 @@
         <CalendarMeetingForm
           bind:startDate
           bind:datePickerDisabled
-          on:message={(event) => {
+          on:message={event => {
             dispatch("message", {
               postedMeeting: event.detail.postedMeeting,
             });
@@ -103,7 +95,7 @@
           bind:startDate
           bind:endDate
           bind:datePickerDisabled
-          on:message={(event) => {
+          on:message={event => {
             dispatch("message", {
               postedEvent: event.detail.postedEvent,
             });

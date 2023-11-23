@@ -1,20 +1,19 @@
 <script lang="ts">
-  import PeopleSelect from "../ui/select/UsersMultiSelect.svelte";
+  import UserDataService from "../../apis/users/users";
   import type { SelectOptionType } from "../../utils/types";
   import Submit from "../ui/Button.svelte";
   import Input from "../ui/Input.svelte";
-  import UserDataService from "../../apis/users/users";
   import SelectImage from "../ui/select/SelectImage.svelte";
+  import PeopleSelect from "../ui/select/UsersMultiSelect.svelte";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  export let isLoading = false;
+  export let isError = false;
 
   let documentNameValue: string;
   let image: HTMLImageElement;
   let documentNameIsError: boolean | null = null;
 
-  $: submitDisabled =
-    documentNameIsError === null || documentNameIsError === true;
+  $: submitDisabled = documentNameIsError === null || documentNameIsError === true;
 
   let eventPeopleIsError: boolean | null = null;
   let peopleSelected: SelectOptionType[] = [];
@@ -70,8 +69,7 @@
                 });
                 successMessage = "The document has been added.";
               } catch (error) {
-                errorMessage =
-                  "Error while trying to add the document, please check the provided data and try again.";
+                errorMessage = "Error while trying to add the document, please check the provided data and try again.";
                 isError = true;
               } finally {
                 isLoading = false;

@@ -1,13 +1,14 @@
 <script lang="ts">
-  import { CalenderEventType, CalenderEventEmojeTyoe } from "../../utils/enums";
   import { createEventDispatcher, onMount } from "svelte";
-  import type { calendarItemsType, eventNameType } from "../../utils/types";
+
   import { monthNames } from "../../utils/calendar";
+  import { CalenderEventEmojeTyoe, CalenderEventType } from "../../utils/enums";
+  import type { calendarItemsType, eventNameType } from "../../utils/types";
   import CalendarBirthdayModel from "../ui/modals/CalendarBirthdayModel.svelte";
-  import CalendarMeetingModel from "../ui/modals/CalendarMeetingModel.svelte";
   import CalendarEventDataModal from "../ui/modals/CalendarEventDataModal.svelte";
-  import CalendarVacationDataModal from "../ui/modals/CalendarVacationDataModal.svelte";
+  import CalendarMeetingModel from "../ui/modals/CalendarMeetingModel.svelte";
   import CalendarPublicHolidayModel from "../ui/modals/CalendarPublicHolidayModel.svelte";
+  import CalendarVacationDataModal from "../ui/modals/CalendarVacationDataModal.svelte";
 
   export var headers: string[] = [];
   export let days: any[] = [];
@@ -18,7 +19,7 @@
   export let isLoading: boolean;
 
   let clickedItemOnModal: calendarItemsType;
-  let showModal: boolean = false;
+  let showModal = false;
 
   let dispatch = createEventDispatcher();
 
@@ -53,7 +54,7 @@
   });
 
   const removeItem = () => {
-    items = items.filter((item) => item !== clickedItemOnModal);
+    items = items.filter(item => item !== clickedItemOnModal);
   };
 
   function next() {
@@ -79,10 +80,7 @@
     {#each [1, 2, 3, 4, 5, 6, 7] as row}
       <div class="">
         {#each [1, 2, 3, 4, 5] as col}
-          <div
-            style="background-color: {loadingBoxBg};"
-            class="calendar-loading-box"
-          />
+          <div style="background-color: {loadingBoxBg};" class="calendar-loading-box" />
         {/each}
       </div>
     {/each}
@@ -100,23 +98,16 @@
     <div class="calendar table-responsive table-responsive">
       {#each headers as header}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <span class="day-name" on:click={() => dispatch("headerClick", header)}
-          >{header}</span
-        >
+        <span class="day-name" on:click={() => dispatch("headerClick", header)}>{header}</span>
       {/each}
 
       {#each days as day}
         {#if day.enabled}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <span class="day" on:click={() => dispatch("dayClick", day)}
-            >{day.name}</span
-          >
+          <span class="day" on:click={() => dispatch("dayClick", day)}>{day.name}</span>
         {:else}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <span
-            class="day day-disabled"
-            on:click={() => dispatch("dayClick", day)}>{day.name}</span
-          >
+          <span class="day day-disabled" on:click={() => dispatch("dayClick", day)}>{day.name}</span>
         {/if}
       {/each}
 
@@ -240,11 +231,7 @@
     on:reject={removeItem}
   />
 {:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.event}
-  <CalendarEventDataModal
-    bind:clickedItemOnModal
-    bind:showModal
-    currentEventActive={clickedItemOnModal.event[0]}
-  />
+  <CalendarEventDataModal bind:clickedItemOnModal bind:showModal currentEventActive={clickedItemOnModal.event[0]} />
 {:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.birthday}
   <CalendarBirthdayModel
     bind:clickedItemOnModal

@@ -1,20 +1,20 @@
 <script lang="ts">
-  import DatePicker from "./DatePicker.svelte";
-  import Input from "../ui/Input.svelte";
-  import Vacation from "../../apis/vacations/Vacation";
   import { createEventDispatcher } from "svelte";
-  import { validateStartEndDates } from "../../utils/validations";
+
+  import Vacation from "../../apis/vacations/Vacation";
   import type { CalenderRequestFormResponseType } from "../../utils/types";
+  import { validateStartEndDates } from "../../utils/validations";
+  import Input from "../ui/Input.svelte";
+  import DatePicker from "./DatePicker.svelte";
   export let startDate = "2022-03-01";
   export let endDate = "2022-03-03";
   export let errorMessage = "";
   export let onlyStart = false;
   export let isLoading = false;
-  export let datePickerDisabled = true;
-  export let calculate: boolean = true;
+  export let calculate = true;
 
   const dispatch = createEventDispatcher();
-  let today = new Date();
+  // let today = new Date();
 
   const locale: {
     en: {
@@ -38,11 +38,7 @@
   }
 
   function validateDate(date: string): CalenderRequestFormResponseType {
-    let validated: CalenderRequestFormResponseType = validateStartEndDates(
-      date,
-      startDate,
-      endDate
-    );
+    let validated: CalenderRequestFormResponseType = validateStartEndDates(date, startDate, endDate);
 
     if (validated.isError == false && calculate) {
       calculateActualVacationBalance();
@@ -56,19 +52,10 @@
 </script>
 
 <div class="container table-primary table-responsive">
-  <fieldset
-    id="isloading"
-    disabled={isLoading}
-    style={` opacity: ${isLoading ? "0.1" : "1"}`}
-  >
+  <fieldset id="isloading" disabled={isLoading} style={` opacity: ${isLoading ? "0.1" : "1"}`}>
     {#if errorMessage}
       <div class="mt-3">
-        <DatePicker
-          bind:startDate
-          bind:endDate
-          bind:onlyStart
-          {...locale["en"]}
-        />
+        <DatePicker bind:startDate bind:endDate bind:onlyStart {...locale["en"]} />
       </div>
     {/if}
 

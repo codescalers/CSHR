@@ -1,15 +1,16 @@
 <script lang="ts">
-  import Tags from "svelte-tags-input";
   import { onMount } from "svelte";
-  import SkillsDataService from "../../apis/skills/skills";
-  import Submit from "../ui/Button.svelte";
-  import { UserStore } from "../../utils/stores";
+  import Tags from "svelte-tags-input";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  import SkillsDataService from "../../apis/skills/skills";
+  import { UserStore } from "../../utils/stores";
+  import Submit from "../ui/Button.svelte";
+
+  export let isLoading = false;
+  export let isError = false;
 
   let skills: string[] = [];
-  let tag: string = "";
+  let tag = "";
 
   onMount(async function () {
     const skillsApi = await SkillsDataService.getAll();
@@ -69,8 +70,7 @@
           await SkillsDataService.postSkills($UserStore, tags);
           successMessage = "The new skills have been added successfully.";
         } catch (error) {
-          errorMessage =
-            "Error while trying to add the new skills, please check the provided data and try again.";
+          errorMessage = "Error while trying to add the new skills, please check the provided data and try again.";
           isError = true;
         } finally {
           isLoading = false;

@@ -1,26 +1,23 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
-  import Submit from "../ui/Button.svelte";
-  import CalendarLeaveForm from "../calendar/forms/LeaveForm.svelte";
-  import CalendarDatePicker from "../calendar/CalendarDatePicker.svelte";
-  import CompensationsDataService from "../../apis/compensation/compensations";
-  import type { CompensationType } from "../../utils/types";
   import { createEventDispatcher } from "svelte";
 
-  export let isLoading: boolean = false;
-  export let isError: boolean = false;
+  import CompensationsDataService from "../../apis/compensation/compensations";
+  import type { CompensationType } from "../../utils/types";
+  import CalendarDatePicker from "../calendar/CalendarDatePicker.svelte";
+  import CalendarLeaveForm from "../calendar/forms/LeaveForm.svelte";
+  import Submit from "../ui/Button.svelte";
+  import Input from "../ui/Input.svelte";
+
+  export let isLoading = false;
+  export let isError = false;
 
   const dispatch = createEventDispatcher();
 
   let isErrorReason: boolean | null = null;
   let isErrorDates: boolean;
   let thisDate: Date = new Date();
-  let startDate = `${thisDate.getFullYear()}-${
-    thisDate.getMonth() + 1
-  }-${thisDate.getDate()}`;
-  let endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${
-    thisDate.getDate() + 2
-  }`;
+  let startDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate()}`;
+  let endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate() + 2}`;
   let datePickerDisabled = false;
   let successMessage: string;
   let errorMessage: string;
@@ -38,13 +35,7 @@
   <div class="col-12">
     <div class="container" style="width: 40%;">
       {#if startDate && endDate}
-        <CalendarDatePicker
-          onlyStart={false}
-          bind:startDate
-          bind:endDate
-          bind:datePickerDisabled
-          calculate={false}
-        >
+        <CalendarDatePicker onlyStart={false} bind:startDate bind:endDate bind:datePickerDisabled calculate={false}>
           <div slot="form">
             <div class="form-outline">
               <Input

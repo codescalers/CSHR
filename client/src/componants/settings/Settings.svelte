@@ -54,12 +54,7 @@
     >
       <UpdateProfile user={$UserStore}/>
     </div> -->
-    <div
-      class="tab-pane show active"
-      id="ex2-tabs-2"
-      role="tabpanel"
-      aria-labelledby="ex2-tab-2"
-    >
+    <div class="tab-pane show active" id="ex2-tabs-2" role="tabpanel" aria-labelledby="ex2-tab-2">
       <ChangePassword />
     </div>
     <!-- RFNV1.0 <div

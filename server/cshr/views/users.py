@@ -283,6 +283,7 @@ class UpdateUserProfileUserAPIView(GenericAPIView):
                 team=request.data.get("team"),
                 gender=request.data.get("gender"),
                 location=office,
+                reporting_to=request.data.get("reporting_to"),
             )
             if remove_image:
                 user.image.delete()

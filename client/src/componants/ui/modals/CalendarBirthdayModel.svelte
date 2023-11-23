@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { calendarItemsType, userDataType } from "../../../utils/types";
-  import CalendarModal from "./CalendarModal.svelte";
-  import ProfileImage from "../../profile/ProfileImage.svelte";
   import { CalenderEventEmojeTyoe } from "../../../utils/enums";
+  import type { calendarItemsType, userDataType } from "../../../utils/types";
+  import ProfileImage from "../../profile/ProfileImage.svelte";
+  import CalendarModal from "./CalendarModal.svelte";
 
-  export let showModal: boolean = false;
+  export let showModal = false;
   export let clickedItemOnModal: calendarItemsType;
 
   export let currentUserActive: userDataType;
@@ -19,9 +19,7 @@
 <CalendarModal bind:showModal>
   <header slot="header" class="text-center w-100">
     <h6 class="modal-title" id="exampleModalLongTitle">
-      <strong
-        >{clickedItemOnModal.date} Birthdays {CalenderEventEmojeTyoe.birthday}</strong
-      >
+      <strong>{clickedItemOnModal.date} Birthdays {CalenderEventEmojeTyoe.birthday}</strong>
     </h6>
   </header>
   <div slot="body" class="bg-confetti-animated">
@@ -30,9 +28,7 @@
         <h3 class="mx-auto text-muted">
           {clickedItemOnModal.users.length > 1
             ? "Wish them a Happy Birthday !"
-            : `Wish ${
-                clickedItemOnModal.users[0].gender === "Male" ? "him" : "her"
-              } a BirthDay ! `}
+            : `Wish ${clickedItemOnModal.users[0].gender === "Male" ? "him" : "her"} a BirthDay ! `}
         </h3>
         <div class="row m-0 justify-content-center">
           {#each clickedItemOnModal.users as user}
@@ -57,9 +53,7 @@
               </div>
               <div class="col-6">
                 <p class="text-muted">
-                  {currentUserActive.full_name.trim().length
-                    ? currentUserActive.full_name
-                    : "--"}
+                  {currentUserActive.full_name.trim().length ? currentUserActive.full_name : "--"}
                 </p>
               </div>
               <div class="col-6 text-center">

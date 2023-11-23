@@ -1,18 +1,14 @@
 <script lang="ts">
-  import ProfileImage from "../profile/ProfileImage.svelte";
-  import NavBar from "./NavBar.svelte";
-  import { useNavigate } from "svelte-navigator";
   import { onMount } from "svelte";
+  import { useNavigate } from "svelte-navigator";
 
   import usersAPI from "../../apis/users/users";
-  import { UserStore, authStore } from "../../utils/stores";
+  import { authStore, UserStore } from "../../utils/stores";
+  import ProfileImage from "../profile/ProfileImage.svelte";
+  import NavBar from "./NavBar.svelte";
   import PageFooter from "./PageFooter.svelte";
 
-  let toggleId: HTMLElement,
-    navId: HTMLElement,
-    bodyId: HTMLElement,
-    headerId: HTMLElement,
-    pageContent: HTMLElement;
+  let toggleId: HTMLElement, navId: HTMLElement, bodyId: HTMLElement, headerId: HTMLElement, pageContent: HTMLElement;
 
   const changeSidebar = () => {
     navId.classList.toggle("show-sidebar");
@@ -39,11 +35,7 @@
       <div class="row align-items-center">
         <div class="col-6">
           <div class="header_toggle">
-            <button
-              id="btn header-toggle"
-              bind:this={toggleId}
-              on:click={changeSidebar}
-            >
+            <button id="btn header-toggle" bind:this={toggleId} on:click={changeSidebar}>
               <i class="bx bx-menu" />
             </button>
           </div>

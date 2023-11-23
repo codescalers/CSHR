@@ -1,7 +1,7 @@
 import type { CalenderRequestFormResponseType } from "./types";
 export const validateEmail = (e: any): boolean => {
   const re =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return !re.test(String(e.target.value).toLowerCase());
 };
 
@@ -16,20 +16,18 @@ export const validateName = (e: any): boolean => {
 };
 
 export function validateSpcialEmptyString(e: any): boolean {
-  if (e.target.value.length < 2) return true
-  const re = /^[a-zA-Z]+$/;
-  return !re.test(String(e.target.value));
+  return e.target.value.length < 2 ? true : false;
 }
 
 export const validateLink = (e: any): boolean => {
-  let urlPattern = new RegExp(
+  const urlPattern = new RegExp(
     "^(https?:\\/\\/)?" + // validate protocol
       "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // validate domain name
       "((\\d{1,3}\\.){3}\\d{1,3}))" + // validate OR ip (v4) address
       "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // validate port and path
       "(\\?[;&a-z\\d%_.~+=-]*)?" + // validate query string
       "(\\#[-a-z\\d_]*)?$",
-    "i"
+    "i",
   ); // validate fragment locator
   return !urlPattern.test(String(e.target.value));
 };
@@ -50,8 +48,8 @@ export const validateSalary = (e: any): boolean => {
 };
 
 export const validateBirthday = (e: any): boolean => {
-  let date = new Date(e.target.value);
-  let today = new Date();
+  const date = new Date(e.target.value);
+  const today = new Date();
   if (date.getFullYear() < today.getFullYear()) {
     return false;
   }
@@ -59,26 +57,21 @@ export const validateBirthday = (e: any): boolean => {
 };
 
 export const validateBackgroundColor = (e: any): boolean => {
-  if (e.target.value[0] == "#" && isNaN(e.target.value.slice(1, -1)))
-    return false;
+  if (e.target.value[0] == "#" && isNaN(e.target.value.slice(1, -1))) return false;
   return true;
 };
 //
-export const validateStartEndDates = (
-  date: string,
-  startDate: string,
-  endDate: string
-) => {
-  let response: CalenderRequestFormResponseType = {
+export const validateStartEndDates = (date: string, startDate: string, endDate: string) => {
+  const response: CalenderRequestFormResponseType = {
     message: "Success!",
     isError: false,
   };
 
-  let validateStartDate = new Date(startDate);
-  let validateEndDate = new Date(endDate);
+  const validateStartDate = new Date(startDate);
+  const validateEndDate = new Date(endDate);
 
   const now: Date = new Date();
-  let check = Date.parse(date);
+  const check = Date.parse(date);
 
   if (
     !check ||

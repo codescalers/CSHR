@@ -1,47 +1,55 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import type { SelectOptionType } from "../../../utils/types";
   import { v4 as uuidv4 } from "uuid";
 
-  export let options: SelectOptionType[] = [],
-    selected: SelectOptionType[] = [],
-    label: string = "choose",
-    placeholder: string = `Select`,
-    removeAllTitle = "Remove all",
-    multiple: boolean = true,
-    errorMessage: string = "Please select atleast an option",
-    hint: string = multiple
-      ? "you can choose multiple options"
-      : "you can choose only one option",
-    isTop: boolean = true,
-    className: string = "",
-    isError: boolean | null = null,
-    isLabel: boolean = false,
-    show: boolean = false;
+  import type { SelectOptionsComponent, SelectOptionType } from "../../../utils/types";
+
+  export let options: SelectOptionsComponent = {
+    optionsList: [],
+    selected: [],
+    label: "choose",
+    removeAllTitle: "Remove all",
+    multiple: true,
+    errorMessage: "Please select atleast an option.",
+    isTop: true,
+    className: "",
+    isError: false,
+    isLabel: false,
+    show: false,
+    disabled: false,
+  };
+
+  if (!options.placeholder) {
+    options.placeholder = `Select ${options.label}`;
+  }
+
+  if (!options.hint) {
+    options.hint = options.multiple ? "you can choose multiple options" : "you can choose only one option";
+  }
 
   let id: string = uuidv4();
   const dispatch = createEventDispatcher();
 
   function select(e: any, option: SelectOptionType) {
     e.stopPropagation();
-    if (multiple) {
-      if (selected.includes(option)) {
-        selected = selected.filter((item) => item.value !== option.value);
+    if (options.multiple) {
+      if (options.selected.includes(option)) {
+        options.selected = options.selected.filter(item => item.value !== option.value);
 
-        selected = selected.filter((item) => item.value !== option.value);
+        options.selected = options.selected.filter(item => item.value !== option.value);
       } else {
-        selected = [...selected, option];
+        options.selected = [...options.selected, option];
       }
     } else {
-      selected = [option];
+      options.selected = [option];
     }
     dispatch("select", {
-      selected: selected[0],
+      selected: options.selected[0],
     });
-    show = false;
+    options.show = false;
   }
 
-  let highlightedIndex: number = 1;
+  let highlightedIndex = 1;
 
   const ref = (node: HTMLDivElement) => {
     node.addEventListener("keydown", (e: KeyboardEvent) => {
@@ -49,17 +57,17 @@
 
       switch (e.code) {
         case "ArrowUp":
-          show = true;
+          options.show = true;
           e.preventDefault();
           if (highlightedIndex === 0) {
-            highlightedIndex = options.length - 1;
+            highlightedIndex = options.optionsList.length - 1;
           } else {
             highlightedIndex--;
           }
           break;
         case "ArrowDown":
-          show = true;
-          if (highlightedIndex === options.length - 1) {
+          options.show = true;
+          if (highlightedIndex === options.optionsList.length - 1) {
             highlightedIndex = 0;
           } else {
             highlightedIndex++;
@@ -76,72 +84,80 @@
   };
 </script>
 
-<div class={`form-group row ${className}`}>
-  <label for={id} class={`${isTop ? "col-sm-4" : ""} col-form-label py-3`}
-    >{label}</label
-  >
-  <div class={`${isTop ? "col-sm-8" : "col-sm-12"}`}>
+<div class={`form-group row ${options.className}`}>
+  <label for={id} class={`${options.isTop ? "col-sm-4" : ""} col-form-label py-3`}>
+    {options.label}
+  </label>
+
+  <div class={`${options.isTop ? "col-sm-8" : "col-sm-12"}`}>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       use:ref
-      on:blur={() => (show = false)}
-      on:click={() => (show = !show)}
+      on:blur={() => (options.show = false)}
+      on:click={() => (options.show = !options.show)}
       tabIndex="0"
-      class="select-container my-2"
+      class="select-container my-2 {options.disabled ? 'disabled' : ''}"
     >
       <div class="value">
-        {#if selected.length > 0}
-          {#each selected as option, index (index)}
-            <button
-              class="option-badge"
-              on:click={(e) => {
-                e.stopPropagation();
-                selected = selected.filter((o) => o.value !== option.value);
-              }}
-              >{option.label}
-              <span class="remove-btn" title={option.extraData?.title}
-                >&times;</span
-              ></button
-            >
-          {/each}
+        {#if options.selected}
+          {#if options.selected.length > 0}
+            {#each options.selected as option, index (index)}
+              <button
+                class="option-badge"
+                on:click={e => {
+                  e.stopPropagation();
+                  options.selected = options.selected.filter(o => o.value !== option.value);
+                  dispatch("removeItem", {
+                    selected: options.selected,
+                  });
+                }}
+                >{option.label}
+                <span class="remove-btn" title={option.extraData?.title}>&times;</span></button
+              >
+            {/each}
+          {/if}
         {/if}
       </div>
       <button
         class="clear-btn"
         type="button"
-        title={removeAllTitle}
-        on:click={(e) => {
+        title={options.removeAllTitle}
+        on:click={e => {
           e.stopPropagation();
-          selected = [];
+          options.selected = [];
+          dispatch("removeAllItems", {
+            selected: options.selected,
+          });
         }}>&times;</button
       >
       <div class="divider" />
       <div class="caret" />
-      <ul class="options" class:show>
-        {#each options as option, index (index + +"" + option.value + "" + index)}
-          <li
-            class={`option ${selected.includes(option) ? "selected" : ""} ${
-              highlightedIndex === index ? "highlighted" : ""
-            }`}
-            data-value={option.value}
-            data-index={index}
-            on:mouseenter={() => (highlightedIndex = index)}
-            on:click={(e) => select(e, option)}
-          >
-            <div class="">
-              <div>
-                {isLabel ? option.label + "" : ""}
-
-                <slot id={uuidv4()} name="option" {option} />
+      <ul class="options {options.show ? 'show' : ''}">
+        {#if options.optionsList}
+          {#each options.optionsList as option, index (index + +"" + option.value + "" + index)}
+            <li
+              class={`option ${options.selected.includes(option) ? "selected" : ""} ${
+                highlightedIndex === index ? "highlighted" : ""
+              }`}
+              data-value={option.value}
+              data-index={index}
+              on:mouseenter={() => (highlightedIndex = index)}
+              on:click={e => select(e, option)}
+            >
+              <div class="">
+                <div>
+                  {options.isLabel ? option.label + "" : ""}
+                  <slot id={uuidv4()} name="option" {option} />
+                </div>
               </div>
-            </div>
-          </li>
-        {/each}
+            </li>
+          {/each}
+        {/if}
       </ul>
     </div>
-    {#if isError}
+    {#if options.isError}
       <div class="text-danger">
-        <small class="fw-bold">{errorMessage} </small>, {hint}
+        <small class="fw-bold">{options.errorMessage} </small>, {options.hint}
       </div>
     {/if}
   </div>
@@ -164,6 +180,10 @@
     cursor: pointer;
     background-color: var(--secondary-color);
     transition: all 0.3s ease-in-out;
+  }
+  .disabled {
+    pointer-events: none;
+    opacity: 0.6;
   }
   .place {
     color: #777;
@@ -281,6 +301,7 @@
   .option.selected:nth-child(n-2) {
     background-color: var(--primary-color);
     border-bottom: 0.15em #aaa solid;
+    border-top: 0.15em #aaa solid;
     color: #000;
   }
   .option:hover {

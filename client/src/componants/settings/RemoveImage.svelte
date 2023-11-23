@@ -5,7 +5,7 @@
   export let buttonBackgraound: string;
   const dispatch = createEventDispatcher();
 
-  let removed: boolean = false;
+  let removed = false;
 </script>
 
 <div class="row">

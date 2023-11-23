@@ -1,11 +1,12 @@
 <script lang="ts">
-  import CalendarLeaveForm from "../calendar/forms/LeaveForm.svelte";
-  import CalendarDatePicker from "../calendar/CalendarDatePicker.svelte";
-  import Vacation from "../../apis/vacations/Vacation";
   import { onMount } from "svelte";
-  import { RequestStatus } from "../../utils/enums";
   import { Route } from "svelte-navigator";
+
+  import Vacation from "../../apis/vacations/Vacation";
   import Error from "../../pages/Error.svelte";
+  import { RequestStatus } from "../../utils/enums";
+  import CalendarDatePicker from "../calendar/CalendarDatePicker.svelte";
+  import CalendarLeaveForm from "../calendar/forms/LeaveForm.svelte";
 
   export let isLoading = false;
   export let isError: boolean | null = null;
@@ -27,7 +28,7 @@
     isLoading = false;
   });
 
-  let formToggle: number = 0;
+  let formToggle = 0;
   let datePickerDisabled = false;
 
   let VacationCalculator: number;

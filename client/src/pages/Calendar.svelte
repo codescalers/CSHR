@@ -1,15 +1,15 @@
 <script lang="ts">
-  import Calendar from "../componants/calendar/Calender.svelte";
   import CalendarEventsFilter from "../componants/calendar/CalendarEventsFilter.svelte";
   import CalendarEventForm from "../componants/calendar/CalendarForm.svelte";
-  import { dayNames, initMonthItems, initMonth } from "../utils/calendar";
-  import { findRowCol } from "../utils/calendar";
-  import type { calendarItemsType, eventNameType } from "../utils/types";
+  import Calendar from "../componants/calendar/Calender.svelte";
   import Sidebar from "../componants/sidebar/Sidebar.svelte";
-  import { UserStore } from "../utils/stores";
   import Alert from "../componants/ui/Alert.svelte";
+  import { dayNames, initMonth, initMonthItems } from "../utils/calendar";
+  import { findRowCol } from "../utils/calendar";
+  import { UserStore } from "../utils/stores";
+  import type { calendarItemsType, eventNameType } from "../utils/types";
 
-  export let isLoading: boolean = false;
+  export let isLoading = false;
 
   let headers = [];
   let now = new Date();
@@ -32,10 +32,7 @@
     const firstFiveDaysOfNewYear = new Date(currentYear + 1, 0, 1); // January is month 0
     firstFiveDaysOfNewYear.setDate(firstFiveDaysOfNewYear.getDate() + 4); // First 5 days of the new year
 
-    if (
-      currentDate >= lastFiveDaysOfYear &&
-      currentDate <= firstFiveDaysOfNewYear
-    ) {
+    if (currentDate >= lastFiveDaysOfYear && currentDate <= firstFiveDaysOfNewYear) {
       if ($UserStore.user_type === "Admin") {
         resetVacationBalanceMessage =
           "As we approach the end/start of the year, a friendly reminder: we're in the last/first 5 days of the year! Admins, kindly visit the dashboard to update the balance values for this year. Please note, this message will automatically vanish after the initial 5 days of the year. Thank you for your attention! 🚀📊";
@@ -62,19 +59,9 @@
     isLoading = false;
   }
 
-  let eventNames: Set<eventNameType> = new Set([
-    "event",
-    "vacation",
-    "meeting",
-    "birthday",
-    "public_holiday",
-  ]);
+  let eventNames: Set<eventNameType> = new Set(["event", "vacation", "meeting", "birthday", "public_holiday"]);
 
-  $: month,
-    year,
-    initContent(),
-    AdminResetBalanceNotify(),
-    UserOldBalanceNotify();
+  $: month, year, initContent(), AdminResetBalanceNotify(), UserOldBalanceNotify();
 </script>
 
 <Sidebar>
@@ -103,7 +90,7 @@
         <div class="col-4">
           <CalendarEventsFilter bind:eventNames />
           <CalendarEventForm
-            on:message={(event) => {
+            on:message={event => {
               if (event.detail.postedVacation) {
                 item = event.detail.postedVacation;
               }
@@ -140,9 +127,9 @@
             bind:isLoading
             {headers}
             {days}
-            on:onDelete={(event) => {
+            on:onDelete={event => {
               if (items != undefined) {
-                items = items.filter((item) => item.id !== event.detail.id);
+                items = items.filter(item => item.id !== event.detail.id);
               } // TODO: delete from server
             }}
           />

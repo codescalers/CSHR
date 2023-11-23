@@ -1,16 +1,14 @@
 <script lang="ts">
+  import { CalenderEventEmojeTyoe } from "../../../utils/enums";
   import type { calendarItemsType } from "../../../utils/types";
   import CalendarModal from "./CalendarModal.svelte";
-  import { CalenderEventEmojeTyoe } from "../../../utils/enums";
-  import { onMount } from "svelte";
 
-  export let showModal: boolean = false;
+  export let showModal = false;
   export let clickedItemOnModal: calendarItemsType;
 
   function getHolidayClass(holiday) {
     return holiday.expired ? "expired" : "";
   }
-
 </script>
 
 <CalendarModal bind:showModal>
