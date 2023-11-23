@@ -1,4 +1,4 @@
-import { get, Writable, writable } from "svelte/store";
+import { get, type Writable, writable } from "svelte/store";
 
 import isAuthenticated from "../apis/authentication/IsAuthenticated";
 import Users from "../apis/users/users";
