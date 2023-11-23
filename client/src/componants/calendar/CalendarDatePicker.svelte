@@ -4,31 +4,20 @@
   import Vacation from "../../apis/vacations/Vacation";
   import type { CalenderRequestFormResponseType } from "../../utils/types";
   import { validateStartEndDates } from "../../utils/validations";
-  import Input from "../ui/Input.svelte";
-  import DatePicker from "./DatePicker.svelte";
-  export let startDate = "2022-03-01";
-  export let endDate = "2022-03-03";
-  export let errorMessage = "";
+  import "flatpickr/dist/flatpickr.css";
+  import "flatpickr/dist/themes/light.css";
+
+  import Flatpickr from "svelte-flatpickr";
+
+  export let startDate: string;
+  export let endDate: string;
+
   export let onlyStart = false;
-  export let isLoading = false;
   export let calculate = true;
+  
+  let errorMessage: string | undefined;
 
   const dispatch = createEventDispatcher();
-  // let today = new Date();
-
-  const locale: {
-    en: {
-      days: string[];
-      months: string[];
-      start: number;
-    };
-  } = {
-    en: {
-      days: "Su|Mo|Tu|We|Th|Fr|Sa".split("|"),
-      months: "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec".split("|"),
-      start: 0,
-    },
-  };
 
   async function calculateActualVacationBalance() {
     const vacationCalculator = await Vacation.calculator(startDate, endDate);
@@ -38,7 +27,11 @@
   }
 
   function validateDate(date: string): CalenderRequestFormResponseType {
-    let validated: CalenderRequestFormResponseType = validateStartEndDates(date, startDate, endDate);
+    const _startDate = new Date(startDate) 
+    const _endDate = new Date(endDate) 
+
+    let validated: CalenderRequestFormResponseType = validateStartEndDates(_startDate, _endDate);
+    console.log(validated);
 
     if (validated.isError == false && calculate) {
       calculateActualVacationBalance();
@@ -47,53 +40,54 @@
     return validated;
   }
 
-  $: validateDate(startDate);
-  $: validateDate(endDate);
+  $: startDate, validateDate(startDate);
+  $: endDate, validateDate(endDate);
 </script>
 
 <div class="container table-primary table-responsive">
-  <fieldset id="isloading" disabled={isLoading} style={` opacity: ${isLoading ? "0.1" : "1"}`}>
-    {#if errorMessage}
-      <div class="mt-3">
-        <DatePicker bind:startDate bind:endDate bind:onlyStart {...locale["en"]} />
-      </div>
-    {/if}
-
     <div class="mx-5">
       <slot name="toggler" />
 
       <div class="my-4 px-3">
-        <Input
-          label={(!onlyStart ? "Start " : "") + "Date"}
-          bind:value={startDate}
-          type="text"
-          hint={"Right Format YYYY-MM-DD."}
-          {errorMessage}
-          handleInput={() => {
-            return validateDate(startDate).isError;
-          }}
-          size={20}
-          placeholder={"Start Date"}
-          disabled={true}
-        />
+        <div class="end-date">
+          <Flatpickr bind:value={startDate} element="#start-day">
+            <div class="flatpickr form-outline mb-4" id="start-day">
+              <div class="form-group row pt-2">
+                <div class="col-6 d-flex align-items-center">
+                  <label for="startDayInput">
+                    Start day
+                  </label>
+                </div>
+          
+                <div class="col-6 d-flex align-items-center">
+                  <input class="form-control" id="startDayInput" type="text" placeholder="Select Start Day." data-input />
+                </div>
+              </div>
+            </div>
+          </Flatpickr>
+        </div>
 
         {#if !onlyStart}
-          <Input
-            label="End Date"
-            bind:value={endDate}
-            type="text"
-            hint={"Right Format YYYY-MM-DD."}
-            {errorMessage}
-            handleInput={() => {
-              return validateDate(startDate).isError;
-            }}
-            size={20}
-            placeholder={"End Date"}
-            disabled={true}
-          />
+          <div class="end-date">
+            <Flatpickr bind:value={endDate} element="#end-day">
+              <div class="flatpickr form-outline mb-4" id="end-day">
+                <div class="form-group row">
+                  <div class="col-6 d-flex align-items-center">
+                    <label for="endDayInput">
+                      End day
+                    </label>
+                  </div>
+            
+                  <div class="col-6 d-flex align-items-center">
+                    <input class="form-control" id="endDayInput" type="text" placeholder="Select End Day." data-input />
+                  </div>
+            
+                </div>
+              </div>
+            </Flatpickr>
+          </div>
         {/if}
         <slot name="form" />
       </div>
     </div>
-  </fieldset>
 </div>

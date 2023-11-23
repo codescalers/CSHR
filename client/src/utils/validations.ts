@@ -60,84 +60,18 @@ export const validateBackgroundColor = (e: any): boolean => {
   if (e.target.value[0] == "#" && isNaN(e.target.value.slice(1, -1))) return false;
   return true;
 };
-//
-export const validateStartEndDates = (date: string, startDate: string, endDate: string) => {
+
+export const validateStartEndDates = (startDate: Date, endDate: Date) => {
   const response: CalenderRequestFormResponseType = {
-    message: "Success!",
+    message: undefined,
     isError: false,
   };
 
-  const validateStartDate = new Date(startDate);
-  const validateEndDate = new Date(endDate);
+  endDate.setHours(0, 0, 0, 0); // Set the time to midnight for accurate comparison
 
-  const now: Date = new Date();
-  const check = Date.parse(date);
-
-  if (
-    !check ||
-    startDate.split("-").length != 3 ||
-    endDate.split("-").length != 3 ||
-    startDate.split("-")[2] == "" ||
-    endDate.split("-")[2] == "" ||
-    +startDate.split("-")[2] == 0 ||
-    +endDate.split("-")[2] == 0 ||
-    +startDate.split("-")[1] > 12 ||
-    +startDate.split("-")[1] < 1 ||
-    +endDate.split("-")[1] > 12 ||
-    +endDate.split("-")[1] < 1
-  ) {
-    response.message = "Format is invalid";
+  if (startDate > endDate) {
+    response.message = "End date cannot be < start date.";
     response.isError = true;
-    return response;
-  }
-
-  if (
-    validateStartDate.getFullYear() == validateEndDate.getFullYear() &&
-    validateStartDate.getMonth() > validateEndDate.getMonth()
-  ) {
-    response.message = "Start month must be > end month.";
-    response.isError = true;
-    return response;
-  }
-
-  if (validateEndDate.getFullYear() - now.getFullYear() >= 3) {
-    response.message = "No one can take it :D";
-    response.isError = true;
-    return response;
-  }
-
-  if (
-    validateStartDate.getMonth() == validateEndDate.getMonth() &&
-    validateStartDate.getFullYear() == validateEndDate.getFullYear() &&
-    validateStartDate.getDate() > validateEndDate.getDate()
-  ) {
-    response.message = "Start day must be > end day.";
-    response.isError = true;
-    return response;
-  }
-
-  if (validateStartDate.getDate() < 1 || validateEndDate.getDate() < 1) {
-    response.message = "The day is invalid.";
-    response.isError = true;
-    return response;
-  }
-
-  if (validateStartDate.getFullYear() < now.getFullYear()) {
-    response.message = "Start year must be > the current year.";
-    response.isError = true;
-    return response;
-  }
-
-  if (validateEndDate.getFullYear() < now.getFullYear()) {
-    response.message = "End year must be > the current year.";
-    response.isError = true;
-    return response;
-  }
-
-  if (validateEndDate.getFullYear() < validateStartDate.getFullYear()) {
-    response.message = "End year must be < start year.";
-    response.isError = true;
-    return response;
   }
 
   return response;

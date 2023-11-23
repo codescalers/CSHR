@@ -12,6 +12,7 @@
   let thisDate: Date = new Date();
   let endDate: string;
   let startDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate()}`;
+
   const daysInCurrentMonth = getDaysInMonth(thisDate.getFullYear(), thisDate.getMonth() + 1);
 
   if (thisDate.getDate() + 2 > daysInCurrentMonth) {
@@ -37,46 +38,43 @@
     onlyStart={formToggle === 1}
     bind:startDate
     bind:endDate
-    bind:datePickerDisabled
     on:message={handleVacationCalculator}
   >
     <div slot="toggler" class="my-4">
       <div class="options">
-        <button
-          class:active={formToggle === 0}
+        <button class:active={formToggle === 0}
           on:click={() => {
             formToggle = 0;
-          }}>Leave</button
+          }}
         >
+          Leave
+        </button>
+
         <div class="separator" />
-        <button
-          class:active={formToggle === 1}
+
+        <button class:active={formToggle === 1}
           on:click={() => {
             formToggle = 1;
-          }}>Meeting</button
+          }}
         >
+          Meeting
+        </button>
+
         <div class="separator" />
-        <button
-          class:active={formToggle === 2}
+
+        <button class:active={formToggle === 2}
           on:click={() => {
             formToggle = 2;
-          }}>Event</button
+          }}
         >
+        Event
+        </button>
+
       </div>
     </div>
     <div slot="form">
       {#if formToggle === 0}
-        <CalendarLeaveForm
-          bind:startDate
-          bind:endDate
-          bind:datePickerDisabled
-          calculatorValue={VacationCalculator}
-          on:message={event => {
-            dispatch("message", {
-              postedVacation: event.detail.postedVacation,
-            });
-          }}
-        />
+        <CalendarLeaveForm />
       {/if}
       {#if formToggle === 1}
         <CalendarMeetingForm
