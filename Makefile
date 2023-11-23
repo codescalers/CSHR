@@ -13,7 +13,7 @@ install:
 runserver:
 	$(CMD) python3 manage.py runserver
 runclient:
-	$(client) && npm install && npm run dev
+	$(client) && yarn && yarn run dev
 test:
 	$(CMD) python3 manage.py test
 lint:
