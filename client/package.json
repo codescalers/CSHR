@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w ",
+    "dev": "rollup --host -c -w",
     "start": "sirv public --single -p 8080",
     "format": "yarn prettier --write \"{,!(node_modules|public)/**/}*.{ts,js,svelte}\"",
     "lint": "yarn format && yarn eslint -c .eslintrc.json \"{,!(node_modules|public)/**/}*.{ts,js,svelte}\" --fix"
@@ -22,14 +22,22 @@
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.7",
     "prettier-plugin-svelte": "^2.10.0",
+    "rollup": "^2.3.4",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-terser": "^7.0.0",
     "tslib": "^2.0.0",
-    "typescript": "^4.0.0"
+    "typescript": "^5.3.2"
   },
   "dependencies": {
     "@beyonk/svelte-datepicker": "^5.0.4",
     "@ctrl/tinycolor": "^3.4.1",
     "@date-io/date-fns": "^2.15.0",
     "@neoconfetti/svelte": "^1.0.0",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.5",
     "axios": "^0.27.2",
     "color-picker-svelte": "latest",
     "date-fns": "^2.29.2",

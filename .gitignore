@@ -148,4 +148,5 @@ terraform/.terraform.lock.hcl
 terraform/.terraform.tfstate.lock.info
 terraform/.terraform.script
 yarn.lock
+package.json
 node_modules
