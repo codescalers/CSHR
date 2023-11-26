@@ -2,46 +2,55 @@
   import { createEventDispatcher } from "svelte";
 
   import Vacation from "../../apis/vacations/Vacation";
+  import Alert from "../ui/Alert.svelte";
   import type { CalenderRequestFormResponseType } from "../../utils/types";
   import { validateStartEndDates } from "../../utils/validations";
-  import "flatpickr/dist/flatpickr.css";
-  import "flatpickr/dist/themes/light.css";
+  import { formatDate } from "../../utils/helpers";
 
   import Flatpickr from "svelte-flatpickr";
 
-  export let startDate: string;
-  export let endDate: string;
+  import "flatpickr/dist/flatpickr.css";
+  import "flatpickr/dist/themes/light.css";
+
+  export let startDate: string | Date;
+  export let endDate: string | Date;
 
   export let onlyStart = false;
   export let calculate = true;
   
   let errorMessage: string | undefined;
 
+  startDate = new Date(startDate)
+  endDate = new Date(endDate)
+
   const dispatch = createEventDispatcher();
 
   async function calculateActualVacationBalance() {
-    const vacationCalculator = await Vacation.calculator(startDate, endDate);
-    dispatch("message", {
-      text: vacationCalculator,
+    const vacationCalculator = await Vacation.calculator(
+      formatDate(startDate as Date),
+      formatDate(endDate as Date)
+    );
+    dispatch("calculate", {
+      days: vacationCalculator,
     });
   }
 
-  function validateDate(date: string): CalenderRequestFormResponseType {
-    const _startDate = new Date(startDate) 
-    const _endDate = new Date(endDate) 
+  function validateDate(): CalenderRequestFormResponseType { 
+    errorMessage = undefined;
+    let validated: CalenderRequestFormResponseType = validateStartEndDates(
+      startDate as Date,
+      endDate as Date
+    );
 
-    let validated: CalenderRequestFormResponseType = validateStartEndDates(_startDate, _endDate);
-    console.log(validated);
-
-    if (validated.isError == false && calculate) {
+    if (!validated.isError && calculate) {
       calculateActualVacationBalance();
     }
     errorMessage = validated.message;
     return validated;
   }
 
-  $: startDate, validateDate(startDate);
-  $: endDate, validateDate(endDate);
+  $: startDate, validateDate();
+  $: endDate, validateDate();
 </script>
 
 <div class="container table-primary table-responsive">
@@ -88,6 +97,13 @@
           </div>
         {/if}
         <slot name="form" />
+
+        {#if errorMessage}
+          <div class="mt-2">
+            <Alert title={"Error"} message={errorMessage} className={"danger"} />
+          </div>
+          <!-- <small class="text-danger">{errorMessage}</small> -->
+        {/if}
       </div>
     </div>
 </div>

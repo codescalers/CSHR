@@ -13,7 +13,7 @@
     "eslint:recommended"
   ],
   "parserOptions": {
-    "parser": "@typescript-eslint/parser",
+    // "parser": "@typescript-eslint/parser",
     "ecmaVersion": "latest",
     "sourceType": "module"
   },

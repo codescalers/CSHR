@@ -11,6 +11,7 @@
   import ModalOpenButton from "../../ui/modals/ModalOpenButton.svelte";
   //import ModalCloseButton from '../modal/ModalCloseButton.svelte';
   import Modal from "../../ui/modals/SimpleModal.svelte";
+  import { formatDate } from "../../../utils/helpers";
   // import { isValidDate } from '../../../utils/validations';
 
   export let startDate: string;
@@ -35,7 +36,7 @@
 
   let peopleSelected: SelectOptionType[] = [];
   $: fillDisabled =
-    !isValidDate(startDate) || meetingPeopleIsError === null || meetingPeopleIsError === true || datePickerDisabled;
+    !isValidDate(formatDate(new Date(startDate))) || meetingPeopleIsError === null || meetingPeopleIsError === true || datePickerDisabled;
 
   let submitDisabled = true;
 
@@ -98,11 +99,7 @@
   </header>
 
   <form slot="form">
-    {#if isError}
-      <div class="alert alert-danger" role="alert">
-        <strong>Oh snap!</strong> Change a few things up and try submitting again.
-      </div>
-    {:else if isLoading}
+    {#if isLoading}
       <div class="alert alert-info" role="alert">
         <strong>Loading...</strong> Please wait.
       </div>

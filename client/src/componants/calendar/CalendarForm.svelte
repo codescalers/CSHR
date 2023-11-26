@@ -5,32 +5,22 @@
   import CalendarEventForm from "./forms/EventForm.svelte";
   import CalendarLeaveForm from "./forms/LeaveForm.svelte";
   import CalendarMeetingForm from "./forms/MeetingForm.svelte";
+  import { formatDate } from "../../utils/helpers";
 
   const dispatch = createEventDispatcher();
 
   let formToggle = 0;
-  let thisDate: Date = new Date();
-  let endDate: string;
-  let startDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate()}`;
+  const today = new Date();
+  const endAt = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000); // 2 days later
 
-  const daysInCurrentMonth = getDaysInMonth(thisDate.getFullYear(), thisDate.getMonth() + 1);
+  let startDate: string = formatDate(today)
+  let endDate: string = formatDate(endAt);
 
-  if (thisDate.getDate() + 2 > daysInCurrentMonth) {
-    endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 2}-${thisDate.getDate() + 2 - daysInCurrentMonth}`;
-  } else {
-    endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate() + 2}`;
-  }
+  let vacationCalculator: number;
 
-  let datePickerDisabled = false;
-  let VacationCalculator: number;
-
-  const handleVacationCalculator = (event: { detail: { text: number } }) => {
-    VacationCalculator = event.detail.text;
+  const handleVacationCalculator = (event: { detail: { days: number } }) => {
+    vacationCalculator = event.detail.days;
   };
-
-  function getDaysInMonth(year: number, month: number) {
-    return new Date(year, month, 0).getDate();
-  }
 </script>
 
 <div class="card mt-4">
@@ -38,7 +28,7 @@
     onlyStart={formToggle === 1}
     bind:startDate
     bind:endDate
-    on:message={handleVacationCalculator}
+    on:calculate={handleVacationCalculator}
   >
     <div slot="toggler" class="my-4">
       <div class="options">
@@ -74,12 +64,21 @@
     </div>
     <div slot="form">
       {#if formToggle === 0}
-        <CalendarLeaveForm />
+      <CalendarLeaveForm
+        bind:startDate
+        bind:endDate
+        calculatorValue={vacationCalculator}
+        on:message={event => {
+          dispatch("message", {
+            postedVacation: event.detail.postedVacation,
+          });
+        }}
+      />
       {/if}
+
       {#if formToggle === 1}
         <CalendarMeetingForm
           bind:startDate
-          bind:datePickerDisabled
           on:message={event => {
             dispatch("message", {
               postedMeeting: event.detail.postedMeeting,
@@ -92,7 +91,6 @@
         <CalendarEventForm
           bind:startDate
           bind:endDate
-          bind:datePickerDisabled
           on:message={event => {
             dispatch("message", {
               postedEvent: event.detail.postedEvent,
