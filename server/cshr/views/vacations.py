@@ -151,15 +151,16 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 "-"
             )  # Year, month, day
 
-
             try:
                 converted_start_date: datetime = datetime(
-                    year=int(start_date[0]), month=int(start_date[1]), day=int(start_date[2])
+                    year=int(start_date[0]),
+                    month=int(start_date[1]),
+                    day=int(start_date[2]),
                 ).date()
             except Exception:
                 return CustomResponse.bad_request(
                     message="Invalid start date format, it must match the following pattern 'yyyy-mm-dd'.",
-                    error=start_date
+                    error=start_date,
                 )
 
             try:
@@ -169,12 +170,14 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             except Exception:
                 return CustomResponse.bad_request(
                     message="Invalid end date format, it must match the following pattern 'yyyy-mm-dd'.",
-                    error=start_date
+                    error=start_date,
                 )
 
             # Check if end date is lower than start date
             if converted_end_date < converted_start_date:
-                return CustomResponse.bad_request(message="The end date must be later than the start date.")
+                return CustomResponse.bad_request(
+                    message="The end date must be later than the start date."
+                )
 
             request.data["from_date"] = converted_start_date
             request.data["end_date"] = converted_end_date
@@ -519,12 +522,14 @@ class CalculateVacationDaysApiView(GenericAPIView):
 
         try:
             converted_start_date: datetime = datetime(
-                year=int(start_date[0]), month=int(start_date[1]), day=int(start_date[2])
+                year=int(start_date[0]),
+                month=int(start_date[1]),
+                day=int(start_date[2]),
             ).date()
         except Exception:
             return CustomResponse.bad_request(
                 message="Invalid start date format, it must match the following pattern 'yyyy-mm-dd'.",
-                error=start_date
+                error=start_date,
             )
 
         try:
@@ -534,7 +539,7 @@ class CalculateVacationDaysApiView(GenericAPIView):
         except Exception:
             return CustomResponse.bad_request(
                 message="Invalid end date format, it must match the following pattern 'yyyy-mm-dd'.",
-                error=end_date
+                error=end_date,
             )
 
         actual_days: int = v.remove_weekends(

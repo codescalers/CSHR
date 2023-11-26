@@ -3,6 +3,7 @@
 
   // import PeopleSelect from '../../ui/select/UsersMultiSelect.svelte';
   import CalendarDataService from "../../../apis/home/home";
+  import { formatDate } from "../../../utils/helpers";
   import { UserStore } from "../../../utils/stores";
   import type { calendarItemsType, SelectOptionType } from "../../../utils/types";
   import { isValidDate } from "../../../utils/validations";
@@ -11,7 +12,6 @@
   import ModalOpenButton from "../../ui/modals/ModalOpenButton.svelte";
   //import ModalCloseButton from '../modal/ModalCloseButton.svelte';
   import Modal from "../../ui/modals/SimpleModal.svelte";
-  import { formatDate } from "../../../utils/helpers";
   // import { isValidDate } from '../../../utils/validations';
 
   export let startDate: string;
@@ -36,7 +36,10 @@
 
   let peopleSelected: SelectOptionType[] = [];
   $: fillDisabled =
-    !isValidDate(formatDate(new Date(startDate))) || meetingPeopleIsError === null || meetingPeopleIsError === true || datePickerDisabled;
+    !isValidDate(formatDate(new Date(startDate))) ||
+    meetingPeopleIsError === null ||
+    meetingPeopleIsError === true ||
+    datePickerDisabled;
 
   let submitDisabled = true;
 

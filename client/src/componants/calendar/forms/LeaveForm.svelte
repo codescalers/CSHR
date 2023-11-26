@@ -3,11 +3,11 @@
   import { createEventDispatcher } from "svelte";
 
   import Vacations from "../../../apis/vacations/Vacation";
+  import { capitalize, formatDate } from "../../../utils/helpers";
   import { UserStore } from "../../../utils/stores";
   import type { calendarItemsType, VacationBalance } from "../../../utils/types";
   import Alert from "../../ui/Alert.svelte";
   import Submit from "../../ui/Button.svelte";
-  import { capitalize, formatDate } from "../../../utils/helpers";
 
   export let startDate: string;
   export let endDate: string;

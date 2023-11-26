@@ -2,6 +2,7 @@
   import { createEventDispatcher } from "svelte";
 
   import CalendarDataService from "../../../apis/home/home";
+  import { formatDate } from "../../../utils/helpers";
   // import PeopleSelect from '../../ui/select/UsersMultiSelect.svelte';
   import type { calendarItemsType } from "../../../utils/types";
   import { isValidDate } from "../../../utils/validations";
@@ -9,7 +10,6 @@
   import Input from "../../ui/Input.svelte";
   import ModalOpenButton from "../../ui/modals/ModalOpenButton.svelte";
   import Modal from "../../ui/modals/SimpleModal.svelte";
-  import { formatDate } from "../../../utils/helpers";
 
   export let startDate: string;
   export let endDate: string;
@@ -89,6 +89,7 @@
     return isError;
   };
 </script>
+
 <div>
   <!-- <Input
       type="text"
@@ -196,7 +197,6 @@
             bind:selected={peopleSelected}
         /> -->
     {/if}
-
   </form>
   <div slot="submit">
     <Submit bind:successMessage bind:errorMessage label="Post Event!" onClick={submit} bind:disabled={submitDisabled} />

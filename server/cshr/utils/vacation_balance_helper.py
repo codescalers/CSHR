@@ -172,9 +172,7 @@ class StanderdVacationBalance:
                         taked_from_old_balance=vacation.taked_from_old_balance,
                     )
                 return self.update_user_balance(user, reason, new_value)
-            return (
-                f"You only have {old_balance+curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
-            )
+            return f"You only have {old_balance+curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
 
     def set_taked_from_old_balance(self, vacation: Vacation):
         """Update vacation with taked from ild balance to return the value to old balance when user update his request."""

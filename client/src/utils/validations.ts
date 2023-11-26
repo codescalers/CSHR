@@ -77,7 +77,7 @@ export const validateStartEndDates = (startDate: Date, endDate: Date) => {
   return response;
 };
 
-export function isValidDate(d: any) {  
+export function isValidDate(d: any) {
   if (d.split("-").length != 3) {
     return false;
   } else {
