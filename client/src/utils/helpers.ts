@@ -21,3 +21,12 @@ export const clearUserData = (data: { [x: string]: any }) => {
     }
   }
 };
+
+export const capitalize = (value: string): string => {
+  return value[0].toLocaleUpperCase() + value.slice(1, value.length);
+};
+
+// Format the date to ISO string date then to date to be sent to the backend, valid format is yyyy-mm-dd
+export const formatDate = (date: Date) => {
+  return date.toISOString().split("T")[0];
+};

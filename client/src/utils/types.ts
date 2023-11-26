@@ -380,7 +380,7 @@ export type calendarItemsType = {
 };
 
 export type CalenderRequestFormResponseType = {
-  message: string;
+  message: string | undefined;
   isError: boolean;
 };
 

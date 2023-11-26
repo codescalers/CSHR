@@ -3,6 +3,7 @@
   import { createEventDispatcher } from "svelte";
 
   import Vacations from "../../../apis/vacations/Vacation";
+  import { capitalize, formatDate } from "../../../utils/helpers";
   import { UserStore } from "../../../utils/stores";
   import type { calendarItemsType, VacationBalance } from "../../../utils/types";
   import Alert from "../../ui/Alert.svelte";
@@ -12,7 +13,6 @@
   export let endDate: string;
   export let isLoading = false;
   export let isError = false;
-  export let datePickerDisabled = false;
   export let calculatorValue = 0;
   export let isUpdate = false;
   export let selectedReason: any = 0;
@@ -21,8 +21,9 @@
   export let withSubmit = true;
   export let showCalclator = true;
 
-  let errorMessage = "",
-    successMessage = "";
+  let errorMessage = "";
+  let successMessage = "";
+
   let alertTitle: string, alertClass: string, alertMessage: string, showAlert: boolean;
   let vBalance: VacationBalance;
   let responseVacation: calendarItemsType;
@@ -32,24 +33,63 @@
     vBalance = await Vacations.balance($UserStore.id);
   });
 
-  $: submitDisabled = selectedReason == 0 || datePickerDisabled == true || calculatorValue === 0;
+  const submit = async () => {
+    isLoading = true;
+    try {
+      isError = false;
+      if (isUpdate && vacationID != "") {
+        const axios = await Vacations.update(vacationID, {
+          end_date: endDate,
+          from_date: startDate,
+          reason: selectedReason,
+          applyingUserId: $UserStore.id,
+        });
+        successMessage = axios.data.message;
+      } else {
+        const axios = await Vacations.post({
+          end_date: formatDate(new Date(endDate)),
+          from_date: formatDate(new Date(startDate)),
+          reason: selectedReason,
+          applyingUserId: $UserStore.id,
+        });
+        successMessage = axios.data.message;
+        responseVacation = axios.data.results;
+        dispatch("message", {
+          postedVacation: responseVacation,
+        });
+
+        vBalance[selectedReason].reserved = vBalance[selectedReason].reserved + calculatorValue;
+      }
+    } catch (error: any) {
+      isError = true;
+      errorMessage = error.message;
+    } finally {
+      isLoading = false;
+    }
+    return isError;
+  };
+
+  $: submitDisabled = selectedReason == 0 || calculatorValue === 0;
 </script>
 
 <form>
   {#if withReason}
     <div class="form-group row">
-      <label class="col-sm-4 col-form-label py-3" for="Reason">Reason</label>
-      <div class="col-sm-8">
+      <div class="col-6 d-flex align-items-center">
+        <label for="endDayInput"> Reason </label>
+      </div>
+
+      <div class="col-6 d-flex align-items-center">
         <select
           bind:value={selectedReason}
           id="Reason"
-          class="form-select form-control"
+          class="form-select form-control mt-0 mv-4"
           aria-label="Default select example"
         >
           {#if vBalance}
             {#each Object.entries(vBalance) as [name, _value]}
               {#if name != "user"}
-                <option value={name}>{name} {_value.reserved} / {_value.all}</option>
+                <option value={name}>{capitalize(name.replace("_", " "))} {_value.reserved} / {_value.all}</option>
               {/if}
             {/each}
           {/if}
@@ -78,40 +118,7 @@
         bind:successMessage
         bind:errorMessage
         label="Request"
-        onClick={async () => {
-          isLoading = true;
-          try {
-            isError = false;
-            if (isUpdate && vacationID != "") {
-              const axios = await Vacations.update(vacationID, {
-                end_date: endDate,
-                from_date: startDate,
-                reason: selectedReason,
-                applyingUserId: $UserStore.id,
-              });
-              successMessage = axios.data.message;
-            } else {
-              const axios = await Vacations.post({
-                end_date: endDate,
-                from_date: startDate,
-                reason: selectedReason,
-                applyingUserId: $UserStore.id,
-              });
-              successMessage = axios.data.message;
-              responseVacation = axios.data.results;
-              dispatch("message", {
-                postedVacation: responseVacation,
-              });
-              vBalance[selectedReason].reserved = vBalance[selectedReason].reserved + calculatorValue;
-            }
-          } catch (error) {
-            isError = true;
-            errorMessage = error.message;
-          } finally {
-            isLoading = false;
-          }
-          return isError;
-        }}
+        onClick={submit}
         className=""
         bind:disabled={submitDisabled}
       />
@@ -123,33 +130,10 @@
     </div>
   {/if}
 </form>
-
-<style>
-  .form-control {
-    display: block;
-    width: 100%;
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: rgb(33 37 41);
-    background-clip: padding-box;
-    border: 1px solid rgb(206 212 218);
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border-radius: 0.375rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  }
-  .text-red {
-    color: red;
-  }
-  select {
-    margin-top: 0.3cm;
-    background-color: var(--secondary-color);
-  }
-  select:focus {
-    margin-top: 0.3cm;
-    background-color: var(--secondary-color);
-  }
-</style>
+<svelte:head>
+  <style>
+    .form-select:focus {
+      box-shadow: none !important;
+    }
+  </style>
+</svelte:head>

@@ -143,19 +143,43 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             and request.data.get("from_date")
             and type(request.data["from_date"]) == str
         ):
-            from_date: List[str] = request.data.get("from_date").split(
+            start_date: List[str] = request.data.get("from_date").split(
                 "-"
             )  # Year, month, day
+
             end_date: List[str] = request.data.get("end_date").split(
                 "-"
             )  # Year, month, day
-            converted_from_date: datetime = datetime(
-                year=int(from_date[0]), month=int(from_date[1]), day=int(from_date[2])
-            ).date()
-            converted_end_date: datetime = datetime(
-                year=int(end_date[0]), month=int(end_date[1]), day=int(end_date[2])
-            ).date()
-            request.data["from_date"] = converted_from_date
+
+            try:
+                converted_start_date: datetime = datetime(
+                    year=int(start_date[0]),
+                    month=int(start_date[1]),
+                    day=int(start_date[2]),
+                ).date()
+            except Exception:
+                return CustomResponse.bad_request(
+                    message="Invalid start date format, it must match the following pattern 'yyyy-mm-dd'.",
+                    error=start_date,
+                )
+
+            try:
+                converted_end_date: datetime = datetime(
+                    year=int(end_date[0]), month=int(end_date[1]), day=int(end_date[2])
+                ).date()
+            except Exception:
+                return CustomResponse.bad_request(
+                    message="Invalid end date format, it must match the following pattern 'yyyy-mm-dd'.",
+                    error=start_date,
+                )
+
+            # Check if end date is lower than start date
+            if converted_end_date < converted_start_date:
+                return CustomResponse.bad_request(
+                    message="The end date must be later than the start date."
+                )
+
+            request.data["from_date"] = converted_start_date
             request.data["end_date"] = converted_end_date
         serializer = self.get_serializer(data=request.data)
 
@@ -492,19 +516,37 @@ class CalculateVacationDaysApiView(GenericAPIView):
         user: User = get_user_by_id(request.user.id)
         v: StanderdVacationBalance = StanderdVacationBalance()
         v.check(user)
+
         start_date: List[str] = request.query_params.get("start_date").split("-")
         end_date: List[str] = request.query_params.get("end_date").split("-")
-        converted_from_date: datetime = datetime(
-            year=int(start_date[0]), month=int(start_date[1]), day=int(start_date[2])
-        ).date()
-        converted_end_date: datetime = datetime(
-            year=int(end_date[0]), month=int(end_date[1]), day=int(end_date[2])
-        ).date()
+
+        try:
+            converted_start_date: datetime = datetime(
+                year=int(start_date[0]),
+                month=int(start_date[1]),
+                day=int(start_date[2]),
+            ).date()
+        except Exception:
+            return CustomResponse.bad_request(
+                message="Invalid start date format, it must match the following pattern 'yyyy-mm-dd'.",
+                error=start_date,
+            )
+
+        try:
+            converted_end_date: datetime = datetime(
+                year=int(end_date[0]), month=int(end_date[1]), day=int(end_date[2])
+            ).date()
+        except Exception:
+            return CustomResponse.bad_request(
+                message="Invalid end date format, it must match the following pattern 'yyyy-mm-dd'.",
+                error=end_date,
+            )
+
         actual_days: int = v.remove_weekends(
-            user, converted_from_date, converted_end_date
+            user, converted_start_date, converted_end_date
         )
         actual_days: int = v.remove_holidays(
-            user, converted_from_date, converted_end_date, actual_days
+            user, converted_start_date, converted_end_date, actual_days
         )
 
         # actual_days = len(actual_days) if actual_days != None else 0

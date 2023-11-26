@@ -454,7 +454,6 @@
                 user.reporting_to = [];
 
                 for (var i in reportingToOptions.selected) {
-                  console.log(reportingToOptions.selected[i].value);
                   if (!user.reporting_to.includes(reportingToOptions.selected[i].value)) {
                     user.reporting_to.push(reportingToOptions.selected[i].value);
                   }

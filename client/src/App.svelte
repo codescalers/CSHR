@@ -1,4 +1,6 @@
 <script lang="ts">
+  import "../public/config.js";
+
   import { Route, Router } from "svelte-navigator";
 
   import Calendar from "./pages/Calendar.svelte";

@@ -155,11 +155,6 @@ h6 {
   color: #fff !important;
   transition: 0.3s;
 }
-.flatpickr-calendar {
-  top: 415px !important;
-  left: 1005.5px !important;
-  right: auto;
-}
 .nav-tabs .nav-link {
   color: rgb(8, 8, 8) !important;
   border-radius: 1px !important;

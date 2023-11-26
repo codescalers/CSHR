@@ -24,7 +24,7 @@ def get_user_holidays(years: List[int], months: List[int]):
     )
 
     for date in holidays:
-        if date.holiday_date.day <= today.day:
+        if date.holiday_date.day < today.day:
             date.expired = True
             date.save()
 

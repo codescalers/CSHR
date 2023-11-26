@@ -109,7 +109,6 @@
               const itemDate = new Date(item.date);
               let rc = findRowCol(itemDate, days);
               if (rc == null) {
-                console.log("didn`t find date for ", item);
                 item.startCol = item.startRow = 0;
               } else {
                 item.startCol = rc.col;

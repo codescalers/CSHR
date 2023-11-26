@@ -1,9 +1,8 @@
 import axios from "axios";
 
-// import { SERVER_API_URL } from "../../public/config.js";
 import { authStore } from "./stores";
 
-console.log("Server URL: ", window.configs.SERVER_API_URL);
+console.log("Connected to server on: ", window.configs.SERVER_BASE_URL);
 
 if (!window.configs.SERVER_API_URL) {
   throw new Error(`Invalid config. Please fill the config.json file with the correct data`);
