@@ -8,7 +8,7 @@
 
   const flatpickrOptions = {
     mode: "multiple",
-    element: "#my-picker",
+    element: "#my-picker"
   };
 </script>
 
@@ -16,10 +16,18 @@
   <div class="flatpickr form-outline mb-4" id="my-picker">
     <div class="form-group row">
       <div class="col-4">
-        <label class="col-sm-4 col-form-label py-3" for="datePickerInput">Public holidays</label>
+        <label class="col-sm-4 col-form-label py-3" for="datePickerInput"
+          >Public holidays</label
+        >
       </div>
       <div class="col-sm-8">
-        <input class="form-control" id="datePickerInput" type="text" placeholder="Select Date.." data-input />
+        <input
+          class="form-control"
+          id="datePickerInput"
+          type="text"
+          placeholder="Select Date.."
+          data-input
+        />
       </div>
     </div>
   </div>
@@ -45,6 +53,8 @@
     -moz-appearance: none;
     appearance: none;
     border-radius: 0.375rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
   }
 </style>

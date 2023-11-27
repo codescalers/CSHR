@@ -18,9 +18,15 @@
     <div class="card-header">Vacation Balance</div>
     <div class="card-body">
       <div class="row">
-        <div class="col-4 text-muted d-flex justify-content-center">Annuals</div>
-        <div class="col-4 text-muted d-flex justify-content-center">Emergencies</div>
-        <div class="col-4 text-muted d-flex justify-content-center">Excuses</div>
+        <div class="col-4 text-muted d-flex justify-content-center">
+          Annuals
+        </div>
+        <div class="col-4 text-muted d-flex justify-content-center">
+          Emergencies
+        </div>
+        <div class="col-4 text-muted d-flex justify-content-center">
+          Excuses
+        </div>
       </div>
       <div class="row">
         <div class="col-4 text-muted d-flex justify-content-center">

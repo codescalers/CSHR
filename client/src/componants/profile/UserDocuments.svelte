@@ -9,7 +9,10 @@
 
   let documents: UserDocuments[];
   onMount(async () => {
-    if ($UserStore.user_type == UserTypeEnum.admin || $UserStore.user_type == UserTypeEnum.supervisor) {
+    if (
+      $UserStore.user_type == UserTypeEnum.admin ||
+      $UserStore.user_type == UserTypeEnum.supervisor
+    ) {
       documents = await Users.getUserDocuments(user.id);
     }
   });
@@ -24,7 +27,9 @@
           <div class="row">
             <div class="col-4 text-muted mb-2">Name</div>
             <div class="col-4 text-muted mb-2">Status</div>
-            <div class="col-4 d-flex text-muted mb-2 justify-content-end">Copy Image</div>
+            <div class="col-4 d-flex text-muted mb-2 justify-content-end">
+              Copy Image
+            </div>
             {#each documents as document}
               <div class="col-4">
                 {document.name}

@@ -24,9 +24,11 @@
       {:else}
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div
-          class={`stacked_img my-2 ${itemIndex === index && stackedImages.length !== 1 ? "activate" : ""}`}
-          style="background-image:url({window.configs.SERVER_API_URL + image.image});z-index:${100 -
-            index};border:1.5px solid"
+          class={`stacked_img my-2 ${
+            itemIndex === index && stackedImages.length !== 1 ? "activate" : ""
+          }`}
+          style="background-image:url({window.configs.SERVER_API_URL +
+            image.image});z-index:${100 - index};border:1.5px solid"
           data-bs-toggle="tooltip"
           title={image.full_name + " #" + image.team}
           on:click={() => (itemIndex = index)}
@@ -35,8 +37,11 @@
     {:else}
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div
-        class={`stacked_img my-2 ${itemIndex === index && stackedImages.length !== 1 ? "activate" : ""}`}
-        style="background-color:{image.image};z-index:${100 - index};color: #fff"
+        class={`stacked_img my-2 ${
+          itemIndex === index && stackedImages.length !== 1 ? "activate" : ""
+        }`}
+        style="background-color:{image.image};z-index:${100 -
+          index};color: #fff"
         data-bs-toggle="tooltip"
         title={image.full_name + " #" + image.team}
         on:click={() => (itemIndex = index)}
@@ -52,7 +57,10 @@
     {/if}
   {/each}
   {#if extra > 0}
-    <div class="stacked_img" style="background-image:url('https://i.imgur.com/9LDfN2H.png')">
+    <div
+      class="stacked_img"
+      style="background-image:url('https://i.imgur.com/9LDfN2H.png')"
+    >
       <span class="extra">{"+" + extra}</span>
     </div>
   {/if}

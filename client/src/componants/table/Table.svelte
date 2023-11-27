@@ -10,7 +10,10 @@
 
 <div class="container d-flex flex-column justify-content-between">
   <div class="table-responsive">
-    <table id={tableId} class={`table table-striped  table-hover table-sm ${tableClass}`}>
+    <table
+      id={tableId}
+      class={`table table-striped  table-hover table-sm ${tableClass}`}
+    >
       <thead class="thead-dark">
         <tr>
           <th scope="col">#</th>

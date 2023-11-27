@@ -8,9 +8,9 @@ export const clearUserData = (data: { [x: string]: any }) => {
         net_salary_before_joining: [],
         joining_salary: {
           net: [],
-          gross: [],
+          gross: []
         },
-        benefits: [],
+        benefits: []
       };
     } else if (field == "reporting_to") {
       data[field] = [];

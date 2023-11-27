@@ -5,7 +5,9 @@ class Authentication {
   async refresh(refresh: string): Promise<refreshData> {
     // Request for getting a refresh token when token expires.
     try {
-      return (await httpAxios.post("/auth/token/refresh/", { refresh: refresh })).data;
+      return (
+        await httpAxios.post("/auth/token/refresh/", { refresh: refresh })
+      ).data;
     } catch (error: any) {
       throw new Error(error);
     }
@@ -19,7 +21,9 @@ class Authentication {
         await httpAxios.post("auth/login/", loginData)
       ).data;
     } catch (error: any) {
-      throw new Error(error.response.data.detail || error.response.data.message);
+      throw new Error(
+        error.response.data.detail || error.response.data.message
+      );
     }
   }
 }

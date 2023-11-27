@@ -12,34 +12,38 @@ import type {
   SettingsInterface,
   SupervisorType,
   TeamType,
-  UserInterface,
+  UserInterface
 } from "./types";
 
 export const SettingsStore: Writable<SettingsInterface> = writable({
   "primary-color": "#aaaa",
   "secondary-color": "#EDF2F9",
-  "background-image": "url('https://wallpaperaccess.com/full/2159209.jpg')",
+  "background-image": "url('https://wallpaperaccess.com/full/2159209.jpg')"
 });
 
 export const AllUsersStore: Writable<GeneralUserInterface[]> = writable([]);
 export const UserStore: Writable<UserInterface> = writable();
 
 export const OfficeStore: Writable<OfficeType[]> = writable([]);
-export const NotificationStore: Writable<NotificationType[]> = writable([{ id: 1 }]);
+export const NotificationStore: Writable<NotificationType[]> = writable([
+  { id: 1 }
+]);
 
 export const TeamStore: Writable<PaginatedInterface<TeamType>> = writable();
-export const NotifacationStore: Writable<NotifacationCreatedInterface> = writable();
-export const SupervisorStore: Writable<PaginatedInterface<SupervisorType>> = writable();
+export const NotifacationStore: Writable<NotifacationCreatedInterface> =
+  writable();
+export const SupervisorStore: Writable<PaginatedInterface<SupervisorType>> =
+  writable();
 
 function createAuthStore() {
   const store = writable<IAuthStore>({});
   const { subscribe, update } = store;
 
-  isAuthenticated().then(res => {
+  isAuthenticated().then((res) => {
     if (res && res.token && res.refreshtoken) {
       updateTokens(res.token, res.refreshtoken);
     } else {
-      return update(s => {
+      return update((s) => {
         s.token = undefined;
         s.refreshtoken = undefined;
         return s;
@@ -80,13 +84,13 @@ function createAuthStore() {
             job_title: data.job_title,
             address: data.address,
             user_type: data.user_type,
-            is_active: data.is_active,
+            is_active: data.is_active
           });
         });
       }
     }
 
-    return update(s => {
+    return update((s) => {
       s.token = token;
       s.refreshtoken = refresh;
 
@@ -100,7 +104,7 @@ function createAuthStore() {
     isAuth(): boolean {
       const { token, refreshtoken } = get(store);
       return !!token && !!refreshtoken;
-    },
+    }
   };
 }
 

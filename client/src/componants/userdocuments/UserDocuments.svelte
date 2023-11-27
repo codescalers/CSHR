@@ -13,7 +13,8 @@
   let image: HTMLImageElement;
   let documentNameIsError: boolean | null = null;
 
-  $: submitDisabled = documentNameIsError === null || documentNameIsError === true;
+  $: submitDisabled =
+    documentNameIsError === null || documentNameIsError === true;
 
   let eventPeopleIsError: boolean | null = null;
   let peopleSelected: SelectOptionType[] = [];
@@ -65,11 +66,12 @@
                 await UserDataService.postUserDocument({
                   user: peopleSelected[0].value,
                   name: documentNameValue,
-                  image: image.src,
+                  image: image.src
                 });
                 successMessage = "The document has been added.";
               } catch (error) {
-                errorMessage = "Error while trying to add the document, please check the provided data and try again.";
+                errorMessage =
+                  "Error while trying to add the document, please check the provided data and try again.";
                 isError = true;
               } finally {
                 isLoading = false;

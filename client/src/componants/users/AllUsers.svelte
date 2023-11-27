@@ -4,7 +4,12 @@
   import officeDataService from "../../apis/offices/Office";
   import usersDataService from "../../apis/users/users";
   import { OfficeStore, UserStore } from "../../utils/stores";
-  import type { OfficeType, SelectOptionsComponent, SelectOptionType, UserInterface } from "../../utils/types";
+  import type {
+    OfficeType,
+    SelectOptionsComponent,
+    SelectOptionType,
+    UserInterface
+  } from "../../utils/types";
   import Loading from "../ui/Loading.svelte";
   import MultiSelect from "../ui/select/MultiSelect.svelte";
   import User from "./User.svelte";
@@ -17,7 +22,9 @@
   let isLoadingUsers = false;
 
   const changeOffice = (selectedOffice: SelectOptionType) => {
-    const office = $OfficeStore.filter((_office: OfficeType) => _office.id === selectedOffice.value)[0]; // Value is the id.
+    const office = $OfficeStore.filter(
+      (_office: OfficeType) => _office.id === selectedOffice.value
+    )[0]; // Value is the id.
     if (userOffice.id != office.id) {
       userOffice = office;
       loadUsers();
@@ -47,12 +54,12 @@
         if (office.id === userOffice.id) {
           locationSelected.push({
             value: office.id,
-            label: office.name,
+            label: office.name
           });
         }
         locationOptions.push({
           value: office.id,
-          label: office.name,
+          label: office.name
         });
       });
       loadUsers();
@@ -74,7 +81,7 @@
     placeholder: "Select Office.",
     multiple: false,
     isError: isErrorLocation,
-    isTop: true,
+    isTop: true
   };
 </script>
 
@@ -86,9 +93,13 @@
   <div class="container height-100">
     <div class="card office-selection" style="margin-top: 15px;">
       <small>
-        You can change the selected office to discover the team in other offices, current elected office is your office.
+        You can change the selected office to discover the team in other
+        offices, current elected office is your office.
       </small>
-      <MultiSelect bind:options on:select={e => changeOffice(e.detail.selected)} />
+      <MultiSelect
+        bind:options
+        on:select={(e) => changeOffice(e.detail.selected)}
+      />
     </div>
     {#if isLoadingUsers}
       <div class="mt-5 d-flex justify-content-center align-items-center">
@@ -108,7 +119,9 @@
       </div>
     {:else}
       <div class="d-flex justify-content-center align-items-center">
-        <div class="alert alert-warning">It appears that there are no users in this office</div>
+        <div class="alert alert-warning">
+          It appears that there are no users in this office
+        </div>
       </div>
     {/if}
   </div>

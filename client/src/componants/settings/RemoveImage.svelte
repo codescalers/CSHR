@@ -22,7 +22,7 @@
           removed = true;
         }
         dispatch("message", {
-          text: removed,
+          text: removed
         });
       }}
     >

@@ -1,10 +1,16 @@
 <script lang="ts">
   import { UserStore } from "../../utils/stores";
-  import type { AdminViewInterface, SupervisorViewInterface, UserInterface } from "../../utils/types";
+  import type {
+    AdminViewInterface,
+    SupervisorViewInterface,
+    UserInterface
+  } from "../../utils/types";
 
   export let user: AdminViewInterface | SupervisorViewInterface | UserInterface;
   const hasPermission: boolean =
-    $UserStore.id == user.id || $UserStore.user_type == "Admin" || $UserStore.user_type == "Supervisor";
+    $UserStore.id == user.id ||
+    $UserStore.user_type == "Admin" ||
+    $UserStore.user_type == "Supervisor";
 </script>
 
 <div class="card mb-4">
@@ -32,7 +38,9 @@
         <p class="mb-0">Telegram</p>
       </div>
       <div class="col-sm-9">
-        <a class="text-primary mb-0" href={user.telegram_link}>@{user.full_name.split(" ")[0]}</a>
+        <a class="text-primary mb-0" href={user.telegram_link}
+          >@{user.full_name.split(" ")[0]}</a
+        >
       </div>
     </div>
     <hr />

@@ -16,8 +16,12 @@
   let isErrorReason: boolean | null = null;
   let isErrorDates: boolean;
   let thisDate: Date = new Date();
-  let startDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate()}`;
-  let endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${thisDate.getDate() + 2}`;
+  let startDate = `${thisDate.getFullYear()}-${
+    thisDate.getMonth() + 1
+  }-${thisDate.getDate()}`;
+  let endDate = `${thisDate.getFullYear()}-${thisDate.getMonth() + 1}-${
+    thisDate.getDate() + 2
+  }`;
   let datePickerDisabled = false;
   let successMessage: string;
   let errorMessage: string;
@@ -25,7 +29,7 @@
   let CompensationData: CompensationType = {
     from_date: "",
     end_date: "",
-    reason: "",
+    reason: ""
   };
 
   $: submitDisabled = isErrorReason == true || isErrorReason == null;
@@ -35,7 +39,13 @@
   <div class="col-12">
     <div class="container" style="width: 40%;">
       {#if startDate && endDate}
-        <CalendarDatePicker onlyStart={false} bind:startDate bind:endDate bind:datePickerDisabled calculate={false}>
+        <CalendarDatePicker
+          onlyStart={false}
+          bind:startDate
+          bind:endDate
+          bind:datePickerDisabled
+          calculate={false}
+        >
           <div slot="form">
             <div class="form-outline">
               <Input
@@ -80,7 +90,7 @@
             CompensationData.end_date = endDate;
             const axios = await CompensationsDataService.post(CompensationData);
             dispatch("message", {
-              postedCompensation: axios.data.results,
+              postedCompensation: axios.data.results
             });
             successMessage = axios.data.message;
             isError = false;

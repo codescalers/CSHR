@@ -7,17 +7,14 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "plugin:vue/essential",
-    "eslint:recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "parserOptions": {
     "parser": "@typescript-eslint/parser",
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "prettier", "simple-import-sort", "svelte3"],
+  "plugins": ["@typescript-eslint", "simple-import-sort", "svelte3"],
   "overrides": [
     {
       "files": ["*.svelte", "**/__tests__/*.{j,t}s?(x)", "**/tests/unit/**/*.spec.{j,t}s?(x)"],
@@ -30,17 +27,11 @@
   "rules": {
     "no-console": "off",
     "no-async-promise-executor": "off",
-    "prettier/prettier": "warn",
     "@typescript-eslint/no-var-requires": "off",
     "simple-import-sort/imports": "error",
     "prefer-spread": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "vue/multi-word-component-names": "off",
-    "vue/no-v-text-v-html-on-component": "off",
     "@typescript-eslint/no-empty-function": "off",
-    "vue/no-v-for-template-key": "off",
-    "vue/no-multiple-template-root": "off",
-    "vue/no-v-model-argument": "off",
     "@typescript-eslint/ban-types": [
       "error",
       {

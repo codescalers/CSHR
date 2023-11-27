@@ -1,9 +1,16 @@
 <script lang="ts">
   import RegisterDataService from "../../apis/users/users";
-  import { GenderChoice, TeamChoice, UserTypeChoice } from "../../utils/choices";
+  import {
+    GenderChoice,
+    TeamChoice,
+    UserTypeChoice
+  } from "../../utils/choices";
   import { clearUserData } from "../../utils/helpers";
   import registeringDataType from "../../utils/registeringData";
-  import type { registeringData, SelectOptionsComponent } from "../../utils/types";
+  import type {
+    registeringData,
+    SelectOptionsComponent
+  } from "../../utils/types";
   import {
     // validateSalary,
     validateBirthday,
@@ -12,7 +19,7 @@
     validatePassword,
     validatePhoneNumber,
     validateSpcialEmptyString,
-    validateTelegramLink,
+    validateTelegramLink
   } from "../../utils/validations";
   import Submit from "../ui/Button.svelte";
   import Input from "../ui/Input.svelte";
@@ -94,7 +101,7 @@
     isLabel: true,
     label: "Department",
     placeholder: "Select department",
-    isTop: true,
+    isTop: true
   };
 
   let genderOptions: SelectOptionsComponent = {
@@ -103,7 +110,7 @@
     isLabel: true,
     label: "Gender",
     placeholder: "Select gender",
-    isTop: true,
+    isTop: true
   };
 
   let userTypeOptions: SelectOptionsComponent = {
@@ -112,7 +119,7 @@
     isLabel: true,
     label: "User type",
     placeholder: "Select user type",
-    isTop: true,
+    isTop: true
   };
 
   let locationOptions: SelectOptionsComponent = {
@@ -121,7 +128,7 @@
     isLabel: true,
     label: "Location",
     placeholder: "Select location",
-    isTop: true,
+    isTop: true
   };
 
   let usersOptions: SelectOptionsComponent = {
@@ -129,7 +136,7 @@
     label: "Reporting to",
     selected: [],
     isTop: true,
-    multiple: true,
+    multiple: true
   };
 </script>
 
@@ -422,7 +429,8 @@
               successMessage = "The user has been created successfully.";
               clearUserData(registeration);
             } catch (error) {
-              errorMessage = "Fail to create a new user, please check what is missing in the data and try again.";
+              errorMessage =
+                "Fail to create a new user, please check what is missing in the data and try again.";
               isError = true;
             } finally {
               isLoading = false;

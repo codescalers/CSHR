@@ -21,8 +21,8 @@ export default {
     net_salary_before_joining: [],
     joining_salary: {
       net: [],
-      gross: [],
+      gross: []
     },
-    benefits: [],
-  },
+    benefits: []
+  }
 };

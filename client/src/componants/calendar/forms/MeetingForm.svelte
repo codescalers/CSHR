@@ -5,7 +5,10 @@
   import CalendarDataService from "../../../apis/home/home";
   import { formatDate } from "../../../utils/helpers";
   import { UserStore } from "../../../utils/stores";
-  import type { calendarItemsType, SelectOptionType } from "../../../utils/types";
+  import type {
+    calendarItemsType,
+    SelectOptionType
+  } from "../../../utils/types";
   import { isValidDate } from "../../../utils/validations";
   import Submit from "../../ui/Button.svelte";
   import Input from "../../ui/Input.svelte";
@@ -75,7 +78,12 @@
         bind:isError={meetingLocationIsError}
     /> -->
   <div class="width-100 mt-4">
-    <ModalOpenButton width={100} label="Fill" bind:disabled={fillDisabled} {modalID} />
+    <ModalOpenButton
+      width={100}
+      label="Fill"
+      bind:disabled={fillDisabled}
+      {modalID}
+    />
   </div>
 </form>
 
@@ -159,7 +167,7 @@
             invitedUsers: [],
             location: "Remote",
             meetingLink: meetingLinkValue,
-            time: time,
+            time: time
           });
           successMessage = "The meeting was scheduled successfully.";
           isLoading = false;
@@ -170,7 +178,7 @@
 
           responseMeeting = axios.data.results;
           dispatch("message", {
-            postedMeeting: responseMeeting,
+            postedMeeting: responseMeeting
           });
         } catch (error) {
           errorMessage = "Failed to schedule a new meeting.";

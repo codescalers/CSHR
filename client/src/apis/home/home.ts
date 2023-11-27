@@ -9,7 +9,9 @@ class HomePage {
         await http.get(`/home/?month=${month}&year=${year}`)
       ).data;
     } catch (error: any) {
-      throw new Error(error.response.data.message || error.response.data.detail);
+      throw new Error(
+        error.response.data.message || error.response.data.detail
+      );
     }
   }
 
@@ -35,9 +37,13 @@ class HomePage {
     //   throw new Error("Invalid data");
     // if (e.people.length === 0) throw new Error("No invited users");
     let [fromHour, fromMinute] = e.from_time.split(":");
-    const [fromYear, fromMonth, fromDay] = formatDate(e.from_date as unknown as Date).split("-");
+    const [fromYear, fromMonth, fromDay] = formatDate(
+      e.from_date as unknown as Date
+    ).split("-");
     let [endHour, endMinute] = e.end_time.split(":");
-    const [endYear, endMonth, endDay] = formatDate(e.end_date as unknown as Date).split("-");
+    const [endYear, endMonth, endDay] = formatDate(
+      e.end_date as unknown as Date
+    ).split("-");
     if (fromHour == "00") {
       fromHour = "12";
     }
@@ -53,18 +59,18 @@ class HomePage {
         month: Number(fromMonth),
         day: Number(fromDay),
         hour: Number(fromHour),
-        minute: Number(fromMinute),
+        minute: Number(fromMinute)
       },
       end_date: {
         year: Number(endYear),
         month: Number(endMonth),
         day: Number(endDay),
         hour: Number(endHour),
-        minute: Number(endMinute),
+        minute: Number(endMinute)
       },
       name: e.name,
       description: e.description,
-      location: e.location,
+      location: e.location
     };
     return await http.post("/event/", JSON.stringify(data));
   }
@@ -99,11 +105,11 @@ class HomePage {
           month: Number(month),
           day: Number(day),
           hour: Number(hour),
-          minute: Number(minute),
+          minute: Number(minute)
         },
         meeting_link: e.meetingLink,
-        location: e.location,
-      }),
+        location: e.location
+      })
     );
   }
 }

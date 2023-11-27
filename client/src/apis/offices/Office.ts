@@ -7,7 +7,12 @@ class OfficeDataService {
     try {
       const { data, status, statusText } = await http.get("/office/");
       if (status !== 200) {
-        throw new Error("Error in getting offices with status " + status + " wtih status text : " + statusText);
+        throw new Error(
+          "Error in getting offices with status " +
+            status +
+            " wtih status text : " +
+            statusText
+        );
       }
       return data.results;
     } catch (err: any) {
@@ -19,7 +24,12 @@ class OfficeDataService {
     try {
       const { data, status, statusText } = await http.get(`/users?id=${id}`);
       if (status !== 200) {
-        throw new Error("Error in getting offices with status " + status + " wtih status text : " + statusText);
+        throw new Error(
+          "Error in getting offices with status " +
+            status +
+            " wtih status text : " +
+            statusText
+        );
       }
       return data;
     } catch (err: any) {

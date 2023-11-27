@@ -3,7 +3,10 @@
 
   import officeDataService from "../../../apis/offices/Office";
   import { OfficeStore } from "../../../utils/stores";
-  import type { OfficeType, SelectOptionsComponent } from "../../../utils/types";
+  import type {
+    OfficeType,
+    SelectOptionsComponent
+  } from "../../../utils/types";
   import ErrorComponent from "../../error/ErrorComponent.svelte";
   import LoadingComponent from "../../ui/Loading.svelte";
   import MultiSelect from "./MultiSelect.svelte";
@@ -25,7 +28,7 @@
       $OfficeStore.forEach((office: OfficeType) => {
         options.optionsList.push({
           value: office.id,
-          label: office.name,
+          label: office.name
         });
       });
       if (!options.selected.length) {

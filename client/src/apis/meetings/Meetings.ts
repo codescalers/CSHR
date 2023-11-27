@@ -5,7 +5,9 @@ class Meetings {
   public async exact(year: number, month: number, day: number) {
     // Request to get all meetings on an axact day.
     try {
-      return await http.get(`meeting/exact/?year=${year}&&month=${month}&&day=${day}`);
+      return await http.get(
+        `meeting/exact/?year=${year}&&month=${month}&&day=${day}`
+      );
     } catch (err: any) {
       throw new Error(err.response.data.message);
     }

@@ -1,10 +1,10 @@
 <script lang="ts">
   import "flatpickr/dist/flatpickr.css";
   import "flatpickr/dist/themes/light.css";
-  
+
   import { createEventDispatcher } from "svelte";
   import Flatpickr from "svelte-flatpickr";
-  
+
   import Vacation from "../../apis/vacations/Vacation";
   import { formatDate } from "../../utils/helpers";
   import type { CalenderRequestFormResponseType } from "../../utils/types";
@@ -25,15 +25,21 @@
   const dispatch = createEventDispatcher();
 
   async function calculateActualVacationBalance() {
-    const vacationCalculator = await Vacation.calculator(formatDate(startDate as Date), formatDate(endDate as Date));
+    const vacationCalculator = await Vacation.calculator(
+      formatDate(startDate as Date),
+      formatDate(endDate as Date)
+    );
     dispatch("calculate", {
-      days: vacationCalculator,
+      days: vacationCalculator
     });
   }
 
   function validateDate(): CalenderRequestFormResponseType {
     errorMessage = undefined;
-    let validated: CalenderRequestFormResponseType = validateStartEndDates(startDate as Date, endDate as Date);
+    let validated: CalenderRequestFormResponseType = validateStartEndDates(
+      startDate as Date,
+      endDate as Date
+    );
 
     if (!validated.isError && calculate) {
       calculateActualVacationBalance();
@@ -60,7 +66,13 @@
               </div>
 
               <div class="col-6 d-flex align-items-center">
-                <input class="form-control" id="startDayInput" type="text" placeholder="Select Start Day." data-input />
+                <input
+                  class="form-control"
+                  id="startDayInput"
+                  type="text"
+                  placeholder="Select Start Day."
+                  data-input
+                />
               </div>
             </div>
           </div>
@@ -77,7 +89,13 @@
                 </div>
 
                 <div class="col-6 d-flex align-items-center">
-                  <input class="form-control" id="endDayInput" type="text" placeholder="Select End Day." data-input />
+                  <input
+                    class="form-control"
+                    id="endDayInput"
+                    type="text"
+                    placeholder="Select End Day."
+                    data-input
+                  />
                 </div>
               </div>
             </div>

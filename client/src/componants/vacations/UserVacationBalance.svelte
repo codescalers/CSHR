@@ -1,6 +1,9 @@
 <script lang="ts">
   import Vacation from "../../apis/vacations/Vacation";
-  import type { SelectOptionsComponent, VacationBalanceType } from "../../utils/types";
+  import type {
+    SelectOptionsComponent,
+    VacationBalanceType
+  } from "../../utils/types";
   import ProfileImage from "../profile/ProfileImage.svelte";
   import Alert from "../ui/Alert.svelte";
   import Submit from "../ui/Button.svelte";
@@ -28,9 +31,16 @@
     try {
       isLoading = true;
       userBalance = await Vacation.balance(userID);
-      userBalance.annual_leaves = Reflect.get(userBalance, "annual_leaves")["all"];
-      userBalance.emergency_leaves = Reflect.get(userBalance, "emergency_leaves")["all"];
-      userBalance.leave_excuses = Reflect.get(userBalance, "leave_excuses")["all"];
+      userBalance.annual_leaves = Reflect.get(userBalance, "annual_leaves")[
+        "all"
+      ];
+      userBalance.emergency_leaves = Reflect.get(
+        userBalance,
+        "emergency_leaves"
+      )["all"];
+      userBalance.leave_excuses = Reflect.get(userBalance, "leave_excuses")[
+        "all"
+      ];
       showLoadButton = false;
       isUserLoaded = true;
     } catch (err) {
@@ -45,7 +55,10 @@
   }
 
   $: submitDisabled =
-    isErrorAnunual == true || isErrorLeave == true || isErrorEmergency == true || usersOptions.selected.length == 0;
+    isErrorAnunual == true ||
+    isErrorLeave == true ||
+    isErrorEmergency == true ||
+    usersOptions.selected.length == 0;
 
   let successMessage: string;
   let errorMessage: string;
@@ -57,7 +70,7 @@
     isTop: true,
     multiple: false,
     placeholder: "Select User...",
-    isError: isErrorUserSelected,
+    isError: isErrorUserSelected
   };
 </script>
 
@@ -139,7 +152,9 @@
             value=""
             id="flexCheckDefault"
           />
-          <label class="form-check-label" for="flexCheckDefault"> Delete old balance </label>
+          <label class="form-check-label" for="flexCheckDefault">
+            Delete old balance
+          </label>
         </div>
         <div class="form-outline w-100 mt-4 d-flex justify-content-end">
           <Submit
@@ -159,7 +174,8 @@
               isLoading = true;
               try {
                 Vacation.updateUserBalance(userBalance);
-                successMessage = "The user balance has been updated successfully.";
+                successMessage =
+                  "The user balance has been updated successfully.";
               } catch (error) {
                 errorMessage =
                   "Error while trying to update the user balance, please check the entered data and try again.";
@@ -177,7 +193,11 @@
     </div>
     {#if usersOptions.selected.length > 0 && !isUserLoaded}
       <div class="mt-4 form-outline d-flex justify-content-center">
-        <button type="button" class="abtn btn-success" on:click={loadUserBalance}>
+        <button
+          type="button"
+          class="abtn btn-success"
+          on:click={loadUserBalance}
+        >
           <i class="fa fa-plus" />
           Load Balance
         </button>

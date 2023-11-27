@@ -1,6 +1,9 @@
 <div class="error">
   <div class="error-text">
-    <img src="https://icon-library.com/images/not-found-icon/not-found-icon-20.jpg" alt="Not Found" />
+    <img
+      src="https://icon-library.com/images/not-found-icon/not-found-icon-20.jpg"
+      alt="Not Found"
+    />
     <h1>Page Not Found</h1>
     <p>Sorry, but the page you were trying to view does not exist.</p>
   </div>

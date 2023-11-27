@@ -4,14 +4,18 @@
 
   import usersDataService from "../../../apis/users/users";
   import { AllUsersStore, UserStore } from "../../../utils/stores";
-  import type { GeneralUserInterface, SelectOptionsComponent, SelectOptionType } from "../../../utils/types";
+  import type {
+    GeneralUserInterface,
+    SelectOptionsComponent,
+    SelectOptionType
+  } from "../../../utils/types";
   import LoadingComponent from "../../ui/Loading.svelte";
   import MultiSelect from "./MultiSelect.svelte";
   import PeopleSlot from "./UsersSlot.svelte";
 
   export let isLoading = false;
   export let options: SelectOptionsComponent = {
-    isError: false,
+    isError: false
   };
   export let usersInAdminOffice = false;
   const dispatch = createEventDispatcher();
@@ -20,19 +24,19 @@
 
   function select(e: any) {
     dispatch("select", {
-      selected: e.detail.selected,
+      selected: e.detail.selected
     });
   }
 
   function removeAll(e: any) {
     dispatch("removeAllItems", {
-      selected: e.detail.selected,
+      selected: e.detail.selected
     });
   }
 
   function removeItem(e: any) {
     dispatch("removeItem", {
-      selected: e.detail.selected,
+      selected: e.detail.selected
     });
   }
 
@@ -54,7 +58,7 @@
           AllUsersStore.set(users);
         }
       }
-      $AllUsersStore.forEach(user => {
+      $AllUsersStore.forEach((user) => {
         if (user.id !== $UserStore.id) {
           const value: SelectOptionType = {
             value: user.id,
@@ -62,8 +66,8 @@
             extraData: {
               full_name: user.full_name,
               image: user.image,
-              team: user.team,
-            },
+              team: user.team
+            }
           };
 
           if (!options.optionsList.includes(value)) {
@@ -81,7 +85,12 @@
 {#if (isLoading && !options.isError) || $AllUsersStore === undefined}
   <LoadingComponent />
 {:else if !isLoading && !options.isError}
-  <MultiSelect bind:options on:select={select} on:removeAllItems={removeAll} on:removeItem={removeItem}>
+  <MultiSelect
+    bind:options
+    on:select={select}
+    on:removeAllItems={removeAll}
+    on:removeItem={removeItem}
+  >
     <PeopleSlot let:option {option} slot="option" />
   </MultiSelect>
 {/if}

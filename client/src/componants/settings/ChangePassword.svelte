@@ -14,7 +14,10 @@
     isErrorNewPass: null | boolean = null;
 
   $: submitDisabled =
-    isErrorOldPass == true || isErrorOldPass == null || isErrorNewPass == true || isErrorNewPass == null;
+    isErrorOldPass == true ||
+    isErrorOldPass == null ||
+    isErrorNewPass == true ||
+    isErrorNewPass == null;
 
   let errorMessage: string;
   let successMessage: string;
@@ -65,7 +68,7 @@
               try {
                 await UserDataService.changePassword({
                   old_password: oldPassword,
-                  new_password: newPassword,
+                  new_password: newPassword
                 });
                 successMessage = "The password has been updated successfully.";
               } catch (error) {

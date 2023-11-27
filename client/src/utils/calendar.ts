@@ -15,7 +15,7 @@ export const monthNames = [
   "September",
   "October",
   "November",
-  "December",
+  "December"
 ];
 
 export const removeUnUsedModal = () => {
@@ -29,7 +29,7 @@ export async function calendarData(
   isLoading: boolean,
   month: number,
   year: number,
-  items: calendarItemsType[],
+  items: calendarItemsType[]
 ): Promise<calendarItemsType[]> {
   removeUnUsedModal();
   isLoading = true;
@@ -46,7 +46,11 @@ export async function calendarData(
 export function findRowCol(dt: Date, days: any[]) {
   for (let i = 0; i < days.length; i++) {
     const d = days[i].date;
-    if (d.getFullYear() === dt.getFullYear() && d.getMonth() === dt.getMonth() && d.getDate() === dt.getDate())
+    if (
+      d.getFullYear() === dt.getFullYear() &&
+      d.getMonth() === dt.getMonth() &&
+      d.getDate() === dt.getDate()
+    )
       return { row: Math.floor(i / 7) + 2, col: (i % 7) + 1 };
   }
   return null;
@@ -57,7 +61,7 @@ export async function initMonthItems(
   month: number,
   year: number,
   items: calendarItemsType[],
-  days: any[],
+  days: any[]
 ): Promise<calendarItemsType[]> {
   items = await calendarData(isLoading, month, year, items);
   if (items !== undefined) {
@@ -97,7 +101,7 @@ export function initMonth(days: any[], month: number, year: number) {
     days.push({
       name: "" + (i + 1),
       enabled: false,
-      date: d,
+      date: d
     });
   }
 
@@ -108,13 +112,13 @@ export function initMonth(days: any[], month: number, year: number) {
       days.push({
         name: monthAbbrev + " " + (i + 1),
         enabled: true,
-        date: d,
+        date: d
       });
     else
       days.push({
         name: "" + (i + 1),
         enabled: true,
-        date: d,
+        date: d
       });
   }
 
@@ -125,13 +129,13 @@ export function initMonth(days: any[], month: number, year: number) {
       days.push({
         name: nextMonthAbbrev + " " + (i + 1),
         enabled: false,
-        date: d,
+        date: d
       });
     else
       days.push({
         name: "" + (i + 1),
         enabled: false,
-        date: d,
+        date: d
       });
   }
   return days;

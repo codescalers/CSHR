@@ -9,7 +9,9 @@ class SkillsDataService {
       if (status === 404) {
         throw new Error("Skills not found");
       } else if (status !== 200) {
-        throw new Error(this.errorMessage + status + " wtih status text : " + statusText);
+        throw new Error(
+          this.errorMessage + status + " wtih status text : " + statusText
+        );
       }
       return data.results;
     } catch (error: any) {
@@ -19,7 +21,10 @@ class SkillsDataService {
   async postSkills(user: UserInterface, skills: string[]) {
     try {
       return await (
-        await http.post("/users/skills/add_skill/", JSON.stringify({ user_id: user.id, skills: skills }))
+        await http.post(
+          "/users/skills/add_skill/",
+          JSON.stringify({ user_id: user.id, skills: skills })
+        )
       ).data;
     } catch (error: any) {
       throw new Error(`Error while registering${error}`);

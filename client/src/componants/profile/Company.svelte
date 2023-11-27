@@ -19,7 +19,11 @@
             </div>
             <div class="col-3 d-flex justify-content-end">
               <!-- svelte-ignore a11y-img-redundant-alt -->
-              <img class="cprop" src={window.configs.SERVER_API_URL + company.image_of} alt="prop image" />
+              <img
+                class="cprop"
+                src={window.configs.SERVER_API_URL + company.image_of}
+                alt="prop image"
+              />
             </div>
           {/each}
         </div>

@@ -5,7 +5,11 @@
   import usersAPI from "../../apis/users/users";
   import NotFound from "../../pages/Error.svelte";
   import { UserStore } from "../../utils/stores";
-  import type { AdminViewInterface, SupervisorViewInterface, UserInterface } from "../../utils/types";
+  import type {
+    AdminViewInterface,
+    SupervisorViewInterface,
+    UserInterface
+  } from "../../utils/types";
   // import Certificates from "./Certificates.svelte";
   import Company from "./Company.svelte";
   // import Evaluation from "./Evaluation.svelte";
@@ -23,7 +27,11 @@
   export let isLoading = false;
   export let isError: boolean | null = null;
 
-  let user: AdminViewInterface | SupervisorViewInterface | UserInterface | null = null;
+  let user:
+    | AdminViewInterface
+    | SupervisorViewInterface
+    | UserInterface
+    | null = null;
 
   onMount(async () => {
     document.getElementById("body-pd").style.overflow = "auto";

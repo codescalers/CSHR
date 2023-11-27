@@ -2,16 +2,24 @@
   import { Color } from "color-picker-svelte";
 
   import RegisterDataService from "../../../apis/users/users";
-  import { GenderChoice, TeamChoice, UserTypeChoice } from "../../../utils/choices";
+  import {
+    GenderChoice,
+    TeamChoice,
+    UserTypeChoice
+  } from "../../../utils/choices";
   import { UserStore } from "../../../utils/stores";
-  import type { SelectOptionsComponent, SelectOptionType, UserInterface } from "../../../utils/types";
+  import type {
+    SelectOptionsComponent,
+    SelectOptionType,
+    UserInterface
+  } from "../../../utils/types";
   import {
     validateBirthday,
     validateEmail,
     validateName,
     validatePhoneNumber,
     validateSpcialEmptyString,
-    validateTelegramLink,
+    validateTelegramLink
   } from "../../../utils/validations";
   import Submit from "../../ui/Button.svelte";
   import Input from "../../ui/Input.svelte";
@@ -98,7 +106,7 @@
   for (let i in user.reporting_to) {
     reportingToSelected.push({
       label: user.reporting_to[i].full_name,
-      value: user.reporting_to[i].id,
+      value: user.reporting_to[i].id
     });
   }
 
@@ -111,7 +119,7 @@
     isLabel: true,
     label: "Department",
     placeholder: "Select department",
-    isTop: true,
+    isTop: true
   };
 
   let genderOptions: SelectOptionsComponent = {
@@ -120,7 +128,7 @@
     isLabel: true,
     label: "Gender",
     placeholder: "Select gender",
-    isTop: true,
+    isTop: true
   };
 
   let userTypeOptions: SelectOptionsComponent = {
@@ -129,7 +137,7 @@
     isLabel: true,
     label: "User type",
     placeholder: "Select user type",
-    isTop: true,
+    isTop: true
   };
 
   let locationOptions: SelectOptionsComponent = {
@@ -138,16 +146,16 @@
     isLabel: true,
     label: "Location",
     placeholder: "Select location",
-    isTop: true,
+    isTop: true
   };
 
   let selectedReportingTo: SelectOptionType[] = [];
 
-  user.reporting_to.forEach(user =>
+  user.reporting_to.forEach((user) =>
     selectedReportingTo.push({
       value: user.id,
-      label: user.full_name,
-    }),
+      label: user.full_name
+    })
   );
 
   let reportingToOptions: SelectOptionsComponent = {
@@ -155,7 +163,7 @@
     label: "Reporting to",
     selected: selectedReportingTo,
     isTop: true,
-    multiple: true,
+    multiple: true
   };
 </script>
 
@@ -277,10 +285,10 @@
           <div class="form-outline">
             <PeopleSelect
               bind:options={reportingToOptions}
-              on:removeAllItems={e => {
+              on:removeAllItems={(e) => {
                 reportingToOptions.selected = e.detail.selected;
               }}
-              on:removeItem={e => {
+              on:removeItem={(e) => {
                 reportingToOptions.selected = e.detail.selected;
               }}
             />
@@ -365,7 +373,9 @@
       <div class="col-6 mt-3">
         <div class="form-outline">
           <div class="row">
-            <div class="col-4 d-flex align-items-center">Background Logo color</div>
+            <div class="col-4 d-flex align-items-center">
+              Background Logo color
+            </div>
             <div class="col-8">
               <ColorPicker bind:color />
             </div>
@@ -375,7 +385,7 @@
       {#if user.image.includes("profile_image")}
         <div class="col-6 mt-3">
           <RemoveImage
-            on:message={event => {
+            on:message={(event) => {
               removeImage = event.detail.text;
             }}
             buttonBackgraound={user.background_color}
@@ -412,7 +422,9 @@
               width={"17"}
               bind:successMessage
               bind:errorMessage
-              label={user.is_active ? "Set as inactive user" : "Set as active user"}
+              label={user.is_active
+                ? "Set as inactive user"
+                : "Set as active user"}
               onClick={async () => {
                 isLoading = true;
                 try {
@@ -454,8 +466,14 @@
                 user.reporting_to = [];
 
                 for (var i in reportingToOptions.selected) {
-                  if (!user.reporting_to.includes(reportingToOptions.selected[i].value)) {
-                    user.reporting_to.push(reportingToOptions.selected[i].value);
+                  if (
+                    !user.reporting_to.includes(
+                      reportingToOptions.selected[i].value
+                    )
+                  ) {
+                    user.reporting_to.push(
+                      reportingToOptions.selected[i].value
+                    );
                   }
                 }
 
@@ -472,7 +490,8 @@
                 }
                 try {
                   await RegisterDataService.updateProfile(user);
-                  successMessage = "The user profile has been updated successfully.";
+                  successMessage =
+                    "The user profile has been updated successfully.";
                 } catch (error) {
                   isError = true;
                   errorMessage = "Failed to update the user profile.";

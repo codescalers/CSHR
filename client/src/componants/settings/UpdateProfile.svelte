@@ -1,6 +1,9 @@
 <script lang="ts">
   import Users from "../../apis/users/users";
-  import type { SelectOptionsComponent, UserInterface } from "../../utils/types";
+  import type {
+    SelectOptionsComponent,
+    UserInterface
+  } from "../../utils/types";
   import Submit from "../ui/Button.svelte";
   import PeopleSelect from "../ui/select/UsersMultiSelect.svelte";
   import UpdateUserProfileForm from "./Forms/UpdateUserProfileForm.svelte";
@@ -29,7 +32,7 @@
     placeholder: "Select User...",
     selected: [],
     isTop: true,
-    multiple: false,
+    multiple: false
   };
 
   function watchUser() {

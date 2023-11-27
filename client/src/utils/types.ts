@@ -3,9 +3,18 @@ export type alertType = "success" | "warning" | "error" | "info";
 export type requestStatusType = "pending" | "approved" | "rejected";
 export type UserType = "Admin" | "Supervisor" | "User";
 
-export type requestLabelType = "Vacation" | "HR Letter" | "Compensation" | "Danger";
+export type requestLabelType =
+  | "Vacation"
+  | "HR Letter"
+  | "Compensation"
+  | "Danger";
 
-export type eventNameType = "vacation" | "meeting" | "event" | "birthday" | "public_holiday";
+export type eventNameType =
+  | "vacation"
+  | "meeting"
+  | "event"
+  | "birthday"
+  | "public_holiday";
 
 export interface GeneralUserInterface {
   id: number;
@@ -351,7 +360,11 @@ export type classType =
   | "task--dark"
   | "task--light";
 
-export type calendarItemType = meetingItemType | eventItemType | vacationItemType | birthDateItemType;
+export type calendarItemType =
+  | meetingItemType
+  | eventItemType
+  | vacationItemType
+  | birthDateItemType;
 
 export type calendarOutputItemType =
   | { meeting: meetingItemType; className: classType }

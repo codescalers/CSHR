@@ -10,14 +10,14 @@
 
   let evaluation_form_options: SelectOptionType[] = [
     { label: "Peer 2 Peer Form", value: "Peer 2 Peer Form" },
-    { label: "Reverse Form", value: "Reverse Form" },
+    { label: "Reverse Form", value: "Reverse Form" }
   ];
 
   let evaluation_quartur_options: SelectOptionType[] = [
     { label: "1 : 3", value: "1 : 3" },
     { value: "4 : 6", label: "4 : 6" },
     { value: "7 : 9", label: "7 : 9" },
-    { value: "10 : 12", label: "10 : 12" },
+    { value: "10 : 12", label: "10 : 12" }
   ];
 
   let evaluation_form_selected: SelectOptionType[] = [];
@@ -85,7 +85,7 @@
               await evaluationDataService.postEvaluation({
                 form: evaluation_form_selected[0].value,
                 quarter: evaluation_quartur_selected[0].value,
-                link: evaluationLinkValue,
+                link: evaluationLinkValue
               });
               successMessage = "The new evaluation is submitted successfully.";
             } catch (error) {

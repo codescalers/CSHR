@@ -75,18 +75,24 @@
               <tbody>
                 <tr>
                   <td class="align-middle"
-                    >{currentEventActive.from_date.year} - {currentEventActive.from_date.month} - {currentEventActive
-                      .from_date.day}</td
+                    >{currentEventActive.from_date.year} - {currentEventActive
+                      .from_date.month} - {currentEventActive.from_date.day}</td
                   >
                   <td class="align-middle"
-                    >{currentEventActive.end_date.year} - {currentEventActive.end_date.month} - {currentEventActive
-                      .end_date.day}</td
+                    >{currentEventActive.end_date.year} - {currentEventActive
+                      .end_date.month} - {currentEventActive.end_date.day}</td
                   >
                   <td class="align-middle"
-                    >{formatAMPM(currentEventActive.from_date.hour, currentEventActive.from_date.minute)}</td
+                    >{formatAMPM(
+                      currentEventActive.from_date.hour,
+                      currentEventActive.from_date.minute
+                    )}</td
                   >
                   <td class="align-middle"
-                    >{formatAMPM(currentEventActive.end_date.hour, currentEventActive.end_date.minute)}</td
+                    >{formatAMPM(
+                      currentEventActive.end_date.hour,
+                      currentEventActive.end_date.minute
+                    )}</td
                   >
                 </tr>
               </tbody>

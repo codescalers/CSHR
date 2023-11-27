@@ -12,7 +12,11 @@
     isErrorLink: null | boolean = null;
   let CourseName: string, certificateLink: string;
 
-  $: submitDisabled = isErrorName == true || isErrorName == null || isErrorLink == true || isErrorLink == null;
+  $: submitDisabled =
+    isErrorName == true ||
+    isErrorName == null ||
+    isErrorLink == true ||
+    isErrorLink == null;
 
   let errorMessage: string;
   let successMessage: string;
@@ -67,11 +71,12 @@
             await TrainingAndCourses.post({
               name: CourseName,
               certificate_link: certificateLink,
-              user_id: $UserStore.id,
+              user_id: $UserStore.id
             });
             successMessage = "A new course has been added successfully.";
           } catch (error) {
-            errorMessage = "an error happened while adding a new course, please check the data and try again.";
+            errorMessage =
+              "an error happened while adding a new course, please check the data and try again.";
             isError = true;
           } finally {
             CourseName = "";

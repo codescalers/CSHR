@@ -2,7 +2,10 @@
   import { createEventDispatcher } from "svelte";
   import { v4 as uuidv4 } from "uuid";
 
-  import type { SelectOptionsComponent, SelectOptionType } from "../../../utils/types";
+  import type {
+    SelectOptionsComponent,
+    SelectOptionType
+  } from "../../../utils/types";
 
   export let options: SelectOptionsComponent = {
     optionsList: [],
@@ -16,7 +19,7 @@
     isError: false,
     isLabel: false,
     show: false,
-    disabled: false,
+    disabled: false
   };
 
   if (!options.placeholder) {
@@ -24,7 +27,9 @@
   }
 
   if (!options.hint) {
-    options.hint = options.multiple ? "you can choose multiple options" : "you can choose only one option";
+    options.hint = options.multiple
+      ? "you can choose multiple options"
+      : "you can choose only one option";
   }
 
   let id: string = uuidv4();
@@ -34,9 +39,13 @@
     e.stopPropagation();
     if (options.multiple) {
       if (options.selected?.includes(option)) {
-        options.selected = options.selected.filter(item => item.value !== option.value);
+        options.selected = options.selected.filter(
+          (item) => item.value !== option.value
+        );
 
-        options.selected = options.selected.filter(item => item.value !== option.value);
+        options.selected = options.selected.filter(
+          (item) => item.value !== option.value
+        );
       } else {
         options.selected = [...options.selected!, option];
       }
@@ -44,7 +53,7 @@
       options.selected = [option];
     }
     dispatch("select", {
-      selected: options.selected[0],
+      selected: options.selected[0]
     });
     options.show = false;
   }
@@ -85,7 +94,10 @@
 </script>
 
 <div class={`form-group row ${options.className}`}>
-  <label for={id} class={`${options.isTop ? "col-sm-4" : ""} col-form-label py-3`}>
+  <label
+    for={id}
+    class={`${options.isTop ? "col-sm-4" : ""} col-form-label py-3`}
+  >
     {options.label}
   </label>
 
@@ -105,15 +117,19 @@
             {#each options.selected as option, index (index)}
               <button
                 class="option-badge"
-                on:click={e => {
+                on:click={(e) => {
                   e.stopPropagation();
-                  options.selected = options.selected?.filter(o => o.value !== option.value);
+                  options.selected = options.selected?.filter(
+                    (o) => o.value !== option.value
+                  );
                   dispatch("removeItem", {
-                    selected: options.selected,
+                    selected: options.selected
                   });
                 }}
                 >{option.label}
-                <span class="remove-btn" title={option.extraData?.title}>&times;</span></button
+                <span class="remove-btn" title={option.extraData?.title}
+                  >&times;</span
+                ></button
               >
             {/each}
           {/if}
@@ -123,11 +139,11 @@
         class="clear-btn"
         type="button"
         title={options.removeAllTitle}
-        on:click={e => {
+        on:click={(e) => {
           e.stopPropagation();
           options.selected = [];
           dispatch("removeAllItems", {
-            selected: options.selected,
+            selected: options.selected
           });
         }}>&times;</button
       >
@@ -138,13 +154,13 @@
           {#each options.optionsList as option, index (index + +"" + option.value + "" + index)}
             <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
             <li
-              class={`option ${options.selected?.includes(option) ? "selected" : ""} ${
-                highlightedIndex === index ? "highlighted" : ""
-              }`}
+              class={`option ${
+                options.selected?.includes(option) ? "selected" : ""
+              } ${highlightedIndex === index ? "highlighted" : ""}`}
               data-value={option.value}
               data-index={index}
               on:mouseenter={() => (highlightedIndex = index)}
-              on:click={e => select(e, option)}
+              on:click={(e) => select(e, option)}
             >
               <div class="">
                 <div>

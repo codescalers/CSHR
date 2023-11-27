@@ -12,7 +12,7 @@
     isApproveLoading = true;
     await Requests.approve(request, request.id);
     dispatch("message", {
-      text: { status: RequestStatus.approved, request: request },
+      text: { status: RequestStatus.approved, request: request }
     });
     isApproveLoading = false;
   }
@@ -21,7 +21,7 @@
     isRejactLoading = true;
     await Requests.reject(request, request.id);
     dispatch("message", {
-      text: { status: RequestStatus.rejected, request: request },
+      text: { status: RequestStatus.rejected, request: request }
     });
     isRejactLoading = false;
   }

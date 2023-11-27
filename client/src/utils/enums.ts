@@ -4,7 +4,7 @@ export enum CalenderEventType {
   event = "event",
   birthday = "birthday",
   meeting = "meeting",
-  publicHoliday = "public_holiday",
+  publicHoliday = "public_holiday"
 }
 
 export enum CalenderEventEmojeTyoe {
@@ -12,32 +12,32 @@ export enum CalenderEventEmojeTyoe {
   event = "🎉",
   birthday = "🎂",
   publicHoliday = "💒",
-  meeting = "💼",
+  meeting = "💼"
 }
 
 export enum UserTypeEnum {
   admin = "Admin",
   supervisor = "Supervisor",
-  user = "User",
+  user = "User"
 }
 
 export enum RequestStatus {
   approved = "approved",
   rejected = "rejected",
-  pinding = "pending",
+  pinding = "pending"
 }
 
 export enum VacationTypeChoises {
   hr_letters = "hr_letters",
   compensation = "compensation",
-  vacations = "vacations",
+  vacations = "vacations"
 }
 
 export enum EvaluationQuarter {
   JAN_MARCH = "1 : 3",
   APR_JUN = "4 : 6",
   JUL_SEP = "7 : 9",
-  OCT_DEC = "10 : 12",
+  OCT_DEC = "10 : 12"
 }
 
 export enum WeekendHolidaysEnum {
@@ -47,7 +47,7 @@ export enum WeekendHolidaysEnum {
   Monday_and_Tuesday = "Monday:Tuesday",
   Tuesday_and_Wednesday = "Tuesday:Wednesday",
   Wednesday_and_Thursday = "Wednesday:Thursday",
-  Thursday_and_Friday = "Thursday:Friday",
+  Thursday_and_Friday = "Thursday:Friday"
 }
 
 export enum TeamEnum {
@@ -57,10 +57,10 @@ export enum TeamEnum {
   QA = "QA",
   Marketing = "Marketing",
   Operations = "Operations",
-  Support = "Support",
+  Support = "Support"
 }
 
 export enum GenderEnum {
   Male = "Male",
-  Female = "Female",
+  Female = "Female"
 }

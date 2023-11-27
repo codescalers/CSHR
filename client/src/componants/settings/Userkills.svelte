@@ -70,7 +70,8 @@
           await SkillsDataService.postSkills($UserStore, tags);
           successMessage = "The new skills have been added successfully.";
         } catch (error) {
-          errorMessage = "Error while trying to add the new skills, please check the provided data and try again.";
+          errorMessage =
+            "Error while trying to add the new skills, please check the provided data and try again.";
           isError = true;
         } finally {
           isLoading = false;

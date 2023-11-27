@@ -1,5 +1,7 @@
 <footer>
-  <div class="container footer-content mt-5 mb-4 pt-4">Copyright CodeScalers Egypt ©</div>
+  <div class="container footer-content mt-5 mb-4 pt-4">
+    Copyright CodeScalers Egypt ©
+  </div>
 </footer>
 
 <style>

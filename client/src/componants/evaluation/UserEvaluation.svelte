@@ -14,7 +14,7 @@
     { label: "1 : 3", value: "1 : 3" },
     { value: "4 : 6", label: "4 : 6" },
     { value: "7 : 9", label: "7 : 9" },
-    { value: "10 : 12", label: "10 : 12" },
+    { value: "10 : 12", label: "10 : 12" }
   ];
 
   let evaluation_quartur_selected: SelectOptionType[] = [];
@@ -102,10 +102,11 @@
                   user: peopleSelected[0].value,
                   quarter: evaluation_quartur_selected[0].value,
                   link: evaluationLinkValue,
-                  score: evaluationScoreValue,
+                  score: evaluationScoreValue
                 });
 
-                successMessage = "The new user evaluation is submitted successfully.";
+                successMessage =
+                  "The new user evaluation is submitted successfully.";
               } catch (error) {
                 errorMessage = "The new user evaluation submission failed.";
                 isError = true;

@@ -21,13 +21,26 @@
   }
 </script>
 
-<div class="modal modal-lg" id={`modal${id}`} aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+<div
+  class="modal modal-lg"
+  id={`modal${id}`}
+  aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
     <div class="modal-content">
       <div class="modal-header">
         <slot name="header" />
 
-        <button class="btn btn-close" data-bs-dismiss="modal" data-bs-target={`#modal${id}`} aria-label="Close" />
+        <button
+          class="btn btn-close"
+          data-bs-dismiss="modal"
+          data-bs-target={`#modal${id}`}
+          aria-label="Close"
+        />
       </div>
       <div class="modal-body">
         <slot name="body" />

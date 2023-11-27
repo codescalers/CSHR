@@ -5,7 +5,10 @@
   import Vacations from "../../../apis/vacations/Vacation";
   import { capitalize, formatDate } from "../../../utils/helpers";
   import { UserStore } from "../../../utils/stores";
-  import type { calendarItemsType, VacationBalance } from "../../../utils/types";
+  import type {
+    calendarItemsType,
+    VacationBalance
+  } from "../../../utils/types";
   import Alert from "../../ui/Alert.svelte";
   import Submit from "../../ui/Button.svelte";
 
@@ -24,7 +27,10 @@
   let errorMessage = "";
   let successMessage = "";
 
-  let alertTitle: string, alertClass: string, alertMessage: string, showAlert: boolean;
+  let alertTitle: string,
+    alertClass: string,
+    alertMessage: string,
+    showAlert: boolean;
   let vBalance: VacationBalance;
   let responseVacation: calendarItemsType;
   const dispatch = createEventDispatcher();
@@ -42,7 +48,7 @@
           end_date: endDate,
           from_date: startDate,
           reason: selectedReason,
-          applyingUserId: $UserStore.id,
+          applyingUserId: $UserStore.id
         });
         successMessage = axios.data.message;
       } else {
@@ -50,15 +56,16 @@
           end_date: formatDate(new Date(endDate)),
           from_date: formatDate(new Date(startDate)),
           reason: selectedReason,
-          applyingUserId: $UserStore.id,
+          applyingUserId: $UserStore.id
         });
         successMessage = axios.data.message;
         responseVacation = axios.data.results;
         dispatch("message", {
-          postedVacation: responseVacation,
+          postedVacation: responseVacation
         });
 
-        vBalance[selectedReason].reserved = vBalance[selectedReason].reserved + calculatorValue;
+        vBalance[selectedReason].reserved =
+          vBalance[selectedReason].reserved + calculatorValue;
       }
     } catch (error: any) {
       isError = true;
@@ -89,7 +96,10 @@
           {#if vBalance}
             {#each Object.entries(vBalance) as [name, _value]}
               {#if name != "user"}
-                <option value={name}>{capitalize(name.replace("_", " "))} {_value.reserved} / {_value.all}</option>
+                <option value={name}
+                  >{capitalize(name.replace("_", " "))}
+                  {_value.reserved} / {_value.all}</option
+                >
               {/if}
             {/each}
           {/if}
@@ -102,7 +112,8 @@
       <br />
       {#if calculatorValue === 0}
         <small class="text-red">
-          " It seems like the chosen day might be a holiday or a weekend break. Please verify this on your calendar. "
+          " It seems like the chosen day might be a holiday or a weekend break.
+          Please verify this on your calendar. "
         </small>
       {:else}
         <small class="text-dark">

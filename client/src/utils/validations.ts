@@ -27,7 +27,7 @@ export const validateLink = (e: any): boolean => {
       "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // validate port and path
       "(\\?[;&a-z\\d%_.~+=-]*)?" + // validate query string
       "(\\#[-a-z\\d_]*)?$",
-    "i",
+    "i"
   ); // validate fragment locator
   return !urlPattern.test(String(e.target.value));
 };
@@ -57,14 +57,15 @@ export const validateBirthday = (e: any): boolean => {
 };
 
 export const validateBackgroundColor = (e: any): boolean => {
-  if (e.target.value[0] == "#" && isNaN(e.target.value.slice(1, -1))) return false;
+  if (e.target.value[0] == "#" && isNaN(e.target.value.slice(1, -1)))
+    return false;
   return true;
 };
 
 export const validateStartEndDates = (startDate: Date, endDate: Date) => {
   const response: CalenderRequestFormResponseType = {
     message: undefined,
-    isError: false,
+    isError: false
   };
 
   endDate.setHours(0, 0, 0, 0); // Set the time to midnight for accurate comparison

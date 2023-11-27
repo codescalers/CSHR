@@ -24,10 +24,11 @@ export default async function isAuthenticated() {
     }
 
     if (Date.now() < exprefresh * 1000) {
-      const myloggingData: refreshData = await Authentication.refresh(refreshtoken);
+      const myloggingData: refreshData =
+        await Authentication.refresh(refreshtoken);
       return (myAuth = {
         token: myloggingData.access,
-        refreshtoken: myloggingData.refresh,
+        refreshtoken: myloggingData.refresh
       });
     }
 

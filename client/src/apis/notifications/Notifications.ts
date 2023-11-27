@@ -6,7 +6,12 @@ class NotificationService {
     try {
       const { data, status, statusText } = await http.get("/notifications/");
       if (status !== 200) {
-        throw new Error("Error in getting notifications with status " + status + " wtih status text : " + statusText);
+        throw new Error(
+          "Error in getting notifications with status " +
+            status +
+            " wtih status text : " +
+            statusText
+        );
       }
       return data.results;
     } catch (err: any) {

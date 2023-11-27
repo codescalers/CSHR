@@ -13,7 +13,9 @@ class Vacation {
       }
       return data.data.results;
     } catch (error: any) {
-      throw new Error(error.response.data.message || error.response.data.detail);
+      throw new Error(
+        error.response.data.message || error.response.data.detail
+      );
     }
   }
 
@@ -47,7 +49,9 @@ class Vacation {
 
   public async calculator(startDate: string, endDate: string) {
     try {
-      const data = await http.get(`/vacations/calculate/?start_date=${startDate}&end_date=${endDate}`);
+      const data = await http.get(
+        `/vacations/calculate/?start_date=${startDate}&end_date=${endDate}`
+      );
       if (data.status === 404) {
         throw new Error("Actual days not found");
       } else if (data.status !== 200) {
@@ -55,7 +59,9 @@ class Vacation {
       }
       return data.data.results;
     } catch (error: any) {
-      throw new Error(error.response.data.message || error.response.data.detail);
+      throw new Error(
+        error.response.data.message || error.response.data.detail
+      );
     }
   }
 
@@ -77,13 +83,21 @@ class Vacation {
 
   public async updateUserBalance(userBalance: VacationBalanceType) {
     try {
-      await http.put(`/vacations/balance/?user_id=${userBalance.user?.id}`, userBalance);
+      await http.put(
+        `/vacations/balance/?user_id=${userBalance.user?.id}`,
+        userBalance
+      );
     } catch (err: any) {
       throw new Error(err.response.data.message || err.response.data.detail);
     }
   }
 
-  public async post(e: { applyingUserId: number; reason: string; end_date: string; from_date: string }) {
+  public async post(e: {
+    applyingUserId: number;
+    reason: string;
+    end_date: string;
+    from_date: string;
+  }) {
     try {
       if (!e.applyingUserId || !e.end_date) throw new Error("Invalid data");
       const axios = await http.post(
@@ -94,12 +108,13 @@ class Vacation {
           end_date: e.end_date,
           reason: e.reason,
           type: "vacations",
-          status: "pending",
-        }),
+          status: "pending"
+        })
       );
       return axios;
     } catch (error: any) {
-      this.errorMessage = error.response.data.message || error.response.data.detail;
+      this.errorMessage =
+        error.response.data.message || error.response.data.detail;
       throw new Error(this.errorMessage);
     }
   }
@@ -110,7 +125,8 @@ class Vacation {
         await http.put(`/vacations/edit/${vacationID}/`, data)
       ).data;
     } catch (error: any) {
-      this.errorMessage = error.response.data.message || error.response.data.detail;
+      this.errorMessage =
+        error.response.data.message || error.response.data.detail;
       throw new Error(this.errorMessage);
     }
   }

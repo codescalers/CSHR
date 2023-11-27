@@ -24,7 +24,12 @@
 </script>
 
 <div class="card mt-4">
-  <CalendarDatePicker onlyStart={formToggle === 1} bind:startDate bind:endDate on:calculate={handleVacationCalculator}>
+  <CalendarDatePicker
+    onlyStart={formToggle === 1}
+    bind:startDate
+    bind:endDate
+    on:calculate={handleVacationCalculator}
+  >
     <div slot="toggler" class="my-4">
       <div class="options">
         <button
@@ -65,9 +70,9 @@
           bind:startDate
           bind:endDate
           calculatorValue={vacationCalculator}
-          on:message={event => {
+          on:message={(event) => {
             dispatch("message", {
-              postedVacation: event.detail.postedVacation,
+              postedVacation: event.detail.postedVacation
             });
           }}
         />
@@ -76,9 +81,9 @@
       {#if formToggle === 1}
         <CalendarMeetingForm
           bind:startDate
-          on:message={event => {
+          on:message={(event) => {
             dispatch("message", {
-              postedMeeting: event.detail.postedMeeting,
+              postedMeeting: event.detail.postedMeeting
             });
           }}
         />
@@ -88,9 +93,9 @@
         <CalendarEventForm
           bind:startDate
           bind:endDate
-          on:message={event => {
+          on:message={(event) => {
             dispatch("message", {
-              postedEvent: event.detail.postedEvent,
+              postedEvent: event.detail.postedEvent
             });
           }}
         />

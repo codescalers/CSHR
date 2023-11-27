@@ -32,7 +32,7 @@
     placeholder: "Select Weekend Holidays",
     removeAllTitle: "Remove all Weekend Holidays",
     isTop: true,
-    multiple: false,
+    multiple: false
   };
 </script>
 
@@ -78,7 +78,7 @@
               await OfficeDataService.post({
                 weekend: weekendOptions.selected[0].value,
                 name: officeName,
-                country: officeCountry,
+                country: officeCountry
               });
 
               successMessage = "The new office has been created successfully.";

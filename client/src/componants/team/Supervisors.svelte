@@ -20,7 +20,9 @@
             </th>
             <td class="text-center td-col">{supervisor.full_name}</td>
             <td class="text-center td-col">{supervisor.email}</td>
-            <td class="text-center td-col">{supervisor.mobile_number || "---"}</td>
+            <td class="text-center td-col"
+              >{supervisor.mobile_number || "---"}</td
+            >
             <td class="text-center td-col">{supervisor.job_title || "---"}</td>
             <td class="text-center td-col">{supervisor.team || "---"}</td>
           </tr>

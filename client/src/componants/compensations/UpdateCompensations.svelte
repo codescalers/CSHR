@@ -24,9 +24,11 @@
   }
 
   onMount(async function () {
-    const CompensationDataAPI = await CompensationsDataService.getByID(+compensationID);
+    const CompensationDataAPI =
+      await CompensationsDataService.getByID(+compensationID);
     CompensationData = CompensationDataAPI.data.results;
-    CompensationData.applying_user = CompensationDataAPI.data.results.applying_user.id;
+    CompensationData.applying_user =
+      CompensationDataAPI.data.results.applying_user.id;
     startDate = CompensationData.from_date;
     endDate = CompensationData.end_date;
   });
@@ -50,7 +52,13 @@
     <div class="col-12">
       <div class="container" style="width: 30%;">
         {#if startDate && endDate}
-          <CalendarDatePicker onlyStart={false} bind:startDate bind:endDate bind:datePickerDisabled calculate={false}>
+          <CalendarDatePicker
+            onlyStart={false}
+            bind:startDate
+            bind:endDate
+            bind:datePickerDisabled
+            calculate={false}
+          >
             <div slot="form">
               <div class="form-outline">
                 <Input
@@ -93,7 +101,10 @@
             try {
               CompensationData.from_date = startDate;
               CompensationData.end_date = endDate;
-              const axios = await CompensationsDataService.update(CompensationData, +compensationID);
+              const axios = await CompensationsDataService.update(
+                CompensationData,
+                +compensationID
+              );
               successMessage = axios.data.message;
               isError = false;
             } catch (error) {

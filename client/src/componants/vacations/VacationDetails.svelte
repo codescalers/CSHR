@@ -55,7 +55,7 @@
     vacation.approval_user = $UserStore;
     vacation.change_log.push({
       user: $UserStore,
-      comment: `${$UserStore.full_name} ${vacation.status} your vacation`,
+      comment: `${$UserStore.full_name} ${vacation.status} your vacation`
     });
   };
 
@@ -108,7 +108,8 @@
         </div>
       </div>
       <small class="text-muted text-center">
-        Hint: Once you click on the delete button the request will delete without any confirmation
+        Hint: Once you click on the delete button the request will delete
+        without any confirmation
       </small>
     {/if}
     <div class="card p-4 d-flex justify-content-center">
@@ -193,7 +194,9 @@
                 <path
                   d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0z"
                 />
-                <path d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z" />
+                <path
+                  d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z"
+                />
               </svg>
             {:else}
               <!-- Rejacted -->
@@ -216,9 +219,15 @@
         <form>
           <div class="form-group">
             <label for="comment" class="mb-4">Leave Comment</label>
-            <textarea bind:value={thisComment} class="form-control" id="comment" />
+            <textarea
+              bind:value={thisComment}
+              class="form-control"
+              id="comment"
+            />
           </div>
-          <div class="mt-3 pt-3 d-flex justify-content-center align-items-center w-100">
+          <div
+            class="mt-3 pt-3 d-flex justify-content-center align-items-center w-100"
+          >
             <Submit
               width={"20"}
               bind:disabled={formDisable}
@@ -230,13 +239,13 @@
                 isLoading = true;
                 try {
                   await Vacation.comment(+vacationID, {
-                    comment: thisComment,
+                    comment: thisComment
                   });
                   successMessage = "The comment has been posted successfully.";
                   vacation.change_log = vacation.change_log;
                   vacation.change_log.push({
                     user: $UserStore,
-                    comment: thisComment,
+                    comment: thisComment
                   });
                 } catch (error) {
                   errorMessage =
@@ -259,7 +268,9 @@
         <div class="row">
           {#each vacation.change_log as comment}
             {#if comment.user.id == $UserStore.id}
-              <div class="col-12 mt-4 d-flex card p-4 d-flex justify-content-end left-card">
+              <div
+                class="col-12 mt-4 d-flex card p-4 d-flex justify-content-end left-card"
+              >
                 <div class="row">
                   <div class="col-12 d-flex">
                     <ProfileImage user={comment.user} />
@@ -281,7 +292,9 @@
                 </div>
               </div>
             {:else}
-              <div class="col-12 mt-4 d-flex card p-4 d-flex justify-content-center right-card">
+              <div
+                class="col-12 mt-4 d-flex card p-4 d-flex justify-content-center right-card"
+              >
                 <div class="row">
                   <div class="col-12 d-flex">
                     <ProfileImage user={comment.user} />

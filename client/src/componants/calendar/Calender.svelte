@@ -54,7 +54,7 @@
   });
 
   const removeItem = () => {
-    items = items.filter(item => item !== clickedItemOnModal);
+    items = items.filter((item) => item !== clickedItemOnModal);
   };
 
   function next() {
@@ -80,7 +80,10 @@
     {#each [1, 2, 3, 4, 5, 6, 7] as row}
       <div class="">
         {#each [1, 2, 3, 4, 5] as col}
-          <div style="background-color: {loadingBoxBg};" class="calendar-loading-box" />
+          <div
+            style="background-color: {loadingBoxBg};"
+            class="calendar-loading-box"
+          />
         {/each}
       </div>
     {/each}
@@ -99,18 +102,25 @@
       {#each headers as header}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <span class="day-name" on:click={() => dispatch("headerClick", header)}>{header}</span>
+        <span class="day-name" on:click={() => dispatch("headerClick", header)}
+          >{header}</span
+        >
       {/each}
 
       {#each days as day}
         {#if day.enabled}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-no-static-element-interactions -->
-          <span class="day" on:click={() => dispatch("dayClick", day)}>{day.name}</span>
+          <span class="day" on:click={() => dispatch("dayClick", day)}
+            >{day.name}</span
+          >
         {:else}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-no-static-element-interactions -->
-          <span class="day day-disabled" on:click={() => dispatch("dayClick", day)}>{day.name}</span>
+          <span
+            class="day day-disabled"
+            on:click={() => dispatch("dayClick", day)}>{day.name}</span
+          >
         {/if}
       {/each}
 
@@ -239,7 +249,11 @@
     on:reject={removeItem}
   />
 {:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.event && clickedItemOnModal.event && clickedItemOnModal.event.length}
-  <CalendarEventDataModal bind:clickedItemOnModal bind:showModal currentEventActive={clickedItemOnModal.event[0]} />
+  <CalendarEventDataModal
+    bind:clickedItemOnModal
+    bind:showModal
+    currentEventActive={clickedItemOnModal.event[0]}
+  />
 {:else if clickedItemOnModal && clickedItemOnModal.title == CalenderEventType.birthday && clickedItemOnModal.users && clickedItemOnModal.users.length}
   <CalendarBirthdayModel
     bind:clickedItemOnModal

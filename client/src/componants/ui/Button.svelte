@@ -31,7 +31,11 @@
   {disabled}
 >
   {#if isLoading}
-    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+    <span
+      class="spinner-border spinner-border-sm"
+      role="status"
+      aria-hidden="true"
+    />
     Requesting...
   {:else}
     {label}

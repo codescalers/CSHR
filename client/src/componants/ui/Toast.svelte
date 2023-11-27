@@ -7,11 +7,15 @@
   <div id="liveToast" class="toast" role="alert" style="display: block;">
     <div class="toast-header">
       {#if successMessage}
-        <strong class="me-auto text-success success-bg fw-bold"> successfully submitted. </strong>
+        <strong class="me-auto text-success success-bg fw-bold">
+          successfully submitted.
+        </strong>
       {/if}
 
       {#if errorMessage}
-        <strong class="me-auto text-danger danger-bg fw-bold"> an error occurred. please try again. </strong>
+        <strong class="me-auto text-danger danger-bg fw-bold">
+          an error occurred. please try again.
+        </strong>
       {/if}
     </div>
 

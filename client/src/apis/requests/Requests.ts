@@ -52,7 +52,9 @@ class Requests {
   public async delete(incomingData: any) {
     // Request to delete request with exact id.
     try {
-      return await http.delete(`/${incomingData.type.toLowerCase()}/${incomingData.id}/`);
+      return await http.delete(
+        `/${incomingData.type.toLowerCase()}/${incomingData.id}/`
+      );
     } catch (err: any) {
       throw new Error(err.response.data.message);
     }

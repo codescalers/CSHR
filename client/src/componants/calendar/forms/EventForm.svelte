@@ -36,7 +36,9 @@
 
   // if true the disable submit button
   // let locationIsError: boolean | null = null;
-  $: fillDisabled = !isValidDate(formatDate(new Date(startDate))) || !isValidDate(formatDate(new Date(endDate)));
+  $: fillDisabled =
+    !isValidDate(formatDate(new Date(startDate))) ||
+    !isValidDate(formatDate(new Date(endDate)));
   // locationIsError === null || locationIsError === true || datePickerDisabled;
   $: submitDisabled =
     // fillDisabled === true ||
@@ -69,12 +71,12 @@
         people: [],
         end_date: endDate,
         from_date: startDate,
-        from_time: eventFromTimeValue,
+        from_time: eventFromTimeValue
       });
       successMessage = "The new event has been posted successfully.";
       responseEvent = axios.data.results;
       dispatch("message", {
-        postedEvent: responseEvent,
+        postedEvent: responseEvent
       });
     } catch (error: any) {
       errorMessage = `Error while trying to post a new event due ${error.message}, please check your data and try again.`;
@@ -105,7 +107,12 @@
       bind:isError={locationIsError}
     /> -->
   <div class="width-100 mt-4">
-    <ModalOpenButton width={100} label="Fill" disabled={fillDisabled} {modalID} />
+    <ModalOpenButton
+      width={100}
+      label="Fill"
+      disabled={fillDisabled}
+      {modalID}
+    />
   </div>
 </div>
 
@@ -199,6 +206,12 @@
     {/if}
   </form>
   <div slot="submit">
-    <Submit bind:successMessage bind:errorMessage label="Post Event!" onClick={submit} bind:disabled={submitDisabled} />
+    <Submit
+      bind:successMessage
+      bind:errorMessage
+      label="Post Event!"
+      onClick={submit}
+      bind:disabled={submitDisabled}
+    />
   </div>
 </Modal>

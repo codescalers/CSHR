@@ -6,7 +6,12 @@ class EvaluationDataService {
     try {
       const { data, status, statusText } = await http.get("/evaluation/users/");
       if (status !== 200) {
-        throw new Error("Error in getting offices with status " + status + " wtih status text : " + statusText);
+        throw new Error(
+          "Error in getting offices with status " +
+            status +
+            " wtih status text : " +
+            statusText
+        );
       }
       return data.results;
     } catch (err: any) {
@@ -15,9 +20,16 @@ class EvaluationDataService {
   }
   public async UserEvaluations(id: number, year: number) {
     try {
-      const { data, status, statusText } = await http.get(`/evaluation/user/${id}/?year=${year}`);
+      const { data, status, statusText } = await http.get(
+        `/evaluation/user/${id}/?year=${year}`
+      );
       if (status !== 200) {
-        throw new Error("Error in getting offices with status " + status + " wtih status text : " + statusText);
+        throw new Error(
+          "Error in getting offices with status " +
+            status +
+            " wtih status text : " +
+            statusText
+        );
       }
       return data.results;
     } catch (err: any) {
@@ -43,14 +55,23 @@ class EvaluationDataService {
     }
   }
 
-  public async postEvaluation(data: { form: string; quarter: string; link: string }) {
+  public async postEvaluation(data: {
+    form: string;
+    quarter: string;
+    link: string;
+  }) {
     try {
       await http.post("evaluation/", data);
     } catch (err: any) {
       console.error(this.errorMessage + err);
     }
   }
-  public async postUserEvaluation(data: { user: number; quarter: string; link: string; score: number }) {
+  public async postUserEvaluation(data: {
+    user: number;
+    quarter: string;
+    link: string;
+    score: number;
+  }) {
     try {
       await http.post("evaluation/users/", data);
     } catch (err: any) {

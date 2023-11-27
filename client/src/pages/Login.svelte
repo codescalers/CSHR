@@ -13,9 +13,16 @@
   let isErrormail: null | boolean = null;
   let isErrorpass: null | boolean = null;
 
-  let formDisable = (isErrormail === true || isErrorpass === true || isErrormail || isErrorpass) as boolean;
+  let formDisable = (isErrormail === true ||
+    isErrorpass === true ||
+    isErrormail ||
+    isErrorpass) as boolean;
 
-  $: formDisable = isErrormail === true || isErrormail === null || isErrorpass === null || isErrorpass === true;
+  $: formDisable =
+    isErrormail === true ||
+    isErrormail === null ||
+    isErrorpass === null ||
+    isErrorpass === true;
 
   const submit = async () => {
     let isError = false;
@@ -24,10 +31,13 @@
       const loggingData: loggingData = response.results;
       successMessage = response.message;
 
-      authStore.updateTokens(loggingData.access_token, loggingData.refresh_token);
+      authStore.updateTokens(
+        loggingData.access_token,
+        loggingData.refresh_token
+      );
 
       window.location.href = "/";
-    } catch (error) {
+    } catch (error: any) {
       errorMessage = error.message;
       isError = true;
     }
@@ -70,7 +80,14 @@
     />
   </div>
   <div class="mt-3 pt-3 d-flex justify-content-center align-items-center w-100">
-    <Submit width={"250"} disabled={formDisable} bind:successMessage bind:errorMessage label="Login" onClick={submit} />
+    <Submit
+      width={"250"}
+      disabled={formDisable}
+      bind:successMessage
+      bind:errorMessage
+      label="Login"
+      onClick={submit}
+    />
   </div>
 </div>
 

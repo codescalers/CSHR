@@ -5,7 +5,7 @@ import type {
   registeringData,
   SupervisorViewInterface,
   UserInterface,
-  UserOptionsFilter,
+  UserOptionsFilter
 } from "./../../utils/types";
 
 class Users {
@@ -13,12 +13,14 @@ class Users {
   public async getAll(usersOptions?: UserOptionsFilter) {
     try {
       const { data, status, statusText } = await http.get(
-        `/users/?location_id=${usersOptions ? usersOptions.locationId : ""}`,
+        `/users/?location_id=${usersOptions ? usersOptions.locationId : ""}`
       );
       if (status === 404) {
         throw new Error("Users not found");
       } else if (status !== 200) {
-        throw new Error(this.errorMessage + status + " wtih status text : " + statusText);
+        throw new Error(
+          this.errorMessage + status + " wtih status text : " + statusText
+        );
       }
       return data.results;
     } catch (error: any) {
@@ -29,11 +31,15 @@ class Users {
 
   public async getOfficeUsers() {
     try {
-      const { data, status, statusText } = await http.get("/users/admin/office_users/");
+      const { data, status, statusText } = await http.get(
+        "/users/admin/office_users/"
+      );
       if (status === 404) {
         throw new Error("Users not found");
       } else if (status !== 200) {
-        throw new Error(this.errorMessage + status + " wtih status text : " + statusText);
+        throw new Error(
+          this.errorMessage + status + " wtih status text : " + statusText
+        );
       }
       return data.results;
     } catch (error: any) {
@@ -48,22 +54,28 @@ class Users {
         await http.get(`/users/${id}`)
       ).data.results;
     } catch (error: any) {
-      throw new Error(error.response.data.message || error.response.data.detail);
+      throw new Error(
+        error.response.data.message || error.response.data.detail
+      );
     }
   }
 
   public async getByIdBasedOnUserType(
     id: number,
-    user_type: UserType,
+    user_type: UserType
   ): Promise<UserInterface | AdminViewInterface | SupervisorViewInterface> {
     try {
       const { data, status, statusText } = await http.get(
-        `/users/${user_type === "User" ? "" : user_type.toLowerCase() + "/"}${id}/`,
+        `/users/${
+          user_type === "User" ? "" : user_type.toLowerCase() + "/"
+        }${id}/`
       );
       if (status === 404) {
         throw new Error("User not found");
       } else if (status !== 200) {
-        throw new Error(this.errorMessage + status + " wtih status text : " + statusText);
+        throw new Error(
+          this.errorMessage + status + " wtih status text : " + statusText
+        );
       }
       return data.results;
     } catch (error: any) {
@@ -78,7 +90,9 @@ class Users {
         await http.get(`/hr_letters/docs/${id}/`)
       ).data.results;
     } catch (error: any) {
-      throw new Error(error.response.data.message || error.response.data.detail);
+      throw new Error(
+        error.response.data.message || error.response.data.detail
+      );
     }
   }
 
@@ -89,20 +103,31 @@ class Users {
         await http.get("myprofile/")
       ).data.results;
     } catch (error: any) {
-      throw new Error(error.response.data.message || error.response.data.detail);
+      throw new Error(
+        error.response.data.message || error.response.data.detail
+      );
     }
   }
 
-  public async postUserDocument(data: { user: number; name: string; image: string }) {
+  public async postUserDocument(data: {
+    user: number;
+    name: string;
+    image: string;
+  }) {
     // Requset to post user document.
     try {
       await http.post("hr_letters/docs/", data);
     } catch (error: any) {
-      throw new Error(error.response.data.message || error.response.data.detail);
+      throw new Error(
+        error.response.data.message || error.response.data.detail
+      );
     }
   }
 
-  public async changePassword(data: { old_password: string; new_password: string }) {
+  public async changePassword(data: {
+    old_password: string;
+    new_password: string;
+  }) {
     // Request to change request user password.
     try {
       await http.put("/auth/change-password/", data);
@@ -135,7 +160,10 @@ class Users {
     // Update user profile
     try {
       return await (
-        await http.put(`/myprofile/update/profile/${registerData.id}/`, JSON.stringify(registerData))
+        await http.put(
+          `/myprofile/update/profile/${registerData.id}/`,
+          JSON.stringify(registerData)
+        )
       ).data;
     } catch (error: any) {
       throw new Error(`Error while registering${error}`);
@@ -146,7 +174,10 @@ class Users {
     // Update user profile
     try {
       return await (
-        await http.put(`/users/set_active/`, JSON.stringify({ user_id: userID }))
+        await http.put(
+          `/users/set_active/`,
+          JSON.stringify({ user_id: userID })
+        )
       ).data;
     } catch (error: any) {
       throw new Error(`Error while setting user as active user due: ${error}`);
@@ -157,10 +188,15 @@ class Users {
     // Update user profile
     try {
       return await (
-        await http.put(`/users/set_inactive/`, JSON.stringify({ user_id: userID }))
+        await http.put(
+          `/users/set_inactive/`,
+          JSON.stringify({ user_id: userID })
+        )
       ).data;
     } catch (error: any) {
-      throw new Error(`Error while setting user as an inactive user due: ${error}`);
+      throw new Error(
+        `Error while setting user as an inactive user due: ${error}`
+      );
     }
   }
 }
