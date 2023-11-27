@@ -35,7 +35,6 @@
 
   let isErrorReason: boolean | null = null;
   let isErrorDates: boolean;
-  let datePickerDisabled = false;
   let successMessage: string;
   let errorMessage: string;
 

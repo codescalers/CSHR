@@ -10,17 +10,16 @@
   let errorMessage: string | undefined;
   let successMessage: string | undefined;
 
-
   async function approveVacation(request: any) {
     successMessage = errorMessage = undefined;
     try {
       const response = await Requests.approve(request, request.id);
-      successMessage = response.data.message
+      successMessage = response.data.message;
       dispatch("message", {
         text: { status: RequestStatus.approved, request: request }
       });
     } catch (error: any) {
-      errorMessage = error.message
+      errorMessage = error.message;
     }
   }
 
@@ -28,12 +27,12 @@
     successMessage = errorMessage = undefined;
     try {
       const response = await Requests.reject(request, request.id);
-      successMessage = response.data.message
+      successMessage = response.data.message;
       dispatch("message", {
         text: { status: RequestStatus.rejected, request: request }
       });
     } catch (error: any) {
-      errorMessage = error.message
+      errorMessage = error.message;
     }
   }
 </script>

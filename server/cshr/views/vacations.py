@@ -350,6 +350,7 @@ class VacationsAcceptApiView(GenericAPIView):
                 message="User is not found", status_code=404
             )
 
+
 class VacationsRejectApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor | IsAdmin]
 
@@ -373,10 +374,11 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
                     )
                 )
 
-        
         if vacation.status != STATUS_CHOICES.PENDING:
-            return CustomResponse.bad_request(message=f"The vacation status is not pinding, it's {vacation.status}.")
-            
+            return CustomResponse.bad_request(
+                message=f"The vacation status is not pinding, it's {vacation.status}."
+            )
+
         current_user: User = get_user_by_id(request.user.id)
         vacation.approval_user = current_user
         vacation.status = STATUS_CHOICES.REJECTED
