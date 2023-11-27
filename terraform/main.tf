@@ -14,19 +14,19 @@ provider "grid" {
 
 data "grid_gateway_domain" "server_domain" {
     node = 2
-    name = "newcshrserver"
+    name = "cshrserver"
 }
 
 data "grid_gateway_domain" "client_domain" {
     node = 2
-    name = "newcshr"
+    name = "cshr"
 }
 
 resource "grid_network" "net2" {
     nodes = [2]
     ip_range = "10.1.0.0/16"
-    name = "newcshrnetwork"
-    description = "newer network"
+    name = "cshrnetworks"
+    description = "er network"
     add_wg_access = true
 }
 
@@ -60,7 +60,7 @@ resource "grid_deployment" "d2" {
     node = 2
     network_name = grid_network.net2.name
     vms {
-        name = "cshrclientvmnew"
+        name = "cshrclientvm"
         publicip = false
         planetary = true
         flist = "https://hub.grid.tf/omda.3bot/codescalersinternship-cshr_client-latest.flist"
@@ -76,14 +76,14 @@ resource "grid_deployment" "d2" {
 
 resource "grid_name_proxy" "p1" {
     node = 2
-    name = "newcshrserver"
+    name = "cshrserver"
     backends = [format("http://[%s]:8000", grid_deployment.d1.vms[0].ygg_ip)]
     tls_passthrough = false
 }
 
 resource "grid_name_proxy" "p2" {
     node = 2
-    name = "newcshr"
+    name = "cshr"
     backends = [format("http://[%s]:6000", grid_deployment.d2.vms[0].ygg_ip)]
     tls_passthrough = false
 }
