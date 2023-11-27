@@ -5,7 +5,7 @@
   "scripts": {
     "build": "yarn rollup -c",
     "dev": "yarn rollup --host -c -w",
-    "start": "sirv public --single -p 8080",
+    "start": "yarn sirv public --single -p 8080",
     "format": "yarn prettier --write \"{,!(node_modules|public)/**/}*.{ts,js,svelte}\"",
     "lint": "yarn format && yarn eslint -c .eslintrc.json \"{,!(node_modules|public)/**/}*.{ts,js,svelte}\" --fix"
   },
