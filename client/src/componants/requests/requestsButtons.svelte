@@ -3,69 +3,57 @@
 
   import Requests from "../../apis/requests/Requests";
   import { RequestStatus } from "../../utils/enums";
+  import Button from "../ui/Button.svelte";
   export let request: any;
-  const dispatch = createEventDispatcher();
-  let isApproveLoading = false;
-  let isRejactLoading = false;
 
-  async function approve_btn(request: any) {
-    isApproveLoading = true;
-    await Requests.approve(request, request.id);
-    dispatch("message", {
-      text: { status: RequestStatus.approved, request: request }
-    });
-    isApproveLoading = false;
+  const dispatch = createEventDispatcher();
+  let errorMessage: string | undefined;
+  let successMessage: string | undefined;
+
+
+  async function approveVacation(request: any) {
+    successMessage = errorMessage = undefined;
+    try {
+      const response = await Requests.approve(request, request.id);
+      successMessage = response.data.message
+      dispatch("message", {
+        text: { status: RequestStatus.approved, request: request }
+      });
+    } catch (error: any) {
+      errorMessage = error.message
+    }
   }
 
-  async function reject_btn(request: any) {
-    isRejactLoading = true;
-    await Requests.reject(request, request.id);
-    dispatch("message", {
-      text: { status: RequestStatus.rejected, request: request }
-    });
-    isRejactLoading = false;
+  async function rejectVacation(request: any) {
+    successMessage = errorMessage = undefined;
+    try {
+      const response = await Requests.reject(request, request.id);
+      successMessage = response.data.message
+      dispatch("message", {
+        text: { status: RequestStatus.rejected, request: request }
+      });
+    } catch (error: any) {
+      errorMessage = error.message
+    }
   }
 </script>
 
 <div class="row align-items-center">
   <div class="col mx-3">
-    <button
-      type="button"
-      on:click={() => approve_btn(request)}
-      class="border-0 p-1 text-light btn-success btn-border btn-sm w-100 mb-1"
-      disabled={isApproveLoading}
-    >
-      {#if isApproveLoading}
-        loading...
-      {:else}
-        Approve
-      {/if}
-    </button>
-    <button
-      type="button"
-      on:click={() => reject_btn(request)}
-      class="border-0 p-1 text-light btn-danger btn-border btn-sm w-100"
-      disabled={isRejactLoading}
-    >
-      {#if isRejactLoading}
-        loading...
-      {:else}
-        Reject
-      {/if}
-    </button>
+    <Button
+      className={"border-0 p-1 text-light btn-success btn-border btn-sm w-100 mb-1"}
+      onClick={() => approveVacation(request)}
+      label="Approve"
+      bind:errorMessage
+      bind:successMessage
+    />
+
+    <Button
+      className={"border-0 p-1 text-light btn-danger btn-border btn-sm w-100"}
+      onClick={() => rejectVacation(request)}
+      label="Reject"
+      bind:errorMessage
+      bind:successMessage
+    />
   </div>
 </div>
-
-<style>
-  .btn-border {
-    border-radius: 35px;
-  }
-  .btn-success {
-    background: #29cc97;
-    border-color: #29cc97;
-  }
-  .btn-danger {
-    background: #f12b2c;
-    border-color: #f12b2c;
-  }
-</style>

@@ -56,7 +56,6 @@
             onlyStart={false}
             bind:startDate
             bind:endDate
-            bind:datePickerDisabled
             calculate={false}
           >
             <div slot="form">
@@ -78,7 +77,6 @@
               <CalendarLeaveForm
                 bind:startDate
                 bind:endDate
-                bind:datePickerDisabled
                 bind:isError={isErrorDates}
                 withReason={false}
                 withSubmit={false}

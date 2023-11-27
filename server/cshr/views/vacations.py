@@ -20,7 +20,7 @@ from server.cshr.api.permission import (
     IsAdmin,
 )
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.models.users import User
+from server.cshr.models.users import USER_TYPE, User
 from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.vacations import (
@@ -117,15 +117,6 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
         return CustomResponse.bad_request(
             message="Invalid balance values.", error=serializer.errors
         )
-        # v = StanderdVacationBalance()
-        # request.data["sick_leaves"] = v.file_content["sick_leaves"]
-        # request.data["compensation"] = v.file_content["compensation"]
-        # request.data["unpaid"] = v.file_content["unpaid"]
-        # request.data["year"] = datetime.today().year
-        # serializer = self.get_serializer(data=request.data)
-        # if serializer.is_valid():
-        #     for field, value in request.data.items():
-        #         v.write(field, value)
 
 
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
@@ -136,7 +127,6 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
     def post(self, request: Request) -> Response:
         """Method to create a new vacation request"""
-        v = StanderdVacationBalance()
         if (
             request.data.get("end_date")
             and type(request.data["end_date"]) == str
@@ -189,15 +179,6 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 status=STATUS_CHOICES.PENDING,
                 applying_user=request.user,
             )
-            balance = v.check_balance(
-                user=request.user,
-                vacation=saved,
-                reason=serializer.validated_data.get("reason"),
-                start_date=serializer.validated_data.get("from_date"),
-                end_date=serializer.validated_data.get("end_date"),
-            )
-            if balance is not True:
-                return CustomResponse.bad_request(message=balance)
             # get_vacation_request_email_template(
             #     request.user, serializer.data, saved.id
             # )
@@ -278,12 +259,12 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
 
         if serializer.is_valid():
-            balance = v.check_balance(
-                user=request.user,
+            balance = v.check_and_update_balance(
+                applying_user=request.user,
+                vacation=vacation,
                 reason=serializer.validated_data.get("reason"),
                 start_date=serializer.validated_data.get("from_date"),
                 end_date=serializer.validated_data.get("end_date"),
-                vacation=vacation,
             )
             if balance is not True:
                 return CustomResponse.bad_request(message=balance)
@@ -313,15 +294,46 @@ class VacationsAcceptApiView(GenericAPIView):
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
             return CustomResponse.not_found(message="Vacation not found")
+
+        office_admin = (
+            request.user.user_type == USER_TYPE.ADMIN
+            and request.user.location == vacation.applying_user.location
+        )
+
+        if not office_admin:
+            is_reporting_to = request.user in vacation.applying_user.reporting_to.all()
+            if not is_reporting_to:
+                return CustomResponse.unauthorized(
+                    message=(
+                        "You don't have the necessary permissions to perform this action. "
+                        "Only supervisors and administrators working in the same office are authorized to do so."
+                    )
+                )
+
+        v = StanderdVacationBalance()
+        balance = v.check_and_update_balance(
+            applying_user=vacation.applying_user,
+            vacation=vacation,
+            reason=vacation.reason,
+            start_date=vacation.from_date,
+            end_date=vacation.end_date,
+        )
+
+        if balance is not True:
+            return CustomResponse.bad_request(message=balance)
+
         current_user: User = get_user_by_id(request.user.id)
         vacation.approval_user = current_user
         vacation.status = STATUS_CHOICES.APPROVED
+
         comment: Dict = {
             "user": TeamSerializer(request.user).data,
             "comment": f"{request.user.first_name} approved your vacation",
             "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
         }
+
         update_vacation_change_log(vacation, comment)
+
         vacation.save()
         event_id = id
         bool1 = set_notification_reply_redis(vacation, "accepted", event_id)
@@ -331,13 +343,12 @@ class VacationsAcceptApiView(GenericAPIView):
         )
         if bool1 and bool2:
             return CustomResponse.success(
-                message="vacation request accepted", status_code=202
+                message="Vacation request accepted", status_code=202
             )
         else:
             return CustomResponse.not_found(
-                message="user is not found", status_code=404
+                message="User is not found", status_code=404
             )
-
 
 class VacationsRejectApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor | IsAdmin]
@@ -346,22 +357,46 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
             return CustomResponse.not_found(message="Vacation not found")
+
+        office_admin = (
+            request.user.user_type == USER_TYPE.ADMIN
+            and request.user.location == vacation.applying_user.location
+        )
+
+        if not office_admin:
+            is_reporting_to = request.user in vacation.applying_user.reporting_to.all()
+            if not is_reporting_to:
+                return CustomResponse.unauthorized(
+                    message=(
+                        "You don't have the necessary permissions to perform this action. "
+                        "Only supervisors and administrators working in the same office are authorized to do so."
+                    )
+                )
+
+        
+        if vacation.status != STATUS_CHOICES.PENDING:
+            return CustomResponse.bad_request(message=f"The vacation status is not pinding, it's {vacation.status}.")
+            
         current_user: User = get_user_by_id(request.user.id)
         vacation.approval_user = current_user
         vacation.status = STATUS_CHOICES.REJECTED
+
         comment: Dict = {
             "user": TeamSerializer(request.user).data,
             "comment": f"{request.user.first_name} rejacted your request",
             "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
         }
+
         update_vacation_change_log(vacation, comment)
         vacation.save()
+
         event_id = id
         bool1 = set_notification_reply_redis(vacation, "rejected", event_id)
         msg = get_vacation_reply_email_template(current_user, vacation, event_id)
         bool2 = send_email_for_reply.delay(
             current_user.id, vacation.applying_user.id, msg, "Vacation reply"
         )
+
         if bool1 and bool2:
             return CustomResponse.success(
                 message="vacation request rejected", status_code=202

@@ -1,4 +1,5 @@
 from typing import Dict, List
+from server.cshr.models.requests import STATUS_CHOICES
 from server.cshr.models.users import User
 from server.cshr.models.vacations import (
     REASON_CHOICES,
@@ -143,62 +144,57 @@ class StanderdVacationBalance:
             vacation.applying_user, reason, get_actual_reason_value + old_days
         )
 
-    def check_balance(
+    def check_and_update_balance(
         self,
-        user: User,
+        applying_user: User,
         vacation: Vacation,
         reason: str,
         start_date: datetime,
         end_date: datetime,
     ):
-        self.check(user)
+        if reason == "public_holidays":
+            return "You cannot apply for public holidays vacations, you take it automatically."
 
-        old_balance = self.check_old_balance(user, reason)
-        v = user.vacationbalance
-        vacation_days = self.remove_weekends(user, start_date, end_date)
+        self.check(applying_user)
+        v = applying_user.vacationbalance
+        vacation_days = self.remove_weekends(applying_user, start_date, end_date)
+
         if hasattr(v, reason):
             curr_balance = getattr(v, reason)
-            # if reason == "public_holidays":
-            #     return "You cannot apply for public holidays vacations, you take it automatically."
-            if old_balance + curr_balance >= len(vacation_days):
-                new_value: int = curr_balance - len(vacation_days)
-                this_month: int = datetime.datetime.now().month
-                if old_balance >= len(vacation_days) and this_month < 3:
-                    self.set_taked_from_old_balance(vacation)
-                    return self.update_user_balance(
-                        user,
-                        reason,
-                        old_balance - len(vacation_days),
-                        taked_from_old_balance=vacation.taked_from_old_balance,
-                    )
-                return self.update_user_balance(user, reason, new_value)
-            return f"You only have {old_balance+curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
-
-    def set_taked_from_old_balance(self, vacation: Vacation):
-        """Update vacation with taked from ild balance to return the value to old balance when user update his request."""
-        vacation.taked_from_old_balance = True
-        vacation.save()
+            if curr_balance >= len(vacation_days):
+                if vacation.status == STATUS_CHOICES.PENDING:
+                    new_value: int = curr_balance - len(vacation_days)
+                    return self.update_user_balance(applying_user, reason, new_value)
+                return f"The vacation status is not pinding, it's {vacation.status}."
+            return f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
+        return "Unknown reason."
+        # if hasattr(v, reason):
+        #     if old_balance + curr_balance >= len(vacation_days):
+        #         this_month: int = datetime.datetime.now().month
+        #         if old_balance >= len(vacation_days) and this_month < 3:
+        #             self.set_taked_from_old_balance(vacation)
+        #             return self.update_user_balance(
+        #                 user,
+        #                 reason,
+        #                 old_balance - len(vacation_days),
+        #                 taked_from_old_balance=vacation.taked_from_old_balance,
+        #             )
+        #         return self.update_user_balance(user, reason, new_value)
+        #
 
     def update_user_balance(
         self,
-        user: User,
+        applying_user: User,
         reason: REASON_CHOICES,
         new_value: int,
-        taked_from_old_balance: bool = False,
     ) -> VacationBalance:
         """
         Set new value based on field name -> reason.
-        user: Current user.
+        user: Applying user.
         reason: one of 'VacationBalance' fields.
         new_value: the new value will adding to filed[reason]
         """
-        balance: VacationBalance = VacationBalance.objects.get(user=user)
-        if taked_from_old_balance:
-            if reason in balance.old_balance:
-                balance.old_balance[reason] = new_value
-                balance.save()
-                return True
-            return f"Old balance has no attrbute named {reason}"
+        balance: VacationBalance = VacationBalance.objects.get(user=applying_user)
 
         if hasattr(balance, reason):
             setattr(balance, reason, new_value)

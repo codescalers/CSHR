@@ -1,12 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { tweened } from "svelte/motion";
-  import { Route } from "svelte-navigator";
   import { navigate } from "svelte-navigator";
 
   import Requests from "../../apis/requests/Requests";
   import Vacation from "../../apis/vacations/Vacation";
-  import Error from "../../pages/Error.svelte";
   import { RequestStatus } from "../../utils/enums";
   import { UserStore } from "../../utils/stores";
   import ProfileImage from "../profile/ProfileImage.svelte";
@@ -63,24 +61,21 @@
   let errorMessage: string;
 </script>
 
-{#if isError}
-  <Route>
-    <Error error={404} />
-  </Route>
-{/if}
-
 {#if isLoading}
   <div class="d-flex justify-content-center align-items-center height-100">
     <Loading className={"loader"} />
   </div>
 {/if}
+
 {#if vacation}
   <div class="container pt-5">
-    {#if $UserStore.user_type == "Supervisor"}
+
+    {#if $UserStore.user_type == "Supervisor" }
       <div class="mb-4" style="width: 20%;">
         <ActionButton request={vacation} on:message={handleActions} />
       </div>
     {/if}
+
     {#if $UserStore.id === vacation.applying_user.id && vacation.status == RequestStatus.pinding}
       <div class="row">
         <div class="col-3">
@@ -112,6 +107,7 @@
         without any confirmation
       </small>
     {/if}
+
     <div class="card p-4 d-flex justify-content-center">
       <div class="row">
         <div class="col-6">
