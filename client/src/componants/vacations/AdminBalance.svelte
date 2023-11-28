@@ -159,7 +159,7 @@
                 annual_leaves: balanceValues.annual_leaves,
                 leave_excuses: balanceValues.leave_excuses,
                 emergency_leaves: balanceValues.emergency_leaves,
-                public_holidays: handleDates(balanceValues.public_holidays),
+                public_holidays: handleDates(balanceValues.public_holidays ?? []),
                 year: balanceValues.year,
                 location: balanceValues.location
               });

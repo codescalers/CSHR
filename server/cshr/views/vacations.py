@@ -4,6 +4,7 @@ from server.cshr.serializers.vacations import (
     GetOfficeVacationBalanceSerializer,
     CalculateBalanceSerializer,
     LandingPageVacationsSerializer,
+    VacationBalanceAdjustmentSerializer,
     VacationsCommentsSerializer,
     VacationsSerializer,
 )
@@ -21,6 +22,7 @@ from server.cshr.api.permission import (
 )
 from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import USER_TYPE, User
+from server.cshr.services.office import get_office_by_id
 from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.vacations import (
@@ -45,7 +47,7 @@ from server.cshr.utils.email_messages_templates import (
 
 # from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
-from server.cshr.models.vacations import OfficeVacationBalance, PublicHoliday, Vacation
+from server.cshr.models.vacations import OfficeVacationBalance, PublicHoliday, Vacation, VacationBalance
 from server.cshr.services.vacations import get_vacations_by_user
 from server.cshr.utils.redis_functions import (
     notification_commented,
@@ -69,6 +71,50 @@ class GetAdminVacationBalanceApiView(GenericAPIView):
             message="Successfully updated balance values.",
             data=self.serializer_class(data[0]).data,
         )
+
+class VacationBalanceAdjustmentApiView(GenericAPIView):
+    """Class VacationBalanceAdjustmentApiView to update or vacation <reason> balance by only admin to the whole office."""
+
+    serializer_class = VacationBalanceAdjustmentSerializer
+    permission_classes = [IsAdmin]
+
+    def put(self, request: Request) -> Response:
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            office_id = serializer.validated_data.get("officeId")
+            office = get_office_by_id(office_id)
+            if not office:
+                return CustomResponse.not_found(message="Office not found.")
+
+            users_in_office = User.objects.filter(location=office)
+            
+            # Check the balance if created for all users
+            v: StanderdVacationBalance = StanderdVacationBalance()
+            for user in users_in_office:
+                v.check(user)
+            
+            reason = serializer.validated_data.get("reason")
+            add_value = serializer.validated_data.get("value")
+            
+            balances = VacationBalance.objects.filter(user__in=users_in_office)
+            for obj in balances:
+                if hasattr(obj, reason):
+                    old_value = obj.actual_balance.get(reason)
+                    obj.actual_balance[reason] = old_value + add_value 
+                    # setattr(obj, reason, old_value + add_value)
+                    obj.save()
+                else:
+                    return CustomResponse.bad_request(
+                        message="Unknown reason.",
+                        data=serializer.data,
+                    )
+
+            return CustomResponse.success(
+                message="Successfully updated balance values.",
+                data=serializer.data,
+            )
+
+        return CustomResponse.bad_request(message="Please make sure that you entred a valid data.")
 
 
 class PostAdminVacationBalanceApiView(GenericAPIView):

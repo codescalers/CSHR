@@ -5,6 +5,7 @@
   import Register from "../register/Register.svelte";
   import UpdateProfile from "../settings/UpdateProfile.svelte";
   import UserVacationBalance from "../vacations/UserVacationBalance.svelte";
+  import AdjustmentVacationBalance from "../vacations/AdjustmentVacationBalance.svelte";
   // import UserDocuments from "../userdocuments/UserDocuments.svelte"
   import VacationBalance from "../vacations/VacationBalance.svelte";
   import GreatAndHint from "./GreatAndHint.svelte";
@@ -29,8 +30,10 @@
         role="tab"
         aria-controls="v-tabs-vacation-balance"
         aria-selected="false"
-        on:click={() => (tab = 1)}>Update/Post vacations balance</a
+        on:click={() => (tab = 1)}
       >
+        Update/Post vacations balance form
+      </a>
       <a
         class="nav-link navtab mb-2"
         id="v-tabs-user-vacation-balance-tab"
@@ -39,8 +42,22 @@
         role="tab"
         aria-controls="v-tabs-user-vacation-balance"
         aria-selected="false"
-        on:click={() => (tab = 2)}>Update User Vacation Balance</a
+        on:click={() => (tab = 2)}
       >
+        Update user vacation balance form
+      </a>
+      <a
+        class="nav-link navtab mb-2"
+        id="v-tabs-Adjustment-vacation-balance-tab"
+        data-mdb-toggle="tab"
+        href="#v-tabs-Adjustment-vacation-balance"
+        role="tab"
+        aria-controls="v-tabs-Adjustment-vacation-balance"
+        aria-selected="false"
+        on:click={() => (tab = 2)}
+      >
+        Vacation balance adjustment form
+      </a>
       <!-- RFNV1.0 <a
         class="nav-link navtab mb-2"
         id="v-tabs-home-tab"
@@ -79,8 +96,10 @@
         role="tab"
         aria-controls="v-tabs-office"
         aria-selected="false"
-        on:click={() => (tab = 6)}>Add new office</a
+        on:click={() => (tab = 6)}
       >
+        Add new office form
+      </a>
       <a
         class="nav-link navtab mb-2"
         id="v-tabs-new-user-tab"
@@ -89,8 +108,10 @@
         role="tab"
         aria-controls="v-tabs-new-user"
         aria-selected="false"
-        on:click={() => (tab = 7)}>Add new user</a
+        on:click={() => (tab = 7)}
       >
+        Add new user form
+      </a>
       <a
         class="nav-link navtab mb-2"
         id="v-tabs-update-user-tab"
@@ -101,7 +122,7 @@
         aria-selected="false"
         on:click={() => (tab = 8)}
       >
-        Update user profile
+        Update user profile form
       </a>
     </div>
   </div>
@@ -134,6 +155,20 @@
             hint={""}
           />
           <UserVacationBalance />
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="v-tabs-Adjustment-vacation-balance"
+        role="tabpanel"
+        aria-labelledby="v-tabs-Adjustment-vacation-balance-tab"
+      >
+        <div class="height-100">
+          <GreatAndHint
+            header={"This is the adjustment vacation balance form"}
+            hint={"The 'Vacation Balance Adjustment Form' is utilized by administrators to increment the vacation balance for the entire team. This form is designed for specific instances where an increase in the balance is warranted, such as adding an extra day to the annual leave entitlement. Administrators can provide a reason for the adjustment, ensuring transparency and clarity in the modification of vacation balances for the office team.            "}
+          />
+          <AdjustmentVacationBalance />
         </div>
       </div>
       <!-- RFNV1.0 <div

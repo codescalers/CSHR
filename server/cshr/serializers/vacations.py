@@ -234,3 +234,8 @@ class CalculateBalanceSerializer(serializers.Serializer):
             "all": obj.actual_balance.get("leave_excuses"),
         }
         return UserBalanceVlaueSerializer(value).data
+
+class VacationBalanceAdjustmentSerializer(serializers.Serializer):
+    officeId = serializers.IntegerField()
+    value = serializers.IntegerField()
+    reason = serializers.CharField()

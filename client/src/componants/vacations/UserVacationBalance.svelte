@@ -58,7 +58,7 @@
     isErrorAnunual == true ||
     isErrorLeave == true ||
     isErrorEmergency == true ||
-    usersOptions.selected.length == 0;
+    usersOptions.selected!.length == 0;
 
   let successMessage: string;
   let errorMessage: string;
@@ -70,7 +70,7 @@
     isTop: true,
     multiple: false,
     placeholder: "Select User...",
-    isError: isErrorUserSelected
+    isError: isErrorUserSelected!
   };
 </script>
 
@@ -79,7 +79,7 @@
     <div class="form-outline">
       {#if !isUserLoaded}
         <PeopleSelect bind:options={usersOptions} usersInAdminOffice={true} />
-      {:else}
+      {:else if userBalance.user}
         <div class="mb-2 d-flex">
           <ProfileImage user={userBalance.user} />
           <span class="user_full_name">{userBalance.user.full_name}</span>
@@ -160,7 +160,7 @@
           <Submit
             width={"20"}
             label="Change User"
-            onClick={() => (isUserLoaded = null)}
+            onClick={() => (isUserLoaded = false)}
             className="abtn btn-success mr-4"
           />
           <div style="margin-left: 5px; margin-right: 5px;" />
@@ -191,7 +191,7 @@
         </div>
       {/if}
     </div>
-    {#if usersOptions.selected.length > 0 && !isUserLoaded}
+    {#if usersOptions.selected && usersOptions.selected.length > 0 && !isUserLoaded}
       <div class="mt-4 form-outline d-flex justify-content-center">
         <button
           type="button"

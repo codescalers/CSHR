@@ -28,7 +28,7 @@
   export let isError: boolean | null | Promise<boolean> = null;
   export let isTop = true;
 
-  export let handleInput: () => boolean | Promise<boolean>;
+  export let handleInput: (e: any) => boolean | Promise<boolean>;
   // for setting the error function
   const ref = (node: HTMLInputElement) => {
     node.type = type;
@@ -66,7 +66,7 @@
     />
 
     <div {id} class="invalid-feedback">
-      <span class="alert-link">{errorMessage}</span> , {hint}
+      <span class="alert-link">{errorMessage}</span> {hint.length ? `, ${hint}` : ''}
     </div>
     <div {id} class="valid-feedback">{correctMessage}</div>
   </div>

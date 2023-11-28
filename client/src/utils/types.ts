@@ -9,12 +9,24 @@ export type requestLabelType =
   | "Compensation"
   | "Danger";
 
+// Can be modified, e.g. the compensation and unpaid and sick_leave default value to 365 days.
+export type AvailableLeaveReason =
+  | "annual_leaves"
+  | "emergency_leaves"
+  | "leave_excuses";
+
 export type eventNameType =
   | "vacation"
   | "meeting"
   | "event"
   | "birthday"
   | "public_holiday";
+
+export type VacationBalanceAdjustmentType = {
+  reason: string;
+  value: number;
+  officeId: number;
+}
 
 export interface GeneralUserInterface {
   id: number;
