@@ -36,7 +36,7 @@ class Vacation(Requests):
     from_date = models.DateField()
     end_date = models.DateField()
     change_log = models.JSONField(default=list)
-    taked_from_old_balance = models.BooleanField(default=False)
+    # taked_from_old_balance = models.BooleanField(default=False)
 
     def ___str__(self):
         return self.reason
@@ -52,9 +52,9 @@ class VacationBalance(models.Model):
     annual_leaves = models.IntegerField()
     emergency_leaves = models.IntegerField()
     leave_excuses = models.IntegerField()
-    date = models.DateField(auto_now=True)
-    old_balance = models.JSONField(default=dict, null=True)
     actual_balance = models.JSONField(default=dict, null=True)
+    # date = models.DateField(auto_now=True)
+    # old_balance = models.JSONField(default=dict, null=True)
 
     def __str__(self):
         return str(self.user.email)
@@ -79,9 +79,9 @@ class OfficeVacationBalance(TimeStamp):
     location = models.ForeignKey(Office, on_delete=models.CASCADE)
     year = models.IntegerField(default=datetime.datetime.now().year)
     annual_leaves = models.IntegerField(default=20)
-    sick_leaves = models.IntegerField(default=100)
-    compensation = models.IntegerField(default=100)
-    unpaid = models.IntegerField(default=100)
+    sick_leaves = models.IntegerField(default=365)
+    compensation = models.IntegerField(default=365)
+    unpaid = models.IntegerField(default=365)
     leave_excuses = models.IntegerField(default=6)
     emergency_leaves = models.IntegerField(default=6)
     public_holidays = models.ManyToManyField(

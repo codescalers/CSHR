@@ -89,9 +89,7 @@ class User(AbstractBaseUser, TimeStamp):
     team = models.CharField(max_length=20, choices=TEAM.choices)
     salary = models.JSONField(default=dict, null=True, blank=True)
     location = models.ForeignKey(Office, on_delete=models.CASCADE)
-    skills = models.ManyToManyField(
-        UserSkills, related_name="skills", null=True, blank=True
-    )
+    skills = models.ManyToManyField(UserSkills, related_name="skills", blank=True)
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
     gender = models.CharField(max_length=20, choices=GENDER_TYPE.choices)
     social_insurance_number = models.CharField(max_length=45)

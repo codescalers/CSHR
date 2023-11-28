@@ -96,10 +96,10 @@
           {#if vBalance}
             {#each Object.entries(vBalance) as [name, _value]}
               {#if name != "user"}
-                <option value={name}
-                  >{capitalize(name.replace("_", " "))}
-                  {_value.reserved} / {_value.all}</option
-                >
+                <option value={name}>
+                  {capitalize(name.replace("_", " "))}
+                  {_value.reserved} / {_value.all >= 100 ? "∞" : _value.all}
+                </option>
               {/if}
             {/each}
           {/if}

@@ -11,7 +11,7 @@
 
   export let isLoading = false;
 
-  let headers = [];
+  let headers: string[] = [];
   let now = new Date();
   let year = now.getFullYear();
   let month = now.getMonth();

@@ -31,7 +31,7 @@ class StanderdVacationBalance:
                 ):
                     for k, v in actual_value.items():
                         balance_attr: int = getattr(balance, k)
-                        if balance_attr + v < 100:
+                        if balance_attr + v < 365:
                             setattr(balance, k, balance_attr + v)
             return balance
         except VacationBalance.DoesNotExist:
@@ -64,6 +64,7 @@ class StanderdVacationBalance:
         Some Values are static and does not depend on
         joining date like i.e sick_leaves.
         """
+        print("Yes here...")
         values: Dict = self.create_new_balance_values(user=user)
         balance: VacationBalance = VacationBalance.objects.create(
             user=user,
@@ -122,27 +123,29 @@ class StanderdVacationBalance:
         old_days: int = self.remove_weekends(
             vacation.applying_user, vacation.from_date, vacation.end_date
         )
+
         old_days = self.remove_holidays(
             vacation.applying_user, vacation.from_date, vacation.end_date, old_days
         )
 
         reason: str = vacation.reason
-        this_month: int = datetime.datetime.now().month
         balance: VacationBalance = VacationBalance.objects.get(
             user=vacation.applying_user
         )
         get_actual_reason_value = getattr(balance, reason)
-        if vacation.taked_from_old_balance and this_month < 3:
-            return self.update_user_balance(
-                vacation.applying_user,
-                reason,
-                balance.old_balance.get(reason) + old_days,
-                taked_from_old_balance=vacation.taked_from_old_balance,
-            )
 
         return self.update_user_balance(
             vacation.applying_user, reason, get_actual_reason_value + old_days
         )
+
+        # this_month: int = datetime.datetime.now().month
+        # if vacation.taked_from_old_balance and this_month < 3:
+        #     return self.update_user_balance(
+        #         vacation.applying_user,
+        #         reason,
+        #         balance.old_balance.get(reason) + old_days,
+        #         taked_from_old_balance=vacation.taked_from_old_balance,
+        #     )
 
     def check_and_update_balance(
         self,
@@ -202,48 +205,48 @@ class StanderdVacationBalance:
             return True
         return f"There is no filed or attrbute named {reason} inside VacationBalance model."
 
-    def check_old_balance(self, user: User, reason: str):
-        """
-        This function gives you the balance value of a specific
-        reason e.g "annual_leaves" in the given object's old balance field.
-        if it's empty then it will return 0
-        """
-        if (
-            user.vacationbalance.old_balance == {}
-            or user.vacationbalance.old_balance[reason] == 0
-        ):
-            return 0
-        else:
-            return user.vacationbalance.old_balance[reason]
+    # def check_old_balance(self, user: User, reason: str):
+    #     """
+    #     This function gives you the balance value of a specific
+    #     reason e.g "annual_leaves" in the given object's old balance field.
+    #     if it's empty then it will return 0
+    #     """
+    #     if (
+    #         user.vacationbalance.old_balance == {}
+    #         or user.vacationbalance.old_balance[reason] == 0
+    #     ):
+    #         return 0
+    #     else:
+    #         return user.vacationbalance.old_balance[reason]
 
-    def old_balance_format(self, user: User) -> VacationBalance:
-        """
-        This function takes a user as an argument and
-        based on the json file it will make a similar one
-        to be stored on the old_balance field for vacation balance model.
-        This function should run by the end of every year to update
-        the old_balance field.
-        """
-        user_balance = self.check(user)
-        balance_format = {}
-        balance_format["annual_leaves"] = user_balance.annual_leaves
-        balance_format["sick_leaves"] = user_balance.sick_leaves
-        balance_format["compensation"] = user_balance.compensation
-        balance_format["unpaid"] = user_balance.unpaid
-        balance_format["emergency_leaves"] = user_balance.emergency_leaves
-        balance_format["leave_execuses"] = user_balance.leave_execuses
-        balance_format["year"] = user_balance.date.year
+    # def old_balance_format(self, user: User) -> VacationBalance:
+    #     """
+    #     This function takes a user as an argument and
+    #     based on the json file it will make a similar one
+    #     to be stored on the old_balance field for vacation balance model.
+    #     This function should run by the end of every year to update
+    #     the old_balance field.
+    #     """
+    #     user_balance = self.check(user)
+    #     balance_format = {}
+    #     balance_format["annual_leaves"] = user_balance.annual_leaves
+    #     balance_format["sick_leaves"] = user_balance.sick_leaves
+    #     balance_format["compensation"] = user_balance.compensation
+    #     balance_format["unpaid"] = user_balance.unpaid
+    #     balance_format["emergency_leaves"] = user_balance.emergency_leaves
+    #     balance_format["leave_excuses"] = user_balance.leave_excuses
+    #     balance_format["year"] = user_balance.date.year
 
-        balance: VacationBalance = VacationBalance.objects.get(user=user)
-        balance.old_balance = balance_format
-        balance.save()
-        return balance_format
+    #     balance: VacationBalance = VacationBalance.objects.get(user=user)
+    #     balance.old_balance = balance_format
+    #     balance.save()
+    #     return balance_format
 
-    def resetting_old_balance(self, user: User):
-        """ "
-        This function should run annualy at april to reset
-        the old_balance field to an empty directory
-        """
-        balance: VacationBalance = VacationBalance.objects.get(user=user)
-        balance.old_balance = {}
-        balance.save()
+    # def resetting_old_balance(self, user: User):
+    #     """ "
+    #     This function should run annualy at april to reset
+    #     the old_balance field to an empty directory
+    #     """
+    #     balance: VacationBalance = VacationBalance.objects.get(user=user)
+    #     balance.old_balance = {}
+    #     balance.save()

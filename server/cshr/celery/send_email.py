@@ -9,14 +9,14 @@ from django.core.exceptions import ImproperlyConfigured
 from rest_framework.response import Response
 from server.components import config
 
-REISHOST: str = None
+REDIS_HOST: str = None
 try:
-    REISHOST = config("REDIS_HOST")
+    REDIS_HOST = config("REDIS_HOST")
 except Exception:
     raise ImproperlyConfigured("REDIS_HOST is not defined")
 
 
-app = Celery("tasks", broker=REISHOST)
+app = Celery("tasks", broker=REDIS_HOST)
 
 app.autodiscover_tasks()
 
@@ -25,20 +25,20 @@ app.conf.beat_schedule = {
         "task": "send_email",
         "schedule": crontab(minute=0, hour=9),
     },
-    "quarter_evaluation": {
-        "task": "send_quarter_evaluation_email",
-        "schedule": crontab(
-            month_of_year="1,4,7,10", day_of_month=1, hour=8, minute=30
-        ),
-    },
-    "user_old_balance_format": {
-        "task": "user_old_balance_format",
-        "schedule": crontab(month_of_year="1", day_of_month=1, hour=8, minute=30),
-    },
-    "user_resetting_old_balance": {
-        "task": "user_resetting_old_balance",
-        "schedule": crontab(month_of_year="3", day_of_month=1, hour=8, minute=30),
-    },
+    # "quarter_evaluation": {
+    #     "task": "send_quarter_evaluation_email",
+    #     "schedule": crontab(
+    #         month_of_year="1,4,7,10", day_of_month=1, hour=8, minute=30
+    #     ),
+    # },
+    # "user_old_balance_format": {
+    #     "task": "user_old_balance_format",
+    #     "schedule": crontab(month_of_year="1", day_of_month=1, hour=8, minute=30),
+    # },
+    # "user_resetting_old_balance": {
+    #     "task": "user_resetting_old_balance",
+    #     "schedule": crontab(month_of_year="3", day_of_month=1, hour=8, minute=30),
+    # },
 }
 
 mail_title = "Probation period update"
@@ -149,26 +149,26 @@ def send_quarter_evaluation_email():
     )
 
 
-@app.task(name="user_old_balance_format")
-def user_old_balance_format():
-    from server.cshr.models.users import User
-    from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
+# @app.task(name="user_old_balance_format")
+# def user_old_balance_format():
+#     from server.cshr.models.users import User
+#     from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
 
-    users = User.objects.all()
-    v = StanderdVacationBalance()
-    for user in users:
-        v.old_balance_format(user)
+#     users = User.objects.all()
+#     v = StanderdVacationBalance()
+#     for user in users:
+#         v.old_balance_format(user)
 
 
-@app.task(name="user_resetting_old_balance")
-def user_resetting_old_balance():
-    from server.cshr.models.users import User
-    from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
+# @app.task(name="user_resetting_old_balance")
+# def user_resetting_old_balance():
+#     from server.cshr.models.users import User
+#     from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
 
-    users = User.objects.all()
-    v = StanderdVacationBalance()
-    for user in users:
-        v.resetting_old_balance(user)
+#     users = User.objects.all()
+#     v = StanderdVacationBalance()
+#     for user in users:
+#         v.resetting_old_balance(user)
 
 
 @shared_task()

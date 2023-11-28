@@ -489,18 +489,25 @@ class UserVacationBalanceApiView(GenericAPIView):
     def get(self, request: Request) -> Response:
         """Get method to get all user balance"""
         user_id = request.query_params.get("user_id")
+
         if not user_id.isdigit():
             return CustomResponse.bad_request(message="Invalid user id.")
+
         if user_id is None:
             return CustomResponse.bad_request(
                 message="You must send `user_id` as a query_params."
             )
+
         user: User = get_user_by_id(user_id)
+
         if user is None:
             return CustomResponse.not_found(message="User not found.")
+
         v: StanderdVacationBalance = StanderdVacationBalance()
+
         balance = v.check(user)
         request.data["user"] = TeamSerializer(user).data
+
         return CustomResponse.success(
             message="Sucess found balance.",
             data=CalculateBalanceSerializer(balance).data,
@@ -521,16 +528,17 @@ class UserVacationBalanceApiView(GenericAPIView):
         user_balance = get_balance_by_user(user)
 
         # Set default values
-        request.data["compensation"] = 100
-        request.data["sick_leaves"] = 100
-        request.data["unpaid"] = 100
+        request.data["compensation"] = 365
+        request.data["sick_leaves"] = 365
+        request.data["unpaid"] = 365
 
         serializer = self.get_serializer(user_balance, data=request.data)
+
         if serializer.is_valid():
-            if request.data.get("delete_old_balance") is True:
-                serializer.save(old_balance={}, user=user)
-            else:
-                serializer.save(user=user)
+            # if request.data.get("delete_old_balance") is True:
+            #     serializer.save(old_balance={}, user=user)
+            # else:
+            serializer.save(user=user)
             update_user_actual_balance(user_balance)
             return CustomResponse.success(
                 message="Successfully updated user balance",
