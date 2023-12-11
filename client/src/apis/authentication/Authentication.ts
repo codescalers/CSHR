@@ -22,7 +22,7 @@ class Authentication {
       ).data;
     } catch (error: any) {
       throw new Error(
-        error.response.data.detail || error.response.data.message
+        error.response.data.detail || error.response.data.message || error.message
       );
     }
   }

@@ -1,6 +1,7 @@
 <script lang="ts">
   import Vacation from "../../apis/vacations/Vacation";
   import type { VacationBalanceType } from "../../utils/types";
+  import { validateYearBalance } from "../../utils/validations";
   import Submit from "../ui/Button.svelte";
   import Input from "../ui/Input.svelte";
   import DatePickerSelect from "./DatePickerSelect.svelte";
@@ -9,8 +10,11 @@
 
   let year: number = new Date().getFullYear();
   let isLoading = false;
-  let isError = false;
 
+  let isError: boolean | null;
+  let isErrorAnunual: boolean | null;
+  let isErrorLeave: boolean | null;
+  let isErrorEmergency: boolean | null;
   let dates: string[] = [];
 
   let balanceValues: VacationBalanceType = {
@@ -46,6 +50,9 @@
   }
 
   $: submitDisabled =
+    isErrorAnunual == true ||
+    isErrorLeave == true ||
+    isErrorEmergency == true ||
     balanceValues.annual_leaves == 0 ||
     balanceValues.leave_excuses == 0 ||
     balanceValues.emergency_leaves == 0 ||
@@ -102,13 +109,12 @@
           type="number"
           label={"Annual leaves"}
           bind:value={balanceValues.annual_leaves}
-          handleInput={() => {
-            return false;
-          }}
+          handleInput={validateYearBalance}
           size={25}
           errorMessage="Annual leaves is invalid."
           placeholder="Annual leaves"
-          hint={"Write annual leaves in numbers"}
+          hint={"Anuual leaves should be less than 30 days."}
+          bind:isError={isErrorAnunual}
         />
       </div>
       <div class="form-outline">
@@ -116,13 +122,12 @@
           type="number"
           label={"Leave execuses"}
           bind:value={balanceValues.leave_excuses}
-          handleInput={() => {
-            return false;
-          }}
           size={25}
           errorMessage="Leave execuses is invalid."
           placeholder="Leave execuses"
-          hint={"Write Leave execuses in numbers"}
+          handleInput={validateYearBalance}
+          hint={"Leave execuses should be less than 30 days."}
+          bind:isError={isErrorLeave}
         />
       </div>
       <div class="form-outline">
@@ -130,13 +135,12 @@
           type="number"
           label={"Emergency leaves"}
           bind:value={balanceValues.emergency_leaves}
-          handleInput={() => {
-            return false;
-          }}
+          handleInput={validateYearBalance}
           size={25}
           errorMessage="Emergency leaves is invalid."
           placeholder="Emergency leaves"
-          hint={"Write Emergency leaves in numbers"}
+          hint={"Emergency execuses should be less than 30 days."}
+          bind:isError={isErrorEmergency}
         />
       </div>
 

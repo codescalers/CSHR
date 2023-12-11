@@ -4,7 +4,7 @@
   import Office from "../office/Office.svelte";
   import Register from "../register/Register.svelte";
   import UpdateProfile from "../settings/UpdateProfile.svelte";
-  import UserVacationBalance from "../vacations/UserVacationBalance.svelte";
+  import UsersVacationBalanceForm from "../vacations/UsersVacationBalanceForm.svelte";
   import AdjustmentVacationBalance from "../vacations/AdjustmentVacationBalance.svelte";
   // import UserDocuments from "../userdocuments/UserDocuments.svelte"
   import VacationBalance from "../vacations/VacationBalance.svelte";
@@ -15,7 +15,7 @@
 </script>
 
 <div class="row w-100 p-4">
-  <div class="col-3">
+  <div class="col-4">
     <div
       class="nav flex-column nav-tabs text-center no-bottom-border"
       id="v-tabs-tab"
@@ -44,7 +44,7 @@
         aria-selected="false"
         on:click={() => (tab = 2)}
       >
-        Update user vacation balance form
+        Update/Set user vacation balance form
       </a>
       <a
         class="nav-link navtab mb-2"
@@ -126,7 +126,7 @@
       </a>
     </div>
   </div>
-  <div class="col-9">
+  <div class="col-8">
     <!-- Tab content -->
     <div class="tab-content" id="v-tabs-tabContent">
       <div
@@ -154,7 +154,7 @@
             header={"This is the user balance of year " + date.getFullYear()}
             hint={""}
           />
-          <UserVacationBalance />
+          <UsersVacationBalanceForm />
         </div>
       </div>
       <div

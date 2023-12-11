@@ -10,7 +10,7 @@
   import Vacation from "../../apis/vacations/Vacation";
 
   let selectedReason: string;
-  let value: number = 0;
+  let value: number = 1;
 
   let successMessage: string | undefined;
   let errorMessage: string | undefined;
@@ -23,13 +23,23 @@
     "leave_excuses"
   ];
 
-  $: submitDisabled = !selectedReason || value == 0;
+  $: submitDisabled =
+    !selectedReason ||
+    value == 0 ||
+    value > 30 ||
+    value.toString().startsWith("0") ||
+    value < 1;
 
   const submit = async () => {
     successMessage = undefined;
     errorMessage = undefined;
 
     try {
+      if (submitDisabled) {
+        errorMessage =
+          "Please review and address any errors before submitting your request.";
+        return;
+      }
       const payload: VacationBalanceAdjustmentType = {
         reason: selectedReason,
         value,
@@ -37,7 +47,7 @@
       };
       Vacation.vacationBalanceAdjustment(payload);
       successMessage = "The user balance has been updated successfully.";
-      value = 0
+      value = 0;
     } catch (error) {
       errorMessage =
         "Error while trying to update the user balance, please check the entered data and try again.";
@@ -45,24 +55,24 @@
   };
 
   const validateValue = () => {
-    if(!value){
-      valueErrorMessage = "Value is required."
+    if (!value) {
+      valueErrorMessage = "Value is required.";
       return true;
     }
-    if(value > 30){
-      valueErrorMessage = "The value should be lower than 30 days."
-      return true
+    if (value > 30) {
+      valueErrorMessage = "The value should be lower than 30 days.";
+      return true;
     }
-    if(value < 1){
-      valueErrorMessage = "The value should be bigger than 1 day."
-      return true
+    if (value < 1) {
+      valueErrorMessage = "The value should be bigger than 1 day.";
+      return true;
     }
-    if(value.toString().startsWith('0')){
-      valueErrorMessage = "The value cannot start with 0."
-      return true
+    if (value.toString().startsWith("0")) {
+      valueErrorMessage = "The value cannot start with 0.";
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 </script>
 
 <div class="bg-white p-3 pt-0 mt-0 card">
@@ -72,8 +82,11 @@
         <small>
           <strong>Please note that </strong>
           this value will be applied to the
-          <strong class="text-primary"> {capitalize(selectedReason.replace("_", " "))} </strong>
-          balance for all users. If you accidentally submit this form, you'll need to reset the value for users using the appropriate form.
+          <strong class="text-primary">
+            {capitalize(selectedReason.replace("_", " "))}
+          </strong>
+          balance for all users. If you accidentally submit this form, you'll need
+          to reset the value for users using the appropriate form.
         </small>
       </div>
     {/if}
@@ -129,7 +142,7 @@
 
     <div class="form-outline w-100 mt-4 d-flex justify-content-end">
       <Button
-        width={"20"}
+        width={"35"}
         bind:successMessage
         bind:errorMessage
         label="Update Balance"

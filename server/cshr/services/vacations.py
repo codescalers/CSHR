@@ -62,6 +62,9 @@ def get_balance_by_user(user: User) -> VacationBalance:
     except VacationBalance.DoesNotExist:
         return None
 
+def filter_balances_by_users(users: List[User]) -> VacationBalance:
+    return VacationBalance.objects.filter(user__in=users)
+
 
 def get_vacation_based_on_request(request_: Requests):
     """Returns vacation object who created at the sane time of request creation."""

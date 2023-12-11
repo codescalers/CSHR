@@ -24,8 +24,9 @@ from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import USER_TYPE, User
 from server.cshr.services.office import get_office_by_id
 from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
-from server.cshr.services.users import get_user_by_id
+from server.cshr.services.users import get_user_by_id, get_users_by_id
 from server.cshr.services.vacations import (
+    filter_balances_by_users,
     get_balance_by_user,
     get_vacation_by_id,
     get_all_vacations,
@@ -534,67 +535,79 @@ class UserVacationBalanceApiView(GenericAPIView):
 
     def get(self, request: Request) -> Response:
         """Get method to get all user balance"""
-        user_id = request.query_params.get("user_id")
+        user_ids = request.query_params.get("user_ids")
+        user_ids = user_ids.split(',')
 
-        if not user_id.isdigit():
-            return CustomResponse.bad_request(message="Invalid user id.")
-
-        if user_id is None:
+        if user_ids is None:
             return CustomResponse.bad_request(
                 message="You must send `user_id` as a query_params."
             )
 
-        user: User = get_user_by_id(user_id)
-
-        if user is None:
-            return CustomResponse.not_found(message="User not found.")
+        users: User = get_users_by_id(user_ids)
 
         v: StanderdVacationBalance = StanderdVacationBalance()
 
-        balance = v.check(user)
-        request.data["user"] = TeamSerializer(user).data
+        balances = []
+        
+        for user in users:
+            balance = v.check(user)
+            balances.append(balance)
 
+        request.data["user"] = TeamSerializer(user).data
         return CustomResponse.success(
             message="Sucess found balance.",
-            data=CalculateBalanceSerializer(balance).data,
+            data=CalculateBalanceSerializer(balances, many=True).data,
         )
 
     def put(self, request: Request) -> CustomResponse:
         """Use this endpoint to update user balance"""
-        user_id = request.query_params.get("user_id")
-        if not user_id.isdigit():
-            return CustomResponse.bad_request(message="Invalid user id.")
-        if user_id is None:
+
+        user_ids = request.query_params.get("user_ids")
+        user_ids = user_ids.split(',')
+
+        if user_ids is None:
             return CustomResponse.bad_request(
                 message="You must send `user_id` as a query_params."
             )
-        user: User = get_user_by_id(user_id)
+
+        users: User = get_users_by_id(user_ids)
         v: StanderdVacationBalance = StanderdVacationBalance()
-        v.check(user)
-        user_balance = get_balance_by_user(user)
+ 
+        balances = filter_balances_by_users(users)
 
         # Set default values
         request.data["compensation"] = 365
         request.data["sick_leaves"] = 365
         request.data["unpaid"] = 365
 
-        serializer = self.get_serializer(user_balance, data=request.data)
-
-        if serializer.is_valid():
+        try:
             # if request.data.get("delete_old_balance") is True:
             #     serializer.save(old_balance={}, user=user)
             # else:
-            serializer.save(user=user)
-            update_user_actual_balance(user_balance)
+            for balance in balances:
+                balance.compensation = 365
+                balance.sick_leaves = 365
+                balance.unpaid = 365
+                balance.annual_leaves = request.data.get("annual_leaves")
+                balance.emergency_leaves = request.data.get("emergency_leaves")
+                balance.leave_excuses = request.data.get("leave_excuses")
+                balance.save()
+
+                v.check(balance.user)
+                user_balance = get_balance_by_user(balance.user)
+                update_user_actual_balance(user_balance)
+
             return CustomResponse.success(
                 message="Successfully updated user balance",
                 status_code=202,
-                data=serializer.data,
+                data=CalculateBalanceSerializer(balances, many=True).data,
             )
-        return CustomResponse.bad_request(
-            message="Please make sure that you entered a valid data",
-            error=serializer.errors,
-        )
+
+        except Exception:
+            return CustomResponse.bad_request(
+                message="Please make sure that you entered a valid data",
+                status_code=400
+            ) 
 
 
 class CalculateVacationDaysApiView(GenericAPIView):

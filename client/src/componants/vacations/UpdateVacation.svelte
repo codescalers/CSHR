@@ -50,7 +50,6 @@
       onlyStart={formToggle === 1}
       bind:startDate
       bind:endDate
-      bind:datePickerDisabled
       on:message={handleVacationCalculator}
     >
       <div slot="form">
@@ -58,7 +57,6 @@
           <CalendarLeaveForm
             bind:startDate
             bind:endDate
-            bind:datePickerDisabled
             calculatorValue={VacationCalculator}
             isUpdate={true}
             {vacationID}

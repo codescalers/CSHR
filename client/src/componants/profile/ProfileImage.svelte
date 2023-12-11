@@ -26,11 +26,13 @@
         src={window.configs.SERVER_BASE_URL + user.image}
         class="user-profile-image rounded-circle"
         style="width:{size}px; height:{size}px;"
+        title={user.full_name}
       />
     {:else}
       <span
         class="user-profile-image rounded-circle"
         style="background-color:{user.image}; width:{size}px; height:{size}px;"
+        title={user.full_name}
       >
         {logo}
       </span>
@@ -43,11 +45,13 @@
           src={window.configs.SERVER_BASE_URL + user.image}
           class="user-profile-image rounded-circle"
           style="width:{size}px; height:{size}px;"
+          title={user.full_name}
         />
       {:else}
         <span
           class="user-profile-image rounded-circle"
           style="background-color:{user.image}; width:{size}px; height:{size}px;"
+          title={user.full_name}
         >
           {logo}
         </span>

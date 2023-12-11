@@ -36,7 +36,8 @@
   const dispatch = createEventDispatcher();
 
   onMount(async () => {
-    vBalance = await Vacations.balance($UserStore.id);
+    const response = await Vacations.balance([$UserStore.id]);
+    vBalance = response[0]    
   });
 
   const submit = async () => {

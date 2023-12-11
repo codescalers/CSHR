@@ -47,6 +47,12 @@ export const validateSalary = (e: any): boolean => {
   return true;
 };
 
+export const validateYearBalance = (e: any): boolean => {
+  if (e.target.value > 30) return true;
+  if (e.target.value < 1 ) return true;  
+  return false;
+};
+
 export const validateBirthday = (e: any): boolean => {
   const date = new Date(e.target.value);
   const today = new Date();

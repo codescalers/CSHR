@@ -3,9 +3,9 @@ import type { VacationBalanceAdjustmentType, VacationBalanceType } from "../../u
 
 class Vacation {
   errorMessage = "Error in Vacation Data Service: ";
-  public async balance(userID: number) {
+  public async balance(userIDs: number[]) {
     try {
-      const data = await http.get(`/vacations/balance/?user_id=${userID}`);
+      const data = await http.get(`/vacations/balance/?user_ids=${userIDs}`);
       if (data.status === 404) {
         throw new Error("Balance not found");
       } else if (data.status !== 200) {
@@ -81,12 +81,12 @@ class Vacation {
     }
   }
 
-  public async updateUserBalance(userBalance: VacationBalanceType) {
+  public async updateUserBalance(userBalance: VacationBalanceType, userIDs: number[]) {
     try {
-      await http.put(
-        `/vacations/balance/?user_id=${userBalance.user?.id}`,
+      return (await http.put(
+        `/vacations/balance/?user_ids=${userIDs}`,
         userBalance
-      );
+      )).data.results;
     } catch (err: any) {
       throw new Error(err.response.data.message || err.response.data.detail);
     }

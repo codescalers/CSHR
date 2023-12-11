@@ -29,6 +29,7 @@
       formatDate(startDate as Date),
       formatDate(endDate as Date)
     );
+
     dispatch("calculate", {
       days: vacationCalculator
     });
@@ -36,6 +37,7 @@
 
   function validateDate(): CalenderRequestFormResponseType {
     errorMessage = undefined;
+    
     let validated: CalenderRequestFormResponseType = validateStartEndDates(
       startDate as Date,
       endDate as Date
