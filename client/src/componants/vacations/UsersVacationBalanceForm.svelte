@@ -1,17 +1,18 @@
 <script lang="ts">
   import Switch from "svelte-switch";
+
   import Vacation from "../../apis/vacations/Vacation";
+  import { UserStore } from "../../utils/stores";
   import type {
     SelectOptionType,
     VacationBalanceType
   } from "../../utils/types";
+  import { validateYearBalance } from "../../utils/validations";
   import ProfileImage from "../profile/ProfileImage.svelte";
   import Alert from "../ui/Alert.svelte";
   import Submit from "../ui/Button.svelte";
   import Input from "../ui/Input.svelte";
   import PeopleSelect from "../ui/select/UsersMultiSelect.svelte";
-  import { UserStore } from "../../utils/stores";
-  import { validateYearBalance } from "../../utils/validations";
 
   let userIDs: number[] = [];
 

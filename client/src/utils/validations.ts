@@ -49,7 +49,7 @@ export const validateSalary = (e: any): boolean => {
 
 export const validateYearBalance = (e: any): boolean => {
   if (e.target.value > 30) return true;
-  if (e.target.value < 1 ) return true;  
+  if (e.target.value < 1) return true;
   return false;
 };
 

@@ -37,7 +37,7 @@
 
   onMount(async () => {
     const response = await Vacations.balance([$UserStore.id]);
-    vBalance = response[0]    
+    vBalance = response[0];
   });
 
   const submit = async () => {

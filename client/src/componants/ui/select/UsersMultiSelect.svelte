@@ -81,13 +81,13 @@
     isLoading = false;
   });
 
-  $: options, handleMultipleUserSelection()
+  $: options, handleMultipleUserSelection();
 
   /**
    * Ensures proper handling of multiple user selection.
    * If multiple users are selected and the 'multiple' option is not enabled,
    * keeps only the first selected user in the options.
-  */
+   */
   function handleMultipleUserSelection() {
     // Check if multiple user selection is not allowed and multiple users are selected
     if (!options.multiple && options.selected && options.selected.length > 1) {

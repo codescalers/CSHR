@@ -14,6 +14,7 @@ def get_user_by_id(id: str) -> User:
     except User.DoesNotExist:
         return None
 
+
 def get_users_by_id(ids: List[str]) -> User:
     """Return users who have the same id"""
     try:

@@ -1,5 +1,8 @@
 import http from "../../utils/axios";
-import type { VacationBalanceAdjustmentType, VacationBalanceType } from "../../utils/types";
+import type {
+  VacationBalanceAdjustmentType,
+  VacationBalanceType
+} from "../../utils/types";
 
 class Vacation {
   errorMessage = "Error in Vacation Data Service: ";
@@ -81,12 +84,14 @@ class Vacation {
     }
   }
 
-  public async updateUserBalance(userBalance: VacationBalanceType, userIDs: number[]) {
+  public async updateUserBalance(
+    userBalance: VacationBalanceType,
+    userIDs: number[]
+  ) {
     try {
-      return (await http.put(
-        `/vacations/balance/?user_ids=${userIDs}`,
-        userBalance
-      )).data.results;
+      return (
+        await http.put(`/vacations/balance/?user_ids=${userIDs}`, userBalance)
+      ).data.results;
     } catch (err: any) {
       throw new Error(err.response.data.message || err.response.data.detail);
     }
@@ -131,7 +136,9 @@ class Vacation {
     }
   }
 
-  public async vacationBalanceAdjustment(payload: VacationBalanceAdjustmentType) {
+  public async vacationBalanceAdjustment(
+    payload: VacationBalanceAdjustmentType
+  ) {
     try {
       return await (
         await http.put(`/vacations/balance/adjustment/`, payload)

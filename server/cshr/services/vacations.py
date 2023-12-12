@@ -62,6 +62,7 @@ def get_balance_by_user(user: User) -> VacationBalance:
     except VacationBalance.DoesNotExist:
         return None
 
+
 def filter_balances_by_users(users: List[User]) -> VacationBalance:
     return VacationBalance.objects.filter(user__in=users)
 

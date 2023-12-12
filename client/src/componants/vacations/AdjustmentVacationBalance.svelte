@@ -1,13 +1,13 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
-  import Button from "../ui/Button.svelte";
+  import Vacation from "../../apis/vacations/Vacation";
+  import { capitalize } from "../../utils/helpers";
   import { UserStore } from "../../utils/stores";
   import type {
     AvailableLeaveReason,
     VacationBalanceAdjustmentType
   } from "../../utils/types";
-  import { capitalize } from "../../utils/helpers";
-  import Vacation from "../../apis/vacations/Vacation";
+  import Button from "../ui/Button.svelte";
+  import Input from "../ui/Input.svelte";
 
   let selectedReason: string;
   let value: number = 1;

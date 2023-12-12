@@ -1,2 +1,2 @@
 /// <reference types="svelte" />
-declare module 'svelte-switch';
+declare module "svelte-switch";

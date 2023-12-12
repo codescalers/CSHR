@@ -187,7 +187,9 @@ class StanderdVacationBalance:
             return True
         return f"There is no filed or attrbute named {reason} inside VacationBalance model."
 
-    def get_actual_days(self, user: User, start_date: datetime, end_date: datetime) -> int:
+    def get_actual_days(
+        self, user: User, start_date: datetime, end_date: datetime
+    ) -> int:
         days = self.__remove_weekends(user, start_date, end_date)
         days = self.remove_holidays(user, start_date, end_date, days)
         return days

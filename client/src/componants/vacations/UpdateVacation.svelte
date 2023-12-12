@@ -29,8 +29,6 @@
   });
 
   let formToggle = 0;
-  let datePickerDisabled = false;
-
   let VacationCalculator: number;
 
   const handleVacationCalculator = (event: { detail: { text: number } }) => {

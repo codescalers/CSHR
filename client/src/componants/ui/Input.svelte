@@ -66,7 +66,8 @@
     />
 
     <div {id} class="invalid-feedback">
-      <span class="alert-link">{errorMessage}</span> {hint.length ? `, ${hint}` : ''}
+      <span class="alert-link">{errorMessage}</span>
+      {hint.length ? `, ${hint}` : ""}
     </div>
     <div {id} class="valid-feedback">{correctMessage}</div>
   </div>

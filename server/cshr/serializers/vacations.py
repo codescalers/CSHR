@@ -235,6 +235,7 @@ class CalculateBalanceSerializer(serializers.Serializer):
         }
         return UserBalanceVlaueSerializer(value).data
 
+
 class VacationBalanceAdjustmentSerializer(serializers.Serializer):
     officeId = serializers.IntegerField()
     value = serializers.IntegerField()

@@ -26,7 +26,7 @@ export type VacationBalanceAdjustmentType = {
   reason: string;
   value: number;
   officeId: number;
-}
+};
 
 export interface GeneralUserInterface {
   id: number;

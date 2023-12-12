@@ -1,7 +1,6 @@
 <script lang="ts">
   import Table from "../../componants/table/Table.svelte";
   import ProfileImage from "../profile/ProfileImage.svelte";
-  import Alert from "../ui/Alert.svelte";
 
   export let supervisors: any;
 

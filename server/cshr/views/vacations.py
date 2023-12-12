@@ -48,7 +48,12 @@ from server.cshr.utils.email_messages_templates import (
 
 # from server.cshr.celery.send_email import send_email_for_request
 from server.cshr.celery.send_email import send_email_for_reply
-from server.cshr.models.vacations import OfficeVacationBalance, PublicHoliday, Vacation, VacationBalance
+from server.cshr.models.vacations import (
+    OfficeVacationBalance,
+    PublicHoliday,
+    Vacation,
+    VacationBalance,
+)
 from server.cshr.services.vacations import get_vacations_by_user
 from server.cshr.utils.redis_functions import (
     notification_commented,
@@ -73,6 +78,7 @@ class GetAdminVacationBalanceApiView(GenericAPIView):
             data=self.serializer_class(data[0]).data,
         )
 
+
 class VacationBalanceAdjustmentApiView(GenericAPIView):
     """Class VacationBalanceAdjustmentApiView to update or vacation <reason> balance by only admin to the whole office."""
 
@@ -88,20 +94,20 @@ class VacationBalanceAdjustmentApiView(GenericAPIView):
                 return CustomResponse.not_found(message="Office not found.")
 
             users_in_office = User.objects.filter(location=office)
-            
+
             # Check the balance if created for all users
             v: StanderdVacationBalance = StanderdVacationBalance()
             for user in users_in_office:
                 v.check(user)
-            
+
             reason = serializer.validated_data.get("reason")
             add_value = serializer.validated_data.get("value")
-            
+
             balances = VacationBalance.objects.filter(user__in=users_in_office)
             for obj in balances:
                 if hasattr(obj, reason):
                     old_value = obj.actual_balance.get(reason)
-                    obj.actual_balance[reason] = old_value + add_value 
+                    obj.actual_balance[reason] = old_value + add_value
                     # setattr(obj, reason, old_value + add_value)
                     obj.save()
                 else:
@@ -115,7 +121,9 @@ class VacationBalanceAdjustmentApiView(GenericAPIView):
                 data=serializer.data,
             )
 
-        return CustomResponse.bad_request(message="Please make sure that you entred a valid data.")
+        return CustomResponse.bad_request(
+            message="Please make sure that you entred a valid data."
+        )
 
 
 class PostAdminVacationBalanceApiView(GenericAPIView):
@@ -229,28 +237,32 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             applying_user = request.user
             user_reason_balance = applying_user.vacationbalance
             vacation_days = v.get_actual_days(applying_user, start_date, end_date)
-            
+
             curr_balance = getattr(user_reason_balance, reason)
-            
+
             pinding_requests = Vacation.objects.filter(
                 status=STATUS_CHOICES.PENDING,
                 applying_user=applying_user,
-                reason=reason
+                reason=reason,
             ).values_list("actual_days", flat=True)
 
             chcked_balance = curr_balance - sum(pinding_requests)
 
             if chcked_balance < vacation_days:
-                return CustomResponse.bad_request(message=f"You have an additional pending request that deducts {sum(pinding_requests)} days from your balance, even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days.")
+                return CustomResponse.bad_request(
+                    message=f"You have an additional pending request that deducts {sum(pinding_requests)} days from your balance, even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                )
 
             if curr_balance < vacation_days:
-                return CustomResponse.bad_request(message=f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'")
+                return CustomResponse.bad_request(
+                    message=f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
+                )
 
             saved = serializer.save(
                 type=TYPE_CHOICES.VACATIONS,
                 status=STATUS_CHOICES.PENDING,
                 applying_user=applying_user,
-                actual_days=vacation_days
+                actual_days=vacation_days,
             )
 
             # get_vacation_request_email_template(
@@ -563,7 +575,7 @@ class UserVacationBalanceApiView(GenericAPIView):
     def get(self, request: Request) -> Response:
         """Get method to get all user balance"""
         user_ids = request.query_params.get("user_ids")
-        user_ids = user_ids.split(',')
+        user_ids = user_ids.split(",")
 
         if user_ids is None:
             return CustomResponse.bad_request(
@@ -575,7 +587,7 @@ class UserVacationBalanceApiView(GenericAPIView):
         v: StanderdVacationBalance = StanderdVacationBalance()
 
         balances = []
-        
+
         for user in users:
             balance = v.check(user)
             balances.append(balance)
@@ -590,7 +602,7 @@ class UserVacationBalanceApiView(GenericAPIView):
         """Use this endpoint to update user balance"""
 
         user_ids = request.query_params.get("user_ids")
-        user_ids = user_ids.split(',')
+        user_ids = user_ids.split(",")
 
         if user_ids is None:
             return CustomResponse.bad_request(
@@ -599,7 +611,7 @@ class UserVacationBalanceApiView(GenericAPIView):
 
         users: User = get_users_by_id(user_ids)
         v: StanderdVacationBalance = StanderdVacationBalance()
- 
+
         balances = filter_balances_by_users(users)
 
         # Set default values
@@ -633,8 +645,8 @@ class UserVacationBalanceApiView(GenericAPIView):
         except Exception:
             return CustomResponse.bad_request(
                 message="Please make sure that you entered a valid data",
-                status_code=400
-            ) 
+                status_code=400,
+            )
 
 
 class CalculateVacationDaysApiView(GenericAPIView):
@@ -673,7 +685,9 @@ class CalculateVacationDaysApiView(GenericAPIView):
                 error=end_date,
             )
 
-        actual_days: int = v.get_actual_days(user, converted_start_date, converted_end_date)
+        actual_days: int = v.get_actual_days(
+            user, converted_start_date, converted_end_date
+        )
 
         # actual_days = len(actual_days) if actual_days != None else 0
         return CustomResponse.success(message="Balance calculated.", data=actual_days)

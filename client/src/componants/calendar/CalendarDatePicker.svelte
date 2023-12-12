@@ -37,7 +37,7 @@
 
   function validateDate(): CalenderRequestFormResponseType {
     errorMessage = undefined;
-    
+
     let validated: CalenderRequestFormResponseType = validateStartEndDates(
       startDate as Date,
       endDate as Date

@@ -8,6 +8,7 @@
     RequestStatus,
     UserTypeEnum
   } from "../../../utils/enums";
+  import { capitalize } from "../../../utils/helpers";
   import { UserStore } from "../../../utils/stores";
   import type {
     calendarItemsType,
@@ -17,7 +18,6 @@
   import Alert from "../Alert.svelte";
   import Loading from "../Loading.svelte";
   import CalendarModal from "./CalendarModal.svelte";
-  import { capitalize } from "../../../utils/helpers";
   export let showModal = false;
 
   export let clickedItemOnModal: calendarItemsType;

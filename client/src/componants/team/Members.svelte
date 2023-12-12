@@ -1,7 +1,6 @@
 <script lang="ts">
   import ProfileImage from "../profile/ProfileImage.svelte";
   import Table from "../table/Table.svelte";
-  import Alert from "../ui/Alert.svelte";
 
   export let members: any;
 
