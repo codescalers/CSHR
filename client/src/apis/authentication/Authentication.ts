@@ -21,8 +21,10 @@ class Authentication {
         await httpAxios.post("auth/login/", loginData)
       ).data;
     } catch (error: any) {
+      console.log(error);
+      
       throw new Error(
-        error.response.data.detail || error.response.data.message || error.message
+        error.response.data ? error.response.data.detail || error.response.data.message : error.message
       );
     }
   }

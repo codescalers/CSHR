@@ -28,11 +28,6 @@
       </tbody>
     </Table>
   </div>
-{:else}
-  <Alert
-    className="primary text-center mb-5 mt-3"
-    message="There are no members in the `Team members` section, not available."
-  />
 {/if}
 
 <style scoped>
