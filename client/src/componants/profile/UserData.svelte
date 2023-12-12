@@ -38,9 +38,9 @@
         <p class="mb-0">Telegram</p>
       </div>
       <div class="col-sm-9">
-        <a class="text-primary mb-0" href={user.telegram_link}
-          >@{user.full_name.split(" ")[0]}</a
-        >
+        <a class="text-primary mb-0" href={user.telegram_link || "--"}>
+          @{user.full_name.split(" ")[0]}
+        </a>
       </div>
     </div>
     <hr />
@@ -49,7 +49,7 @@
         <p class="mb-0">Birthday</p>
       </div>
       <div class="col-sm-9">
-        <p class="text-muted mb-0">{user.birthday}</p>
+        <p class="text-muted mb-0">{user.birthday || "--"}</p>
       </div>
     </div>
     {#if hasPermission}
@@ -59,7 +59,7 @@
           <p class="mb-0">Team</p>
         </div>
         <div class="col-sm-9">
-          <p class="text-muted mb-0">{user.team}</p>
+          <p class="text-muted mb-0">{user.team || "--"}</p>
         </div>
       </div>
       <hr />
@@ -68,7 +68,7 @@
           <p class="mb-0">Phone Number</p>
         </div>
         <div class="col-sm-9">
-          <p class="text-muted mb-0">{user.mobile_number}</p>
+          <p class="text-muted mb-0">{user.mobile_number || "--"}</p>
         </div>
       </div>
       <hr />
@@ -77,7 +77,7 @@
           <p class="mb-0">Social insurance number</p>
         </div>
         <div class="col-sm-9">
-          <p class="text-muted mb-0">{user.social_insurance_number}</p>
+          <p class="text-muted mb-0">{user.social_insurance_number || "--"}</p>
         </div>
       </div>
     {/if}
@@ -87,7 +87,7 @@
         <p class="mb-0">Address</p>
       </div>
       <div class="col-sm-9">
-        <p class="text-muted mb-0">{user.address}</p>
+        <p class="text-muted mb-0">{user.address || "--"}</p>
       </div>
     </div>
     <hr />
@@ -105,7 +105,7 @@
         <p class="mb-0">Location</p>
       </div>
       <div class="col-sm-9">
-        <p class="text-primary mb-0">{user.location.name}</p>
+        <p class="text-muted mb-0">{user.location.name}</p>
       </div>
     </div>
   </div>

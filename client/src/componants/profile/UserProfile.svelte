@@ -61,6 +61,7 @@
             <h5 class="my-3">{user.full_name}</h5>
             <p class="text-muted mb-1">{user.job_title}</p>
             <p class="text-muted mb-4">{user.address}</p>
+            <p class="text-muted mb-4">Office: @{user.location.name}</p>
           </div>
         </div>
 
