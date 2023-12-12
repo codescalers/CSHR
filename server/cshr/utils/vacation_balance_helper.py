@@ -64,7 +64,6 @@ class StanderdVacationBalance:
         Some Values are static and does not depend on
         joining date like i.e sick_leaves.
         """
-        print("Yes here...")
         values: Dict = self.create_new_balance_values(user=user)
         balance: VacationBalance = VacationBalance.objects.create(
             user=user,
@@ -82,7 +81,7 @@ class StanderdVacationBalance:
     def get_difference_between_two_days(self, start_date: datetime, end_date: datetime):
         return int((end_date - start_date).days + 1)
 
-    def remove_weekends(self, user: User, start_date: datetime, end_date: datetime):
+    def __remove_weekends(self, user: User, start_date: datetime, end_date: datetime):
         weekend = user.location.weekend.split(":")
         delta = end_date - start_date  # returns timedelta
         actual_days = []
@@ -99,7 +98,7 @@ class StanderdVacationBalance:
         end_date: datetime.datetime,
         dates: List[datetime.date],
     ):
-        removed_weekends = self.remove_weekends(user, start_date, end_date)
+        removed_weekends = self.__remove_weekends(user, start_date, end_date)
         years = [start_date.year, end_date.year]
         months = [start_date.month, end_date.month]
         holidays = get_user_holidays(years, months)
@@ -120,12 +119,8 @@ class StanderdVacationBalance:
         This method will used when user wants to update his vacation request and the reaseon changed.
         the actual value of old reason must return.
         """
-        old_days: int = self.remove_weekends(
+        old_days = self.get_actual_days(
             vacation.applying_user, vacation.from_date, vacation.end_date
-        )
-
-        old_days = self.remove_holidays(
-            vacation.applying_user, vacation.from_date, vacation.end_date, old_days
         )
 
         reason: str = vacation.reason
@@ -160,30 +155,17 @@ class StanderdVacationBalance:
 
         self.check(applying_user)
         v = applying_user.vacationbalance
-        vacation_days = self.remove_weekends(applying_user, start_date, end_date)
+        vacation_days = self.get_actual_days(applying_user, start_date, end_date)
 
         if hasattr(v, reason):
             curr_balance = getattr(v, reason)
-            if curr_balance >= len(vacation_days):
+            if curr_balance >= vacation_days:
                 if vacation.status == STATUS_CHOICES.PENDING:
-                    new_value: int = curr_balance - len(vacation_days)
+                    new_value: int = curr_balance - vacation_days
                     return self.update_user_balance(applying_user, reason, new_value)
                 return f"The vacation status is not pinding, it's {vacation.status}."
             return f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
         return "Unknown reason."
-        # if hasattr(v, reason):
-        #     if old_balance + curr_balance >= len(vacation_days):
-        #         this_month: int = datetime.datetime.now().month
-        #         if old_balance >= len(vacation_days) and this_month < 3:
-        #             self.set_taked_from_old_balance(vacation)
-        #             return self.update_user_balance(
-        #                 user,
-        #                 reason,
-        #                 old_balance - len(vacation_days),
-        #                 taked_from_old_balance=vacation.taked_from_old_balance,
-        #             )
-        #         return self.update_user_balance(user, reason, new_value)
-        #
 
     def update_user_balance(
         self,
@@ -204,6 +186,11 @@ class StanderdVacationBalance:
             balance.save()
             return True
         return f"There is no filed or attrbute named {reason} inside VacationBalance model."
+
+    def get_actual_days(self, user: User, start_date: datetime, end_date: datetime) -> int:
+        days = self.__remove_weekends(user, start_date, end_date)
+        days = self.remove_holidays(user, start_date, end_date, days)
+        return days
 
     # def check_old_balance(self, user: User, reason: str):
     #     """

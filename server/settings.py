@@ -14,9 +14,9 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "0.0.0.0",
     config("SERVER_DOMAIN_NAME"),  # Server domain
-    f'https://{config("SERVER_DOMAIN_NAME")}',  # Server domain
+    # f'https://{config("SERVER_DOMAIN_NAME")}',  # Server domain
     config("CLIENT_DOMAIN_NAME"),  # Client domain
-    f'https://{config("CLIENT_DOMAIN_NAME")}',  # Client domain
+    # f'https://{config("CLIENT_DOMAIN_NAME")}',  # Client domain
 ]
 
 # Application definition

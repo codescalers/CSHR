@@ -36,6 +36,7 @@ class Vacation(Requests):
     from_date = models.DateField()
     end_date = models.DateField()
     change_log = models.JSONField(default=list)
+    actual_days = models.IntegerField(default=0)
     # taked_from_old_balance = models.BooleanField(default=False)
 
     def ___str__(self):

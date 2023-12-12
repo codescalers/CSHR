@@ -17,6 +17,7 @@
   import Alert from "../Alert.svelte";
   import Loading from "../Loading.svelte";
   import CalendarModal from "./CalendarModal.svelte";
+  import { capitalize } from "../../../utils/helpers";
   export let showModal = false;
 
   export let clickedItemOnModal: calendarItemsType;
@@ -205,7 +206,7 @@
             </strong>
           </div>
           <div class="col-6 d-flex justify-content-end">
-            {currentVacationActive.reason}
+            {capitalize(currentVacationActive.reason).replaceAll("_", " ")}
           </div>
         </div>
 

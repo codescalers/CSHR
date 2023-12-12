@@ -221,11 +221,38 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
+            # Check balance.
+            v = StanderdVacationBalance()
+            reason: str = serializer.validated_data.get("reason")
+            start_date = serializer.validated_data.get("from_date")
+            end_date = serializer.validated_data.get("end_date")
+            applying_user = request.user
+            user_reason_balance = applying_user.vacationbalance
+            vacation_days = v.get_actual_days(applying_user, start_date, end_date)
+            
+            curr_balance = getattr(user_reason_balance, reason)
+            
+            pinding_requests = Vacation.objects.filter(
+                status=STATUS_CHOICES.PENDING,
+                applying_user=applying_user,
+                reason=reason
+            ).values_list("actual_days", flat=True)
+
+            chcked_balance = curr_balance - sum(pinding_requests)
+
+            if chcked_balance < vacation_days:
+                return CustomResponse.bad_request(message=f"You have an additional pending request that deducts {sum(pinding_requests)} days from your balance, even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days.")
+
+            if curr_balance < vacation_days:
+                return CustomResponse.bad_request(message=f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'")
+
             saved = serializer.save(
                 type=TYPE_CHOICES.VACATIONS,
                 status=STATUS_CHOICES.PENDING,
-                applying_user=request.user,
+                applying_user=applying_user,
+                actual_days=vacation_days
             )
+
             # get_vacation_request_email_template(
             #     request.user, serializer.data, saved.id
             # )
@@ -646,12 +673,7 @@ class CalculateVacationDaysApiView(GenericAPIView):
                 error=end_date,
             )
 
-        actual_days: int = v.remove_weekends(
-            user, converted_start_date, converted_end_date
-        )
-        actual_days: int = v.remove_holidays(
-            user, converted_start_date, converted_end_date, actual_days
-        )
+        actual_days: int = v.get_actual_days(user, converted_start_date, converted_end_date)
 
         # actual_days = len(actual_days) if actual_days != None else 0
         return CustomResponse.success(message="Balance calculated.", data=actual_days)

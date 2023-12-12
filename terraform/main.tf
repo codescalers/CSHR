@@ -84,7 +84,7 @@ resource "grid_name_proxy" "p1" {
 resource "grid_name_proxy" "p2" {
     node = 2
     name = "cshr"
-    backends = [format("http://[%s]:6000", grid_deployment.d2.vms[0].ygg_ip)]
+    backends = [format("http://[%s]:8080", grid_deployment.d2.vms[0].ygg_ip)]
     tls_passthrough = false
 }
 
