@@ -25,7 +25,7 @@
   export let currentVacationID: number = +currentVacationActive.id;
 
   let approveLoading = false;
-  let rejactLoading = false;
+  let rejectLoading = false;
   let isDisable = false;
   let showAlert = false;
   let responseMessage: string;
@@ -62,8 +62,8 @@
     }
   }
 
-  async function rejactVacation() {
-    rejactLoading = true;
+  async function rejectVacation() {
+    rejectLoading = true;
     isDisable = true;
     try {
       const response = await Requests.reject(
@@ -87,7 +87,7 @@
       showAlert = true;
     } finally {
       isDisable = false;
-      rejactLoading = false;
+      rejectLoading = false;
     }
   }
 
@@ -299,14 +299,14 @@
           <button
             class="abtn btn-danger"
             on:click={() => {
-              rejactVacation();
+              rejectVacation();
             }}
             disabled={isDisable}
           >
-            {#if rejactLoading}
+            {#if rejectLoading}
               <Loading />
             {:else}
-              Rejact
+              Reject
             {/if}
           </button>
         </div>

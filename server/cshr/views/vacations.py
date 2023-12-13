@@ -479,7 +479,7 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
 
         comment: Dict = {
             "user": TeamSerializer(request.user).data,
-            "comment": f"{request.user.first_name} rejacted your request",
+            "comment": f"{request.user.first_name} rejected your request",
             "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
         }
 
