@@ -3,7 +3,7 @@ exec: |
   cd client_dir
   npm i 
   npm run build
-  cp ./dist /usr/share/nginx/html
+  cp ./public/* /usr/share/nginx/html
   HOST=:: PORT=8080 npm start
   '
 after:

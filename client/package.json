@@ -1,7 +1,8 @@
 {
-  "name": "svelte-app",
+  "name": "codescalers-hr",
   "version": "1.0.0",
   "private": true,
+  "author": "Codescalers-internship",
   "scripts": {
     "rollup": "rollup",
     "build": "rollup -c",
@@ -26,7 +27,7 @@
     "eslint-plugin-svelte": "^2.35.1",
     "eslint-plugin-svelte3": "^4.0.0",
     "prettier": "^3.1.0",
-    "rollup": "^2.3.4",
+    "rollup": "^2.79.1",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-livereload": "^2.0.0",
     "rollup-plugin-svelte": "^7.0.0",
