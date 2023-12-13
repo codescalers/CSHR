@@ -42,8 +42,10 @@
 
   const submit = async () => {
     isLoading = true;
+    isError = showAlert = false;
+    alertMessage = errorMessage = "";
+    alertClass = ""
     try {
-      isError = false;
       if (isUpdate && vacationID != "") {
         const axios = await Vacations.update(vacationID, {
           end_date: endDate,
@@ -69,8 +71,10 @@
         //   vBalance[selectedReason].reserved + calculatorValue;
       }
     } catch (error: any) {
-      isError = true;
-      errorMessage = error.message;
+      isError = showAlert = true;
+      alertMessage = errorMessage = error.message;
+      alertClass = "danger"
+      // alertTitle = "An error while trying to post your request."
     } finally {
       isLoading = false;
     }
