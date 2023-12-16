@@ -78,9 +78,9 @@
             <Certificates bind:certificates={user.user_certificates} />
           </div> -->
         {#if $UserStore.user_type === "Admin" || $UserStore.user_type === "Supervisor" || $UserStore.id === id}
-          <div class="row">
+          <!-- <div class="row">
             <Company bind:companies={user.user_company_properties} />
-          </div>
+          </div> -->
           <VacationBalance {user} />
         {/if}
         <!-- RFV0.1 {#if $UserStore.user_type === 'Admin' || $UserStore.id === id}

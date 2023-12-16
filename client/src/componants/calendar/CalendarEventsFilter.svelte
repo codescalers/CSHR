@@ -69,7 +69,7 @@
           eventChanger("public_holiday");
         }}
       >
-        <span>Public-Holidays {CalenderEventEmojeTyoe.publicHoliday}</span>
+        <span>Public Holidays {CalenderEventEmojeTyoe.publicHoliday}</span>
         <span> {eventNames.has("public_holiday") ? "✔️" : "❌"} </span>
       </div>
     </div>

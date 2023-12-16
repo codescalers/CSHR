@@ -15,7 +15,7 @@
 </script>
 
 {#if balance != null}
-  <div class="card">
+  <div class="card mt-2">
     <div class="card-header">Vacation Balance</div>
     <div class="card-body">
       <div class="row">
