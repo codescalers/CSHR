@@ -10,9 +10,13 @@
   import { validateStartEndDates } from "../../utils/validations";
   import Alert from "../ui/Alert.svelte";
 
-  const today = new Date()
-  export let startDate: string = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-  export let endDate: string = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate() + 3}`;
+  const today = new Date();
+  export let startDate: string = `${today.getFullYear()}-${
+    today.getMonth() + 1
+  }-${today.getDate()}`;
+  export let endDate: string = `${today.getFullYear()}-${
+    today.getMonth() + 1
+  }-${today.getDate() + 3}`;
 
   export let onlyStart = false;
   export let calculate = true;
@@ -30,7 +34,7 @@
     dispatch("updateDates", {
       startDate,
       endDate
-    })
+    });
   }
 
   function validateDate(): CalenderRequestFormResponseType {
@@ -53,14 +57,15 @@
 
   let startDateOptions: SvelteFlatpickrProps["options"] = {
     defaultDate: startDate,
-    onValueUpdate: (selectedDates: Date[], dateStr: string, instance: any) =>
-      (startDate = dateStr)
+    onValueUpdate: (_selectedDates: Date[], dateStr: string) => {
+      startDate = dateStr;
+    }
   };
 
   let endDateOptions: SvelteFlatpickrProps["options"] = {
     defaultDate: endDate,
-    onValueUpdate: (selectedDates: Date[], dateStr: string, instance: any) => {
-      endDate = dateStr
+    onValueUpdate: (_selectedDates: Date[], dateStr: string) => {
+      endDate = dateStr;
     }
   };
 </script>
@@ -71,7 +76,11 @@
 
     <div class="my-4 px-3">
       <div class="end-date">
-        <Flatpickr bind:value={startDateOptions["defaultDate"]} bind:options={startDateOptions} element="#start-day">
+        <Flatpickr
+          bind:value={startDateOptions["defaultDate"]}
+          bind:options={startDateOptions}
+          element="#start-day"
+        >
           <div class="flatpickr form-outline mb-4" id="start-day">
             <div class="form-group row pt-2">
               <div class="col-6 d-flex align-items-center">

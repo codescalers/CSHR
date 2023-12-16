@@ -39,7 +39,11 @@
         <p class="mb-0">Telegram</p>
       </div>
       <div class="col-sm-9">
-        <a class="text-primary mb-0" target="_blank" href="https://t.me/{user.telegram_link.replace("@", "") || ""}">
+        <a
+          class="text-primary mb-0"
+          target="_blank"
+          href="https://t.me/{user.telegram_link.replace('@', '') || ''}"
+        >
           @{user.full_name.split(" ")[0]}
         </a>
       </div>
@@ -97,7 +101,9 @@
         <p class="mb-0">Joining date</p>
       </div>
       <div class="col-sm-9">
-        <p class="text-muted mb-0">{user.joining_at ? user.joining_at.slice(0, 10) : "-"}</p>
+        <p class="text-muted mb-0">
+          {user.joining_at ? user.joining_at.slice(0, 10) : "-"}
+        </p>
       </div>
     </div>
     <hr />

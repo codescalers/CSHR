@@ -93,7 +93,9 @@ class HomePage {
       hour = "12";
     }
 
-    const [year, month, day] = formatDate(e.date as unknown as Date)!.split("-");
+    const [year, month, day] = formatDate(e.date as unknown as Date)!.split(
+      "-"
+    );
 
     return await http.post(
       "/meeting/",

@@ -22,10 +22,12 @@
     vacationCalculator = event.detail.days;
   };
 
-  const updateDates = (event: { detail: { startDate: string, endDate: string } }) => {
-    startDate = event.detail.startDate
-    endDate = event.detail.endDate
-  }
+  const updateDates = (event: {
+    detail: { startDate: string; endDate: string };
+  }) => {
+    startDate = event.detail.startDate;
+    endDate = event.detail.endDate;
+  };
 </script>
 
 <div class="card mt-4">

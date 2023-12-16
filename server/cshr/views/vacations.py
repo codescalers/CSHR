@@ -20,7 +20,7 @@ from server.cshr.api.permission import (
     UserIsAuthenticated,
     IsAdmin,
 )
-from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES, Requests
+from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.models.users import USER_TYPE, User
 from server.cshr.services.office import get_office_by_id
 from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
@@ -231,12 +231,16 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
         if serializer.is_valid():
             start_date = serializer.validated_data.get("from_date")
             end_date = serializer.validated_data.get("end_date")
-            
+
             # Check if there are pinding vacations in the same day
-            pinding_requests = Vacation.objects.filter(from_date__day=start_date.day, end_date__day=end_date.day, status=STATUS_CHOICES.PENDING,)
-            if(len(pinding_requests) > 0):
+            pinding_requests = Vacation.objects.filter(
+                from_date__day=start_date.day,
+                end_date__day=end_date.day,
+                status=STATUS_CHOICES.PENDING,
+            )
+            if len(pinding_requests) > 0:
                 return CustomResponse.bad_request(
-                    message=f"You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
+                    message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
                 )
 
             # Check balance.
@@ -256,7 +260,6 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             chcked_balance = curr_balance - sum(pinding_vacations)
 
-
             if curr_balance < vacation_days:
                 return CustomResponse.bad_request(
                     message=f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
@@ -264,7 +267,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             if chcked_balance < vacation_days:
                 return CustomResponse.bad_request(
-                    message=f"You have an additional pending request that deducts {sum(pinding_vacations)} days from your balance, even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                    message=f"You have an additional pending request that deducts {sum(pinding_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
                 )
 
             saved = serializer.save(

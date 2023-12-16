@@ -68,7 +68,10 @@ export const validateBackgroundColor = (e: any): boolean => {
   return true;
 };
 
-export const validateStartEndDates = (startDate: Date | string, endDate: Date | string) => {
+export const validateStartEndDates = (
+  startDate: Date | string,
+  endDate: Date | string
+) => {
   const response: CalenderRequestFormResponseType = {
     message: undefined,
     isError: false
@@ -96,7 +99,6 @@ export const validateStartEndDates = (startDate: Date | string, endDate: Date | 
 
   return response;
 };
-
 
 export function isValidDate(d: any) {
   if (d.split("-").length != 3) {

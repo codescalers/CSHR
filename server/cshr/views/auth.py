@@ -28,7 +28,7 @@ class RegisterApiView(GenericAPIView):
         if request.data.get("image") == "":
             request.data["image"] = None
         if serializer.is_valid():
-            serializer.save(joining_at = request.data.get("joining_at"))
+            serializer.save(joining_at=request.data.get("joining_at"))
             return CustomResponse.success(
                 data=serializer.data,
                 message="User created successfully",

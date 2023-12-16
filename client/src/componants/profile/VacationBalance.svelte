@@ -10,7 +10,7 @@
 
   onMount(async () => {
     const response = await Vacation.balance([user.id]);
-    balance = response[0]
+    balance = response[0];
   });
 </script>
 

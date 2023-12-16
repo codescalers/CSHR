@@ -130,7 +130,9 @@
             }}
           />
         </div>
-        <div class="col-12 col-xs-12 col-sm-12 col-md-12 col-xl-8 d-flex align-center">
+        <div
+          class="col-12 col-xs-12 col-sm-12 col-md-12 col-xl-8 d-flex align-center"
+        >
           <Calendar
             bind:month
             bind:year

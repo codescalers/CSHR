@@ -15,7 +15,9 @@
   import Modal from "../../ui/modals/SimpleModal.svelte";
 
   const today = new Date();
-  export let startDate: string = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+  export let startDate: string = `${today.getFullYear()}-${
+    today.getMonth() + 1
+  }-${today.getDate()}`;
   export let isError = false;
   export let datePickerDisabled = false;
   export let isLoading = false;
@@ -41,7 +43,6 @@
     meetingPeopleIsError === null ||
     meetingPeopleIsError === true ||
     datePickerDisabled;
-
 
   $: submitDisabled =
     fillDisabled ||
@@ -177,7 +178,7 @@
           dispatch("message", {
             postedMeeting: responseMeeting
           });
-        } catch (error) {          
+        } catch (error) {
           errorMessage = `Failed to schedule a new meeting due ${error}.`;
           isError = true;
         } finally {

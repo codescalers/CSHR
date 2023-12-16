@@ -121,10 +121,10 @@
     isLoading = true;
     try {
       const payload = {
-        "annual_leaves": userBalance.annual_leaves,
-        "emergency_leaves": userBalance.emergency_leaves,
-        "leave_excuses": userBalance.leave_excuses,
-      }
+        annual_leaves: userBalance.annual_leaves,
+        emergency_leaves: userBalance.emergency_leaves,
+        leave_excuses: userBalance.leave_excuses
+      };
       if (submitDisabled) {
         errorMessage =
           "Please review and address any errors before submitting your request.";

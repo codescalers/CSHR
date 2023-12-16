@@ -10,9 +10,9 @@
     CalenderRequestFormResponseType,
     VacationBalance
   } from "../../../utils/types";
+  import { validateStartEndDates } from "../../../utils/validations";
   import Alert from "../../ui/Alert.svelte";
   import Submit from "../../ui/Button.svelte";
-  import { validateStartEndDates } from "../../../utils/validations";
 
   export let startDate: string;
   export let endDate: string;
@@ -49,14 +49,14 @@
       endDate
     );
     isEndAfterStart = validated.isError;
-    return isError
-  }
+    return isError;
+  };
 
   const submit = async () => {
     isLoading = true;
     isError = showAlert = isEndAfterStart = false;
     alertMessage = errorMessage = "";
-    alertClass = ""
+    alertClass = "";
     try {
       if (isUpdate && vacationID != "") {
         const axios = await Vacations.update(vacationID, {
@@ -85,18 +85,19 @@
     } catch (error: any) {
       isError = showAlert = true;
       alertMessage = errorMessage = error.message;
-      alertClass = "danger"
+      alertClass = "danger";
       // alertTitle = "An error while trying to post your request."
     } finally {
       isLoading = false;
     }
     return isError;
   };
-  
+
   $: startDate, validateDate();
   $: endDate, validateDate();
 
-  $: submitDisabled = selectedReason === 0 || calculatorValue === 0 || isEndAfterStart;
+  $: submitDisabled =
+    selectedReason === 0 || calculatorValue === 0 || isEndAfterStart;
 </script>
 
 <form>

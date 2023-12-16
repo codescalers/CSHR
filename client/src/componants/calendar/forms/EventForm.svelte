@@ -2,10 +2,12 @@
   import { createEventDispatcher } from "svelte";
 
   import CalendarDataService from "../../../apis/home/home";
-  import { formatDate } from "../../../utils/helpers";
   // import PeopleSelect from '../../ui/select/UsersMultiSelect.svelte';
-  import type { CalenderRequestFormResponseType, calendarItemsType } from "../../../utils/types";
-  import { isValidDate, validateStartEndDates } from "../../../utils/validations";
+  import type {
+    calendarItemsType,
+    CalenderRequestFormResponseType
+  } from "../../../utils/types";
+  import { validateStartEndDates } from "../../../utils/validations";
   import Submit from "../../ui/Button.svelte";
   import Input from "../../ui/Input.svelte";
   import ModalOpenButton from "../../ui/modals/ModalOpenButton.svelte";
@@ -41,8 +43,8 @@
       endDate
     );
     isEndAfterStart = validated.isError;
-    return isError
-  }
+    return isError;
+  };
 
   // if true the disable submit button
   // let locationIsError: boolean | null = null;

@@ -11,7 +11,7 @@
     UserInterface
   } from "../../utils/types";
   // import Certificates from "./Certificates.svelte";
-  import Company from "./Company.svelte";
+  // import Company from "./Company.svelte";
   // import Evaluation from "./Evaluation.svelte";
   import ProfileImage from "./ProfileImage.svelte";
   import ReportTo from "./ReportTo.svelte";
@@ -61,7 +61,9 @@
             <h5 class="mt-3">{user.full_name}</h5>
             <p class="text-muted mb-1">{user.job_title}</p>
             <!-- <p class="text-muted mb-1">{user.address}</p> -->
-            <small class="text-muted mb-4">Working for the {user.location.name} office</small>
+            <small class="text-muted mb-4"
+              >Working for the {user.location.name} office</small
+            >
           </div>
         </div>
 
