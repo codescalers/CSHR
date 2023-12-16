@@ -102,6 +102,7 @@ class RegisterSerializer(ModelSerializer):
             "telegram_link",
             "email",
             "birthday",
+            "joining_at",
             "mobile_number",
             "password",
             "location",

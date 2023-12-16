@@ -3,7 +3,7 @@ from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
     CharField,
-    DateTimeField,
+    DateField,
     JSONField,
     ListField,
     Serializer,
@@ -86,7 +86,7 @@ class GeneralUserSerializer(ModelSerializer):
             "skills",
             "user_certificates",
             "reporting_to",
-            "created_at",
+            "joining_at",
             "job_title",
             "address",
             "user_type",
@@ -138,7 +138,7 @@ class SupervisorUserSerializer(ModelSerializer):
             "skills",
             "user_certificates",
             "reporting_to",
-            "created_at",
+            "joining_at",
             "social_insurance_number",
             "team",
             "user_company_properties",
@@ -201,7 +201,7 @@ class AdminUserSerializer(ModelSerializer):
             "skills",
             "user_certificates",
             "reporting_to",
-            "created_at",
+            "joining_at",
             "social_insurance_number",
             "team",
             "user_company_properties",
@@ -247,7 +247,6 @@ class SelfUserSerializer(ModelSerializer):
     user_company_properties = SerializerMethodField(read_only=True)
     user_evaluation = SerializerMethodField(read_only=True)
     reporting_to = SerializerMethodField(read_only=True)
-    created_at = DateTimeField(read_only=True)
     team = CharField(read_only=True)
     salary = JSONField(read_only=True)
     image = SerializerMethodField()
@@ -270,7 +269,7 @@ class SelfUserSerializer(ModelSerializer):
             "skills",
             "user_certificates",
             "reporting_to",
-            "created_at",
+            "joining_at",
             "social_insurance_number",
             "team",
             "user_company_properties",
@@ -389,7 +388,7 @@ class UpdateUserSerializer(ModelSerializer):
     user_company_properties = SerializerMethodField(read_only=True)
     user_evaluation = SerializerMethodField(read_only=True)
     reporting_to = SerializerMethodField(read_only=True)
-    created_at = DateTimeField(read_only=True)
+    joining_at = DateField(read_only=True)
     team = CharField(read_only=True)
     salary = JSONField(read_only=True)
     image = Base64ImageField(
@@ -417,7 +416,7 @@ class UpdateUserSerializer(ModelSerializer):
             "skills",
             "user_certificates",
             "reporting_to",
-            "created_at",
+            "joining_at",
             "social_insurance_number",
             "team",
             "user_company_properties",

@@ -13,11 +13,12 @@
     $UserStore.user_type == "Supervisor";
 </script>
 
-<div class="card mb-4">
+<div class="card">
+  <div class="card-header">Public information</div>
   <div class="card-body">
     <div class="row">
       <div class="col-sm-3">
-        <p class="mb-0">Full Name</p>
+        <p class="mb-0">Full name</p>
       </div>
       <div class="col-sm-9">
         <p class="text-muted mb-0">{user.full_name}</p>
@@ -38,7 +39,7 @@
         <p class="mb-0">Telegram</p>
       </div>
       <div class="col-sm-9">
-        <a class="text-primary mb-0" href={user.telegram_link || "--"}>
+        <a class="text-primary mb-0" target="_blank" href="https://t.me/{user.telegram_link.replace("@", "") || ""}">
           @{user.full_name.split(" ")[0]}
         </a>
       </div>
@@ -65,7 +66,7 @@
       <hr />
       <div class="row">
         <div class="col-sm-3">
-          <p class="mb-0">Phone Number</p>
+          <p class="mb-0">Phone number</p>
         </div>
         <div class="col-sm-9">
           <p class="text-muted mb-0">{user.mobile_number || "--"}</p>
@@ -96,7 +97,7 @@
         <p class="mb-0">Joining date</p>
       </div>
       <div class="col-sm-9">
-        <p class="text-muted mb-0">{user.created_at.slice(0, 10)}</p>
+        <p class="text-muted mb-0">{user.joining_at ? user.joining_at.slice(0, 10) : "-"}</p>
       </div>
     </div>
     <hr />

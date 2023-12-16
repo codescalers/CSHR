@@ -40,6 +40,7 @@ export interface GeneralUserInterface {
   image: string;
   address: string;
   birthday: string;
+  joining_at: string;
   created_at: string;
   job_title: string;
   telegram_link: string;
@@ -242,6 +243,7 @@ export type registeringData = {
   telegram_link: string;
   email: string;
   birthday: Date | string;
+  joining_at: Date | string;
   mobile_number: string;
   address: string;
   password: string;

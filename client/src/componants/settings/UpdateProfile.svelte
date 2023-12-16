@@ -10,12 +10,12 @@
 
   export let isLoading = false;
 
-  let isUserLoaded = false;
+  let isUserLoaded: boolean | null = false;
   let user: UserInterface;
-  $: submitDisabled = usersOptions.selected.length == 0;
+  $: submitDisabled = usersOptions.selected!.length == 0;
 
   async function loadUserBalance() {
-    const userID = usersOptions.selected[0].value;
+    const userID = usersOptions.selected![0].value;
     const _user: UserInterface = await Users.getUserByID(userID);
     if (_user) {
       user = _user;

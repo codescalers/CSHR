@@ -44,6 +44,7 @@
     isErrorLink: null | boolean,
     // isErrorBenefits: null | boolean,
     isErrorBirthday: null | boolean,
+    isErrorJoiningDate: null | boolean,
     // isErrorLocation: null | boolean,
     // isErrorSuperuser: null | boolean,
     isErrorCurrentNetSalary: null | boolean,
@@ -58,6 +59,7 @@
     isErrorCurrentGrossSalary == true ||
     isErrorCurrentNetSalary == true ||
     isErrorBirthday == true ||
+    isErrorJoiningDate == true ||
     isErrorLink == true ||
     isErrorpass == true ||
     isErrorJobTitle == true ||
@@ -68,10 +70,10 @@
     isErrorfName == true ||
     isErrorAddress == true ||
     isErrorAddress == null ||
-    locationOptions.selected.length == 0 ||
-    departmentOptions.selected.length == 0 ||
-    genderOptions.selected.length == 0 ||
-    userTypeOptions.selected.length == 0 ||
+    locationOptions.selected!.length == 0 ||
+    departmentOptions.selected!.length == 0 ||
+    genderOptions.selected!.length == 0 ||
+    userTypeOptions.selected!.length == 0 ||
     registeration.job_title.trim().length < 3 ||
     registeration.social_insurance_number.trim().length < 3 ||
     !registeration.address.trim().length;
@@ -87,11 +89,15 @@
   // let reportingToSelected: SelectOptionType[] = [];
 
   const defaultDate = new Date(2000, 1, 1);
+  const today = new Date();
+
   const year = defaultDate.getFullYear();
   const month = String(defaultDate.getMonth() + 1).padStart(2, "0"); // Adding 1 to month since months are zero-based
   const day = String(defaultDate.getDate()).padStart(2, "0");
 
   let formattedDefaultDate = `${year}-${month}-${day}`;
+  let formattedJoiningDate = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+
   let errorMessage: string;
   let successMessage: string;
 
@@ -274,6 +280,19 @@
         />
       </div>
       <div class="form-outline">
+        <Input
+          type="date"
+          label={"Joining date"}
+          bind:value={formattedJoiningDate}
+          handleInput={validateBirthday}
+          size={150}
+          errorMessage="Invalid joining date"
+          hint={"please enter a valid joining date"}
+          placeholder={"Enter joining date"}
+          bind:isError={isErrorJoiningDate}
+        />
+      </div>
+      <div class="form-outline">
         <MultiSelect bind:options={departmentOptions} />
       </div>
       <div class="form-outline">
@@ -417,6 +436,7 @@
             registeration.gender = genderOptions.selected[0].value;
             registeration.user_type = userTypeOptions.selected[0].value;
             registeration.birthday = formattedDefaultDate;
+            registeration.joining_at = formattedJoiningDate;
             if (image != undefined) {
               imageSrc = image.src;
               registeration.image = imageSrc;

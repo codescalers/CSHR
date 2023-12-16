@@ -628,16 +628,13 @@ class UserVacationBalanceApiView(GenericAPIView):
         request.data["unpaid"] = 365
 
         try:
-            # if request.data.get("delete_old_balance") is True:
-            #     serializer.save(old_balance={}, user=user)
-            # else:
             for balance in balances:
                 balance.compensation = 365
                 balance.sick_leaves = 365
                 balance.unpaid = 365
-                balance.annual_leaves = request.data.get("annual_leaves")
-                balance.emergency_leaves = request.data.get("emergency_leaves")
-                balance.leave_excuses = request.data.get("leave_excuses")
+                balance.annual_leaves = int(request.data.get("annual_leaves"))
+                balance.emergency_leaves = int(request.data.get("emergency_leaves"))
+                balance.leave_excuses = int(request.data.get("leave_excuses"))
                 balance.save()
 
                 v.check(balance.user)
@@ -649,6 +646,9 @@ class UserVacationBalanceApiView(GenericAPIView):
                 status_code=202,
                 data=CalculateBalanceSerializer(balances, many=True).data,
             )
+            # if request.data.get("delete_old_balance") is True:
+            #     serializer.save(old_balance={}, user=user)
+            # else:
 
         except Exception:
             return CustomResponse.bad_request(

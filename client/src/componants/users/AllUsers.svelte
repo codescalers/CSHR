@@ -71,7 +71,7 @@
 
   let locationOptions: SelectOptionType[] = [];
   let locationSelected: SelectOptionType[] = [];
-  let isErrorLocation: null | boolean;
+  let isErrorLocation: undefined | boolean;
 
   let options: SelectOptionsComponent = {
     optionsList: locationOptions,
@@ -90,7 +90,7 @@
     <Loading className={"loader"} />
   </div>
 {:else if !isLoading && !isError && users}
-  <div class="container height-100">
+  <div class="container">
     <div class="card office-selection" style="margin-top: 15px;">
       <small>
         You can change the selected office to discover the team in other

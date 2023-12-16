@@ -86,6 +86,7 @@ class User(AbstractBaseUser, TimeStamp):
     mobile_number = models.CharField(max_length=15)
     telegram_link = models.CharField(max_length=100)
     birthday = models.DateField()
+    joining_at = models.DateField()
     team = models.CharField(max_length=20, choices=TEAM.choices)
     salary = models.JSONField(default=dict, null=True, blank=True)
     location = models.ForeignKey(Office, on_delete=models.CASCADE)

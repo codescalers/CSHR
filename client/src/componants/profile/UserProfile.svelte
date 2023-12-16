@@ -34,7 +34,7 @@
     | null = null;
 
   onMount(async () => {
-    document.getElementById("body-pd").style.overflow = "auto";
+    document.getElementById("body-pd")!.style.overflow = "auto";
     isLoading = true;
     try {
       if ($UserStore !== undefined && $UserStore.id === id) {
@@ -53,7 +53,7 @@
   <div class="container">
     <div class="row mt-4 pt-4">
       <div class="col-lg-4">
-        <div class="card mb-4">
+        <div class="card mb-2">
           <div class="card-body text-center">
             <div class="d-flex justify-content-center">
               <ProfileImage noLink={true} {user} size={80} />

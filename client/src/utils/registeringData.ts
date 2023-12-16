@@ -5,6 +5,7 @@ export default {
   telegram_link: "",
   email: "",
   birthday: new Date(),
+  joining_at: new Date(),
   mobile_number: "",
   password: "",
   location: 0,

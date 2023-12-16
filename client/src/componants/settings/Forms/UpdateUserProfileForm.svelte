@@ -83,10 +83,12 @@
     // isErrorUserType: null | boolean,
     isErrorLocation: null | boolean,
     // isErrorSuperuser: null | boolean,
-    isErrorBirthday: null | boolean = null;
+    isErrorBirthday: null | boolean = null,
+    isErrorJoiningDate: null | boolean = null;
 
   $: submitDisabled =
     isErrorBirthday == true ||
+    isErrorJoiningDate == true ||
     isErrorLink == true ||
     isErrorJobTitle == true ||
     isErrorMobile == true ||
@@ -95,9 +97,9 @@
     isErrorfName == true ||
     isErrorAddress == true ||
     isErrorLocation == true ||
-    locationOptions.selected.length < 1 ||
-    genderOptions.selected.length < 1 ||
-    userTypeOptions.selected.length < 1 ||
+    locationOptions.selected!.length < 1 ||
+    genderOptions.selected!.length < 1 ||
+    userTypeOptions.selected!.length < 1 ||
     // reportingToOptions.selected.length < 1 ||
     user.social_insurance_number.trim().length < 1 ||
     user.address.trim().length < 1 ||
@@ -367,6 +369,21 @@
             hint={"please enter a valid birthday date"}
             placeholder={"Enter birthday date"}
             bind:isError={isErrorBirthday}
+          />
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-outline">
+          <Input
+            type="date"
+            label={"Joining date"}
+            bind:value={user.joining_at}
+            handleInput={validateBirthday}
+            size={150}
+            errorMessage="Invalid date"
+            hint={"please enter a valid joining date"}
+            placeholder={"Enter joining date"}
+            bind:isError={isErrorJoiningDate}
           />
         </div>
       </div>
