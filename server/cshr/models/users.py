@@ -49,6 +49,7 @@ class CshrBaseUserManger(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             birthday=datetime.datetime.now(),
+            joining_at=datetime.datetime.now(),
             location=Office.objects.get(id=2),  # Egypt office takes id 2
             user_type=USER_TYPE.ADMIN,
             first_name="Codescalers",

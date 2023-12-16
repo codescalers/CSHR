@@ -61,6 +61,7 @@ def create_users():
             "job_title": "Manager",
             "gender": GENDER_TYPE.MALE,
             "birthday": datetime.date(year=2005, month=10, day=6),
+            "joining_at": datetime.date(year=2005, month=10, day=6),
         },
         {
             "first_name": "Nayer",
@@ -76,6 +77,7 @@ def create_users():
             "job_title": "Manager",
             "gender": GENDER_TYPE.MALE,
             "birthday": datetime.date(year=2000, month=12, day=12),
+            "joining_at": datetime.date(year=2000, month=12, day=12),
         },
         {
             "first_name": "Nayer",
@@ -91,6 +93,7 @@ def create_users():
             "job_title": "Manager",
             "gender": GENDER_TYPE.MALE,
             "birthday": datetime.date(year=2000, month=12, day=13),
+            "joining_at": datetime.date(year=2000, month=12, day=13),
         },
         {
             "first_name": "Nayer",
@@ -106,6 +109,7 @@ def create_users():
             "job_title": "Manager",
             "gender": GENDER_TYPE.MALE,
             "birthday": datetime.date(year=2000, month=9, day=17),
+            "joining_at": datetime.date(year=2000, month=9, day=17),
         },
         {
             "first_name": "Rafik",
@@ -121,6 +125,7 @@ def create_users():
             "job_title": "HR",
             "gender": GENDER_TYPE.MALE,
             "birthday": datetime.date(year=2000, month=1, day=12),
+            "joining_at": datetime.date(year=2000, month=1, day=12),
         },
         {
             "first_name": "Rafik",
@@ -136,6 +141,7 @@ def create_users():
             "job_title": "HR",
             "gender": GENDER_TYPE.MALE,
             "birthday": datetime.date(year=1998, month=4, day=15),
+            "joining_at": datetime.date(year=1998, month=4, day=15),
         },
         {
             "first_name": "Rafik",
@@ -151,6 +157,7 @@ def create_users():
             "job_title": "HR",
             "gender": GENDER_TYPE.MALE,
             "birthday": datetime.date(year=1959, month=2, day=22),
+            "joining_at": datetime.date(year=1959, month=2, day=22),
         },
         {
             "first_name": "Evon",
@@ -166,6 +173,7 @@ def create_users():
             "job_title": "HR",
             "gender": GENDER_TYPE.FEMALE,
             "birthday": datetime.date(year=2002, month=3, day=15),
+            "joining_at": datetime.date(year=2002, month=3, day=15),
         },
         {
             "first_name": "Evon",
@@ -181,6 +189,7 @@ def create_users():
             "job_title": "HR",
             "gender": GENDER_TYPE.FEMALE,
             "birthday": datetime.date(year=2000, month=12, day=12),
+            "joining_at": datetime.date(year=2000, month=12, day=12),
         },
         {
             "first_name": "Evon",
@@ -196,6 +205,7 @@ def create_users():
             "job_title": "HR",
             "gender": GENDER_TYPE.FEMALE,
             "birthday": datetime.date(year=2000, month=12, day=25),
+            "joining_at": datetime.date(year=2000, month=12, day=25),
         },
     ]
 
@@ -226,6 +236,7 @@ def create_users():
             job_title=user.get("job_title"),
             gender=user.get("gender"),
             birthday=user.get("birthday"),
+            joining_at=user.get("joining_at"),
             location=location[0],
         )
         index += 1
