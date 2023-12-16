@@ -256,14 +256,15 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             chcked_balance = curr_balance - sum(pinding_vacations)
 
-            if chcked_balance < vacation_days:
-                return CustomResponse.bad_request(
-                    message=f"You have an additional pending request that deducts {sum(pinding_vacations)} days from your balance, even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
-                )
 
             if curr_balance < vacation_days:
                 return CustomResponse.bad_request(
                     message=f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
+                )
+
+            if chcked_balance < vacation_days:
+                return CustomResponse.bad_request(
+                    message=f"You have an additional pending request that deducts {sum(pinding_vacations)} days from your balance, even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
                 )
 
             saved = serializer.save(

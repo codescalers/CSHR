@@ -21,14 +21,20 @@
   const handleVacationCalculator = (event: { detail: { days: number } }) => {
     vacationCalculator = event.detail.days;
   };
+
+  const updateDates = (event: { detail: { startDate: string, endDate: string } }) => {
+    startDate = event.detail.startDate
+    endDate = event.detail.endDate
+  }
 </script>
 
 <div class="card mt-4">
   <CalendarDatePicker
     onlyStart={formToggle === 1}
+    on:calculate={handleVacationCalculator}
+    on:updateDates={updateDates}
     bind:startDate
     bind:endDate
-    on:calculate={handleVacationCalculator}
   >
     <div slot="toggler" class="my-4">
       <div class="options">

@@ -7,10 +7,12 @@
   import { UserStore } from "../../../utils/stores";
   import type {
     calendarItemsType,
+    CalenderRequestFormResponseType,
     VacationBalance
   } from "../../../utils/types";
   import Alert from "../../ui/Alert.svelte";
   import Submit from "../../ui/Button.svelte";
+  import { validateStartEndDates } from "../../../utils/validations";
 
   export let startDate: string;
   export let endDate: string;
@@ -26,6 +28,7 @@
 
   let errorMessage = "";
   let successMessage = "";
+  let isEndAfterStart = false;
 
   let alertTitle: string,
     alertClass: string,
@@ -40,9 +43,18 @@
     vBalance = response[0];
   });
 
+  const validateDate = () => {
+    let validated: CalenderRequestFormResponseType = validateStartEndDates(
+      startDate,
+      endDate
+    );
+    isEndAfterStart = validated.isError;
+    return isError
+  }
+
   const submit = async () => {
     isLoading = true;
-    isError = showAlert = false;
+    isError = showAlert = isEndAfterStart = false;
     alertMessage = errorMessage = "";
     alertClass = ""
     try {
@@ -80,8 +92,11 @@
     }
     return isError;
   };
+  
+  $: startDate, validateDate();
+  $: endDate, validateDate();
 
-  $: submitDisabled = selectedReason == 0 || calculatorValue === 0;
+  $: submitDisabled = selectedReason === 0 || calculatorValue === 0 || isEndAfterStart;
 </script>
 
 <form>
@@ -116,7 +131,7 @@
     <div class="alert alert-light p-0 text-center">
       <br />
       {#if calculatorValue === 0}
-        <small class="text-red">
+        <small class="text-danger">
           " It seems like the chosen day might be a holiday or a weekend break.
           Please verify this on your calendar. "
         </small>

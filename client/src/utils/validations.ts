@@ -68,11 +68,24 @@ export const validateBackgroundColor = (e: any): boolean => {
   return true;
 };
 
-export const validateStartEndDates = (startDate: Date, endDate: Date) => {
+export const validateStartEndDates = (startDate: Date | string, endDate: Date | string) => {
   const response: CalenderRequestFormResponseType = {
     message: undefined,
     isError: false
   };
+
+  if (typeof startDate === "string") {
+    startDate = new Date(startDate);
+  }
+
+  if (typeof endDate === "string") {
+    endDate = new Date(endDate);
+  }
+
+  // Adjust time zone offsets
+  const timezoneOffset = startDate.getTimezoneOffset();
+  startDate = new Date(startDate.getTime() + timezoneOffset * 60000);
+  endDate = new Date(endDate.getTime() + timezoneOffset * 60000);
 
   endDate.setHours(0, 0, 0, 0); // Set the time to midnight for accurate comparison
 
@@ -83,6 +96,7 @@ export const validateStartEndDates = (startDate: Date, endDate: Date) => {
 
   return response;
 };
+
 
 export function isValidDate(d: any) {
   if (d.split("-").length != 3) {

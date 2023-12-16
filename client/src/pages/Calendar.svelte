@@ -100,7 +100,7 @@
     </div>
     <div class="p-4">
       <div class="row">
-        <div class="col-4">
+        <div class="col-12 col-xs-12 col-sm-12 col-md-12 col-xl-4">
           <CalendarEventsFilter bind:eventNames />
           <CalendarEventForm
             on:message={(event) => {
@@ -130,7 +130,7 @@
             }}
           />
         </div>
-        <div class="col-8 d-flex align-center">
+        <div class="col-12 col-xs-12 col-sm-12 col-md-12 col-xl-8 d-flex align-center">
           <Calendar
             bind:month
             bind:year

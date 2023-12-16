@@ -4,8 +4,8 @@
   import CalendarDataService from "../../../apis/home/home";
   import { formatDate } from "../../../utils/helpers";
   // import PeopleSelect from '../../ui/select/UsersMultiSelect.svelte';
-  import type { calendarItemsType } from "../../../utils/types";
-  import { isValidDate } from "../../../utils/validations";
+  import type { CalenderRequestFormResponseType, calendarItemsType } from "../../../utils/types";
+  import { isValidDate, validateStartEndDates } from "../../../utils/validations";
   import Submit from "../../ui/Button.svelte";
   import Input from "../../ui/Input.svelte";
   import ModalOpenButton from "../../ui/modals/ModalOpenButton.svelte";
@@ -33,12 +33,22 @@
   // let peopleSelected: SelectOptionType[] = [];
   let isLoading = false;
   let isError = false;
+  let isEndAfterStart = false;
+
+  const validateDate = () => {
+    let validated: CalenderRequestFormResponseType = validateStartEndDates(
+      startDate,
+      endDate
+    );
+    isEndAfterStart = validated.isError;
+    return isError
+  }
 
   // if true the disable submit button
   // let locationIsError: boolean | null = null;
-  $: fillDisabled =
-    !isValidDate(formatDate(new Date(startDate))) ||
-    !isValidDate(formatDate(new Date(endDate)));
+  $: startDate, validateDate();
+  $: endDate, validateDate();
+
   // locationIsError === null || locationIsError === true || datePickerDisabled;
   $: submitDisabled =
     // fillDisabled === true ||
@@ -110,7 +120,7 @@
     <ModalOpenButton
       width={100}
       label="Fill"
-      disabled={fillDisabled}
+      disabled={isEndAfterStart}
       {modalID}
     />
   </div>

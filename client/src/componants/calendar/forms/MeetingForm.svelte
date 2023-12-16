@@ -3,21 +3,19 @@
 
   // import PeopleSelect from '../../ui/select/UsersMultiSelect.svelte';
   import CalendarDataService from "../../../apis/home/home";
-  import { formatDate } from "../../../utils/helpers";
   import { UserStore } from "../../../utils/stores";
   import type {
     calendarItemsType,
     SelectOptionType
   } from "../../../utils/types";
-  import { isValidDate } from "../../../utils/validations";
   import Submit from "../../ui/Button.svelte";
   import Input from "../../ui/Input.svelte";
   import ModalOpenButton from "../../ui/modals/ModalOpenButton.svelte";
   //import ModalCloseButton from '../modal/ModalCloseButton.svelte';
   import Modal from "../../ui/modals/SimpleModal.svelte";
-  // import { isValidDate } from '../../../utils/validations';
 
-  export let startDate: string;
+  const today = new Date();
+  export let startDate: string = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
   export let isError = false;
   export let datePickerDisabled = false;
   export let isLoading = false;
@@ -35,16 +33,15 @@
   let meetingTimeValue: string;
   let meetingTimeIsError: boolean | null = null;
 
+  let submitDisabled = true;
   let meetingPeopleIsError: boolean | null = false;
-
   let peopleSelected: SelectOptionType[] = [];
+
   $: fillDisabled =
-    !isValidDate(formatDate(new Date(startDate))) ||
     meetingPeopleIsError === null ||
     meetingPeopleIsError === true ||
     datePickerDisabled;
 
-  let submitDisabled = true;
 
   $: submitDisabled =
     fillDisabled ||
@@ -180,8 +177,8 @@
           dispatch("message", {
             postedMeeting: responseMeeting
           });
-        } catch (error) {
-          errorMessage = "Failed to schedule a new meeting.";
+        } catch (error) {          
+          errorMessage = `Failed to schedule a new meeting due ${error}.`;
           isError = true;
         } finally {
           isLoading = false;

@@ -28,5 +28,7 @@ export const capitalize = (value: string): string => {
 
 // Format the date to ISO string date then to date to be sent to the backend, valid format is yyyy-mm-dd
 export const formatDate = (date: Date) => {
-  return date.toISOString().split("T")[0];
+  if(typeof date != "string"){
+    return date.toISOString().split("T")[0];
+  } return date
 };
