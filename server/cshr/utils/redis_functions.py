@@ -79,16 +79,22 @@ def notification_commented(data: Dict, user, state: str, event_id: int):
     """this function set accept notifications"""
     commented_user: User = None
     hashname: str = None
+
     if user == data.approval_user:
         commented_user = data.approval_user
         title = f"Your {data.type} request was {state} by {commented_user.full_name}"
-        hashname = "user" + str(data.applying_user.id) + ":" + data.type + str(data.id)
+        hashname = "user" + str(data.approval_user.id) + ":" + data.type + str(data.id)
     elif user == data.applying_user:
         commented_user = data.applying_user
         title = f"Your approving {data.type} request was {state} by {commented_user.full_name}"
-        hashname = "user" + str(data.approval_user.id) + ":" + data.type + str(data.id)
+        hashname = "user" + str(data.applying_user.id) + ":" + data.type + str(data.id)
+    else:
+        commented_user = user
+        title = f"Your {data.type} request was {state} by  {commented_user.full_name}"
+        hashname = "user" + str(data.applying_user.id) + ":" + data.type + str(data.id)
+        
 
-    created_at = parse_datetime(data.created_at)
+    created_at = data.created_at
     sending_data: Dict = {
         "created_at": f"{created_at.date()} | {created_at.time().hour}:{created_at.time().minute}",
         "title": title,
