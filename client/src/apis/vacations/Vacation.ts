@@ -126,9 +126,7 @@ class Vacation {
 
   public async update(vacationID: string, data: any) {
     try {
-      return await (
-        await http.put(`/vacations/edit/${vacationID}/`, data)
-      ).data;
+      return await http.put(`/vacations/edit/${vacationID}/`, data);
     } catch (error: any) {
       this.errorMessage =
         error.response.data.message || error.response.data.detail;

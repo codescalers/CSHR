@@ -24,6 +24,7 @@
   export let vacationID = "";
   export let withReason = true;
   export let withSubmit = true;
+  export let submitWidth = "100";
   export let showCalclator = true;
 
   let errorMessage = "";
@@ -153,6 +154,7 @@
         onClick={submit}
         className=""
         bind:disabled={submitDisabled}
+        width={submitWidth}
       />
     </div>
   {/if}

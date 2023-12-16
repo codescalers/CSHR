@@ -347,7 +347,7 @@ class VacationUserApiView(ListAPIView, GenericAPIView):
 
 class VacationsUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
-    permission_classes = [IsUser | IsSupervisor]
+    permission_classes = [IsUser | IsSupervisor | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
@@ -357,16 +357,47 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(vacation, data=request.data, partial=True)
 
         if serializer.is_valid():
-            balance = v.check_and_update_balance(
-                applying_user=request.user,
-                vacation=vacation,
-                reason=serializer.validated_data.get("reason"),
-                start_date=serializer.validated_data.get("from_date"),
-                end_date=serializer.validated_data.get("end_date"),
+            start_date = serializer.validated_data.get("from_date")
+            end_date = serializer.validated_data.get("end_date")
+
+            # Check if there are pinding vacations in the same day
+            pinding_requests = Vacation.objects.filter(
+                from_date__day=start_date.day,
+                end_date__day=end_date.day,
+                status=STATUS_CHOICES.PENDING,
             )
-            if balance is not True:
-                return CustomResponse.bad_request(message=balance)
-            v.vacation_update_balance(vacation)
+            if len(pinding_requests) > 0:
+                return CustomResponse.bad_request(
+                    message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
+                )
+
+            # Check balance.
+            v = StanderdVacationBalance()
+            reason: str = serializer.validated_data.get("reason")
+            applying_user = request.user
+            user_reason_balance = applying_user.vacationbalance
+            vacation_days = v.get_actual_days(applying_user, start_date, end_date)
+
+            curr_balance = getattr(user_reason_balance, reason)
+
+            pinding_vacations = Vacation.objects.filter(
+                status=STATUS_CHOICES.PENDING,
+                applying_user=applying_user,
+                reason=reason,
+            ).values_list("actual_days", flat=True)
+
+            chcked_balance = curr_balance - sum(pinding_vacations)
+
+            if curr_balance < vacation_days:
+                return CustomResponse.bad_request(
+                    message=f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
+                )
+
+            if chcked_balance < vacation_days:
+                return CustomResponse.bad_request(
+                    message=f"You have an additional pending request that deducts {sum(pinding_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                )
+
             serializer.save()
             comment: Dict = {
                 "update": True,

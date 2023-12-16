@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { Link } from "svelte-navigator";
+  import { Link, navigate } from "svelte-navigator";
 
   import Requests from "../../../apis/requests/Requests";
   import {
@@ -18,6 +18,7 @@
   import Alert from "../Alert.svelte";
   import Loading from "../Loading.svelte";
   import CalendarModal from "./CalendarModal.svelte";
+  import vacation from "../../../apis/vacations/Vacation";
   export let showModal = false;
 
   export let clickedItemOnModal: calendarItemsType;
@@ -283,6 +284,12 @@
           </div>
         {/if}
         <br />
+        <button
+        class="abtn btn-success view-btn"
+        on:click={() => navigate(`/vacations/${currentVacationActive.id}`)}
+      >
+        View
+      </button>
       </div>
       {#if showAlert}
         <Alert
@@ -307,6 +314,7 @@
               Approve
             {/if}
           </button>
+
           <button
             class="abtn btn-danger"
             on:click={() => {
@@ -373,6 +381,10 @@
     }
     .photo-active:not(:first-child) {
       margin-left: -75px;
+    }
+    .view-btn{
+      width: 15%;
+    margin-top: 20px;
     }
   </style>
 </svelte:head>
