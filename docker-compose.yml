@@ -22,11 +22,12 @@ services:
       - DATABASE_NAME=postgres
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=postgres
-      - DATABASE_HOST=localhost
+      - DATABASE_HOST=postgres
       - DATABASE_PORT=5432
 
     depends_on:
       - redis
+      - postgres
 
   frontend:
     build:
@@ -42,14 +43,24 @@ services:
 
   redis:
     image: "redis:latest"
+    container_name: redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
 
   postgres:
     image: postgres:latest
+    container_name: postgres
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  redis_data:

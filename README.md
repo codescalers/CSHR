@@ -1,6 +1,6 @@
 # CSHR (Codescalers HR Management System)
 
-CSHR is a comprehensive HR management system designed to seamlessly integrate localized management and provide global oversight. It caters to organizations with multiple offices, ensuring a unified approach throughout the organization while accommodating location-specific administrative controls.
+A comprehensive management system that provides a range of services, including the ability to submit vacation requests. This system seamlessly integrates with a global calendar, allowing users across all offices to view approved vacations collectively. Additionally, the calendar showcases Birthdates, Events, Meetings, and Holidays, offering a centralized and accessible overview for all users within the organization.
 
 ## Core Objectives
 
