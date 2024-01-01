@@ -92,7 +92,6 @@ def notification_commented(data: Dict, user, state: str, event_id: int):
         commented_user = user
         title = f"Your {data.type} request was {state} by  {commented_user.full_name}"
         hashname = "user" + str(data.applying_user.id) + ":" + data.type + str(data.id)
-        
 
     created_at = data.created_at
     sending_data: Dict = {

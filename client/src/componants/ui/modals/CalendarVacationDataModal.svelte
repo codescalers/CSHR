@@ -18,7 +18,6 @@
   import Alert from "../Alert.svelte";
   import Loading from "../Loading.svelte";
   import CalendarModal from "./CalendarModal.svelte";
-  import vacation from "../../../apis/vacations/Vacation";
   export let showModal = false;
 
   export let clickedItemOnModal: calendarItemsType;
@@ -285,11 +284,11 @@
         {/if}
         <br />
         <button
-        class="abtn btn-success view-btn"
-        on:click={() => navigate(`/vacations/${currentVacationActive.id}`)}
-      >
-        View
-      </button>
+          class="abtn btn-success view-btn"
+          on:click={() => navigate(`/vacations/${currentVacationActive.id}`)}
+        >
+          View
+        </button>
       </div>
       {#if showAlert}
         <Alert
@@ -382,9 +381,9 @@
     .photo-active:not(:first-child) {
       margin-left: -75px;
     }
-    .view-btn{
+    .view-btn {
       width: 15%;
-    margin-top: 20px;
+      margin-top: 20px;
     }
   </style>
 </svelte:head>

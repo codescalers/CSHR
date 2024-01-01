@@ -7,7 +7,6 @@
   import { RequestStatus } from "../../utils/enums";
   import CalendarDatePicker from "../calendar/CalendarDatePicker.svelte";
   import CalendarLeaveForm from "../calendar/forms/LeaveForm.svelte";
-  import Input from "../ui/Input.svelte";
   import ProfileImage from "../profile/ProfileImage.svelte";
 
   export let isLoading = false;
@@ -54,47 +53,49 @@
 <div class="container d-flex justify-content-center align-items-center">
   <div class="mt-5">
     {#if startDate && endDate}
-    <div class="bg-white p-3 pt-0 mt-0 card">
-      <div class="card-body">
-        <div class="text-center">
-          <small>
-            Kindly be aware that you can only modify your request while its status remains 'Pending.' Once the status changes, further updates will not be permitted.
-          </small>
-        </div>
-        <div class="card p-2 mt-3" style="margin: 0 auto; width: 85%;">
-          <div class="row">
-            <div class="col-6 d-flex align-items-center">
-              <strong>Applying user</strong>
-            </div>
-            <div class="col-6 d-flex align-items-center">
-              <ProfileImage user={vacation.applying_user}/>
+      <div class="bg-white p-3 pt-0 mt-0 card">
+        <div class="card-body">
+          <div class="text-center">
+            <small>
+              Kindly be aware that you can only modify your request while its
+              status remains 'Pending.' Once the status changes, further updates
+              will not be permitted.
+            </small>
+          </div>
+          <div class="card p-2 mt-3" style="margin: 0 auto; width: 85%;">
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <strong>Applying user</strong>
+              </div>
+              <div class="col-6 d-flex align-items-center">
+                <ProfileImage user={vacation.applying_user} />
+              </div>
             </div>
           </div>
-        </div>
 
-        <CalendarDatePicker
-          onlyStart={formToggle === 1}
-          bind:startDate
-          bind:endDate
-          on:calculate={handleVacationCalculator}
-          on:updateDates={updateDates}
-        >
-          <div slot="form">
-            {#if formToggle === 0}
-              <CalendarLeaveForm
-                bind:startDate
-                bind:endDate
-                calculatorValue={vacationCalculator}
-                isUpdate={true}
-                {vacationID}
-                selectedReason={vacation.reason}
-                submitWidth={"30"}
-              />
-            {/if}
-          </div>
-        </CalendarDatePicker>
+          <CalendarDatePicker
+            onlyStart={formToggle === 1}
+            bind:startDate
+            bind:endDate
+            on:calculate={handleVacationCalculator}
+            on:updateDates={updateDates}
+          >
+            <div slot="form">
+              {#if formToggle === 0}
+                <CalendarLeaveForm
+                  bind:startDate
+                  bind:endDate
+                  calculatorValue={vacationCalculator}
+                  isUpdate={true}
+                  {vacationID}
+                  selectedReason={vacation.reason}
+                  submitWidth={"30"}
+                />
+              {/if}
+            </div>
+          </CalendarDatePicker>
+        </div>
       </div>
-    </div>
     {/if}
   </div>
 </div>
