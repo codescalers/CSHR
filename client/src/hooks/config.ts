@@ -1,9 +1,10 @@
 import { type App, inject } from 'vue'
 
-const $globals = Symbol('key:$globals')
+export const $globals = Symbol('key:$globals')
 
 export interface $Globals {
   app: App<Element>
+  env: ImportMetaEnv
 }
 
 export function useGlobals(): $Globals

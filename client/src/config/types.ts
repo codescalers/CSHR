@@ -9,5 +9,5 @@ export type GlobalComps = typeof GLOBAL_COMPONENT
 
 export interface GlobalProps {
   $globals: import('@/hooks').$Globals
-  $metaEnv: ImportMetaEnv
+  $http: import('axios').AxiosInstance
 }
