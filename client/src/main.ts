@@ -1,18 +1,15 @@
-import App from "./App.svelte";
+import 'vuetify/styles'
 
-const app = new App({
-  target: document.body
-});
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 
-interface AppConfigs {
-  SERVER_BASE_URL: string;
-  SERVER_API_URL: string;
-}
+import App from '@/App.vue'
+import router from '@/router'
+import { $vuetify } from '@/plugins'
 
-declare global {
-  interface Window {
-    configs: AppConfigs;
-  }
-}
+createApp(App)
+  .use(createPinia())
+  .use(router)
+  .use($vuetify)
 
-export default app;
+  .mount('#app')
