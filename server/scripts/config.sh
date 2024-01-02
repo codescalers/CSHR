@@ -9,8 +9,8 @@ DJANGO_SECRET_KEY=$(poetry run python3 -c 'from django.utils.crypto import get_r
 
 exec |
 	# Backend configurations
-	echo 'ENV'=$ENV >> ${ENV_DIR}
 	echo 'DJANGO_SECRET_KEY'=$DJANGO_SECRET_KEY > ${ENV_DIR}
+	echo 'ENV'=$ENV >> ${ENV_DIR}
 	echo 'DJANGO_DEBUG'=$DJANGO_DEBUG >> ${ENV_DIR}
 	echo 'DJANGO_SUPERUSER_EMAIL'=$DJANGO_SUPERUSER_EMAIL >> ${ENV_DIR}
 	echo 'DJANGO_SUPERUSER_PASSWORD'=$DJANGO_SUPERUSER_PASSWORD >> ${ENV_DIR}
