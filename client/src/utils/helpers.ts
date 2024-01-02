@@ -12,5 +12,5 @@ export function panic(msg: string, devLogs?: any[]): never {
 }
 
 export function devLog(...args: any[]): void {
-  import.meta.env.DEV && args.length > 0 && console.debug(...args)
+  import.meta.env.DEV && args.length > 0 && console.log(...args)
 }

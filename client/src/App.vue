@@ -1,21 +1,33 @@
 <template>
   <VApp>
-    <SideDrawer />
-    <!-- <VNavigationDrawer expand-on-hover rail></VNavigationDrawer> -->
+    <RouterView />
   </VApp>
 </template>
 
 <script lang="ts">
-import { onMounted } from 'vue'
+import { ref } from 'vue'
 
+import { useAsyncState } from '@vueuse/core'
 import { useApi } from '@/hooks'
-import SideDrawer from '@/components/SideDrawer.vue'
 
 export default {
   name: 'App',
-  components: { SideDrawer },
   setup() {
     const api = useApi()
+    const loginTask = useAsyncState(
+      (email: string, password: string) => api.auth.login({ email, password }),
+      null,
+      { immediate: false }
+    )
+
+    const email = ref('')
+    const password = ref('')
+
+    function login() {
+      loginTask.execute(import.meta.env.DEV ? 1000 : 0, email.value, password.value)
+    }
+
+    return { loginTask, login, email, password }
   }
 }
 </script>

@@ -11,4 +11,5 @@ export interface GlobalProps {
   $globals: import('@/hooks').$Globals
   $http: import('axios').AxiosInstance
   $api: import('@/clients/api').ApiClient
+  $xyz: string
 }
