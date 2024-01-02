@@ -1,11 +1,12 @@
-import { ApiClientBase, type ApiClientOptions } from './base'
+import { ApiClientBase } from './base'
+import type { Api } from '@/types'
 
 export class MeetingApi extends ApiClientBase {
   protected readonly path = '/meeting'
 
   readonly exact: MeetingExactApi
 
-  constructor(options: ApiClientOptions) {
+  constructor(options: Api.ClientOptions) {
     super(options)
 
     this.exact = new MeetingExactApi(options)
@@ -23,7 +24,7 @@ export class MeetingApi extends ApiClientBase {
 }
 
 class MeetingExactApi extends ApiClientBase {
-  protected readonly path = '/meeting/exact'
+  protected readonly path = '/exact'
 
   async list() {}
 }

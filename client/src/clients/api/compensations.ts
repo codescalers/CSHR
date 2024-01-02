@@ -1,4 +1,5 @@
-import { ApiClientBase, type ApiClientOptions } from './base'
+import { ApiClientBase } from './base'
+import type { Api } from '@/types'
 
 export class CompensationsApi extends ApiClientBase {
   protected readonly path = '/compensations'
@@ -7,12 +8,12 @@ export class CompensationsApi extends ApiClientBase {
   readonly reject: CompensationsRejectApi
   readonly user: CompensationsUserApi
 
-  constructor(options: ApiClientOptions) {
+  constructor(options: Api.ClientOptions) {
     super(options)
 
-    this.approve = new CompensationsApproveApi(options)
-    this.reject = new CompensationsRejectApi(options)
-    this.user = new CompensationsUserApi(options)
+    this.approve = new CompensationsApproveApi(options, this.path)
+    this.reject = new CompensationsRejectApi(options, this.path)
+    this.user = new CompensationsUserApi(options, this.path)
   }
 
   async list() {}
@@ -25,7 +26,7 @@ export class CompensationsApi extends ApiClientBase {
 }
 
 class CompensationsApproveApi extends ApiClientBase {
-  protected readonly path = '/compensations/approve'
+  protected readonly path = '/approve'
 
   async read(id: number) {}
 
@@ -33,7 +34,7 @@ class CompensationsApproveApi extends ApiClientBase {
 }
 
 class CompensationsRejectApi extends ApiClientBase {
-  protected readonly path = '/compensations/reject'
+  protected readonly path = '/reject'
 
   async read(id: number) {}
 

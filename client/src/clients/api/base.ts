@@ -1,12 +1,7 @@
 import type { AxiosInstance } from 'axios'
 
 import { panic } from '@/utils'
-
-export interface ApiClientOptions {
-  $http: AxiosInstance
-}
-
-export type UrlPath = `/${string}`
+import type { Api } from '@/types'
 
 const URL_REGEX = /\/+/g
 
@@ -14,9 +9,12 @@ export abstract class ApiClientBase {
   static ACCESS_TOKEN: string | null = null
 
   protected readonly $http: AxiosInstance
-  protected abstract readonly path: UrlPath
+  protected abstract readonly path: Api.Path
 
-  constructor(options: ApiClientOptions) {
+  constructor(
+    options: Api.ClientOptions,
+    private readonly prePath = ''
+  ) {
     this.$http = options.$http
   }
 
@@ -26,8 +24,8 @@ export abstract class ApiClientBase {
     }
   }
 
-  protected getUrl(route: UrlPath): string {
-    const url = this.path + route + '/'
+  protected getUrl(route: Api.Path): string {
+    const url = this.prePath + this.path + route + '/'
     return url.replace(URL_REGEX, '/')
   }
 }

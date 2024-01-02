@@ -16,8 +16,6 @@ export default {
   components: { SideDrawer },
   setup() {
     const api = useApi()
-
-    console.log(api)
   }
 }
 </script>

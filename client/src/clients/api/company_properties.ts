@@ -1,7 +1,7 @@
 import { ApiClientBase } from './base'
 
-export class CoursesApi extends ApiClientBase {
-  protected readonly path = '/training_courses'
+export class CompanyPropertiesApi extends ApiClientBase {
+  protected readonly path = `/company_properties`
 
   async list() {}
 

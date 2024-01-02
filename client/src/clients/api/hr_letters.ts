@@ -1,6 +1,7 @@
-import { ApiClientBase, type ApiClientOptions } from './base'
+import { ApiClientBase } from './base'
+import type { Api } from '@/types'
 
-export class LettersApi extends ApiClientBase {
+export class HrLettersApi extends ApiClientBase {
   protected readonly path = '/hr_letters'
 
   readonly approve: LettersApproveApi
@@ -8,13 +9,13 @@ export class LettersApi extends ApiClientBase {
   readonly user: LettersUserApi
   readonly docs: LettersDocsApi
 
-  constructor(options: ApiClientOptions) {
+  constructor(options: Api.ClientOptions) {
     super(options)
 
-    this.approve = new LettersApproveApi(options)
-    this.reject = new LettersRejectApi(options)
-    this.user = new LettersUserApi(options)
-    this.docs = new LettersDocsApi(options)
+    this.approve = new LettersApproveApi(options, this.path)
+    this.reject = new LettersRejectApi(options, this.path)
+    this.user = new LettersUserApi(options, this.path)
+    this.docs = new LettersDocsApi(options, this.path)
   }
 
   async list() {}
@@ -27,7 +28,7 @@ export class LettersApi extends ApiClientBase {
 }
 
 class LettersApproveApi extends ApiClientBase {
-  protected readonly path = '/hr_letters/approve'
+  protected readonly path = '/approve'
 
   async read(id: number) {}
 
@@ -35,7 +36,7 @@ class LettersApproveApi extends ApiClientBase {
 }
 
 class LettersRejectApi extends ApiClientBase {
-  protected readonly path = '/hr_letters/reject'
+  protected readonly path = '/reject'
 
   async read(id: number) {}
 
@@ -43,13 +44,13 @@ class LettersRejectApi extends ApiClientBase {
 }
 
 class LettersUserApi extends ApiClientBase {
-  protected readonly path = '/hr_letters/user'
+  protected readonly path = '/user'
 
   async list() {}
 }
 
 class LettersDocsApi extends ApiClientBase {
-  protected readonly path = '/hr_letters/docs'
+  protected readonly path = '/docs'
 
   async list() {}
 

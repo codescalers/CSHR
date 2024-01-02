@@ -1,54 +1,70 @@
-import { ApiClientBase, type ApiClientOptions } from './base'
+import { ApiClientBase } from './base'
+import type { Api } from '@/types'
 
 import { AuthApi } from './auth'
-import { CompaniesApi } from './companies'
+import { CompanyPropertiesApi } from './company_properties'
 import { CompensationsApi } from './compensations'
+import { EvaluationApi } from './evaluation'
 import { EventApi } from './event'
 import { HomeApi } from './home'
-import { LettersApi } from './letters'
+import { HrLettersApi } from './hr_letters'
 import { MeetingApi } from './meeting'
-import { ProfileApi } from './profile'
+import { MyprofileApi } from './myprofile'
 import { NotificationsApi } from './notifications'
 import { RequestsApi } from './requests'
 import { OfficeApi } from './office'
-import { CoursesApi } from './courses'
+import { TrainingCoursesApi } from './training_courses'
+import { OfficialDocumentsApi } from './official_documents'
+import { UsersApi } from './users'
+import { VacationsApi } from './vacations'
 
 export class ApiClient extends ApiClientBase {
   protected readonly path = '/'
-  private readonly interceptorId: number
+
+  private readonly requestInterceptorId: number
+  private readonly responseInterceptorId: number
 
   readonly auth: AuthApi
-  readonly companies: CompaniesApi
+  readonly company_properties: CompanyPropertiesApi
   readonly compensations: CompensationsApi
+  readonly evaluation: EvaluationApi
   readonly event: EventApi
   readonly home: HomeApi
-  readonly letters: LettersApi
+  readonly hr_letters: HrLettersApi
   readonly meeting: MeetingApi
-  readonly profile: ProfileApi
+  readonly myprofile: MyprofileApi
   readonly notifications: NotificationsApi
   readonly requests: RequestsApi
   readonly office: OfficeApi
-  readonly courses: CoursesApi
+  readonly training_courses: TrainingCoursesApi
+  readonly official_documents: OfficialDocumentsApi
+  readonly users: UsersApi
+  readonly vacations: VacationsApi
 
-  constructor(options: ApiClientOptions) {
+  constructor(options: Api.ClientOptions) {
     super(options)
-    this.interceptorId = this.setAxiosInterceptor()
+    this.requestInterceptorId = this.setAxiosRequestInterceptor()
+    this.responseInterceptorId = this.setAxiosResponseInterceptor()
 
     this.auth = new AuthApi(options)
-    this.companies = new CompaniesApi(options)
+    this.company_properties = new CompanyPropertiesApi(options)
     this.compensations = new CompensationsApi(options)
+    this.evaluation = new EvaluationApi(options)
     this.event = new EventApi(options)
     this.home = new HomeApi(options)
-    this.letters = new LettersApi(options)
+    this.hr_letters = new HrLettersApi(options)
     this.meeting = new MeetingApi(options)
-    this.profile = new ProfileApi(options)
+    this.myprofile = new MyprofileApi(options)
     this.notifications = new NotificationsApi(options)
     this.requests = new RequestsApi(options)
     this.office = new OfficeApi(options)
-    this.courses = new CoursesApi(options)
+    this.training_courses = new TrainingCoursesApi(options)
+    this.official_documents = new OfficialDocumentsApi(options)
+    this.users = new UsersApi(options)
+    this.vacations = new VacationsApi(options)
   }
 
-  private setAxiosInterceptor() {
+  private setAxiosRequestInterceptor() {
     return this.$http.interceptors.request.use((req) => {
       if (ApiClientBase.ACCESS_TOKEN) {
         req.headers.set('Authorization', 'Bearer ' + ApiClientBase.ACCESS_TOKEN)
@@ -57,7 +73,15 @@ export class ApiClient extends ApiClientBase {
     })
   }
 
+  private setAxiosResponseInterceptor() {
+    return this.$http.interceptors.response.use((res) => {
+      console.log('response intercetpor', res)
+      return res
+    })
+  }
+
   disconnect() {
-    this.$http.interceptors.request.eject(this.interceptorId)
+    this.$http.interceptors.request.eject(this.requestInterceptorId)
+    this.$http.interceptors.response.eject(this.responseInterceptorId)
   }
 }
