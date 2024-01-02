@@ -31,9 +31,6 @@ export abstract class ApiClientBase {
 
   protected static refresh(res: Api.Returns.Refresh) {
     ApiClientBase.assertUser()
-    console.log('[OLD ACCESS]', ApiClientBase.USER?.access_token)
-    console.log('[NEW ACCESS]', res.access)
-
     ApiClientBase.USER = {
       ...ApiClientBase.USER!,
       access_token: res.access,

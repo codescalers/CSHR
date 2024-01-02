@@ -5,8 +5,6 @@
 </template>
 
 <script lang="ts">
-import { onMounted } from 'vue'
-
 import { useNotifier } from 'vue3-notifier'
 import { useApi } from '@/hooks'
 
@@ -21,9 +19,8 @@ export default {
 
     api && notifier && api.setNotifier(notifier)
 
-    onMounted(() => {
-      test_api()
-    })
+    /* Don't include this in production! */
+    import.meta.env.VITE_DEBUG === 'true' && test_api()
   }
 }
 </script>

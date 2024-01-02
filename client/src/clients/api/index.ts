@@ -24,7 +24,6 @@ export class ApiClient extends ApiClientBase {
   protected readonly path = '/'
 
   private readonly requestInterceptorId: number
-  private readonly responseInterceptorId: number
 
   readonly auth: AuthApi
   readonly company_properties: CompanyPropertiesApi
@@ -46,7 +45,6 @@ export class ApiClient extends ApiClientBase {
   constructor(options: Api.ClientOptions) {
     super(options)
     this.requestInterceptorId = this.setAxiosRequestInterceptor()
-    this.responseInterceptorId = this.setAxiosResponseInterceptor()
 
     this.auth = new AuthApi(options)
     this.company_properties = new CompanyPropertiesApi(options)
@@ -81,15 +79,7 @@ export class ApiClient extends ApiClientBase {
     })
   }
 
-  private setAxiosResponseInterceptor() {
-    return this.$http.interceptors.response.use((res) => {
-      console.log('[TODO] response intercetpor', res)
-      return res
-    })
-  }
-
   disconnect() {
     this.$http.interceptors.request.eject(this.requestInterceptorId)
-    this.$http.interceptors.response.eject(this.responseInterceptorId)
   }
 }

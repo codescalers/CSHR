@@ -4,7 +4,7 @@ import { $vuetify } from './vuetify'
 import CustomNotification from '@/components/notifier/CustomNotification.vue'
 
 export const $notifier = useNotifierPlugin({
-  debug: import.meta.env.DEV,
+  debug: import.meta.env.VITE_DEBUG === 'true',
   timeout: 5_000,
   maxNotifictions: 6,
   plugins: [$vuetify],
