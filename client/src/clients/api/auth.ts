@@ -1,93 +1,41 @@
-import { resolve, panic } from '@/utils'
-
 import { ApiClientBase } from './base'
+
+import type { Api } from '@/types'
 
 export class AuthApi extends ApiClientBase {
   protected readonly path = '/auth'
 
-  async signup(credentials: SignupInp) {
-    const res = await resolve(this.$http.post<SignupOut>(this.getUrl('/signup'), credentials))
-    const [out, err] = res
+  async login(input: Api.Inputs.Login) {
+    const user = await this.unwrap(
+      this.$http.post<Api.Returns.Login>(this.getUrl('/login'), input),
+      { transform: (d) => d.results }
+    )
 
-    if (err) {
-      panic(err, ['[Auth] signup failed!', err])
-    }
+    ApiClientBase.login(user)
 
-    return out.data
+    return user
   }
 
-  async login(credentials: LoginInp) {
-    const [out, err] = await resolve(this.$http.post<LoginOut>(this.getUrl(`/login`), credentials))
-
-    if (err) {
-      panic(err, ['[Auth] login failed!', err])
-    }
-
-    ApiClientBase.ACCESS_TOKEN = out.data.results.access_token
-    return out.data.results
+  register(input: Api.Inputs.Register) {
+    ApiClientBase.assertUser()
+    return this.unwrap(this.$http.post<Api.Returns.Register>(this.getUrl('/signup'), input), {
+      transform: (d) => d.results
+    })
   }
 
-  async refresh(input: RefreshInp) {
-    ApiClientBase.assertToken()
+  async refresh(input: Api.Inputs.Refresh) {
+    ApiClientBase.assertUser()
+    const res = await this.unwrap(
+      this.$http.post<Api.Returns.Refresh>(this.getUrl('/token/refresh/'), input)
+    )
 
-    const res = await resolve(this.$http.post<RefreshOut>(this.getUrl(`/token/refresh`), input))
-    const [out, err] = res
+    ApiClientBase.refresh(res)
 
-    if (err) {
-      panic(err, ['[Auth] refresh failed!', err])
-    }
-
-    return out.data
+    return res
   }
 
-  async changePassword(input: ChangePasswordInp) {
-    ApiClientBase.assertToken()
-
-    const [, err] = await resolve(this.$http.put(this.getUrl('/change-password'), input))
-
-    if (err) {
-      panic(err, ['[Auth] change password failed!', err])
-    }
+  async changePassword(input: Api.Inputs.ChangePassword) {
+    ApiClientBase.assertUser()
+    return this.unwrap(this.$http.put(this.getUrl('/change-password'), input))
   }
-
-  logout() {
-    ApiClientBase.assertToken()
-    ApiClientBase.ACCESS_TOKEN = null
-  }
-}
-
-export interface SignupInp {}
-
-export interface SignupOut {}
-
-export interface LoginInp {
-  email: string
-  password: string
-}
-
-export interface LoginOut {
-  message: string
-  results: {
-    id: number
-    full_name: string
-    first_name: string
-    last_name: string
-    email: string
-    access_token: string
-    refresh_token: string
-  }
-}
-
-export interface RefreshInp {
-  refresh: string
-}
-
-export interface RefreshOut {
-  access: string
-  refresh: string
-}
-
-export interface ChangePasswordInp {
-  old_password: string
-  new_password: string
 }

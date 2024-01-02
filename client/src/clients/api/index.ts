@@ -26,8 +26,6 @@ export class ApiClient extends ApiClientBase {
   private readonly requestInterceptorId: number
   private readonly responseInterceptorId: number
 
-  private $notifier?: NotifierService
-
   readonly auth: AuthApi
   readonly company_properties: CompanyPropertiesApi
   readonly compensations: CompensationsApi
@@ -69,15 +67,15 @@ export class ApiClient extends ApiClientBase {
   }
 
   setNotifier(service: NotifierService) {
-    if (!this.$notifier) {
-      this.$notifier = service
+    if (!ApiClientBase.$notifier) {
+      ApiClientBase.$notifier = service
     }
   }
 
   private setAxiosRequestInterceptor() {
     return this.$http.interceptors.request.use((req) => {
-      if (ApiClientBase.ACCESS_TOKEN) {
-        req.headers.set('Authorization', 'Bearer ' + ApiClientBase.ACCESS_TOKEN)
+      if (ApiClientBase.user) {
+        req.headers.set('Authorization', 'Bearer ' + ApiClientBase.user.access_token)
       }
       return req
     })
@@ -85,7 +83,7 @@ export class ApiClient extends ApiClientBase {
 
   private setAxiosResponseInterceptor() {
     return this.$http.interceptors.response.use((res) => {
-      console.log('response intercetpor', res)
+      console.log('[TODO] response intercetpor', res)
       return res
     })
   }
