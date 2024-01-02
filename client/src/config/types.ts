@@ -10,4 +10,5 @@ export type GlobalComps = typeof GLOBAL_COMPONENT
 export interface GlobalProps {
   $globals: import('@/hooks').$Globals
   $http: import('axios').AxiosInstance
+  $api: import('@/clients/api').ApiClient
 }

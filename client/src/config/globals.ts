@@ -1,7 +1,7 @@
 import type { Plugin, App } from 'vue'
 
-import { $globals, $http } from '@/hooks'
-import { createHttp } from '@/plugins'
+import { $globals_key, $api_key } from '@/hooks'
+import { $api } from '@/clients'
 
 import { GLOBAL_COMPONENT } from './types'
 
@@ -14,8 +14,8 @@ export function defineGlobals(): Plugin {
   return {
     install(app: App<Element>) {
       const GLOBAL_PROPS = [
-        ['$globals', $globals, { app, env: import.meta.env }],
-        ['$http', $http, createHttp()]
+        ['$globals', $globals_key, { app, env: import.meta.env }],
+        ['$api', $api_key, $api]
 
         // important as const
       ] as const

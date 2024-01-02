@@ -1,21 +1,12 @@
 import { type App, inject } from 'vue'
 
-export const $globals = Symbol('key:$globals')
+export const $globals_key = Symbol('key:$globals')
 
 export interface $Globals {
   app: App<Element>
   env: ImportMetaEnv
 }
 
-export function useGlobals(): $Globals
-export function useGlobals(app: App<Element>, globals: $Globals): void
-export function useGlobals(app?: App<Element>, globals?: $Globals): any {
-  // Provide globals
-  if (app && globals) {
-    app.config.globalProperties.$globals = globals
-    return app.provide($globals, globals)
-  }
-
-  // inject Global
-  return inject($globals) as $Globals
+export function useGlobals() {
+  return inject($globals_key) as $Globals
 }
