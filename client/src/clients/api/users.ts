@@ -22,9 +22,15 @@ export class UsersApi extends ApiClientBase {
     this.team = new UsersTeamApi(options, this.path)
   }
 
-  async list() {}
+  list(query?: Api.Inputs.List) {
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
+  }
 
-  async read(id: number) {}
+  read(id: number) {
+    return this.unwrap(this.$http.get<Api.Returns.MsgRes<Api.User>>(this.getUrl(`/${id}`)), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class UsersAdminApi extends ApiClientBase {
@@ -38,45 +44,66 @@ class UsersAdminApi extends ApiClientBase {
     this.office_users = new UsersAdminofficeUsersApi(options, prePath + this.path)
   }
 
-  async list() {}
+  list(query?: Api.Inputs.List) {
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
+  }
 
-  async read(id: number) {}
+  read(id: number) {
+    return this.unwrap(this.$http.get<Api.Returns.MsgRes<Api.User>>(this.getUrl(`/${id}`)), {
+      transform: (d) => d.results
+    })
+  }
 
-  async update(id: number) {}
+  update(id: number, input: Api.Inputs.UsersAdminUpdate) {
+    return this.unwrap(
+      this.$http.put<Api.Returns.MsgRes<Api.AdminUser>>(this.getUrl(`/${id}`), input),
+      { transform: (d) => d.results }
+    )
+  }
 
-  async delete(id: number) {}
+  delete(id: number) {
+    return this.unwrap(this.$http.delete<void>(this.getUrl(`/${id}`)))
+  }
 }
 
 class UsersAdminofficeUsersApi extends ApiClientBase {
   protected readonly path = '/office_users'
 
-  async list() {}
+  list() {}
 }
 
 class UsersBirthdatesApi extends ApiClientBase {
   protected readonly path = '/birthdates'
 
-  async list() {}
+  list() {}
 }
 
 class UsersSetActiveApi extends ApiClientBase {
   protected readonly path = '/set_active'
 
-  async update() {}
+  update(input: Api.Inputs.UsersActive) {
+    return this.unwrap(this.$http.put<Api.Inputs.UsersActive>(this.getUrl(), input))
+  }
 }
 
 class UsersSetInActiveApi extends ApiClientBase {
   protected readonly path = '/set_inactive'
 
-  async update() {}
+  update(input: Api.Inputs.UsersActive) {
+    return this.unwrap(this.$http.put<Api.Inputs.UsersActive>(this.getUrl(), input))
+  }
 }
 
 class UsersSkillsApi extends ApiClientBase {
   protected readonly path = '/skills'
 
-  async list() {}
+  list(query?: Api.Inputs.List) {
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.Skill>>(this.getUrl('', query)))
+  }
 
-  async create() {}
+  create(input: Api.Inputs.UserSkills) {
+    return this.unwrap(this.$http.post<Api.Inputs.UserSkills>(this.getUrl('/add_skill'), input))
+  }
 }
 
 class UsersTeamApi extends ApiClientBase {
@@ -90,11 +117,15 @@ class UsersTeamApi extends ApiClientBase {
     this.supervisors = new UsersTeamSupervisorsApi(options, prePath + this.path)
   }
 
-  async list() {}
+  list(query?: Api.Inputs.List) {
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
+  }
 }
 
 class UsersTeamSupervisorsApi extends ApiClientBase {
   protected readonly path = '/supervisors'
 
-  async list() {}
+  list(query?: Api.Inputs.List) {
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
+  }
 }

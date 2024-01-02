@@ -1,6 +1,15 @@
 import type { AxiosError, AxiosInstance, AxiosResponse } from 'axios'
 
 export module Api {
+  /**
+   * @description
+   * `YYYY-MM-DD`
+   */
+  export type DashedDate = `${number}-${number}-${number}`
+  export type Teams = "Business Development" | "Development" | "HR & Finance" | "QA" | "Marketing" | "Operations" | "Support" // prettier-ignore
+  export type Users = 'Admin' | 'User' | 'Supervisor'
+  export type Gender = 'Male' | 'Female'
+
   export interface ClientOptions {
     $http: AxiosInstance
   }
@@ -13,23 +22,66 @@ export module Api {
     normalizeError?: (error: AxiosError<any>, res: AxiosResponse<T>) => string
   }
 
+  export interface Skill {
+    name: string
+  }
+
+  export interface Certificate {}
+
+  export interface Salary {}
+
   export interface User {
-    /* Code */
+    id: number
+    first_name: string
+    last_name: string
+    full_name: string
+    email: string
+    gender: Gender
+    team: string
+    image: string
+    telegram_link: string
+    social_insurance_number: string
+    mobile_number: string
+    reporting_to: number[]
+    birthday: string
+    location: {
+      id: number
+      name: string
+      country: string
+      weekend: string
+    }
+    skills: Skill[]
+    user_certificates: Certificate[]
+    joining_at: string
+    job_title: string
+    address: string
+    user_type: string
+    background_color: string
+    is_active: boolean
+  }
+
+  export interface AdminUser extends Omit<'User', 'is_active'> {
+    user_company_properties: 'string'
+    salary: Salary
+    user_evaluation: string
+    user_type: 'Admin'
   }
 
   export module Returns {
-    export interface Login {
+    export interface MsgRes<T> {
       message: string
-      results: {
-        id: number
-        email: string
-        refresh_token: string
-        access_token: string
-        full_name: string
-        first_name: string
-        last_name: string
-      }
+      results: T
     }
+
+    export type Login = MsgRes<{
+      id: number
+      email: string
+      refresh_token: string
+      access_token: string
+      full_name: string
+      first_name: string
+      last_name: string
+    }>
 
     export interface Register {
       message: string
@@ -40,18 +92,16 @@ export module Api {
       access: string
       refresh: string
     }
+
+    export interface List<T> {
+      count: number
+      previous: string | null
+      next: string | null
+      results: T[]
+    }
   }
 
   export module Inputs {
-    /**
-     * @description
-     * `YYYY-MM-DD`
-     */
-    export type DashedDate = `${number}-${number}-${number}`
-    export type Teams = "Business Development" | "Development" | "HR & Finance" | "QA" | "Marketing" | "Operations" | "Support" // prettier-ignore
-    export type Users = 'Admin' | 'User' | 'Supervisor'
-    export type Gender = 'Male' | 'Female'
-
     export interface Login {
       email: string
       password: string
@@ -68,7 +118,7 @@ export module Api {
       password: string
       location: number
       team: Teams
-      salary?: {}
+      salary?: Salary
       user_type: Users
       reporting_to?: number[]
       gender: Gender
@@ -85,5 +135,26 @@ export module Api {
       old_password: string
       new_password: string
     }
+
+    export type List = { page?: number }
+
+    export interface UsersAdminUpdate {
+      gender: string
+      email: string
+      telegram_link: string
+      birthday: string
+      joining_at: string
+      social_insurance_number: string
+      team: string
+      salary?: Salary
+      mobile_number: string
+      job_title: string
+      address: string
+      user_type: Users
+    }
+
+    export type UsersActive = { user_id: number }
+
+    export type UserSkills = { skills: string[] }
   }
 }

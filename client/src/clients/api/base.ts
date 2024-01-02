@@ -51,9 +51,11 @@ export abstract class ApiClientBase {
     }
   }
 
-  protected getUrl(route: Api.Path): string {
-    const url = this.prePath + this.path + route + '/'
-    return url.replace(URL_REGEX, '/')
+  protected getUrl(route: string = '', query: { [key: string]: any } = {}): string {
+    const q = Object.entries(query)
+      .map((x) => x.join('='))
+      .join('&')
+    return this.prePath + this.path + route + '/?' + q
   }
 
   private static normalizeError(err: AxiosError<any>) {
