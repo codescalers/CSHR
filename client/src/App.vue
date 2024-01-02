@@ -5,29 +5,17 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue'
-
-import { useAsyncState } from '@vueuse/core'
+import { useNotifier } from 'vue3-notifier'
 import { useApi } from '@/hooks'
 
 export default {
   name: 'App',
   setup() {
+    /* Set Notifier in API */
     const api = useApi()
-    const loginTask = useAsyncState(
-      (email: string, password: string) => api.auth.login({ email, password }),
-      null,
-      { immediate: false }
-    )
+    const notifier = useNotifier()
 
-    const email = ref('')
-    const password = ref('')
-
-    function login() {
-      loginTask.execute(import.meta.env.DEV ? 1000 : 0, email.value, password.value)
-    }
-
-    return { loginTask, login, email, password }
+    api && notifier && api.setNotifier(notifier)
   }
 }
 </script>

@@ -1,3 +1,5 @@
+import type { NotifierService } from 'vue3-notifier'
+
 import { ApiClientBase } from './base'
 import type { Api } from '@/types'
 
@@ -23,6 +25,8 @@ export class ApiClient extends ApiClientBase {
 
   private readonly requestInterceptorId: number
   private readonly responseInterceptorId: number
+
+  private $notifier?: NotifierService
 
   readonly auth: AuthApi
   readonly company_properties: CompanyPropertiesApi
@@ -62,6 +66,12 @@ export class ApiClient extends ApiClientBase {
     this.official_documents = new OfficialDocumentsApi(options)
     this.users = new UsersApi(options)
     this.vacations = new VacationsApi(options)
+  }
+
+  setNotifier(service: NotifierService) {
+    if (!this.$notifier) {
+      this.$notifier = service
+    }
   }
 
   private setAxiosRequestInterceptor() {

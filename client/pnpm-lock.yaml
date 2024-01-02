@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@mdi/font':
+    specifier: ^7.4.47
+    version: 7.4.47
   '@vueuse/core':
     specifier: ^10.7.1
     version: 10.7.1(vue@3.4.3)
@@ -23,6 +26,9 @@ dependencies:
   vue-router:
     specifier: ^4.2.5
     version: 4.2.5(vue@3.4.3)
+  vue3-notifier:
+    specifier: ^1.0.2
+    version: 1.0.2(typescript@5.3.3)
   vuetify:
     specifier: ^3.4.9
     version: 3.4.9(typescript@5.3.3)(vite-plugin-vuetify@2.0.1)(vue@3.4.3)
@@ -398,6 +404,10 @@ packages:
 
   /@jridgewell/sourcemap-codec@1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
+
+  /@mdi/font@7.4.47:
+    resolution: {integrity: sha512-43MtGpd585SNzHZPcYowu/84Vz2a2g31TvPMTm9uTiCSWzaheQySUcSyUH/46fPnuPQWof2yd0pGBtzee/IQWw==}
+    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1145,6 +1155,11 @@ packages:
       supports-color: 7.2.0
     dev: true
 
+  /chalk@5.3.0:
+    resolution: {integrity: sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+    dev: false
+
   /check-error@1.0.3:
     resolution: {integrity: sha512-iKEoDYaRmd1mxM90a2OEfWhjsjPpYPuQ+lMYsoxB126+t8fw7ySEO48nmDg5COTjxDI65/Y2OWpeEHk3ZOe8zg==}
     dependencies:
@@ -1705,6 +1720,10 @@ packages:
   /graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
     dev: true
+
+  /gsap@3.12.4:
+    resolution: {integrity: sha512-1ByAq8dD0W4aBZ/JArgaQvc0gyUfkGkP8mgAQa0qZGdpOKlSOhOf+WNXjoLimKaKG3Z4Iu6DKZtnyszqQeyqWQ==}
+    dev: false
 
   /has-flag@3.0.0:
     resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==}
@@ -2942,6 +2961,16 @@ packages:
       semver: 7.5.4
       typescript: 5.3.3
     dev: true
+
+  /vue3-notifier@1.0.2(typescript@5.3.3):
+    resolution: {integrity: sha512-o/RlQhA4N7WYO5mtwHCJE04CgSUGUbpF++1nyGWgPw9v5QDQGzf85XTygQq2m0LJcVBMLo6D9v/YDkUl5gtYTw==}
+    dependencies:
+      chalk: 5.3.0
+      gsap: 3.12.4
+      vue: 3.4.3(typescript@5.3.3)
+    transitivePeerDependencies:
+      - typescript
+    dev: false
 
   /vue@3.4.3(typescript@5.3.3):
     resolution: {integrity: sha512-GjN+culMAGv/mUbkIv8zMKItno8npcj5gWlXkSxf1SPTQf8eJ4A+YfHIvQFyL1IfuJcMl3soA7SmN1fRxbf/wA==}
