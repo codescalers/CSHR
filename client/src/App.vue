@@ -1,5 +1,7 @@
 <template>
-  <SideDrawer />
+  <v-app>
+    <SideDrawer />
+  </v-app>
 </template>
 
 <script lang="ts">

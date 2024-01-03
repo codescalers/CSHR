@@ -8,8 +8,8 @@
         <v-list color="transparent">
           <template v-for='item in navItems' :key='item.title'>
             <v-list-item 
-            :prepend-icon="item.icon">
-            <router-link :to="item.path" class='router-link' :class="{ 'router-link-active': $route.path === item.path }">
+            :prepend-icon="item.icon" :class="{ 'router-link-active': $route.path === item.path }">
+            <router-link  :to="item.path"  class='router-link'>
               {{item.title}}
             </router-link>
           </v-list-item>
@@ -24,7 +24,9 @@
           </div>
         </template>
       </v-navigation-drawer>
-      <v-main style="height: 400px"></v-main>
+      <v-main style="min-height: 100vh">
+        <router-view />
+      </v-main>
     </v-layout>
   </v-card>
 </template>
