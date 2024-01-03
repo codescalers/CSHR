@@ -52,6 +52,7 @@ class IsUser(permissions.BasePermission):
             return userType == USER_TYPE.USER
         return False
 
+
 class CustomPermissions:
     """for check the type of user in views"""
 
