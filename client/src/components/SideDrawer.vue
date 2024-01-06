@@ -2,6 +2,7 @@
   <v-card>
     <v-layout>
       <v-navigation-drawer
+        v-if='isAuthorized'
         theme="dark"
         permanent
       >
@@ -33,6 +34,7 @@
 
 <script lang="ts">
 import { useRoute } from 'vue-router';
+import { computed } from 'vue';
 
 export default {
   name: 'SideDrawer',
@@ -70,10 +72,14 @@ export default {
         path: "/settings",
       }, 
     ]
+    const isAuthorized = computed(() => {
+      return localStorage.user ? true : false;
+    });
 
     return {
       $route,
       navItems,
+      isAuthorized,
     }
   }
 }

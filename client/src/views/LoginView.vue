@@ -48,6 +48,7 @@ import { $api } from '@/clients'
 import { test_auth_api } from '@/tests/api/auth'
 import { emailRules, passwordRules } from '@/utils'
 import { useRouter } from 'vue-router'
+import { useStorage } from '@vueuse/core'
 
 export default defineComponent({
   setup() {
@@ -66,6 +67,7 @@ export default defineComponent({
         email,
         password
       })
+      useStorage('user', {email, password}, localStorage, { mergeDefaults: true })
       $router.push("/")
     }
 
