@@ -6,6 +6,7 @@
         theme="dark"
         permanent
       >
+        <v-img :src="logo" max-width="150" class="ml-3 mt-6"></v-img>
         <v-list color="transparent">
           <template v-for='item in navItems' :key='item.title'>
             <v-list-item 
@@ -35,6 +36,7 @@
 <script lang="ts">
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
+import logo from '../assets/cshr_logo.png'
 
 export default {
   name: 'SideDrawer',
@@ -77,6 +79,7 @@ export default {
     });
 
     return {
+      logo,
       $route,
       navItems,
       isAuthorized,
