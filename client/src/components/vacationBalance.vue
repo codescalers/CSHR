@@ -1,6 +1,4 @@
 <template>
-
-  shjshjdjhdjhdj
   <v-card>
     <v-card-title class="font-weight-bold bg-primary">Vacation Balance</v-card-title>
             <v-row class=" text-center mt-2 mb-0">

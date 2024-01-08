@@ -73,6 +73,7 @@ export module Api {
       results: T
     }
 
+    export type Profile = MsgRes<User>
     export type Login = MsgRes<{
       id: number
       email: string
