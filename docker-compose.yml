@@ -32,6 +32,9 @@ services:
       - redis
       - postgres
 
+    volumes:
+      - backend_media:/server_dir/server/mediafiles/profile_image
+
   frontend:
     build:
       context: ./client
@@ -67,3 +70,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  backend_media:

@@ -192,8 +192,6 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [f'https://{config("SERVER_DOMAIN_NAME")}']
 
 # email config
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-AUTH_USER_MODEL = "cshr.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = config("EMAIL_HOST")
@@ -209,3 +207,5 @@ EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD")
 
 CORS_ORIGIN_ALLOW_ALL = True
 APPEND_SLASH = True
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
