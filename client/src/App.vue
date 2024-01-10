@@ -13,7 +13,7 @@ import { test_api } from '@/tests'
 export default {
   name: 'App',
   components: {
-    SideDrawer,
+    SideDrawer
   },
   setup() {
     /* Set Notifier in API */

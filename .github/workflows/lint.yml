@@ -2,8 +2,7 @@ name: Lint
 
 on:
   push:
-    branches:
-      - '**' 
+    branches: [development]
 
 jobs:
   run-linters:
