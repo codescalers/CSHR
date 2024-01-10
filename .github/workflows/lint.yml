@@ -26,3 +26,17 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           flake8: true
+
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm
+      - name: Lint
+        run: |
+          pnpm check-eslint
+          pnpm check-prettier
