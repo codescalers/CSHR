@@ -23,7 +23,9 @@ export class UsersApi extends ApiClientBase {
   }
 
   list(query?: Api.Inputs.List) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
   }
 
   read(id: number) {
