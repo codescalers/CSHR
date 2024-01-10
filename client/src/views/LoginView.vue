@@ -63,11 +63,14 @@ export default defineComponent({
     const $router = useRouter()
 
     async function login(email: string, password: string) {
-      await $api.auth.login({
-        email,
-        password
-      }, rememberMe.value)
-      $router.push('/');
+      await $api.auth.login(
+        {
+          email,
+          password
+        },
+        rememberMe.value
+      )
+      $router.push('/')
     }
 
     return {
@@ -80,7 +83,7 @@ export default defineComponent({
       emailRules,
       passwordRules,
       background,
-      logo,
+      logo
     }
   }
 })

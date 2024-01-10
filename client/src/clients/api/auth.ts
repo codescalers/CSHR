@@ -11,7 +11,7 @@ export class AuthApi extends ApiClientBase {
       { transform: (d) => d.results }
     )
 
-    ApiClientBase.login(user, rememberUser);
+    ApiClientBase.login(user, rememberUser)
 
     return user
   }

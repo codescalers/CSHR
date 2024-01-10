@@ -40,7 +40,7 @@ export default {
   setup() {
     const $route = useRoute()
     const $router = useRouter()
-    const state = useState();
+    const state = useState()
 
     const navItems = [
       {
@@ -76,16 +76,16 @@ export default {
     ]
 
     function logout() {
-      state.access_token.value = "";
+      state.access_token.value = ''
       useStorage('access_token', state.access_token.value, sessionStorage, { mergeDefaults: true })
-      $router.push("/login");
+      $router.push('/login')
     }
 
     return {
       logo,
       $route,
       navItems,
-      logout,
+      logout
     }
   }
 }
