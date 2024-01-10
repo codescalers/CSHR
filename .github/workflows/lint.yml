@@ -26,3 +26,17 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           flake8: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm i
+
+      - name: Lint and Format
+        run: |
+          pnpm lint
+          pnpm format

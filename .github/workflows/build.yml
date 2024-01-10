@@ -3,8 +3,7 @@ name: Build and push a docker image and a flist.
 
 on:
   push:
-    branches: 
-      - '**' 
+    branches: [development]
 
 jobs:
   build:
