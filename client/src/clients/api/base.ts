@@ -3,12 +3,12 @@ import type { AxiosError, AxiosInstance, AxiosResponse } from 'axios'
 import { panic, resolve } from '@/utils'
 import type { Api } from '@/types'
 import type { NotifierService } from 'vue3-notifier'
-import type { ApiClient } from "./index"
+import type { ApiClient } from './index'
 import { useStorage } from '@vueuse/core'
 import { useState } from '@/store'
 
 export abstract class ApiClientBase {
-  public static $api: ApiClient;
+  public static $api: ApiClient
   private static USER: Api.LoginUser | null = null
   protected static $notifier?: NotifierService
 
@@ -27,8 +27,8 @@ export abstract class ApiClientBase {
   }
 
   protected static login(user: Api.LoginUser, rememberUser: boolean) {
-    ApiClientBase.USER = user;
-    const state = useState();
+    ApiClientBase.USER = user
+    const state = useState()
     state.access_token.value = ApiClientBase.USER.access_token
     useStorage('access_token', state.access_token.value, sessionStorage, { mergeDefaults: true })
     if (rememberUser) {
@@ -74,11 +74,16 @@ export abstract class ApiClientBase {
     options: Api.UnwrapOptions<T, R> = {}
   ) {
     const [res, err] = await resolve(req$)
-    // check if error indicate the token needs to be refreshed 
-    if (err && err.response.status == 401 && err.response.data.code == "token_not_valid"){
-      await ApiClientBase.$api.auth.refresh({refresh: ApiClientBase.USER.refresh_token})
+    // check if error indicate the token needs to be refreshed
+    if (
+      err &&
+      err.response.status == 401 &&
+      err.response.data.code == 'token_not_valid' &&
+      ApiClientBase.USER
+    ) {
+      await ApiClientBase.$api.auth.refresh({ refresh: ApiClientBase.USER.refresh_token })
     }
-    
+
     if (err) {
       ApiClientBase.$notifier?.notify({
         type: 'error',
