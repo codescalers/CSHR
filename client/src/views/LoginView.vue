@@ -29,18 +29,15 @@
             ></v-text-field>
           </v-col>
 
-          <v-col cols='7' class="d-flex justify-content-between align-center pa-0">
-            <v-checkbox
-              v-model="rememberMe"
-              label="Remember me"
-            ></v-checkbox>
+          <v-col cols="7" class="d-flex justify-content-between align-center pa-0">
+            <v-checkbox v-model="rememberMe" label="Remember me"></v-checkbox>
             <!-- <v-btn color="primary" class="mb-6" variant='plain' style="text-transform: none !important;">Forgot password?</v-btn> -->
           </v-col>
 
           <v-col cols="7">
-            <v-btn color="primary" type="submit" :disabled="!form?.isValid" width="100%"
-              >Login</v-btn
-            >
+            <v-btn color="primary" type="submit" :disabled="!form?.isValid" width="100%">
+              Login
+            </v-btn>
           </v-col>
         </v-row>
       </v-form>
@@ -50,12 +47,11 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import background from '../assets/login.png'
-import logo from '../assets/cshr_logo.png'
+import background from '@/assets/login.png'
+import logo from '@/assets/cshr_logo.png'
 import { $api } from '@/clients'
 import { emailRules, passwordRules } from '@/utils'
 import { useRouter } from 'vue-router'
-import { useStorage } from '@vueuse/core'
 
 export default defineComponent({
   setup() {
@@ -63,21 +59,15 @@ export default defineComponent({
     const email = ref<string>('')
     const password = ref<string>('')
     const show = ref<boolean>(false)
-    const rememberMe = ref<boolean>(false);
+    const rememberMe = ref<boolean>(false)
     const $router = useRouter()
 
     async function login(email: string, password: string) {
       await $api.auth.login({
         email,
         password
-      });
-
-      if (rememberMe.value) {
-        useStorage('user', {email, password}, localStorage, { mergeDefaults: true })
-      } else {
-        useStorage('user', {email, password}, sessionStorage, { mergeDefaults: true })
-      }
-      $router.push("/")
+      }, rememberMe.value)
+      $router.push('/');
     }
 
     return {
@@ -90,7 +80,7 @@ export default defineComponent({
       emailRules,
       passwordRules,
       background,
-      logo
+      logo,
     }
   }
 })

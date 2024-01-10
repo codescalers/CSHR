@@ -1,3 +1,4 @@
+import { isAuthenticated } from '@/hooks';
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -13,6 +14,20 @@ const router = createRouter({
     { path: '/login', component: () => import('@/views/LoginView.vue') },
     { path: '/register', component: () => import('@/views/RegisterView.vue') },
   ]
+})
+
+router.beforeEach(async (to, _, next) => {
+  // If the user is not authenticated and the route is not the login page
+  if (!isAuthenticated.value && to.path !== '/login') {
+    // Redirect the user to the login page
+    next('/login');
+  } else if (isAuthenticated.value && to.path === '/login') {
+    // If authenticated and trying to access the login page, redirect to home
+    next('/');
+  } else {
+    // Continue navigation for other cases
+    next();
+  }
 })
 
 export default router
