@@ -1,5 +1,5 @@
 <template>
-  <v-card color="title">
+  <v-card color="title" class="py-10 ma-5 hover-card">
     <div class="d-flex align-center justify-center items-center py-0 font-weight-bold">
       <v-avatar color="primary" size="50" class="d-flex mx-auto mt-5 mb-3">
         <span class="text-h5 text-uppercase">{{ user?.image ? avatar(user.full_name) : "?" }}</span>
@@ -43,3 +43,9 @@ export default {
 }
 </script>
 
+<style scoped>
+.hover-card:hover {
+  transform: scale(1.05); /* Increase the scale on hover */
+  transition: transform 0.3s ease; /* Add a smooth transition effect */
+}
+</style>
