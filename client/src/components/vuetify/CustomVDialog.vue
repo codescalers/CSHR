@@ -3,6 +3,7 @@
     :model-value="routeQueryValue === 'open'"
     @update:model-value="bindModelValue"
     v-bind="/* prettier-ignore */ ($props as any)"
+    max-width='50rem'
   >
     <!-- @vue-skip -->
     <template v-for="(_, slot) of $slots" v-slot:[slot]="scope">

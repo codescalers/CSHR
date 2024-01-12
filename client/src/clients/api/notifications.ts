@@ -13,12 +13,11 @@ export class NotificationsApi extends ApiClientBase {
   }
 
 
-  async getNotificationById(type: string, id: number){
+  async read(type: string, id: number){
     ApiClientBase.assertUser();
     const notification = await this.unwrap(this.$http.get(`${type}/${id}`), {
       transform: d => d.results
-    });
-
+    });   
     return notification
   }
 }
