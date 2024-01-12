@@ -4,9 +4,7 @@
 
 <script lang="ts">
 export default {
-  name: "SettingsView",
-  setup() {
-  }
+  name: 'SettingsView',
+  setup() {}
 }
 </script>
-

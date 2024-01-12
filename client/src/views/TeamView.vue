@@ -4,9 +4,7 @@
 
 <script lang="ts">
 export default {
-  name: "TeamView",
-  setup() {
-  }
+  name: 'TeamView',
+  setup() {}
 }
 </script>
-

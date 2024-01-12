@@ -4,9 +4,7 @@
 
 <script lang="ts">
 export default {
-  name: "NotificationsView",
-  setup() {
-  }
+  name: 'NotificationsView',
+  setup() {}
 }
 </script>
-
