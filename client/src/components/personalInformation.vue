@@ -51,10 +51,6 @@ export default {
             return '--';
         };
 
-        onMounted(async () => {
-
-
-        })
 
         return {
             country,

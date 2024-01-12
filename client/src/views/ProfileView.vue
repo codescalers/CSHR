@@ -18,7 +18,7 @@
       <v-col cols="12" sm="12" md="8" class="pa-2 border rounded position-relative ma-2">
         <div>
           <personalInformation :user="user" />
-          <vacationBalance />
+          <vacationBalance :balance="balance"/>
         </div>
 
       </v-col>
@@ -41,6 +41,7 @@ export default defineComponent({
 
   setup() {
     const user = ref<Api.User>();
+    const balance = ref<Api.BalanceVacation>();
     const avatar = computed(() => {
       if (user.value) {
         let val = String(user.value.full_name);
@@ -51,11 +52,19 @@ export default defineComponent({
     
     async function getProfile() {
       user.value = await $api.myprofile.getUser();
+
+  
+    }
+
+    async function getUserBalance() {
+      balance.value = await $api.vacations.getVacationBalance( { "user_ids": user.value?.id});
+
     }
 
     onMounted(async () => {
       // await login("admin@gmail.com", "0000");
       await getProfile();
+      await getUserBalance();
 
     })
     // async function login(email: string, password: string) {
@@ -69,6 +78,7 @@ export default defineComponent({
     return {
       avatar,
       user,
+      balance,
       vacationBalance,
       personalInformation,
     }
