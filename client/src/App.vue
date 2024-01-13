@@ -21,14 +21,14 @@ export default {
     /* Set Notifier in API */
     const api = useApi()
     const notifier = useNotifier()
-    const state = useState();
+    const state = useState()
     api && notifier && api.setNotifier(notifier)
 
     /* Don't include this in production! */
     import.meta.env.VITE_DEBUG === 'true' && test_api()
 
     onMounted(() => {
-      state.access_token.value = localStorage.access_token;
+      state.access_token.value = localStorage.access_token
     })
   }
 }

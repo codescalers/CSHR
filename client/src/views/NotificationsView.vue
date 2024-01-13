@@ -60,26 +60,26 @@ export default {
     const notifications = ref<any[]>()
     const showDialog = ref<{ [key: string]: boolean }>({})
     const hrDetails = ref({
-      id: Number,
-      addresses: String,
-      status: String,
+      id: 0,
+      addresses: '',
+      status: '',
       applying_user: {
-        id: Number,
-        full_name: String,
-        email: String,
-        image: String,
-        team: String,
-        gender: String,
+        id: 0,
+        full_name: '',
+        email: '',
+        image: '',
+        team: '',
+        gender: '',
         skills: [],
-        job_title: String,
+        job_title: '',
         user_certificates: []
       },
-      approval_user: null || String,
+      approval_user: null || '',
       with_date: true,
-      created_at: String,
-      from_date: String,
-      end_date: String,
-      with_salary_mentioned: Boolean
+      created_at: '',
+      from_date: '',
+      end_date: '',
+      with_salary_mentioned: true
     })
     const vDetails = ref({
       reason: '',
@@ -134,7 +134,7 @@ export default {
         title: 'Event Details',
         details: [
           { label: 'Status', value: hrDetails.value.status },
-          { label: 'Approval User', value: hrDetails.value.approval_user || 'Not yet approved' },
+          { label: 'Approval User', value: hrDetails.value.approval_user || '-' },
           { label: 'With Date', value: hrDetails.value.with_date },
           { label: 'From Date', value: hrDetails.value.from_date },
           { label: 'End Date', value: hrDetails.value.end_date },
@@ -144,10 +144,6 @@ export default {
       }
     ])
     onMounted(async () => {
-      await $api.auth.login({
-        email: 'admin@gmail.com',
-        password: '0000'
-      })
       notifications.value = await $api.notifications.list()
       loading.value = false
     })
@@ -163,7 +159,7 @@ export default {
       }
     }
 
-    async function getNotificationDetails(type: string, id: number) {
+    async function readNotification(type: string, id: number) {
       return await $api.notifications.read(type, id)
     }
 
@@ -171,10 +167,10 @@ export default {
       showDialog.value[id] = true
       switch (type) {
         case 'vacations':
-          vDetails.value = await getNotificationDetails(type, +id)
+          vDetails.value = await readNotification(type, +id)
           break
         case 'hr_letters':
-          hrDetails.value = await getNotificationDetails(type, +id)
+          hrDetails.value = await readNotification(type, +id)
           break
         default:
           break
@@ -195,7 +191,7 @@ export default {
       vSections,
       hrSections,
       getColor,
-      getNotificationDetails,
+      readNotification,
       openDialog,
       closeDialog,
       capitalize

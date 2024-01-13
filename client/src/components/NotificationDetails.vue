@@ -17,10 +17,7 @@
                 <v-list-item-title class="mb-3 font-weight-bold">
                   {{ section.title }}
                 </v-list-item-title>
-                <v-list-item-subtitle
-                  v-for="detail in section.details"
-                  :key="detail.label"
-                >
+                <v-list-item-subtitle v-for="detail in section.details" :key="detail.label">
                   {{ detail.label }}: {{ detail.value }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -37,54 +34,54 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType } from 'vue';
+import { defineComponent, type PropType } from 'vue'
 
 export default defineComponent({
   name: 'NotificationDetails',
   props: {
     eventId: {
       type: Number,
-      required: true,
+      required: true
     },
     title: {
       type: String,
-      required: true,
+      required: true
     },
     status: {
       type: String,
-      required: true,
+      required: true
     },
     sections: {
       type: Array as PropType<any[]>,
-      required: true,
+      required: true
     },
     onClose: {
       type: Function as PropType<() => void>,
-      required: true,
-    },
+      required: true
+    }
   },
   setup(props) {
     const getStatusColor = (status: string) => {
       switch (status) {
         case 'approved':
-          return 'green';
+          return 'green'
         case 'pending':
-          return 'orange';
+          return 'orange'
         case 'rejected':
-          return 'red';
+          return 'red'
         default:
-          return 'grey';
+          return 'grey'
       }
-    };
+    }
 
     const closeDialog = () => {
-      props.onClose();
-    };
+      props.onClose()
+    }
 
     return {
       closeDialog,
-      getStatusColor,
-    };
-  },
-});
+      getStatusColor
+    }
+  }
+})
 </script>
