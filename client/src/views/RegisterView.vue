@@ -4,9 +4,7 @@
 
 <script lang="ts">
 export default {
-  name: "RegisterView",
-  setup() {
-  }
+  name: 'RegisterView',
+  setup() {}
 }
 </script>
-

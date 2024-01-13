@@ -4,9 +4,7 @@
 
 <script lang="ts">
 export default {
-  name: "CalendarView",
-  setup() {
-  }
+  name: 'CalendarView',
+  setup() {}
 }
 </script>
-

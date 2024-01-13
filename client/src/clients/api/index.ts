@@ -45,6 +45,7 @@ export class ApiClient extends ApiClientBase {
   constructor(options: Api.ClientOptions) {
     super(options)
     this.requestInterceptorId = this.setAxiosRequestInterceptor()
+    ApiClientBase.$api = this
 
     this.auth = new AuthApi(options)
     this.company_properties = new CompanyPropertiesApi(options)
