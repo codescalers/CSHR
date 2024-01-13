@@ -18,6 +18,8 @@ export class NotificationsApi extends ApiClientBase {
     const notification = await this.unwrap(this.$http.get(`${type}/${id}`), {
       transform: d => d.results
     });   
+    console.log(notification);
+    
     return notification
   }
 }
