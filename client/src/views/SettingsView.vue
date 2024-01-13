@@ -5,11 +5,21 @@
         <h1 class="mt-10">Change Password</h1>
       </v-col>
       <v-col cols="7">
-        <v-text-field v-model="old_password" :rules="passwordRules" type="text" label="Old Password"></v-text-field>
+        <v-text-field
+          v-model="old_password"
+          :rules="passwordRules"
+          type="text"
+          label="Old Password"
+        ></v-text-field>
       </v-col>
 
       <v-col cols="7">
-        <v-text-field v-model="new_password" :rules="passwordRules" type="text" label="New Password"></v-text-field>
+        <v-text-field
+          v-model="new_password"
+          :rules="passwordRules"
+          type="text"
+          label="New Password"
+        ></v-text-field>
       </v-col>
 
       <v-col cols="7">
@@ -23,7 +33,6 @@
 import { defineComponent, ref } from 'vue'
 import { $api } from '@/clients'
 import { passwordRules } from '@/utils'
-import { useStorage } from '@vueuse/core'
 
 export default defineComponent({
   setup() {
@@ -36,7 +45,6 @@ export default defineComponent({
         old_password,
         new_password
       })
-      useStorage('user', { email: localStorage.user.email, password: new_password }, localStorage, { mergeDefaults: true })
     }
 
     return {
@@ -44,7 +52,7 @@ export default defineComponent({
       old_password,
       new_password,
       change,
-      passwordRules,
+      passwordRules
     }
   }
 })

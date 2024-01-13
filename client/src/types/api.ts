@@ -99,8 +99,25 @@ export module Api {
       next: string | null
       results: T[]
     }
-  }
 
+    export interface Notification {
+      type: string
+      title: string
+      created_at: string
+      event_id: number
+      user: {
+        id: number
+        full_name: string
+        email: string
+        image: string
+        team: string
+        gender: Gender
+        skills: Skill[]
+        job_title: string
+        user_certificates: Certificate[]
+      }
+    }
+  }
   export module Inputs {
     export interface Login {
       email: string
