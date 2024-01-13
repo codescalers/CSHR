@@ -1,12 +1,10 @@
 <template>
-  <v-card>
-    <v-card-title class="font-weight-bold mb-3">
-      {{ details.title || capitalize(details.reason.split('_').join(' ')) }}
-    </v-card-title>
+  <v-card class="pa-4">
+    <v-card-title class="font-weight-bold mb-3"> {{ $props.title }} </v-card-title>
 
     <v-card-subtitle>
-      <v-chip :color="getStatusColor(details.status)">
-        {{ details.status }}
+      <v-chip :color="getStatusColor($props.status)">
+        {{ $props.status }}
       </v-chip>
     </v-card-subtitle>
 
@@ -19,8 +17,11 @@
                 <v-list-item-title class="mb-3 font-weight-bold">
                   {{ section.title }}
                 </v-list-item-title>
-                <v-list-item-subtitle v-for="subtitle in section.subtitles" :key="subtitle.label">
-                  {{ subtitle.label }}: {{ subtitle.value }}
+                <v-list-item-subtitle
+                  v-for="detail in section.details"
+                  :key="detail.label"
+                >
+                  {{ detail.label }}: {{ detail.value }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -30,20 +31,27 @@
     </v-row>
 
     <v-card-actions class="mt-6">
-      <v-btn color="blue darken-1" @click="closeDialog"> Close </v-btn>
+      <v-btn color="blue darken-1" @click="closeDialog()"> Close </v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType, ref } from 'vue';
-import { capitalize } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 
 export default defineComponent({
   name: 'NotificationDetails',
   props: {
-    details: {
-      type: Object as PropType<any>,
+    eventId: {
+      type: Number,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
       required: true,
     },
     sections: {
@@ -76,7 +84,6 @@ export default defineComponent({
     return {
       closeDialog,
       getStatusColor,
-      capitalize,
     };
   },
 });

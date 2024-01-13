@@ -13,74 +13,22 @@
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon class="me-2" @click.stop="openDialog(item.event_id, item.type)"> mdi-eye </v-icon>
         <CustomVDialog :routeQuery="item.event_id" :modelValue="showDialog[item.event_id]">
-          <v-card v-if="item.type === 'vacations' && vDetails" class="pa-4">
-            <v-card-title class="font-weight-bold mb-3"> Emergency Leave </v-card-title>
-
-            <v-card-subtitle>
-              <v-chip :color="getStatusColor(vDetails.status)">
-                {{ vDetails.status }}
-              </v-chip>
-            </v-card-subtitle>
-
-            <v-row class="mt-4">
-              <v-col v-for="section in sections" :key="section.title" cols="12" md="6">
-                <v-list dense>
-                  <v-list-item-group>
-                    <v-list-item>
-                      <v-list-item-content>
-                        <v-list-item-title class="mb-3 font-weight-bold">
-                          {{ section.title }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle
-                          v-for="subtitle in section.subtitles"
-                          :key="subtitle.label"
-                        >
-                          {{ subtitle.label }}: {{ subtitle.value }}
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </v-col>
-            </v-row>
-
-            <v-card-actions class="mt-6">
-              <v-btn color="blue darken-1" @click="closeDialog(item.event_id)"> Close </v-btn>
-            </v-card-actions>
-          </v-card>
-
-          <v-card v-if="item.type === 'hr_letters' && hrDetails" class="pa-4">
-            <v-card-title class="font-weight-bold mb-3"> Applying for HR Letter </v-card-title>
-
-            <v-card-subtitle>
-              <v-chip :color="getStatusColor(vDetails.status)">
-                {{ hrDetails.status }}
-              </v-chip>
-            </v-card-subtitle>
-
-            <v-row class="mt-4">
-              <v-col v-for="section in hrSections" :key="section.title" cols="12" md="6">
-                <v-list dense>
-                  <v-list-item-group>
-                    <v-list-item>
-                      <v-list-item-content>
-                        <v-list-item-title class="mb-3 font-weight-bold">
-                          {{ section.title }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle v-for="detail in section.details" :key="detail.label">
-                          {{ detail.label }}: {{ detail.value }}
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </v-col>
-            </v-row>
-
-            <v-card-actions class="mt-6">
-              <v-btn color="blue darken-1" @click="closeDialog(item.event_id)"> Close </v-btn>
-            </v-card-actions>
-          </v-card>
+          <NotificationDetails
+            v-if="item.type === 'vacations'"
+            :title="capitalize(vDetails.reason.split('_').join(' '))"
+            :eventId="item.event_id"
+            :sections="vSections"
+            :status="vDetails.status"
+            @close="closeDialog(item.event_id)"
+          />
+          <NotificationDetails
+            v-if="item.type === 'hr_letters'"
+            title="Applying for an HR Letter"
+            :eventId="item.event_id"
+            :sections="hrSections"
+            :status="hrDetails.status"
+            @close="closeDialog(item.event_id)"
+          />
         </CustomVDialog>
       </template>
     </v-data-table>
@@ -91,12 +39,14 @@
 import { $api } from '@/clients'
 import { computed, onMounted, ref } from 'vue'
 import CustomVDialog from '@/components/vuetify/CustomVDialog.vue'
+import NotificationDetails from '@/components/NotificationDetails.vue'
 import { capitalize } from 'vue'
 
 export default {
   name: 'NotificationsView',
   components: {
-    CustomVDialog
+    CustomVDialog,
+    NotificationDetails
   },
   setup() {
     const headers = [
@@ -147,24 +97,24 @@ export default {
       change_log: []
     })
 
-    const sections = computed(() => [
+    const vSections = computed(() => [
       {
         title: 'Request Details',
-        subtitles: [
+        details: [
           { label: 'From Date', value: vDetails.value.from_date },
           { label: 'End Date', value: vDetails.value.end_date }
         ]
       },
       {
         title: 'Applying User',
-        subtitles: [
+        details: [
           { label: 'Name', value: vDetails.value.applying_user.full_name },
           { label: 'Email', value: vDetails.value.applying_user.email }
         ]
       },
       {
         title: 'Approval User',
-        subtitles: [
+        details: [
           { label: 'Name', value: vDetails.value.approval_user.full_name },
           { label: 'Email', value: vDetails.value.approval_user.email }
         ]
@@ -213,17 +163,6 @@ export default {
       }
     }
 
-    function getStatusColor(status: string) {
-      switch (status) {
-        case 'approved':
-          return 'green'
-        case 'pending':
-          return 'orange'
-        case 'rejected':
-          return 'red'
-      }
-    }
-
     async function getNotificationDetails(type: string, id: number) {
       return await $api.notifications.read(type, id)
     }
@@ -253,10 +192,9 @@ export default {
       showDialog,
       vDetails,
       hrDetails,
-      sections,
+      vSections,
       hrSections,
       getColor,
-      getStatusColor,
       getNotificationDetails,
       openDialog,
       closeDialog,
@@ -266,7 +204,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .v-list-item-subtitle {
   margin-bottom: 0.5rem;
 }
