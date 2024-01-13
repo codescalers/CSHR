@@ -62,18 +62,10 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      // await login("admin@gmail.com", "0000");
       await getProfile();
       await getUserBalance();
 
     })
-    // async function login(email: string, password: string) {
-    //   await $api.auth.login({
-    //     email,
-    //     password
-    //   });
-    // }
-
 
     return {
       avatar,
