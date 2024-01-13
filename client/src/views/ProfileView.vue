@@ -4,9 +4,7 @@
 
 <script lang="ts">
 export default {
-  name: "ProfileView",
-  setup() {
-  }
+  name: 'ProfileView',
+  setup() {}
 }
 </script>
-
