@@ -1,32 +1,40 @@
-name: Build
+# Test if working.
+name: Build and push a docker image and a flist.
 
 on:
   push:
-    branches: 
-      [development_1.1, development_1.1_*]
+    branches: [development]
 
 jobs:
-  run-linters:
-    name: Run linters
+  build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v3
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Install Dependencies
+      - name: Build and push server image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/cshr_server:latest
+          file: "./Dockerfile"
+
+      - name: Build and push client image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/cshr_client:latest
+          file: "./client/Dockerfile"
+          context: ./client
+
+      - name: build and push server flist
         run: |
-          npm install -g pnpm
-          pnpm install
+          curl -f -X POST  -H "Authorization: bearer ${{ secrets.FLIST_TOKEN }}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/cshr_server:latest'
 
-      - name: Build
-        run: pnpm build
+      - name: build and push client flist
+        run: |
+          curl -f -X POST  -H "Authorization: bearer ${{ secrets.FLIST_TOKEN }}" https://hub.grid.tf/api/flist/me/docker -F 'image=${{ secrets.DOCKER_USERNAME }}/cshr_client:latest'
