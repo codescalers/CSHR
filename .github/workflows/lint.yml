@@ -31,5 +31,6 @@ jobs:
 
       - name: Lint and Format
         run: |
+          cd client
           pnpm lint
           pnpm format
