@@ -1,27 +1,35 @@
-name: Lint
+name: Lint and Build
 
 on:
   push:
-    branches: [development]
+    branches: 
+      [development_1.1, development_1.1_*]
 
 jobs:
   run-linters:
     name: Run linters
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [18.x]
+
     steps:
-      - name: Check out Git repository
+      - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: 3.8
+          node-version: ${{ matrix.node-version }}
 
-      - name: Install Python dependencies
-        run: pip install flake8
+      - name: Install Dependencies
+        run: |
+          cd client
+          npm install -g pnpm
+          pnpm install
 
-      - name: Run linters
-        uses: wearerequired/lint-action@v2
-        with:
-          flake8: true
+      - name: Lint and Format
+        run: |
+          pnpm lint
+          pnpm format
