@@ -26,6 +26,14 @@ export class VacationsApi extends ApiClientBase {
     this.user = new VacationsUserApi(options, this.path)
   }
 
+  async getVacationBalance(query?: any) {
+    ApiClientBase.assertUser()
+    const userBalance = await this.unwrap(
+      this.$http.get<Api.Returns.Balance>(this.getUrl('/balance', query)),
+      { transform: (d) => d.results }
+    )
+    return userBalance
+  }
   async list() {}
 
   async create() {}

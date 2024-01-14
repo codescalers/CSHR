@@ -120,14 +120,17 @@ class UsersTeamApi extends ApiClientBase {
   }
 
   list(query?: Api.Inputs.List) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), 
+    {transform: d => d.results})
   }
 }
 
 class UsersTeamSupervisorsApi extends ApiClientBase {
   protected readonly path = '/supervisors'
 
-  list(query?: Api.Inputs.List) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
+  async list(query?: Api.Inputs.List) {
+    return await this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)),
+    {transform: d => d.results}
+    )
   }
 }
