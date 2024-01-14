@@ -49,8 +49,7 @@ export default {
 
 
     async function getUsers() {
-      users.value = await $api.users.list({ "location_id": $route.params.location_id});
-      // balance.value = await $api.vacations.getVacationBalance( { "user_ids": user.value?.id});
+      users.value = await $api.users.list({ "location_id": $route.query.location_id });
       for (const user of users.value) {
         countryMap.set(user.location.id, user.location.country);
         countriesSet.add(user.location.country)
@@ -59,26 +58,28 @@ export default {
         id,
         country,
       }));
-
     }
+    function setCountries() {
+      for (const user of users.value) {
+        countryMap.set(user.location.id, user.location.country);
+        countriesSet.add(user.location.country)
+      }
+      countries.value = Array.from(countryMap).map(([id, country]) => ({
+        id,
+        country,
+      }));
+    }
+
     watch(
-      () => $route.params.location_id,
-      newValue => {
-        console.log("here")
-        getUsers();
+      () => $route.query.location_id,
+      async newValue => {
+        await getUsers();
       },
     );
 
-    // async function login(email: string, password: string) {
-    //   await $api.auth.login({
-    //     email,
-    //     password
-    //   });
-    // }
     onMounted(async () => {
-      // await login("admin@gmail.tcom", "0000");
       await getUsers();
-      // console.log("rote.params.country", $route.params.country)
+      setCountries();
 
     })
 

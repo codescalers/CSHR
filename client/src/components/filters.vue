@@ -53,7 +53,7 @@ export default {
 
 
     const handleCountryChange = () => {
-      $router.push({ name: 'users', query: { location_id: country.value?.id } });
+      $router.push({ path: '/users', query: { location_id: country.value?.id } });
     };
 
 
