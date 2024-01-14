@@ -72,6 +72,11 @@ export default {
         icon: 'mdi-cog',
         title: 'Settings',
         path: '/settings'
+      },
+      {
+        icon: 'mdi-account',
+        title: 'Profile',
+        path: '/profile'
       }
     ]
 
