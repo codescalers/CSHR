@@ -618,13 +618,12 @@ class UserVacationBalanceApiView(GenericAPIView):
     def get(self, request: Request) -> Response:
         """Get method to get all user balance"""
         user_ids = request.query_params.get("user_ids")
-        user_ids = user_ids.split(",")
-
         if user_ids is None:
             return CustomResponse.bad_request(
                 message="You must send `user_id` as a query_params."
             )
 
+        user_ids = user_ids.split(",")
         users: User = get_users_by_id(user_ids)
 
         v: StanderdVacationBalance = StanderdVacationBalance()
@@ -645,14 +644,14 @@ class UserVacationBalanceApiView(GenericAPIView):
         """Use this endpoint to update user balance"""
 
         user_ids = request.query_params.get("user_ids")
-        user_ids = user_ids.split(",")
-
         if user_ids is None:
             return CustomResponse.bad_request(
                 message="You must send `user_id` as a query_params."
             )
 
+        user_ids = user_ids.split(",")
         users: User = get_users_by_id(user_ids)
+
         v: StanderdVacationBalance = StanderdVacationBalance()
 
         balances = filter_balances_by_users(users)

@@ -1,8 +1,5 @@
 """This file containes parse date function that takes an obj and returns a datetime inctance."""
-from typing import Dict, List
-from datetime import datetime, timedelta
-
-from server.cshr.api.response import CustomResponse
+from datetime import timedelta
 
 
 def get_dates_between_two_dates(start_date, end_date):
