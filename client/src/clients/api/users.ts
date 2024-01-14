@@ -22,7 +22,7 @@ export class UsersApi extends ApiClientBase {
     this.team = new UsersTeamApi(options, this.path)
   }
 
-  list(query?: Api.Inputs.List) {
+  list(query?: any) {
     return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
       transform: (d) => d.results
     })

@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-5">
-    <officeFilters :countriesSet="countriesSet" />
+    <officeFilters :countries="countries" />
 
     <v-row>
 
@@ -21,11 +21,12 @@
 </template>
 
 <script lang="ts">
-import type { Api } from '@/types';
-import { onMounted, ref } from 'vue';
+import type { Api, Country } from '@/types';
+import { onMounted, ref, watch } from 'vue';
 import { $api } from '@/clients';
 import UserCard from "@/components/userCard.vue"
 import officeFilters from '@/components/filters.vue';
+import { useRoute } from 'vue-router';
 export default {
   name: "UsersView",
   components: {
@@ -36,28 +37,48 @@ export default {
     const users = ref<Api.User[]>([]);
 
 
-    // const countries = ref<string[]>([]);
-    const countriesSet = ref<Set<string>>(new Set());
-    // user.location.country
+    const countriesSet = new Set<string>();
+    const countries = ref<Country[]>([]);
+    const countryMap = new Map<number, string>();
+
+
+    const $route = useRoute()
+
+
+
+
 
     async function getUsers() {
-      users.value = await $api.users.list();
+      users.value = await $api.users.list({ "location_id": $route.params.location_id});
+      // balance.value = await $api.vacations.getVacationBalance( { "user_ids": user.value?.id});
       for (const user of users.value) {
-        countriesSet.value.add(user.location.country)
-        // console.log("countries.value ",countriesSet.value)
+        countryMap.set(user.location.id, user.location.country);
+        countriesSet.add(user.location.country)
       }
+      countries.value = Array.from(countryMap).map(([id, country]) => ({
+        id,
+        country,
+      }));
 
     }
+    watch(
+      () => $route.params.location_id,
+      newValue => {
+        console.log("here")
+        getUsers();
+      },
+    );
 
-    async function login(email: string, password: string) {
-      await $api.auth.login({
-        email,
-        password
-      });
-    }
+    // async function login(email: string, password: string) {
+    //   await $api.auth.login({
+    //     email,
+    //     password
+    //   });
+    // }
     onMounted(async () => {
-      await login("admin@gmail.com", "0000");
+      // await login("admin@gmail.tcom", "0000");
       await getUsers();
+      // console.log("rote.params.country", $route.params.country)
 
     })
 
@@ -65,7 +86,7 @@ export default {
       users,
       UserCard,
       officeFilters,
-      countriesSet,
+      countries,
 
     }
   }
@@ -73,8 +94,7 @@ export default {
 </script>
 
 <style scoped>
-.routerLink{
-     text-decoration: none;
- }
- 
+.routerLink {
+  text-decoration: none;
+}
 </style>

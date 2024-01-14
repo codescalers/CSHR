@@ -15,9 +15,17 @@
             <h3> Select Office</h3>
           </div>
         </v-col>
-        <v-col cols="12" sm="12" md="10" class="pa-2 border rounded  align-self-start">
+        <v-col cols="12" sm="12" md="10" class="pa-2 align-self-start">
           <div>
-            <v-autocomplete v-model="country" :items="countriesSet" label="Default"></v-autocomplete>
+
+
+
+            <v-autocomplete v-model="country" :items="countries" label="Country" @update:model-value="handleCountryChange"
+              return-object item-title="country">
+
+
+            </v-autocomplete>
+
           </div>
 
         </v-col>
@@ -28,29 +36,34 @@
 </template>
 
 <script lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router'
+
+import type { Country } from '@/types';
 
 
 export default {
   name: 'officeFilters',
-  props: ["countriesSet"],
+  props: ["countries"],
 
   setup(props) {
-    const country = ref<string>(props.countriesSet[0]);
-    //   const country = computed(() => {
-    //   if (props.countriesSet.length != 0) {
-    //     console.log("countries",props.countriesSet);
-    //     return props.countriesSet[0];
-    //     // let val = String(user.value.full_name);
-    //     // return val.charAt(0);
-    //   }
-    //   return "";
-    // });
+    const $router = useRouter()
+    const country = ref<Country>();
+
+
+
+    const handleCountryChange = () => {
+      $router.push({ name: 'users', query: { location_id: country.value?.id } });
+    };
+
+
+
 
 
     return {
       country,
-      // avatar,
+      handleCountryChange,
+
     }
   }
 }
