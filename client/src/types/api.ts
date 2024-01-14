@@ -60,6 +60,34 @@ export module Api {
     is_active: boolean
   }
 
+  export interface BalanceVacation {
+    sick_leaves: {
+      reserved: number
+      all: string
+     
+    }
+    compensation: {
+      reserved: number
+      all: string
+ 
+    }
+    unpaid: {
+      reserved: number
+      all: string
+    }
+    annual_leaves: {
+      reserved: number
+      all: string
+    }
+    emergency_leaves: {
+      reserved: number
+      all: string
+    }
+    leave_excuses: {
+      reserved: number
+      all: string
+    }
+  }
   export interface AdminUser extends Omit<'User', 'is_active'> {
     user_company_properties: 'string'
     salary: Salary
@@ -73,6 +101,7 @@ export module Api {
       results: T
     }
 
+    export type Profile = MsgRes<User>
     export type Login = MsgRes<{
       id: number
       email: string
@@ -83,6 +112,8 @@ export module Api {
       last_name: string
     }>
 
+    export type Balance = MsgRes<BalanceVacation>
+    
     export interface Register {
       message: string
       results: Api.Inputs.Register
