@@ -29,10 +29,11 @@ export abstract class ApiClientBase {
   protected static login(user: Api.LoginUser, rememberUser: boolean) {
     ApiClientBase.USER = user
     const state = useState()
-    state.access_token.value = ApiClientBase.USER.access_token
-    useStorage('access_token', state.access_token.value, sessionStorage, { mergeDefaults: true })
+    const { access_token } = state
+    access_token.value = user.access_token
+    useStorage('access_token', access_token.value, sessionStorage, { mergeDefaults: true })
     if (rememberUser) {
-      useStorage('access_token', state.access_token.value, localStorage, { mergeDefaults: true })
+      useStorage('access_token', access_token.value, localStorage, { mergeDefaults: true })
     }
   }
 
