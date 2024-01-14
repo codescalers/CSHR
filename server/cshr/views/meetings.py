@@ -1,4 +1,3 @@
-import datetime
 from typing import Dict, List
 from server.cshr.serializers.meetings import MeetingsSerializer
 from server.cshr.models.users import User
@@ -15,8 +14,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from server.cshr.api.response import CustomResponse
 
-from server.cshr.utils.parse_date import CSHRDate
-
 
 class BaseMeetingsApiView(ListAPIView, GenericAPIView):
     """Class Meeting_APIVIEW to create a new meeting into database"""
@@ -27,22 +24,22 @@ class BaseMeetingsApiView(ListAPIView, GenericAPIView):
     def post(self, request: Request) -> Response:
         """Method to create a new meeting"""
         serializer = self.get_serializer(data=request.data)
-        invited_users: List[int] = request.data.get("invited_users")
+        # invited_users: List[int] = request.data.get("invited_users")
         if serializer.is_valid():
             current_user: User = get_user_by_id(request.user.id)
-            provided_date: CSHRDate = CSHRDate(request.data.get("date"))
-            parsing: datetime.datetime = provided_date.parse()
-            if type(parsing) == datetime.datetime:
-                saved = serializer.save(
-                    host_user=current_user, date=parsing, invited_users=invited_users
+            if current_user is None:
+                return CustomResponse.bad_request(
+                    message='Ensure that the "host_user" field is included in the payload.'
                 )
-                response_date: Dict = send_meeting_to_calendar(saved)
-                return CustomResponse.success(
-                    data=response_date,
-                    message="meeting is created successfully",
-                    status_code=201,
-                )
-            return parsing
+            saved = serializer.save(
+                host_user=current_user, invited_users=[]
+            )
+            response_date: Dict = send_meeting_to_calendar(saved)
+            return CustomResponse.success(
+                data=response_date,
+                message="meeting is created successfully",
+                status_code=201,
+            )
         return CustomResponse.bad_request(
             error=serializer.errors, message="meeting creation failed"
         )

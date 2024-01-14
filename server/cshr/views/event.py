@@ -1,4 +1,3 @@
-import datetime
 from typing import Dict, List
 from server.cshr.models.event import Event
 from server.cshr.serializers.event import EventOnDaySerializer, EventSerializer
@@ -13,7 +12,6 @@ from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from server.cshr.api.response import CustomResponse
-from server.cshr.utils.parse_date import CSHRDate
 
 
 class BaseEventsAPIView(ListAPIView, GenericAPIView):
@@ -24,24 +22,13 @@ class BaseEventsAPIView(ListAPIView, GenericAPIView):
         """Method to create a new event"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            from_date: CSHRDate = CSHRDate(request.data.get("from_date"))
-            from_date_parsing: datetime.datetime = from_date.parse()
-            end_date: CSHRDate = CSHRDate(request.data.get("end_date"))
-            end_date_parsing: datetime.datetime = end_date.parse()
-            if (
-                type(from_date_parsing) == datetime.datetime
-                and type(end_date_parsing) == datetime.datetime
-            ):
-                saved = serializer.save(
-                    from_date=from_date_parsing, end_date=end_date_parsing
-                )
-                response_date: Dict = send_event_to_calendar(saved)
-                return CustomResponse.success(
-                    data=response_date,
-                    message="event is created successfully",
-                    status_code=201,
-                )
-            return from_date_parsing
+            saved = serializer.save()
+            response_date: Dict = send_event_to_calendar(saved)
+            return CustomResponse.success(
+                data=response_date,
+                message="event is created successfully",
+                status_code=201,
+            )
         return CustomResponse.bad_request(
             error=serializer.errors, message="event creation failed"
         )

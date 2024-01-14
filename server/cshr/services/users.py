@@ -9,6 +9,8 @@ from server.cshr.models.users import User, UserSkills
 
 def get_user_by_id(id: str) -> User:
     """Return user who have the same id"""
+    if id is None:
+        return id
     try:
         return User.objects.get(id=int(id))
     except User.DoesNotExist:
