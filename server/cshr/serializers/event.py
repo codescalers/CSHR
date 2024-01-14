@@ -1,5 +1,4 @@
-from typing import Dict
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer
 from server.cshr.models.event import Event
 
 
