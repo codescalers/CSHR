@@ -24,3 +24,12 @@ export const passwordRules = [
   (v: string) => !!v || 'Password is required.',
   (v: string) => v.length > 3 || 'Password must be more than 3 characters.'
 ]
+
+export const DASHBOARD_ITEMS = [
+  { id: 1, name: 'Set Vactions' },
+  { id: 2, name: 'Set User Vacations' },
+  { id: 3, name: 'Update Office Vacations' },
+  { id: 4, name: 'Add Office' },
+  { id: 5, name: 'Add User' },
+  { id: 6, name: 'Update User Profile' },
+]

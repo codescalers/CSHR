@@ -148,6 +148,21 @@ export module Api {
         user_certificates: Certificate[]
       }
     }
+
+    export interface GetAdminBalance {
+      annual_leaves: number,
+      compensation: number,
+      emergency_leaves: number,
+      leave_excuses: number,
+      year: number,
+      public_holidays: Date[],
+      location: {
+        id: number,
+        name: string,
+        country: string,
+        weekend: string
+      }
+    }
   }
   export module Inputs {
     export interface Login {
@@ -204,5 +219,20 @@ export module Api {
     export type UsersActive = { user_id: number }
 
     export type UserSkills = { skills: string[] }
+
+    export type Vacations = {
+      annual_leaves: number,
+      compensation: number,
+      emergency_leaves: number,
+      leave_excuses: number,
+      year: number,
+      public_holidays: string[]
+    }
+
+    export type BalanceAdjustment = {
+      officeId: number,
+      value: number,
+      reason: string
+    }
   }
 }

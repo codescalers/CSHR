@@ -11,6 +11,7 @@ export class VacationsApi extends ApiClientBase {
   readonly comment: VacationsCommentApi
   readonly edit: VacationsEditApi
   readonly get_admin_balance: VacationsGetAdminBalanceApi
+  readonly post_admin_balance: VacationsPostAdminBalanceApi
   readonly user: VacationsUserApi
 
   constructor(options: Api.ClientOptions) {
@@ -23,6 +24,7 @@ export class VacationsApi extends ApiClientBase {
     this.comment = new VacationsCommentApi(options, this.path)
     this.edit = new VacationsEditApi(options, this.path)
     this.get_admin_balance = new VacationsGetAdminBalanceApi(options, this.path)
+    this.post_admin_balance = new VacationsPostAdminBalanceApi(options, this.path)
     this.user = new VacationsUserApi(options, this.path)
   }
 
@@ -70,7 +72,9 @@ class VacationsBalanceApi extends ApiClientBase {
 
   async list() {}
 
-  async update() {}
+  async update(input: number) {
+
+  }
 }
 
 class VacationsBalanceAdjustmentApi extends ApiClientBase {
@@ -101,10 +105,27 @@ class VacationsEditApi extends ApiClientBase {
 
 class VacationsGetAdminBalanceApi extends ApiClientBase {
   protected readonly path = '/get-admin-balance'
+  
+  constructor(options: Api.ClientOptions, prePath: string){
+    super(options, prePath)
+  }
+  async list() {
+    ApiClientBase.assertUser()
+    return await this.unwrap(this.$http.get(this.getUrl()), {
+      transform: (d) => d.results
+    })
+  }
+}
 
-  async list() {}
+class VacationsPostAdminBalanceApi extends ApiClientBase {
+  protected readonly path = '/post-admin-balance'
 
-  async create(id: number) {}
+  async create(input: Api.Inputs.Vacations) {
+    ApiClientBase.assertUser()
+    return await this.unwrap(this.$http.post(this.getUrl(), input), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsUserApi extends ApiClientBase {

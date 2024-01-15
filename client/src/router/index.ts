@@ -16,18 +16,18 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach(async (to, _, next) => {
-  // If the user is not authenticated and route to login page
-  if (!isAuthenticated.value && to.path !== '/login') {
-    // Redirect the user to the login page
-    next('/login')
-  } else if (isAuthenticated.value && to.path === '/login') {
-    // If authenticated and trying to access the login page, redirect to home
-    next('/')
-  } else {
-    // Continue navigation for other cases
-    next()
-  }
-})
+// router.beforeEach(async (to, _, next) => {
+//   // If the user is not authenticated and route to login page
+//   if (!isAuthenticated.value && to.path !== '/login') {
+//     // Redirect the user to the login page
+//     next('/login')
+//   } else if (isAuthenticated.value && to.path === '/login') {
+//     // If authenticated and trying to access the login page, redirect to home
+//     next('/')
+//   } else {
+//     // Continue navigation for other cases
+//     next()
+//   }
+// })
 
 export default router
