@@ -80,7 +80,12 @@ class VacationsBalanceApi extends ApiClientBase {
 class VacationsBalanceAdjustmentApi extends ApiClientBase {
   protected readonly path = '/adjustment'
 
-  async update() {}
+  async update(input: Api.Inputs.BalanceAdjustment) {
+    ApiClientBase.assertUser()
+    return await this.unwrap(this.$http.put(this.getUrl(), input), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsCalculateApi extends ApiClientBase {

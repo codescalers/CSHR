@@ -97,7 +97,6 @@ export default {
         password: '0000'
       })
       office_balance.value = await $api.vacations.get_admin_balance.list()
-      console.log(office_balance.value)
     })
 
     async function setVacations() {

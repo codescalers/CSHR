@@ -52,6 +52,7 @@ import logo from '@/assets/cshr_logo.png'
 import { $api } from '@/clients'
 import { emailRules, passwordRules } from '@/utils'
 import { useRouter } from 'vue-router'
+import { useState } from '../store'
 
 export default defineComponent({
   setup() {
@@ -61,6 +62,7 @@ export default defineComponent({
     const show = ref<boolean>(false)
     const rememberMe = ref<boolean>(false)
     const $router = useRouter()
+    const state = useState();
 
     async function login(email: string, password: string) {
       await $api.auth.login(
@@ -70,6 +72,8 @@ export default defineComponent({
         },
         rememberMe.value
       )
+      const user = await $api.myprofile.getUser();
+      state.user.value = user;
       $router.push('/')
     }
 

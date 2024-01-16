@@ -13,7 +13,12 @@ export class OfficeApi extends ApiClientBase {
     })
   }
 
-  async read(id: number) {}
+  async read(id: number) {
+    ApiClientBase.assertUser()
+    return this.unwrap(this.$http.post(this.getUrl(), id), {
+      transform: (d) => d.results
+    })
+  }
 
   async update(id: number) {}
 

@@ -33,6 +33,7 @@ import personalInformation from "@/components/personalInformation.vue";
 import { $api } from '@/clients';
 import { onMounted } from 'vue';
 import type { Api } from '@/types'
+import { useState } from '../store';
 export default defineComponent({
   components: {
     vacationBalance,
@@ -40,6 +41,7 @@ export default defineComponent({
   },
 
   setup() {
+    const state = useState();
     const user = ref<Api.User>();
     const balance = ref<Api.BalanceVacation>();
     const avatar = computed(() => {
@@ -51,9 +53,7 @@ export default defineComponent({
     });
     
     async function getProfile() {
-      user.value = await $api.myprofile.getUser();
-
-  
+      user.value = state.user.value;
     }
 
     async function getUserBalance() {
