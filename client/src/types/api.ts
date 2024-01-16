@@ -218,6 +218,8 @@ export module Api {
 
     export type UsersActive = { user_id: number }
 
+    export type UserId = { user_ids: number }
+
     export type UserSkills = { skills: string[] }
 
     export type Vacations = {
@@ -239,6 +241,12 @@ export module Api {
       name: string,
       country: string,
       weekend: string
+    }
+
+    export type Vacation = {
+      annual_leaves: number,
+      emergency_leaves: number,
+      leave_excuses: number,
     }
   }
 }

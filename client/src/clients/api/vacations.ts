@@ -70,10 +70,16 @@ class VacationsBalanceApi extends ApiClientBase {
     this.adjustment = new VacationsBalanceAdjustmentApi(options, prePath + this.path)
   }
 
-  async list() {}
+  async list(query: Api.Inputs.UserId) {
+    return this.unwrap(this.$http.get(this.getUrl('', query)),
+      { transform : (d) => d.results }  
+    )
+  }
 
-  async update(input: number) {
-
+  async update(query: Api.Inputs.UserId, input: Api.Inputs.Vacation) {
+    return this.unwrap(this.$http.put(this.getUrl('', query), input),
+      { transform : (d) => d.results }  
+    )
   }
 }
 
