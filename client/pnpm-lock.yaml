@@ -35,6 +35,9 @@ dependencies:
   axios:
     specifier: ^1.6.3
     version: 1.6.3
+  calendar_options:
+    specifier: link:@fullcalendar/core/calendar_options
+    version: link:@fullcalendar/core/calendar_options
   pinia:
     specifier: ^2.1.7
     version: 2.1.7(typescript@4.8.4)(vue@3.4.3)

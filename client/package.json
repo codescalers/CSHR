@@ -24,6 +24,7 @@
     "@vueuse/core": "^10.7.1",
     "@vueuse/router": "^10.7.1",
     "axios": "^1.6.3",
+    "calendar_options": "link:@fullcalendar/core/calendar_options",
     "pinia": "^2.1.7",
     "vue": "^3.2.0",
     "vue-router": "^4.2.5",

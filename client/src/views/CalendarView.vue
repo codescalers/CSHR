@@ -1,10 +1,19 @@
 <template>
-  <p>This is Calendar</p>
+  <calenderCshr />
 </template>
 
 <script lang="ts">
+import calenderCshr from "@/components/calender.vue"
 export default {
   name: 'CalendarView',
-  setup() {}
+  components: {
+    calenderCshr,
+  },
+  setup() {
+
+    return {
+      calenderCshr,
+    }
+  }
 }
 </script>

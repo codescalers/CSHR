@@ -14,7 +14,19 @@ export class EventApi extends ApiClientBase {
 
   async list() {}
 
-  async create() {}
+  async create(input: Api.Inputs.Event) {
+    ApiClientBase.assertUser()
+
+    console.log("input",input);
+
+    const event = await this.unwrap(
+      this.$http.post<Api.Returns.Event>(this.getUrl('', input)),
+      { transform: (d) => d.results }
+    )
+
+    return event
+  }
+
 
   async read(id: number) {}
 

@@ -13,8 +13,17 @@ export class MeetingApi extends ApiClientBase {
   }
 
   async list() {}
+  async create(input: Api.Inputs.Meeting) {
+    ApiClientBase.assertUser()
 
-  async create() {}
+
+    const event = await this.unwrap(
+      this.$http.post<Api.Returns.Meeting>(this.getUrl('', input)),
+      { transform: (d) => d.results }
+    )
+
+    return event
+  }
 
   async read(id: number) {}
 

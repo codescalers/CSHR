@@ -100,6 +100,9 @@ export module Api {
       message: string
       results: T
     }
+    export type Event = MsgRes<Event>
+    export type Meeting = MsgRes<Meeting>
+
 
     export type Profile = MsgRes<User>
     export type Login = MsgRes<{
@@ -150,6 +153,19 @@ export module Api {
     }
   }
   export module Inputs {
+    export interface Event {
+      name: string
+      description: string
+      from_date: string
+      end_date: string
+    }
+
+    export interface Meeting {
+      date: string
+      meeting_link: string
+      location: string
+    }
+
     export interface Login {
       email: string
       password: string
