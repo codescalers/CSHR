@@ -234,5 +234,11 @@ export module Api {
       value: number,
       reason: string
     }
+
+    export type Office = {
+      name: string,
+      country: string,
+      weekend: string
+    }
   }
 }

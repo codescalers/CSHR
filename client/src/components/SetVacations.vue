@@ -19,7 +19,6 @@
             type="number"
             label="Emergency Leaves"
           ></v-text-field>
-          formattedDates:{{ formattedDates }}
           <v-text-field
             v-model="formattedDates"
             label="Public Holidays"
