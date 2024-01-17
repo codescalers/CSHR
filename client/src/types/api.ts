@@ -188,6 +188,7 @@ export module Api {
       job_title: string
       address: string
       social_insurance_number: string
+      image?: string,
     }
 
     export interface Refresh {

@@ -13,7 +13,7 @@ export const emailRules = [
 export const passwordRules = [
   (v: string) => typeof v === 'string' || 'Password must be a string.',
   (v: string) => !!v || 'Password is required.',
-  (v: string) => (v && v.length >= 6 && v.length <= 20) || 'Password must be between 6 and 20 characters.',
+  (v: string) => (v && v.length >= 4 && v.length <= 20) || 'Password must be between 4 and 20 characters.',
 ];
 
 export const mobileRules = [
@@ -41,7 +41,7 @@ export const socialInsuranceRules = [
 export const telegramRules = [
   (v: string) => typeof v === 'string' || 'Telegram must be a string.',
   (v: string) => !!v || 'Telegram is required.',
-  (v: string) => /^@([A-Za-z0-9_]{1,255})$/.test(v) || 'Telegram handle must start with "@".',
+  (v: string) => /^@([A-Za-z0-9_]{1,255})$/.test(v) || 'Telegram handle is not valid.',
   (v: string) => (v && v.length >= 3 && v.length <= 50) || 'Telegram must be between 3 and 50 characters.',
 ];
 export const requiredStringRules = [

@@ -118,15 +118,42 @@
           <v-select
             v-model="location"
             :items="offices"
+            label="Office"
             item-title="name"
             item-value="id"
-            label="Office"
             return-object
-            single-line
             density="comfortable"
-            :rules='requiredRules'
+            :rules="requiredRules"
           ></v-select>
 
+          <v-select
+            v-model="selectedSupervisor"
+            :items="supervisors"
+            item-title="name"
+            item-value="id"
+            label="Supervisors"
+            return-object
+            density="comfortable"
+          ></v-select>
+
+          <v-file-input
+            v-model="imageInput"
+            id="image-input"
+            label="Image"
+            variant="filled"
+            accept="image/*"
+            :show-size="1024"
+            prepend-icon="mdi-camera"
+            @input="chooseImage"
+            density="comfortable"
+          ></v-file-input>
+          <v-img
+            v-if="imageInput && imageInput.length > 0 && imageUrl"
+            :src="imageUrl"
+            width="200"
+            height="200"
+            class="justify-center mb-5"
+          ></v-img>
           <v-btn color="primary" type="submit" :disabled="!form?.isValid">Add User</v-btn>
         </v-col>
       </v-row>
@@ -186,6 +213,10 @@ export default {
     const job_title = ref('')
     const address = ref('')
     const social_insurance_number = ref('')
+    const supervisors = ref([])
+    const selectedSupervisor = ref()
+    const imageInput = ref()
+    const imageUrl = ref()
 
     const user = computed(() => ({
       first_name: first_name.value,
@@ -199,11 +230,12 @@ export default {
       location: location.value ? (location.value as any).id : 0,
       team: selectedTeam.value,
       user_type: user_type.value,
-      reporting_to: [],
+      reporting_to: reporting_to.value,
       gender: selectedGender.value,
       job_title: job_title.value,
       address: address.value,
-      social_insurance_number: social_insurance_number.value
+      social_insurance_number: social_insurance_number.value,
+      image: imageUrl.value
     }))
 
     onMounted(async () => {
@@ -212,6 +244,11 @@ export default {
         name: office.name
       }))
       location.value = offices.value[0]
+      supervisors.value = ((await $api.users.team.supervisors.list()) as any).map(
+        (supervisor: any) => ({ id: supervisor.id, name: supervisor.name }) ?? []
+      )
+      console.log(supervisors.value);
+      
     })
 
     watch([birthdayDate, joiningDate], ([newBirthdayDate, newJoiningDate]) => {
@@ -230,6 +267,17 @@ export default {
 
     async function addUser() {
       await $api.auth.register(user.value as Api.Inputs.Register)
+    }
+
+    function chooseImage(event: any) {
+      let input = event.target
+      if (input && input.files) {
+        let reader = new FileReader()
+        reader.onload = (e: any) => {
+          imageUrl.value = e.target.result
+        }
+        reader.readAsDataURL(input.files[0])
+      }
     }
 
     return {
@@ -259,8 +307,10 @@ export default {
       joiningDatePicker,
       birthdayDate,
       joiningDate,
-      toggleDatePicker,
-      addUser,
+      imageInput,
+      imageUrl,
+      supervisors,
+      selectedSupervisor,
       nameRules,
       emailRules,
       passwordRules,
@@ -270,7 +320,10 @@ export default {
       socialInsuranceRules,
       telegramRules,
       requiredStringRules,
-      requiredRules
+      requiredRules,
+      toggleDatePicker,
+      addUser,
+      chooseImage
     }
   }
 }
