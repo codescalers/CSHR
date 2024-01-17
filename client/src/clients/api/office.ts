@@ -4,7 +4,12 @@ import { ApiClientBase } from './base'
 export class OfficeApi extends ApiClientBase {
   protected readonly path = '/office'
 
-  async list() {}
+  async list() {
+    ApiClientBase.assertUser()
+    return this.unwrap(this.$http.get(this.getUrl()), {
+      transform: (d) => d.results
+    })
+  }
 
   async create(input: Api.Inputs.Office) {
     ApiClientBase.assertUser()

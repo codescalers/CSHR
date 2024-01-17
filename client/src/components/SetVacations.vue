@@ -23,9 +23,7 @@
             v-model="formattedDates"
             label="Public Holidays"
             placeholder="Select or enter dates separated by commas"
-            readonly
-            @click="toggleDatePicker"
-            
+            @click="toggleDatePicker"            
           >
             <template v-slot:append-inner>
               <v-icon>mdi-calendar</v-icon>
