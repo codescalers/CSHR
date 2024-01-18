@@ -9,6 +9,8 @@ from server.cshr.models.users import User, UserSkills
 
 def get_user_by_id(id: str) -> User:
     """Return user who have the same id"""
+    if id is None:
+        return id
     try:
         return User.objects.get(id=int(id))
     except User.DoesNotExist:
@@ -90,7 +92,7 @@ def get_all_of_users(options=None) -> User:
 def get_admin_office_users(admin: User) -> User:
     """Return all users who working in the same office of the admin"""
     location = Office.objects.get(id=admin.location.id)
-    return User.objects.filter(location=location).exclude(id__in=[admin.id])
+    return User.objects.filter(location=location).exclude(id__in=[admin.id]).order_by("first_name")
 
 
 def get_or_create_skill_by_name(name: str) -> UserSkills or bool:
