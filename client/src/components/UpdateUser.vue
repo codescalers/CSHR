@@ -2,7 +2,7 @@
   <v-container>
     <v-form ref="form" @submit.prevent="updateUser">
       <v-row class="justify-center align-center">
-        <v-col cols='12'>
+        <v-col cols="12">
           <v-select
             v-model="selectedUser"
             :items="officeUsers"
@@ -68,7 +68,7 @@
             :rules="socialInsuranceRules"
           ></v-text-field>
         </v-col>
-        <v-col cols='6' v-if="selectedUser">
+        <v-col cols="6" v-if="selectedUser">
           <v-text-field
             v-model="selectedUser.telegram_link"
             label="Telegram"
@@ -152,9 +152,8 @@
             density="comfortable"
             multiple
           ></v-select>
-
         </v-col>
-        <v-col cols='12'>
+        <v-col cols="12">
           <v-file-input
             :v-model="image"
             label="Image"
@@ -163,6 +162,7 @@
             :show-size="1024"
             prepend-icon="mdi-camera"
             @input="chooseImage"
+            @change="chooseImage"
             density="comfortable"
           ></v-file-input>
           <v-img
@@ -213,8 +213,6 @@ export default {
     const genders = ['Male', 'Female']
     const birthdayDate = ref(new Date())
     const joiningDate = ref(new Date())
-    const birthday = ref(new Date().toISOString().split('T')[0])
-    const joining_at = ref(new Date().toISOString().split('T')[0])
     const offices = ref([])
     const supervisors = ref([])
     const image = ref()
@@ -228,7 +226,7 @@ export default {
         name: office.name
       }))
       supervisors.value = ((await $api.users.team.supervisors.list()) as any).map(
-        (supervisor: any) => ({ id: supervisor.id, name: supervisor.name }) ?? []
+        (supervisor: any) => ({ id: supervisor.id, name: supervisor.name } ?? [])
       )
 
       officeUsers.value = await $api.users.admin.office_users.list()
@@ -236,8 +234,8 @@ export default {
     })
 
     watch([birthdayDate, joiningDate], ([newBirthdayDate, newJoiningDate]) => {
-      if (newBirthdayDate) birthday.value = formatDate(newBirthdayDate)
-      if (newJoiningDate) joining_at.value = formatDate(newJoiningDate)
+      if (newBirthdayDate) selectedUser.value.birthday = formatDate(newBirthdayDate)
+      if (newJoiningDate) selectedUser.value.joining_at = formatDate(newJoiningDate)
     })
 
     const birthdayPicker = ref(false)
@@ -250,7 +248,11 @@ export default {
     const formatDate = (date: any) => moment(date).format('YYYY-MM-DD')
 
     async function updateUser() {
-      await $api.myprofile.update(selectedUser.value.id, {...selectedUser.value, image: imageUrl.value})
+      await $api.myprofile.update(selectedUser.value.id, {
+        ...selectedUser.value,
+        image: imageUrl.value,
+        location: selectedUser.value.location.id
+      })
     }
 
     function chooseImage(event: any) {
@@ -298,7 +300,7 @@ export default {
 </script>
 
 <style scoped>
-.v-picker.v-sheet{
+.v-picker.v-sheet {
   position: absolute !important;
   z-index: 1000 !important;
 }
