@@ -9,7 +9,7 @@ from server.cshr.serializers.evaluation import (
 from server.cshr.api.response import CustomResponse
 from server.cshr.api.permission import (
     IsAdmin,
-    IsTeamLead,
+    IsSupervisor,
     UserIsAuthenticated,
     CustomPermissions,
 )
@@ -24,10 +24,10 @@ from server.cshr.services.users import get_user_by_id
 
 class BaseUserEvaluationsAPIView(ListAPIView, GenericAPIView):
     serializer_class = UserEvaluationSerializer
-    permission_classes = [UserIsAuthenticated | IsAdmin | IsTeamLead]
+    permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
 
     def get(self, request: Request) -> Response:
-        has_permission = CustomPermissions.admin_or_team_lead(request.user)
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
         evaluations = all_user_evaluations()
@@ -38,7 +38,7 @@ class BaseUserEvaluationsAPIView(ListAPIView, GenericAPIView):
 
     def post(self, request: Request) -> Response:
         """To post new user evaluation"""
-        has_permission = CustomPermissions.admin_or_team_lead(request.user)
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
         serializer = self.get_serializer(data=request.data)
@@ -56,7 +56,7 @@ class BaseUserEvaluationsAPIView(ListAPIView, GenericAPIView):
 
 class UserEvaluationsAPIView(ListAPIView, GenericAPIView):
     serializer_class = UserEvaluationSerializer
-    permission_classes = [UserIsAuthenticated | IsAdmin | IsTeamLead]
+    permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
 
     def delete(self, request: Request, id, format=None) -> Response:
         """to delete user evaluation by admin"""
@@ -87,7 +87,7 @@ class UserEvaluationsAPIView(ListAPIView, GenericAPIView):
 
         evaluations = filter_all_evaluations_based_on_user_and_year(user, year)
         serializer = UserEvaluationSerializer(evaluations, many=True)
-        has_permission = CustomPermissions.admin_or_team_lead(request.user)
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
 
         if not has_permission and request.user.id != user.id:
             return CustomResponse.unauthorized()
@@ -98,7 +98,7 @@ class UserEvaluationsAPIView(ListAPIView, GenericAPIView):
 
     def put(self, request: Request, id: str, format=None) -> Response:
         """To update an user evaluation"""
-        has_permission = CustomPermissions.admin_or_team_lead(request.user)
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
         evaluation = get_user_evaluation_by_id(id)
@@ -119,7 +119,7 @@ class UserEvaluationsAPIView(ListAPIView, GenericAPIView):
 
 class BaseEvaluationsAPIView(ListAPIView, GenericAPIView):
     serializer_class = EvaluationSerializer
-    permission_classes = [UserIsAuthenticated | IsAdmin | IsTeamLead]
+    permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
 
     def get_queryset(self) -> Response:
         query_set = all_user_evaluations()
@@ -127,7 +127,7 @@ class BaseEvaluationsAPIView(ListAPIView, GenericAPIView):
 
     def post(self, request: Request) -> Response:
         """To post new evaluation"""
-        has_permission = CustomPermissions.admin_or_team_lead(request.user)
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
         serializer = EvaluationSerializer(data=request.data)
@@ -145,7 +145,7 @@ class BaseEvaluationsAPIView(ListAPIView, GenericAPIView):
 
 class EvaluationsAPIView(ListAPIView, GenericAPIView):
     serializer_class = EvaluationSerializer
-    permission_classes = [UserIsAuthenticated | IsAdmin | IsTeamLead]
+    permission_classes = [UserIsAuthenticated | IsAdmin | IsSupervisor]
 
     def delete(self, request: Request, id, format=None) -> Response:
         """to delete evaluation by admin"""
@@ -170,7 +170,7 @@ class EvaluationsAPIView(ListAPIView, GenericAPIView):
 
     def put(self, request: Request, id: str, format=None) -> Response:
         """To update an evaluation"""
-        has_permission = CustomPermissions.admin_or_team_lead(request.user)
+        has_permission = CustomPermissions.admin_or_supervisor(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
         evaluation = get_evaluation_by_id(id)

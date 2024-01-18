@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from server.cshr.models.users import User, UserSkills
 from server.cshr.api.permission import (
     IsAdmin,
-    IsTeamLead,
+    IsSupervisor,
     UserIsAuthenticated,
 )
 from server.cshr.services.office import get_office_by_id
@@ -16,7 +16,7 @@ from server.cshr.serializers.users import (
     BaseUserSerializer,
     GeneralUserSerializer,
     PostUserSkillsSerializer,
-    TeamLeadUserSerializer,
+    SupervisorUserSerializer,
     AdminUserSerializer,
     SelfUserSerializer,
     UpdateUserSerializer,
@@ -64,7 +64,7 @@ class TeamAPIView(ListAPIView):
         return query_set
 
 
-class TeamLeadsAPIView(ListAPIView):
+class SupervisorsAPIView(ListAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = TeamSerializer
 
@@ -93,19 +93,19 @@ class GeneralUserAPIView(ListAPIView, GenericAPIView):
         return CustomResponse.not_found(message="User not found", status_code=404)
 
 
-class BaseTeamLeadUserAPIView(ListAPIView, GenericAPIView):
-    permission_classes = [IsTeamLead]
-    serializer_class = TeamLeadUserSerializer
+class BaseSupervisorUserAPIView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+    serializer_class = SupervisorUserSerializer
 
     def get_queryset(self) -> Response:
-        """get all users in the system for a team_lead"""
+        """get all users in the system for a supervisor"""
         query_set = get_all_of_users()
         return query_set
 
 
-class TeamLeadUserAPIView(ListAPIView, GenericAPIView):
-    permission_classes = [IsTeamLead]
-    serializer_class = TeamLeadUserSerializer
+class SupervisorUserAPIView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor]
+    serializer_class = SupervisorUserSerializer
 
     def get(self, request: Request, id: str) -> Response:
         """To get a user by id"""

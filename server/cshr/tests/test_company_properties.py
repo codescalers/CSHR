@@ -50,12 +50,12 @@ class CompanyPropertiesTests(APITestCase):
             password=make_password("helmypass"),
             location=office,
             team="Development",
-            user_type="TeamLead",
+            user_type="Supervisor",
         )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
-        self.access_token_team_lead = self.get_token_team_lead()
+        self.access_token_supervisor = self.get_token_supervisor()
 
     def get_token_admin(self):
         """Get token for admin user."""
@@ -71,8 +71,8 @@ class CompanyPropertiesTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
-    def get_token_team_lead(self):
-        """Get token for a team_lead user."""
+    def get_token_supervisor(self):
+        """Get token for a supervisor user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "helmy@gmail.com", "password": "helmypass"}
         response = self.client.post(url, data, format="json")

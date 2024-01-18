@@ -51,12 +51,12 @@ class OfficeTests(APITestCase):
             password="pbkdf2_sha256$390000$VjStUZfdq3LyQ7PvGwnJNj$Niy9PAOmqWe2dqkML40hWWBgibzQDHz5ZZVKSdhIOIQ=",
             location=office,
             team="Development",
-            user_type="TeamLead",
+            user_type="Supervisor",
         )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
-        self.access_token_team_lead = self.get_token_team_lead()
+        self.access_token_supervisor = self.get_token_supervisor()
 
     def get_token_admin(self):
         """Get token for admin user."""
@@ -72,8 +72,8 @@ class OfficeTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
-    def get_token_team_lead(self):
-        """Get token for a team_lead user."""
+    def get_token_supervisor(self):
+        """Get token for a supervisor user."""
         url = "/api/auth/login/"
         data = {"email": "user3@example.com", "password": "string"}
         response = self.client.post(url, data, format="json")
@@ -90,12 +90,12 @@ class OfficeTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Office.objects.last().name, "testCase")
 
-    def test_create_office_by_team_lead(self):
-        """test unauthorized  office creation by team_lead"""
+    def test_create_office_by_supervisor(self):
+        """test unauthorized  office creation by supervisor"""
         url = "/api/office/"
         data = {"name": "testCase1", "country": "testCase1"}
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -126,13 +126,13 @@ class OfficeTests(APITestCase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_all_office_by_team_lead(self):
-        """test list offices by team_lead"""
+    def test_get_all_office_by_supervisor(self):
+        """test list offices by supervisor"""
         createTmp()
         """create a new record"""
         url = "/api/office/"
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -170,13 +170,13 @@ class OfficeTests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_team_lead_get_office_by_id(self):
-        """test get by id with team_lead credentials"""
+    def test_supervisor_get_office_by_id(self):
+        """test get by id with supervisor credentials"""
         createTmp()
         """create a new record"""
         url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -213,21 +213,21 @@ class OfficeTests(APITestCase):
         self.assertEqual(Office.objects.last().name, "updatedByAdmin")
         self.assertEqual(Office.objects.last().country, "updated")
 
-    def test_team_lead_update_office(self):
-        """test ability to update record with team_lead credentials"""
+    def test_supervisor_update_office(self):
+        """test ability to update record with supervisor credentials"""
         createTmp()
         """create a new record"""
         update_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.put(
             update_url,
-            {"name": "updatedByTeamLead", "country": "updated"},
+            {"name": "updatedBySupervisor", "country": "updated"},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertEqual(Office.objects.last().name, "updatedByTeamLead")
+        self.assertEqual(Office.objects.last().name, "updatedBySupervisor")
         self.assertEqual(Office.objects.last().country, "updated")
 
     def test_user_update_office(self):
@@ -278,14 +278,14 @@ class OfficeTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_team_lead_update_not_exists_office(self):
-        """test update request error: not found -- with team_lead credentials"""
+    def test_supervisor_update_not_exists_office(self):
+        """test update request error: not found -- with supervisor credentials"""
         createTmp()
         """create a new record"""
 
         update_url = f"/api/office/{65}/"
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.put(
             update_url, {"name": "updated", "country": "updated"}, format="json"
@@ -335,21 +335,21 @@ class OfficeTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Office.objects.count(), count - 1)
 
-    def test_team_lead_delete_office(self):
-        """test unauthorized delete record by id with team_lead credentials"""
+    def test_supervisor_delete_office(self):
+        """test unauthorized delete record by id with supervisor credentials"""
         createTmp()
         """create a new record"""
         count = Office.objects.count()
         delete_url = f"/api/office/{Office.objects.last().id}/"
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
         )
         response = self.client.delete(delete_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Office.objects.count(), count)
 
     def test_user_delete_office(self):
-        """test unauthorized delete record by id with team_lead credentials"""
+        """test unauthorized delete record by id with supervisor credentials"""
         createTmp()
         """create a new record"""
         count = Office.objects.count()

@@ -26,10 +26,10 @@ class TEAM(models.TextChoices):
 class USER_TYPE(models.TextChoices):
     """types of users"""
 
-    # User-Admin-team_lead
+    # User-Admin-supervisor
     ADMIN = "Admin", "admin"
     USER = "User", "user"
-    SUPERVISOR = "TeamLead", "team_lead"
+    SUPERVISOR = "Supervisor", "supervisor"
 
 
 class GENDER_TYPE(models.TextChoices):

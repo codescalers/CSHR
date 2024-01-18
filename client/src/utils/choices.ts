@@ -11,8 +11,8 @@ export const UserTypeChoice = [
     value: UserTypeEnum.user
   },
   {
-    label: UserTypeEnum.teamLead,
-    value: UserTypeEnum.teamLead
+    label: UserTypeEnum.supervisor,
+    value: UserTypeEnum.supervisor
   },
   {
     label: UserTypeEnum.admin,

@@ -99,7 +99,7 @@
             </td>
             <td style="width:10%">
               <div class="d-flex justify-content-center align-items-center">
-                {#if $UserStore.user_type == "Admin" || $UserStore.user_type == "TeamLead"}
+                {#if $UserStore.user_type == "Admin" || $UserStore.user_type == "Supervisor"}
                   <ActionButton {request} on:message={handleActions} />
                 {/if}
                 {#if request.type != "Official documents"}

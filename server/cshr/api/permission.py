@@ -29,9 +29,9 @@ class IsAdmin(permissions.BasePermission):
         return False
 
 
-class IsTeamLead(permissions.BasePermission):
+class IsSupervisor(permissions.BasePermission):
     """
-    team_lead permission
+    supervisor permission
     """
 
     def has_permission(self, request: Request, view: APIView) -> bool:
@@ -57,8 +57,8 @@ class CustomPermissions:
     """for check the type of user in views"""
 
     @staticmethod
-    def admin_or_team_lead(user: User) -> bool:
-        """return True only if the user is a team_lead or admin"""
+    def admin_or_supervisor(user: User) -> bool:
+        """return True only if the user is a supervisor or admin"""
         return user.user_type in [USER_TYPE.ADMIN, USER_TYPE.SUPERVISOR]
 
     @staticmethod

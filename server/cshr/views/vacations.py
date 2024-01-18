@@ -15,7 +15,7 @@ from server.cshr.serializers.vacations import (
     UserBalanceUpdateSerializer,
 )
 from server.cshr.api.permission import (
-    IsTeamLead,
+    IsSupervisor,
     IsUser,
     UserIsAuthenticated,
     IsAdmin,
@@ -347,7 +347,7 @@ class VacationUserApiView(ListAPIView, GenericAPIView):
 
 class VacationsUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
-    permission_classes = [IsUser | IsTeamLead | IsAdmin]
+    permission_classes = [IsUser | IsSupervisor | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
@@ -417,7 +417,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
 
 class VacationsAcceptApiView(GenericAPIView):
-    permission_classes = [IsTeamLead | IsAdmin]
+    permission_classes = [IsSupervisor | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
@@ -435,7 +435,7 @@ class VacationsAcceptApiView(GenericAPIView):
                 return CustomResponse.unauthorized(
                     message=(
                         "You don't have the necessary permissions to perform this action. "
-                        "Only team_leads and administrators working in the same office are authorized to do so."
+                        "Only supervisors and administrators working in the same office are authorized to do so."
                     )
                 )
 
@@ -481,7 +481,7 @@ class VacationsAcceptApiView(GenericAPIView):
 
 
 class VacationsRejectApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsTeamLead | IsAdmin]
+    permission_classes = [IsSupervisor | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
@@ -499,7 +499,7 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
                 return CustomResponse.unauthorized(
                     message=(
                         "You don't have the necessary permissions to perform this action. "
-                        "Only team_leads and administrators working in the same office are authorized to do so."
+                        "Only supervisors and administrators working in the same office are authorized to do so."
                     )
                 )
 

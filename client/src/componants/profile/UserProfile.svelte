@@ -7,7 +7,7 @@
   import { UserStore } from "../../utils/stores";
   import type {
     AdminViewInterface,
-    TeamLeadViewInterface,
+    SupervisorViewInterface,
     UserInterface
   } from "../../utils/types";
   // import Certificates from "./Certificates.svelte";
@@ -29,7 +29,7 @@
 
   let user:
     | AdminViewInterface
-    | TeamLeadViewInterface
+    | SupervisorViewInterface
     | UserInterface
     | null = null;
 
@@ -68,7 +68,7 @@
         </div>
 
         <ReportTo users={user.reporting_to} />
-        <!-- RFV0.1 {#if $UserStore.user_type === 'Admin' || $UserStore.user_type === 'TeamLead' || $UserStore.id === id}
+        <!-- RFV0.1 {#if $UserStore.user_type === 'Admin' || $UserStore.user_type === 'Supervisor' || $UserStore.id === id}
             <Evaluation {user}/>
             <UserDocuments user={user} />
           {/if} -->
@@ -79,7 +79,7 @@
             <Skills bind:skills={user.skills} />
             <Certificates bind:certificates={user.user_certificates} />
           </div> -->
-        {#if $UserStore.user_type === "Admin" || $UserStore.user_type === "TeamLead" || $UserStore.id === id}
+        {#if $UserStore.user_type === "Admin" || $UserStore.user_type === "Supervisor" || $UserStore.id === id}
           <!-- <div class="row">
             <Company bind:companies={user.user_company_properties} />
           </div> -->

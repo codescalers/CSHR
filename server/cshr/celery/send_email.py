@@ -70,11 +70,11 @@ def send_email():
     for user in users_joined_month_and_a_half_ago:
         user_email = user.email
         try:
-            team_lead = User.objects.get(pk=user.reporting_to.id)
-            team_lead_email = team_lead.email
+            supervisor = User.objects.get(pk=user.reporting_to.id)
+            supervisor_email = supervisor.email
 
         except User.DoesNotExist:
-            team_lead_email = ""
+            supervisor_email = ""
 
         user_msg = "Well Done! You have passed half of the probation period"
         msg = "{fname} {lname} has passed half of the probation period".format(
@@ -94,7 +94,7 @@ def send_email():
             settings.EMAIL_HOST_USER,
             [
                 user_email,
-                team_lead_email,
+                supervisor_email,
             ],
         )
         send_mail(mail_title, msg, settings.EMAIL_HOST_USER, admins_emails)
@@ -102,11 +102,11 @@ def send_email():
     for user in users_joined_three_months_ago:
         user_email = user.email
         try:
-            team_lead = User.objects.get(pk=user.reporting_to.id)
-            team_lead_email = team_lead.email
+            supervisor = User.objects.get(pk=user.reporting_to.id)
+            supervisor_email = supervisor.email
 
         except User.DoesNotExist:
-            team_lead_email = ""
+            supervisor_email = ""
         user_msg = "Congratulations on passing your probation period"
         msg = "{fname} {lname} has passed half of the probation period".format(
             fname=user.first_name, lname=user.last_name
@@ -124,7 +124,7 @@ def send_email():
             msg,
             settings.EMAIL_HOST_USER,
             [
-                team_lead_email,
+                supervisor_email,
             ],
         )
         send_mail(mail_title, msg, settings.EMAIL_HOST_USER, admins_emails)
@@ -135,17 +135,17 @@ def send_quarter_evaluation_email():
     from server.cshr.models.users import USER_TYPE
     from server.cshr.models.users import User
 
-    team_leads = User.objects.filter(user_type=USER_TYPE.SUPERVISOR)
-    team_leads_emails = []
-    for admin in team_leads:
-        team_leads_emails.append(admin.email)
+    supervisors = User.objects.filter(user_type=USER_TYPE.SUPERVISOR)
+    supervisors_emails = []
+    for admin in supervisors:
+        supervisors_emails.append(admin.email)
 
     msg = "It is time for Quarter Evaluation"
     send_mail(
         "Quarter Evalaluation Time",
         msg,
         settings.EMAIL_HOST_USER,
-        team_leads_emails,
+        supervisors_emails,
     )
 
 

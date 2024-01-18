@@ -111,9 +111,9 @@ class GeneralUserSerializer(ModelSerializer):
         return OfficeSerializer(obj.location).data
 
 
-class TeamLeadUserSerializer(ModelSerializer):
+class SupervisorUserSerializer(ModelSerializer):
     """
-    This class will be used to get all info about a user to a team_lead
+    This class will be used to get all info about a user to a supervisor
     """
 
     user_certificates = SerializerMethodField()

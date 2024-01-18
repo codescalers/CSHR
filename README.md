@@ -16,7 +16,7 @@ A comprehensive management system that provides a range of services, including t
 ## Access Levels
 
 - **User:** Any individual affiliated with the organization.
-- **TeamLead:** Each user has a designated teamLead.
+- **Supervisor:** Each user has a designated supervisor.
 - **Admin:** Location-specific administrators with defined responsibilities.
 
 ## Key Features
