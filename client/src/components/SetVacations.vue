@@ -6,7 +6,7 @@
             <v-alert
             class='mb-3'
             type='info'
-            text="The presented figures represent the current year's information for the specific office. If you want to produce updated data, kindly adjust the year. Otherwise, the existing data for 2024 will be altered."
+            text="The provided figures reflect the current year's details for this office. Make sure to change the year if you want to set new data. Otherwise, the existing 2024 data will be amended."
             >
             </v-alert>
             <v-alert

@@ -18,5 +18,10 @@ export class MyprofileApi extends ApiClientBase {
 
   async list() {}
 
-  async update(id: number) {}
+  async update(id: number, input: Api.Inputs.UsersAdminUpdate) {
+    return await this.unwrap(
+      this.$http.put(this.getUrl(`/update/profile/${id}`), input),
+      { transform: (d) => d.results }
+    )
+  }
 }

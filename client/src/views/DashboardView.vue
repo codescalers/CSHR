@@ -5,7 +5,7 @@
         <DashboardList @item-selected="onItemSelected" />
       </v-col>
       <v-col cols="8">
-        <v-card>
+        <v-card flat>
           <v-card-title>Dashboard of <strong class="text-blue-lighten-1">{{ office }}</strong> office admins</v-card-title>
           <v-divider class="mx-4 my-1"></v-divider>
           <component :is="selectedForm" />
