@@ -6,8 +6,8 @@
       </v-col>
       <v-col cols="8">
         <v-card>
-          <v-card-title class="mx-8">Dashboard of <strong class="text-blue-lighten-1">{{ office }}</strong> office admins</v-card-title>
-          <v-divider class="mx-12 my-1"></v-divider>
+          <v-card-title>Dashboard of <strong class="text-blue-lighten-1">{{ office }}</strong> office admins</v-card-title>
+          <v-divider class="mx-4 my-1"></v-divider>
           <component :is="selectedForm" />
         </v-card>
       </v-col>

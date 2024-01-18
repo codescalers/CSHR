@@ -2,7 +2,7 @@
   <v-container>
     <v-form ref="form" @submit.prevent="addOffice">
       <v-row class="justify-center align-center">
-        <v-col cols="11">
+        <v-col cols="12">
           <v-text-field v-model="office.name" label="Name" type="text" :rules='requiredStringRules'></v-text-field>
           <v-text-field v-model="office.country" label="Country" type="text" :rules='requiredStringRules'></v-text-field>
           <v-select

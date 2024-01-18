@@ -2,7 +2,7 @@
   <v-container>
     <v-form ref="form" @submit.prevent="addUser">
       <v-row class="justify-center align-center">
-        <v-col cols="11">
+        <v-col cols="6">
           <v-text-field
             v-model="first_name"
             label="First Name"
@@ -55,6 +55,8 @@
             density="comfortable"
             :rules="socialInsuranceRules"
           ></v-text-field>
+        </v-col>
+        <v-col cols='6'>
           <v-text-field
             v-model="telegram_link"
             label="Telegram"
@@ -138,6 +140,8 @@
             density="comfortable"
           ></v-select>
 
+        </v-col>
+        <v-col cols='12'>
           <v-file-input
             v-model="imageInput"
             id="image-input"
@@ -330,3 +334,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.v-picker.v-sheet{
+  position: absolute !important;
+  z-index: 1000 !important;
+}
+</style>

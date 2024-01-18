@@ -2,7 +2,18 @@
   <v-container>
     <v-form ref="form" @submit.prevent="setVacations">
       <v-row class="justify-center align-center">
-        <v-col cols="11">
+        <v-col cols="12">
+            <v-alert
+            class='mb-3'
+            type='info'
+            text="The presented figures represent the current year's information for the specific office. If you want to produce updated data, kindly adjust the year. Otherwise, the existing data for 2024 will be altered."
+            >
+            </v-alert>
+            <v-alert
+              class='mb-3'
+              type="info"
+              text="You need to set the data annually."
+            ></v-alert>
           <v-text-field v-model="office_balance.year" type="number" label="Year" :rules='requiredRules'></v-text-field>
           <v-text-field
             v-model="office_balance.annual_leaves"

@@ -2,7 +2,7 @@
   <v-container>
     <v-form ref="form" @submit.prevent="updateVacations">
       <v-row class="justify-center align-center">
-        <v-col cols="11">
+        <v-col cols="12">
           <v-text-field
             v-model="state.user.value.location.name"
             label="Office"

@@ -2,7 +2,12 @@
   <v-container>
     <v-form ref="form" @submit.prevent="UpdateVacations">
       <v-row class="justify-center align-center">
-        <v-col cols="11">
+        <v-col cols="12">
+          <v-alert
+            class="mb-3"
+            type="info"
+            :text="`Please note that this value will be applied to the ${selectedReason.text} balance for all users. If you accidentally submit this form, you'll need to reset the value for users using the appropriate form.`"
+          ></v-alert>
           <v-text-field v-model="state.user.value.location.name" label="Office" type="text" disabled></v-text-field>
           <v-text-field v-model="vacation.value" label="Vacation Type" type="text"></v-text-field>
           <v-select
