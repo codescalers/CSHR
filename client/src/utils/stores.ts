@@ -10,7 +10,7 @@ import type {
   OfficeType,
   PaginatedInterface,
   SettingsInterface,
-  SupervisorType,
+  TeamLeadType,
   TeamType,
   UserInterface
 } from "./types";
@@ -32,7 +32,7 @@ export const NotificationStore: Writable<NotificationType[]> = writable([
 export const TeamStore: Writable<PaginatedInterface<TeamType>> = writable();
 export const NotifacationStore: Writable<NotifacationCreatedInterface> =
   writable();
-export const SupervisorStore: Writable<PaginatedInterface<SupervisorType>> =
+export const TeamLeadStore: Writable<PaginatedInterface<TeamLeadType>> =
   writable();
 
 function createAuthStore() {

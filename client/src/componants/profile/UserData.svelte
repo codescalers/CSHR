@@ -2,15 +2,15 @@
   import { UserStore } from "../../utils/stores";
   import type {
     AdminViewInterface,
-    SupervisorViewInterface,
+    TeamLeadViewInterface,
     UserInterface
   } from "../../utils/types";
 
-  export let user: AdminViewInterface | SupervisorViewInterface | UserInterface;
+  export let user: AdminViewInterface | TeamLeadViewInterface | UserInterface;
   const hasPermission: boolean =
     $UserStore.id == user.id ||
     $UserStore.user_type == "Admin" ||
-    $UserStore.user_type == "Supervisor";
+    $UserStore.user_type == "TeamLead";
 </script>
 
 <div class="card">

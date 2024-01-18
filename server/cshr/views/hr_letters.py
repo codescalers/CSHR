@@ -9,7 +9,7 @@ from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from server.cshr.api.permission import (
     IsAdmin,
     UserIsAuthenticated,
-    IsSupervisor,
+    IsTeamLead,
 )
 from server.cshr.services.users import get_user_by_id
 from server.cshr.services.hr_letters import (
@@ -156,7 +156,7 @@ class HrLetterUserApiView(ListAPIView, GenericAPIView):
 
 class HrLetterUpdateApiView(ListAPIView, GenericAPIView):
     serializer_class = HrLetterUpdateSerializer
-    permission_classes = [IsSupervisor]
+    permission_classes = [IsTeamLead]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         hr_letter = get_hrLetter_by_id(id=id)
@@ -243,7 +243,7 @@ class HrLetterRejectApiView(ListAPIView, GenericAPIView):
 
 
 class GetAllUserDocumentsAPIView(ListAPIView):
-    permission_classes = [IsAdmin | IsSupervisor]
+    permission_classes = [IsAdmin | IsTeamLead]
     serializer_class = UserDocumentsSerializer
 
     def get(self, request: Request, user_id: str) -> Response:

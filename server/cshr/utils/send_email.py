@@ -14,20 +14,20 @@ def get_admins_emails():
     return admins_emails
 
 
-def get_supervisor_emails(user: User):
-    """ "this function return array of supervisor emails"""
-    supervisors = user.reporting_to.all()
-    supervisor_emails = []
-    for super in supervisors:
-        supervisor = get_user_by_id(super.id)
-        supervisor_emails.append(supervisor.email)
-    return supervisor_emails
+def get_team_lead_emails(user: User):
+    """ "this function return array of team_lead emails"""
+    team_leads = user.reporting_to.all()
+    team_lead_emails = []
+    for super in team_leads:
+        team_lead = get_user_by_id(super.id)
+        team_lead_emails.append(team_lead.email)
+    return team_lead_emails
 
 
 def get_email_recievers(user: User):
     admins_emails = get_admins_emails()
-    supervisor_emails = get_supervisor_emails(user)
-    recievers = admins_emails + supervisor_emails
+    team_lead_emails = get_team_lead_emails(user)
+    recievers = admins_emails + team_lead_emails
     recievers.append(user.email)
     return recievers
 

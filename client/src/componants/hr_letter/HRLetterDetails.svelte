@@ -56,7 +56,7 @@
       <Loading className={"loader"} />
     </div>
   {:else if hrLetter}
-    {#if $UserStore.user_type == "Supervisor"}
+    {#if $UserStore.user_type == "TeamLead"}
       <div class="mb-4" style="width: 20%;">
         <ActionButton request={hrLetter} on:message={handleActions} />
       </div>

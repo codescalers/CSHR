@@ -11,14 +11,14 @@
   onMount(async () => {
     if (
       $UserStore.user_type == UserTypeEnum.admin ||
-      $UserStore.user_type == UserTypeEnum.supervisor
+      $UserStore.user_type == UserTypeEnum.teamLead
     ) {
       documents = await Users.getUserDocuments(user.id);
     }
   });
 </script>
 
-{#if $UserStore.user_type == UserTypeEnum.admin || $UserStore.user_type == UserTypeEnum.supervisor}
+{#if $UserStore.user_type == UserTypeEnum.admin || $UserStore.user_type == UserTypeEnum.teamLead}
   <div class="col-md-12 my-2">
     <div class="card mb-4 mb-md-0">
       <div class="card-header">Documents</div>

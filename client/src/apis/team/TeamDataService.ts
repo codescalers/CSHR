@@ -1,5 +1,5 @@
 import http from "../../utils/axios";
-// import type { PaginatedInterface, SupervisorType, TeamType } from "../../utils/types";
+// import type { PaginatedInterface, TeamLeadType, TeamType } from "../../utils/types";
 
 class TeamDataService {
   errorMessage = "Error in Team Data Service: ";
@@ -10,9 +10,9 @@ class TeamDataService {
       throw new Error(err.response.data.message);
     }
   }
-  public async getSupervisor() {
+  public async getTeamLead() {
     try {
-      return await http.get("/users/team/supervisors/");
+      return await http.get("/users/team/team_leads/");
     } catch (err: any) {
       throw new Error(err.response.data.message);
     }

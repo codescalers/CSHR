@@ -3,7 +3,7 @@ import type { UserType } from "../../utils/types";
 import type {
   AdminViewInterface,
   registeringData,
-  SupervisorViewInterface,
+  TeamLeadViewInterface,
   UserInterface,
   UserOptionsFilter
 } from "./../../utils/types";
@@ -63,7 +63,7 @@ class Users {
   public async getByIdBasedOnUserType(
     id: number,
     user_type: UserType
-  ): Promise<UserInterface | AdminViewInterface | SupervisorViewInterface> {
+  ): Promise<UserInterface | AdminViewInterface | TeamLeadViewInterface> {
     try {
       const { data, status, statusText } = await http.get(
         `/users/${

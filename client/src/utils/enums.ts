@@ -17,7 +17,7 @@ export enum CalenderEventEmojeTyoe {
 
 export enum UserTypeEnum {
   admin = "Admin",
-  supervisor = "Supervisor",
+  teamLead = "TeamLead",
   user = "User"
 }
 

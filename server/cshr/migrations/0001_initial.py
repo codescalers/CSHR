@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
                         choices=[
                             ("Admin", "admin"),
                             ("User", "user"),
-                            ("Supervisor", "supervisor"),
+                            ("TeamLead", "team_lead"),
                         ],
                         max_length=20,
                     ),

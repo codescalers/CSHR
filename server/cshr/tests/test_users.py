@@ -88,7 +88,7 @@ class GeneralViewUserProfileTests(APITestCase):
             user=user, link="https://evaluation2", quarter="1 : 3", score=30
         )
 
-        supervisor = User.objects.create(
+        team_lead = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
             gender="Male",
@@ -100,35 +100,35 @@ class GeneralViewUserProfileTests(APITestCase):
             password=make_password("superpassword"),
             team="Development",
             salary={"gross": 2000},
-            user_type="Supervisor",
+            user_type="TeamLead",
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
         )
-        supervisor.reporting_to.set(
+        team_lead.reporting_to.set(
             [
                 admin.id,
             ]
         )
-        supervisor.skills.add(react)
-        supervisor.skills.add(sql)
+        team_lead.skills.add(react)
+        team_lead.skills.add(sql)
         TrainingCourses.objects.create(
-            user=supervisor,
+            user=team_lead,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HGYFT99JI3",
         )
         TrainingCourses.objects.create(
-            user=supervisor,
+            user=team_lead,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/KY55GG0OQ1",
         )
-        CompanyProperties.objects.create(name="computer", user=supervisor)
+        CompanyProperties.objects.create(name="computer", user=team_lead)
         UserEvaluations.objects.create(
-            user=supervisor, link="https://evaluation3", quarter="1 : 3", score=30
+            user=team_lead, link="https://evaluation3", quarter="1 : 3", score=30
         )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
-        self.access_token_supervisor = self.get_token_supervisor()
+        self.access_token_team_lead = self.get_token_team_lead()
 
     def get_token_admin(self):
         """Get token for admin user."""
@@ -144,8 +144,8 @@ class GeneralViewUserProfileTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
-    def get_token_supervisor(self):
-        """Get token for a supervisor user."""
+    def get_token_team_lead(self):
+        """Get token for a team_lead user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
@@ -218,8 +218,8 @@ class GeneralViewUserProfileTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class SupervisorViewUserProfileTests(APITestCase):
-    "The view of supervisor profiles for all types of users"
+class TeamLeadViewUserProfileTests(APITestCase):
+    "The view of team_lead profiles for all types of users"
 
     def setUp(self):
         office = Office.objects.create(name="testOffice", country="testCountry")
@@ -298,7 +298,7 @@ class SupervisorViewUserProfileTests(APITestCase):
             user=user, link="https://evaluation2", quarter="1 : 3", score=30
         )
 
-        supervisor = User.objects.create(
+        team_lead = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
             gender="Female",
@@ -310,35 +310,35 @@ class SupervisorViewUserProfileTests(APITestCase):
             password=make_password("superpassword"),
             team="Development",
             salary={"gross": 2000},
-            user_type="Supervisor",
+            user_type="TeamLead",
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
         )
-        supervisor.reporting_to.set(
+        team_lead.reporting_to.set(
             [
                 admin.id,
             ]
         )
-        supervisor.skills.add(react)
-        supervisor.skills.add(sql)
+        team_lead.skills.add(react)
+        team_lead.skills.add(sql)
         TrainingCourses.objects.create(
-            user=supervisor,
+            user=team_lead,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HGYFT99JI3",
         )
         TrainingCourses.objects.create(
-            user=supervisor,
+            user=team_lead,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/KY55GG0OQ1",
         )
-        CompanyProperties.objects.create(name="computer", user=supervisor)
+        CompanyProperties.objects.create(name="computer", user=team_lead)
         UserEvaluations.objects.create(
-            user=supervisor, link="https://evaluation3", quarter="1 : 3", score=30
+            user=team_lead, link="https://evaluation3", quarter="1 : 3", score=30
         )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
-        self.access_token_supervisor = self.get_token_supervisor()
+        self.access_token_team_lead = self.get_token_team_lead()
 
     def get_token_admin(self):
         """Get token for admin user."""
@@ -354,18 +354,18 @@ class SupervisorViewUserProfileTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
-    def get_token_supervisor(self):
-        """Get token for a supervisor user."""
+    def get_token_team_lead(self):
+        """Get token for a team_lead user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
-    def test_get_all_users_supervisor(self):
-        """a supervisor can view specific all fields of all other users except salary"""
-        url = "/api/users/supervisor/"
+    def test_get_all_users_team_lead(self):
+        """a team_lead can view specific all fields of all other users except salary"""
+        url = "/api/users/team_lead/"
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
         )
         response = self.client.get(url, format="json")
         self.assertEqual(len(response.data["results"]), 3)
@@ -395,11 +395,11 @@ class SupervisorViewUserProfileTests(APITestCase):
         self.assertEqual(response.data["results"][1].get("salary"), None)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_a_user_supervisor(self):
-        """a supervisor can view all fields of a specific user except salary"""
-        url = "/api/users/supervisor/2/"
+    def test_get_a_user_team_lead(self):
+        """a team_lead can view all fields of a specific user except salary"""
+        url = "/api/users/team_lead/2/"
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.data["results"]["full_name"], "John Blake")
@@ -428,29 +428,29 @@ class SupervisorViewUserProfileTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_all_users_normaluser(self):
-        """a normal user cannot access any supervisor endpoint"""
-        url = "/api/users/supervisor/"
+        """a normal user cannot access any team_lead endpoint"""
+        url = "/api/users/team_lead/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_a_user_normaluser(self):
-        """a normal user cannot access any supervisor endpoint"""
-        url = "/api/users/supervisor/2/"
+        """a normal user cannot access any team_lead endpoint"""
+        url = "/api/users/team_lead/2/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_user)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_users_admin(self):
-        """an admin cannot access any supervisor endpoint"""
-        url = "/api/users/supervisor/"
+        """an admin cannot access any team_lead endpoint"""
+        url = "/api/users/team_lead/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_a_user_admin(self):
-        """an admin cannot access any supervisor endpoint"""
-        url = "/api/users/supervisor/2/"
+        """an admin cannot access any team_lead endpoint"""
+        url = "/api/users/team_lead/2/"
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token_admin)
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -536,7 +536,7 @@ class AdminViewUserProfileTests(APITestCase):
             user=user, link="https://evaluation2", quarter="1 : 3", score=30
         )
 
-        supervisor = User.objects.create(
+        team_lead = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
             gender="Female",
@@ -548,35 +548,35 @@ class AdminViewUserProfileTests(APITestCase):
             password=make_password("superpassword"),
             team="Development",
             salary={"gross": 2000},
-            user_type="Supervisor",
+            user_type="TeamLead",
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
         )
-        supervisor.reporting_to.set(
+        team_lead.reporting_to.set(
             [
                 admin.id,
             ]
         )
-        supervisor.skills.add(react)
-        supervisor.skills.add(sql)
+        team_lead.skills.add(react)
+        team_lead.skills.add(sql)
         TrainingCourses.objects.create(
-            user=supervisor,
+            user=team_lead,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HGYFT99JI3",
         )
         TrainingCourses.objects.create(
-            user=supervisor,
+            user=team_lead,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/KY55GG0OQ1",
         )
-        CompanyProperties.objects.create(name="computer", user=supervisor)
+        CompanyProperties.objects.create(name="computer", user=team_lead)
         UserEvaluations.objects.create(
-            user=supervisor, link="https://evaluation3", quarter="1 : 3", score=30
+            user=team_lead, link="https://evaluation3", quarter="1 : 3", score=30
         )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
-        self.access_token_supervisor = self.get_token_supervisor()
+        self.access_token_team_lead = self.get_token_team_lead()
 
     def get_token_admin(self):
         """Get token for admin user."""
@@ -592,15 +592,15 @@ class AdminViewUserProfileTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
-    def get_token_supervisor(self):
-        """Get token for a supervisor user."""
+    def get_token_team_lead(self):
+        """Get token for a team_lead user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
     def test_get_all_users(self):
-        "an admin can view all fields a supervisor can view of all users in addition to salary"
+        "an admin can view all fields a team_lead can view of all users in addition to salary"
         """can view: Full name, profile picture,birthday,
         Telegram, email address, Joining date, Location (which office), Reporting to, UserSkills,
         trainings and courses achieved and link to certificates (if available), salary,
@@ -742,26 +742,26 @@ class AdminViewUserProfileTests(APITestCase):
         response = self.client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_get_all_users_supervisor(self):
-        """a supervisor cannot access any adminview endpoint"""
+    def test_get_all_users_team_lead(self):
+        """a team_lead cannot access any adminview endpoint"""
         url = "/api/users/admin/"
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_get_a_user_supervisor(self):
-        """a supervisor cannot access any adminview endpoint"""
+    def test_get_a_user_team_lead(self):
+        """a team_lead cannot access any adminview endpoint"""
         url = "/api/users/admin/2/"
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
         )
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_update_all_fields_of_a_user_supervisor(self):
-        """a supervisor user cannot access any adminview endpoint"""
+    def test_update_all_fields_of_a_user_team_lead(self):
+        """a team_lead user cannot access any adminview endpoint"""
         url = "/api/users/admin/2/"
         data = {
             "email": "user@example.com",
@@ -774,16 +774,16 @@ class AdminViewUserProfileTests(APITestCase):
             "salary": {"gross": 9000},
         }
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
         )
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_delete_a_user_supervisor(self):
-        """a supervisor cannot access any adminview endpoint"""
+    def test_delete_a_user_team_lead(self):
+        """a team_lead cannot access any adminview endpoint"""
         url = "/api/users/admin/2/"
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
         )
         response = self.client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -869,7 +869,7 @@ class SelfViewUserProfileTests(APITestCase):
             user=user, link="https://evaluation2", quarter="1 : 3", score=30
         )
 
-        supervisor = User.objects.create(
+        team_lead = User.objects.create(
             first_name="Sarah",
             last_name="Poland",
             gender="Female",
@@ -881,35 +881,35 @@ class SelfViewUserProfileTests(APITestCase):
             password=make_password("superpassword"),
             team="Development",
             salary={"gross": 2000},
-            user_type="Supervisor",
+            user_type="TeamLead",
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
         )
-        supervisor.reporting_to.set(
+        team_lead.reporting_to.set(
             [
                 admin.id,
             ]
         )
-        supervisor.skills.add(react)
-        supervisor.skills.add(sql)
+        team_lead.skills.add(react)
+        team_lead.skills.add(sql)
         TrainingCourses.objects.create(
-            user=supervisor,
+            user=team_lead,
             name="Meta Back-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/HGYFT99JI3",
         )
         TrainingCourses.objects.create(
-            user=supervisor,
+            user=team_lead,
             name="Meta Front-End Developer",
             certificate_link="https://www.coursera.org/account/accomplishments/verify/KY55GG0OQ1",
         )
-        CompanyProperties.objects.create(name="computer", user=supervisor)
+        CompanyProperties.objects.create(name="computer", user=team_lead)
         UserEvaluations.objects.create(
-            user=supervisor, link="https://evaluation3", quarter="1 : 3", score=30
+            user=team_lead, link="https://evaluation3", quarter="1 : 3", score=30
         )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
-        self.access_token_supervisor = self.get_token_supervisor()
+        self.access_token_team_lead = self.get_token_team_lead()
 
     def get_token_admin(self):
         """Get token for admin user."""
@@ -925,8 +925,8 @@ class SelfViewUserProfileTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
-    def get_token_supervisor(self):
-        """Get token for a supervisor user."""
+    def get_token_team_lead(self):
+        """Get token for a team_lead user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")

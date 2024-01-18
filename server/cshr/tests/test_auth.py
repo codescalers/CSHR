@@ -57,7 +57,7 @@ class RegisterationTests(APITestCase):
             password=make_password("superpassword"),
             team="Development",
             salary={"gross": 2000},
-            user_type="Supervisor",
+            user_type="TeamLead",
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
         )
@@ -69,7 +69,7 @@ class RegisterationTests(APITestCase):
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
-        self.access_token_supervisor = self.get_token_supervisor()
+        self.access_token_team_lead = self.get_token_team_lead()
 
     def get_token_admin(self):
         """Get token for admin user."""
@@ -85,8 +85,8 @@ class RegisterationTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
-    def get_token_supervisor(self):
-        """Get token for a supervisor user."""
+    def get_token_team_lead(self):
+        """Get token for a team_lead user."""
         url = "/api/auth/login/"
         data = {"email": "sarah@hotmail.com", "password": "superpassword"}
         response = self.client.post(url, data, format="json")
@@ -189,9 +189,9 @@ class RegisterationTests(APITestCase):
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_register_user_by_supervisor(self) -> User:
+    def test_register_user_by_team_lead(self) -> User:
         """
-        a supervisor user cannot register another user
+        a team_lead user cannot register another user
         """
         url = "/api/auth/signup/"
         data = {
@@ -209,7 +209,7 @@ class RegisterationTests(APITestCase):
             "reporting_to": 1,
         }
         self.client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
         )
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -229,7 +229,7 @@ class LoginTests(APITestCase):
             password=make_password("superpassword"),
             team="Development",
             salary={"gross": 2000},
-            user_type="Supervisor",
+            user_type="TeamLead",
             social_insurance_number="121 212 121",
             image="profile_image/default.png",
         )

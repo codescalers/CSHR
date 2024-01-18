@@ -7,7 +7,7 @@ from ..api.response import CustomResponse
 from server.cshr.api.permission import (
     IsAdmin,
     IsUser,
-    IsSupervisor,
+    IsTeamLead,
     UserIsAuthenticated,
     CustomPermissions,
 )
@@ -15,7 +15,7 @@ from server.cshr.services.office import get_office_by_id
 
 
 class BaseOfficeApiView(ListAPIView, GenericAPIView):
-    permission_classes = [UserIsAuthenticated | IsUser | IsAdmin | IsSupervisor]
+    permission_classes = [UserIsAuthenticated | IsUser | IsAdmin | IsTeamLead]
     serializer_class = OfficeSerializer
 
     def get_queryset(self) -> Response:
@@ -40,7 +40,7 @@ class BaseOfficeApiView(ListAPIView, GenericAPIView):
 
 
 class OfficeApiView(ListAPIView, GenericAPIView):
-    permission_classes = [UserIsAuthenticated | IsUser | IsAdmin | IsSupervisor]
+    permission_classes = [UserIsAuthenticated | IsUser | IsAdmin | IsTeamLead]
     serializer_class = OfficeSerializer
 
     def get(self, request: Request, id: str, format=None) -> Response:
@@ -66,7 +66,7 @@ class OfficeApiView(ListAPIView, GenericAPIView):
 
     def put(self, request: Request, id: str, format=None) -> Response:
         """To update an office"""
-        has_permission = CustomPermissions.admin_or_supervisor(request.user)
+        has_permission = CustomPermissions.admin_or_team_lead(request.user)
         if not has_permission:
             return CustomResponse.unauthorized()
         office = get_office_by_id(id)

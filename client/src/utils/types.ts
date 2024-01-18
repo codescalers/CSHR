@@ -1,7 +1,7 @@
 export type buttonType = "success" | "warning" | "error" | "info";
 export type alertType = "success" | "warning" | "error" | "info";
 export type requestStatusType = "pending" | "approved" | "rejected";
-export type UserType = "Admin" | "Supervisor" | "User";
+export type UserType = "Admin" | "TeamLead" | "User";
 
 export type requestLabelType =
   | "Vacation"
@@ -53,7 +53,7 @@ export interface GeneralUserInterface {
   is_active: boolean;
 }
 
-export interface SupervisorViewInterface extends GeneralUserInterface {
+export interface TeamLeadViewInterface extends GeneralUserInterface {
   mobile_number: string;
   social_insurance_number: string;
   user_evaluation: UserEvaluationType[];
@@ -61,10 +61,10 @@ export interface SupervisorViewInterface extends GeneralUserInterface {
   salary: SalaryType;
 }
 
-export interface AdminViewInterface extends SupervisorViewInterface {
+export interface AdminViewInterface extends TeamLeadViewInterface {
   salary: SalaryType;
 }
-export interface UserInterface extends SupervisorViewInterface {
+export interface UserInterface extends TeamLeadViewInterface {
   salary: SalaryType;
 }
 
@@ -114,7 +114,7 @@ export type TeamType = {
   user_type: string;
 };
 
-export type SupervisorType = {
+export type TeamLeadType = {
   id: number;
   full_name: string;
   email: string;

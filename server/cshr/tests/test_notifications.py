@@ -48,12 +48,12 @@ class NotificationsTests(APITestCase):
             password=make_password("helmypass"),
             location=office,
             team="Development",
-            user_type="Supervisor",
+            user_type="TeamLead",
         )
 
         self.access_token_admin = self.get_token_admin()
         self.access_token_user = self.get_token_user()
-        self.access_token_supervisor = self.get_token_supervisor()
+        self.access_token_team_lead = self.get_token_team_lead()
 
     def get_token_admin(self):
         """Get token for admin user."""
@@ -69,8 +69,8 @@ class NotificationsTests(APITestCase):
         response = self.client.post(url, data, format="json")
         return response.data["results"]["access_token"]
 
-    def get_token_supervisor(self):
-        """Get token for a supervisor user."""
+    def get_token_team_lead(self):
+        """Get token for a team_lead user."""
         url = f'{"/api/auth/login/"}'
         data = {"email": "helmy@gmail.com", "password": "helmypass"}
         response = self.client.post(url, data, format="json")
@@ -94,11 +94,11 @@ class NotificationsTests(APITestCase):
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_notifications_supervisor_authorized(self):
+    def test_get_notifications_team_lead_authorized(self):
         """get notifications"""
         url = "/api/notifications/"
         self.headers = client.credentials(
-            HTTP_AUTHORIZATION="Bearer " + self.access_token_supervisor
+            HTTP_AUTHORIZATION="Bearer " + self.access_token_team_lead
         )
         response = client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
