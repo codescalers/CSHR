@@ -36,8 +36,15 @@ export class VacationsApi extends ApiClientBase {
   }
   async list() {}
 
-  async create() {}
+  async create(input: Api.Inputs.Leave) {
+    ApiClientBase.assertUser()
+    const event = await this.unwrap(
+      this.$http.post<Api.Returns.LeaveRequest>(this.getUrl(''), input),
+      { transform: (d) => d.results }
+    )
 
+    return event
+  }
   async read(id: number) {}
 
   async delete(id: number) {}
@@ -110,5 +117,10 @@ class VacationsGetAdminBalanceApi extends ApiClientBase {
 class VacationsUserApi extends ApiClientBase {
   protected readonly path = '/user'
 
-  async list() {}
+  async list(query?: any) {
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.Vacation>>(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
+  }
+
 }

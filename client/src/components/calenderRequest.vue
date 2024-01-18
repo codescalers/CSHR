@@ -1,23 +1,23 @@
 
 <template>
   <v-card elevation="0" variant="outlined" color="primary" class="pa-4">
+    <v-icon class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
+
     <v-tabs v-model="tab" color="primary">
-      <v-tab value="one">Leave</v-tab>
-      <v-tab value="two">Meeting</v-tab>
-      <v-tab value="three">Event</v-tab>
+      <v-tab v-for="tab in tabs" :key="tab" :value="tab"> {{ tab }}</v-tab>
     </v-tabs>
 
     <v-window v-model="tab">
-      <v-window-item value="one">
+      <v-window-item value="Leave">
         <leaveRequest :dates="dates"></leaveRequest>
       </v-window-item>
 
-      <v-window-item value="two">
-        Two
+      <v-window-item value="Meeting">
+        <meetingRequest :dates="dates" />
       </v-window-item>
 
-      <v-window-item value="three">
-        <eventRequest :dates="dates"/>
+      <v-window-item value="Event">
+        <eventRequest :dates="dates" />
       </v-window-item>
     </v-window>
 
@@ -28,6 +28,7 @@
 import { ref } from 'vue';
 import leaveRequest from '@/components/requests/leaveRequest.vue';
 import eventRequest from './requests/eventRequest.vue';
+import meetingRequest from './requests/meetingRequest.vue';
 
 
 export default {
@@ -36,24 +37,21 @@ export default {
   components: {
     leaveRequest,
     eventRequest,
+    meetingRequest,
   },
-  // emits: {
-  //   'close-dialogue': (item: Object) => item
-  // },
-
+  emits: {
+    'close-dialog': (item: Boolean) => item
+  },
   setup(props) {
-    // const emit = defineEmits(['close-dialogue', 'update:request']);
-
+    const tabs = ["Leave", "Meeting", "Event"];
     const tab = ref<String>("")
-
-
 
     return {
       tab,
+      tabs,
       leaveRequest,
       eventRequest,
-      // cshrDialogue,
-      // emit,
+      meetingRequest,
     };
   },
 };

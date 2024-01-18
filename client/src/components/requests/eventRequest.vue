@@ -1,7 +1,6 @@
 
 <template>
-  <v-form ref="form" @submit.prevent="createEvent(name, description, startDate, endDate)">
-
+  <v-form ref="form" @submit.prevent="createEvent()">
 
 
     <div class="mt-3">
@@ -48,6 +47,34 @@
       </v-text-field>
     </div>
 
+
+    <div class="mt-3">
+
+
+
+      <v-text-field item-color="primary" base-color="primary" color="primary" variant="outlined" label="Event Start Time"
+        v-model="eventStart" hide-details="auto" :rules="fieldRequired" type="time">
+        <!-- <template v-slot:append>
+    <v-icon color="primary">mdi-domain</v-icon>
+  </template> -->
+      </v-text-field>
+    </div>
+
+    <div class="mt-3">
+
+
+
+      <v-text-field item-color="primary" base-color="primary" color="primary" variant="outlined" label="Event End Time"
+        v-model="eventEnd" hide-details="auto" :rules="fieldRequired" type="time">
+        <!-- <template v-slot:append>
+<v-icon color="primary">mdi-domain</v-icon>
+</template> -->
+      </v-text-field>
+    </div>
+
+
+
+
     <v-row class="mt-3">
 
       <v-col cols="3">
@@ -59,7 +86,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { fieldRequired } from '@/utils';
 import { $api } from '@/clients';
 import { useRouter } from 'vue-router';
@@ -70,28 +97,44 @@ export default {
   props: ["dates"],
 
   setup(props) {
-    // (new Date(props.dates.startStr)
-    const startDate = ref<any>(props.dates.startStr)
-    const endDate = ref<any>(props.dates.endStr)
+    const startDate = ref<string>(props.dates.startStr)
+    const endDate = ref<string>(props.dates.endStr)
     const name = ref<string>("")
     const description = ref<string>("")
     const form = ref()
-    const $router = useRouter()
+    const eventStart = ref()
+    const eventEnd = ref()
 
-    // const startDate = ref<Date>(new Date(props.dates.startStr));
-    //   const endDate = ref<Date>(new Date(props.dates.endStr));
+    const from_date = computed(() => {
+      let val = new Date(startDate.value);
+      if (eventStart.value) {
+        const [hours, minutes] = eventStart.value.split(':').map(Number);
+        val.setHours(hours, minutes, 0, 0);
+      }
+
+      return val.toISOString();
+    });
+    const end_date = computed(() => {
+      let val = new Date(endDate.value);
+      if (eventEnd.value) {
+        const [hours, minutes] = eventEnd.value.split(':').map(Number);
+        val.setHours(hours, minutes, 0, 0);
+      }
+
+      return val.toISOString();
+    });
 
 
-    async function createEvent(name: string, description: string, startDate: string, endDate: string) {
+
+    async function createEvent() {
       await $api.event.create(
         {
-          name: name,
-          description: description,
-          from_date: startDate,
-          end_date: endDate,
+          name: name.value,
+          description: description.value,
+          from_date: from_date.value,
+          end_date: end_date.value,
         },
       )
-      $router.push('/calender')
     }
 
     return {
@@ -101,6 +144,9 @@ export default {
       description,
       form,
       fieldRequired,
+      eventStart,
+      eventEnd,
+
       createEvent,
     };
   },

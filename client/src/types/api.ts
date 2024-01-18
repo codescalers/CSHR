@@ -26,10 +26,47 @@ export module Api {
     name: string
   }
 
+  export interface Vacation {
+    id: number
+    created_at: any
+    modified_at: any
+    type: string
+    status: string
+    reason: string
+    from_date: any
+    end_date: any
+    change_log: any[]
+    actual_days: number
+    applying_user: number
+    approval_user: number
+  }
+
+  export interface LeaveReason {
+    name: string
+    reason: string
+  }
+
   export interface Certificate {}
 
   export interface Salary {}
+  export interface Meetings {
+    date: any
+    host_user: {
+      id: number
+      full_name: string
+      email: string
+      image: string
+      gender: string
+      skills: any[]
+      job_title: string
+      user_certificates: any[]
+    }
+    id: number
+    invited_users: any[]
 
+    location: string
+    meeting_link: string
+  }
   export interface User {
     id: number
     first_name: string
@@ -64,12 +101,10 @@ export module Api {
     sick_leaves: {
       reserved: number
       all: string
-     
     }
     compensation: {
       reserved: number
       all: string
- 
     }
     unpaid: {
       reserved: number
@@ -103,8 +138,9 @@ export module Api {
     export type Event = MsgRes<Event>
     export type Meeting = MsgRes<Meeting>
 
-
     export type Profile = MsgRes<User>
+    export type AllMeetings = MsgRes<Meetings>
+
     export type Login = MsgRes<{
       id: number
       email: string
@@ -115,8 +151,43 @@ export module Api {
       last_name: string
     }>
 
+    export type LeaveRequest = MsgRes<{
+      title: string
+      className: string
+      eventName: string
+      vacation: {
+        id: number
+        reason: string
+        from_date: any
+        end_date: any
+        status: string
+        applying_user: {
+          id: number
+          full_name: string
+          email: string
+          image: string
+          team: string
+          gender: string
+          skills: []
+          job_title: string
+          user_certificates: []
+        }
+        approval_user: {
+          email: string
+          team: string
+          gender: string
+          job_title: string
+        }
+        change_log: {}
+        type: string
+      }
+
+      len: number
+      date: any
+    }>
+
     export type Balance = MsgRes<BalanceVacation>
-    
+
     export interface Register {
       message: string
       results: Api.Inputs.Register
@@ -156,12 +227,19 @@ export module Api {
     export interface Event {
       name: string
       description: string
-      from_date: string
-      end_date: string
+      from_date: any
+      end_date: any
+    }
+
+    export interface Leave {
+      reason: string
+      from_date: any
+      end_date: any
+      actual_days: number
     }
 
     export interface Meeting {
-      date: string
+      date: any
       meeting_link: string
       location: string
     }

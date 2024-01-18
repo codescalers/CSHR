@@ -12,13 +12,15 @@ export class MeetingApi extends ApiClientBase {
     this.exact = new MeetingExactApi(options)
   }
 
-  async list() {}
+  list(query?: any) {
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.Meetings>>(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
+  }
   async create(input: Api.Inputs.Meeting) {
     ApiClientBase.assertUser()
-
-
     const event = await this.unwrap(
-      this.$http.post<Api.Returns.Meeting>(this.getUrl('', input)),
+      this.$http.post<Api.Returns.Meeting>(this.getUrl(''),input),
       { transform: (d) => d.results }
     )
 

@@ -1,6 +1,6 @@
 
 <template>
-  <v-form ref="form" @submit.prevent="createMeeting(startDate, meetingLink, location)">
+  <v-form ref="form" @submit.prevent="createMeeting()">
 
 
 
@@ -39,6 +39,16 @@
       </v-text-field>
     </div>
 
+
+
+    <div class="mt-3">
+      <v-text-field item-color="primary" base-color="primary" color="primary" variant="outlined" label="Meeting Time"
+        v-model="meetingTime" hide-details="auto" :rules="fieldRequired" type="time">
+        <!-- <template v-slot:append>
+<v-icon color="primary">mdi-domain</v-icon>
+</template> -->
+      </v-text-field>
+    </div>
     <v-row class="mt-3">
 
       <v-col cols="3">
@@ -50,10 +60,11 @@
   </v-form>
 </template>
 <script lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { fieldRequired } from '@/utils';
 import { $api } from '@/clients';
 import { useRouter } from 'vue-router';
+import { set } from 'date-fns';
 
 
 export default {
@@ -61,26 +72,32 @@ export default {
   props: ["dates"],
 
   setup(props) {
-    // (new Date(props.dates.startStr)
     const startDate = ref<any>(props.dates.startStr)
     const meetingLink = ref<string>("")
     const location = ref<string>("")
     const form = ref()
     const $router = useRouter()
+    const meetingTime = ref()
 
-    // const startDate = ref<Date>(new Date(props.dates.startStr));
-    //   const endDate = ref<Date>(new Date(props.dates.endStr));
+    const meetingDateTime = computed(() => {
+      let val = new Date(startDate.value);
+      if (startDate.value) {
+        const [hours, minutes] = meetingTime.value.split(':').map(Number);
+        val.setHours(hours, minutes, 0, 0);
+      }
 
+      return val.toISOString();
+    });
+   
 
-    async function createMeeting(startDate: string, meetingLink: string, location: string) {
+    async function createMeeting() {
       await $api.meeting.create(
         {
-          date: startDate,
-          meeting_link: meetingLink,
-          location: location,
+          date: meetingDateTime.value,
+          meeting_link: meetingLink.value,
+          location: location.value,
         },
       )
-      $router.push('/calender')
     }
 
     return {
@@ -88,6 +105,7 @@ export default {
       meetingLink,
       location,
       form,
+      meetingTime,
       fieldRequired,
       createMeeting,
     };
