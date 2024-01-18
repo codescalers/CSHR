@@ -250,7 +250,7 @@ export default {
     const formatDate = (date: any) => moment(date).format('YYYY-MM-DD')
 
     async function updateUser() {
-      await $api.myprofile.update(selectedUser.value.id, selectedUser.value)
+      await $api.myprofile.update(selectedUser.value.id, {...selectedUser.value, image: imageUrl.value})
     }
 
     function chooseImage(event: any) {
