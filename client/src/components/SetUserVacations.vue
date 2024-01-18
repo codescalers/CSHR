@@ -7,6 +7,7 @@
             v-model="state.user.value.location.name"
             label="Office"
             type="text"
+            :rules='requiredStringRules'
             disabled
           ></v-text-field>
           <v-select
@@ -16,22 +17,25 @@
             item-value="id"
             label="User"
             return-object
-            single-line
+            :rules='requiredRules'
           ></v-select>
           <v-text-field
             v-model="vacation.annual_leaves"
             label="Annual Leaves"
             type="number"
+            :rules='requiredRules'
           ></v-text-field>
           <v-text-field
             v-model="vacation.leave_excuses"
             label="Leave Excuses"
             type="number"
+            :rules='requiredRules'
           ></v-text-field>
           <v-text-field
             v-model="vacation.emergency_leaves"
             label="Emergency Leaves"
             type="number"
+            :rules='requiredRules'
           ></v-text-field>
           <v-btn color="primary" type="submit" :disabled="!form?.isValid">Set Vacations</v-btn>
         </v-col>
@@ -43,6 +47,7 @@
 <script lang="ts">
 import { $api } from '@/clients'
 import { useState } from '@/store'
+import { requiredRules, requiredStringRules } from '@/utils'
 import { onMounted, ref, watchEffect } from 'vue'
 
 export default {
@@ -93,6 +98,8 @@ export default {
       officeUsers,
       userVacations,
       vacation,
+      requiredStringRules,
+      requiredRules,
       updateVacations
     }
   }

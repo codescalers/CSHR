@@ -3,27 +3,32 @@
     <v-form ref="form" @submit.prevent="setVacations">
       <v-row class="justify-center align-center">
         <v-col cols="11">
-          <v-text-field v-model="office_balance.year" type="number" label="Year"></v-text-field>
+          <v-text-field v-model="office_balance.year" type="number" label="Year" :rules='requiredRules'></v-text-field>
           <v-text-field
             v-model="office_balance.annual_leaves"
             type="number"
             label="Annual Leaves"
+            :rules='requiredRules'
           ></v-text-field>
           <v-text-field
             v-model="office_balance.leave_excuses"
             type="number"
             label="Leave Excuses"
+            :rules='requiredRules'
           ></v-text-field>
           <v-text-field
             v-model="office_balance.emergency_leaves"
             type="number"
             label="Emergency Leaves"
+            :rules='requiredRules'
           ></v-text-field>
           <v-text-field
             v-model="formattedDates"
             label="Public Holidays"
             placeholder="Select or enter dates separated by commas"
-            @click="toggleDatePicker"            
+            @click="toggleDatePicker" 
+            :rules='requiredRules'  
+            readonly  
           >
             <template v-slot:append-inner>
               <v-icon>mdi-calendar</v-icon>
@@ -50,6 +55,7 @@ import { $api } from '@/clients'
 import type { Api } from '@/types'
 import { computed, onMounted, ref } from 'vue'
 import moment from "moment"
+import { requiredRules } from '@/utils'
 
 export default {
   name: 'SetVacations',
@@ -128,6 +134,7 @@ export default {
       datePickerVisible,
       formattedDates,
       selectedDates,
+      requiredRules,
       setVacations,
       toggleDatePicker,
       preventDefault

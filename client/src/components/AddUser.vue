@@ -68,6 +68,7 @@
             density="comfortable"
             :rules="requiredStringRules"
             @click="toggleDatePicker('birthdayPicker')"
+            readonly
           >
             <template v-slot:append-inner>
               <v-icon>mdi-calendar</v-icon>
@@ -87,6 +88,7 @@
             density="comfortable"
             :rules="requiredStringRules"
             @click="toggleDatePicker('joiningDatePicker')"
+            readonly
           >
             <template v-slot:append-inner>
               <v-icon>mdi-calendar</v-icon>

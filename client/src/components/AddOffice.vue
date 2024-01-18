@@ -3,16 +3,16 @@
     <v-form ref="form" @submit.prevent="addOffice">
       <v-row class="justify-center align-center">
         <v-col cols="11">
-          <v-text-field v-model="office.name" label="Name" type="text"></v-text-field>
-          <v-text-field v-model="office.country" label="Country" type="text"></v-text-field>
+          <v-text-field v-model="office.name" label="Name" type="text" :rules='requiredStringRules'></v-text-field>
+          <v-text-field v-model="office.country" label="Country" type="text" :rules='requiredStringRules'></v-text-field>
           <v-select
             v-model="selectedWeekend"
             :items="weekendOptions"
             item-title="value"
             item-value="id"
-            label="Select"
+            label="Weekend"
             return-object
-            single-line
+            :rules='requiredRules'
           ></v-select>
           <v-btn color="primary" type="submit" :disabled="!form?.isValid">Add Office</v-btn>
         </v-col>
@@ -22,8 +22,9 @@
 </template>
 
 <script lang="ts">
-import { $api } from '@/clients'
 import { ref } from 'vue'
+import { $api } from '@/clients'
+import { requiredRules, requiredStringRules } from '@/utils'
 
 export default {
   name: 'AddOffice',
@@ -55,6 +56,8 @@ export default {
       office,
       weekendOptions,
       selectedWeekend,
+      requiredRules,
+      requiredStringRules,
       addOffice
     }
   }

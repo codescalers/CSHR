@@ -5,14 +5,18 @@
         <DashboardList @item-selected="onItemSelected" />
       </v-col>
       <v-col cols="8">
-        <component :is="selectedForm" />
+        <v-card>
+          <v-card-title class="mx-8">Dashboard of <strong class="text-blue-lighten-1">{{ office }}</strong> office admins</v-card-title>
+          <v-divider class="mx-12 my-1"></v-divider>
+          <component :is="selectedForm" />
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { DASHBOARD_ITEMS as items } from '@/utils'
 import DashboardList from '@/components/DashboardList.vue'
 import SetVacations from '@/components/SetVacations.vue'
@@ -21,6 +25,8 @@ import UpdateOfficeVacations from '@/components/UpdateOfficeVacations.vue'
 import AddOffice from '@/components/AddOffice.vue'
 import AddUser from '@/components/AddUser.vue'
 import UpdateUser from '@/components/UpdateUser.vue'
+import { useState } from '../store'
+import { $api } from '@/clients'
 
 export default {
   name: 'DashboardView',
@@ -28,6 +34,9 @@ export default {
     DashboardList
   },
   setup() {
+    const state = useState();
+    const officeId = ref();
+    const office = ref();
     const selectedItem = ref(items[0])
     const selectedForm = computed(() => {
       switch (selectedItem.value.id) {
@@ -46,10 +55,16 @@ export default {
       }
     })
 
+    onMounted(async() => {
+      officeId.value = state.user.value?.location.id
+      office.value = (await $api.office.read(officeId.value)).name
+    })
+
     function onItemSelected(item: any) {
       selectedItem.value = item
     }
     return {
+      office,
       DashboardList,
       SetVacations,
       UpdateOfficeVacations,
