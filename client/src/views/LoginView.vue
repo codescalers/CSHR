@@ -12,7 +12,7 @@
             <v-card-text>
               A versatile management system with vacation request submissions
               and seamless integration with a global calendar. Users across
-              offices can collectively view approved vacations, Birthdates,
+              offices can collectively view approved Vacations, Birthdates,
               Events, Meetings, and Holidays, providing a centralized overview
               for the entire organization.
             </v-card-text>
