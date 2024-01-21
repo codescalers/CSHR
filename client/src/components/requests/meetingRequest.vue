@@ -19,23 +19,14 @@
 
       <v-text-field item-color="primary" base-color="primary" color="primary" variant="outlined" label="Meeting Link"
         v-model="meetingLink" hide-details="auto" :rules="fieldRequired">
-        <!-- <template v-slot:append>
-          <v-icon color="primary">mdi-domain</v-icon>
-        </template> -->
-      </v-text-field>
-      <!-- 
-        <v-text-field color="primary" item-color="primary" base-color="primary" :readonly="true" variant="outlined"
-          v-model="name" label="Name" :rules="fieldRequired">
 
-        </v-text-field> -->
+      </v-text-field>
+ 
     </div>
     <div class="mt-3">
 
       <v-text-field item-color="primary" base-color="primary" color="primary" variant="outlined" label="Meeting Location"
         v-model="location" hide-details="auto" :rules="fieldRequired">
-        <!-- <template v-slot:append>
-          <v-icon color="primary">mdi-domain</v-icon>
-        </template> -->
       </v-text-field>
     </div>
 
@@ -44,12 +35,10 @@
     <div class="mt-3">
       <v-text-field item-color="primary" base-color="primary" color="primary" variant="outlined" label="Meeting Time"
         v-model="meetingTime" hide-details="auto" :rules="fieldRequired" type="time">
-        <!-- <template v-slot:append>
-<v-icon color="primary">mdi-domain</v-icon>
-</template> -->
+
       </v-text-field>
     </div>
-    <v-row class="mt-3">
+    <v-row class="mt-3 d-flex flex-row-reverse">
 
       <v-col cols="3">
         <v-btn color="primary" type="submit" :disabled="!form?.isValid" width="100%">
@@ -62,9 +51,7 @@
 <script lang="ts">
 import { computed, ref } from 'vue';
 import { fieldRequired } from '@/utils';
-import { $api } from '@/clients';
-import { useRouter } from 'vue-router';
-import { set } from 'date-fns';
+import { useApi } from '@/hooks'
 
 
 export default {
@@ -72,11 +59,11 @@ export default {
   props: ["dates"],
 
   setup(props) {
+    const $api = useApi()
     const startDate = ref<any>(props.dates.startStr)
     const meetingLink = ref<string>("")
     const location = ref<string>("")
     const form = ref()
-    const $router = useRouter()
     const meetingTime = ref()
 
     const meetingDateTime = computed(() => {

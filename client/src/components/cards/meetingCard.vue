@@ -1,8 +1,9 @@
 
 <template>
   <v-card elevation="0" variant="outlined" color="white" class="pa-4">
-    <v-icon class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
-
+    <div class="d-flex flex-row-reverse">
+      <v-icon class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
+    </div>
     <v-card-title class="text-center my-2">
       Meeting Created by
       <br>

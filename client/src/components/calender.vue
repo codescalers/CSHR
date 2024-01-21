@@ -11,7 +11,7 @@
     />
   </div>
 
-  <CustomVDialog
+  <VDialog
     v-if="dates?.startStr"
     :routeQuery="dates?.startStr"
     :modelValue="showDialog[dates?.startStr]"
@@ -19,9 +19,9 @@
     <v-card>
       <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)" />
     </v-card>
-  </CustomVDialog>
+  </VDialog>
 
-  <!-- <CustomVDialog
+  <VDialog
     v-if="isViewRequest && isMeeting && meeting"
     :routeQuery="meeting.id"
     :modelValue="showDialog[meeting.id]"
@@ -29,7 +29,7 @@
     <v-card>
       <meetingCard :meeting="meeting" @close-dialog="closeDialog(meeting.id)" />
     </v-card>
-  </CustomVDialog> -->
+  </VDialog>
 
   <VDialog
     v-if="isViewRequest && isEvent && event"
@@ -146,7 +146,7 @@ export default {
   components: {
     FullCalendar,
     calenderRequest,
-    // meetingCard,
+    meetingCard,
     eventCard,
     vacationCard
   },

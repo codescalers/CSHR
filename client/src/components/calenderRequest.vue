@@ -1,11 +1,15 @@
 
 <template>
   <v-card elevation="0" variant="outlined" color="primary" class="pa-4">
-    <v-icon class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
-
-    <v-tabs v-model="tab" color="primary">
+    <div class="d-flex flex-row-reverse">
+      <v-icon class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
+    </div>
+    <div class="d-flex justify-center">
+      <v-tabs v-model="tab" color="primary" >
       <v-tab v-for="tab in tabs" :key="tab" :value="tab"> {{ tab }}</v-tab>
     </v-tabs>
+    </div>
+
 
     <v-window v-model="tab">
       <v-window-item value="Leave">

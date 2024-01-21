@@ -28,7 +28,7 @@
 
     </div>
 
-    <v-row class="mt-3">
+    <v-row class="mt-3 d-flex flex-row-reverse">
 
       <v-col cols="3">
         <v-btn color="primary" type="submit" :disabled="!form?.isValid || !isValid" width="100%">
@@ -39,7 +39,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { $api } from '@/clients';
+import { useApi } from '@/hooks'
 import type { Api } from '@/types';
 import { computed, ref } from 'vue';
 
@@ -49,6 +49,7 @@ export default {
   props: ["dates"],
 
   setup(props) {
+    const $api = useApi()
     const form = ref()
     const startDate = ref<any>(props.dates.startStr)
     const endDate = ref<any>(props.dates.endStr)

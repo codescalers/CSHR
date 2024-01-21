@@ -27,23 +27,13 @@
 
       <v-text-field item-color="primary" base-color="primary" color="primary" variant="outlined" label="Event Name"
         v-model="name" hide-details="auto" :rules="fieldRequired">
-        <!-- <template v-slot:append>
-          <v-icon color="primary">mdi-domain</v-icon>
-        </template> -->
       </v-text-field>
-      <!-- 
-        <v-text-field color="primary" item-color="primary" base-color="primary" :readonly="true" variant="outlined"
-          v-model="name" label="Name" :rules="fieldRequired">
 
-        </v-text-field> -->
     </div>
     <div class="mt-3">
 
       <v-text-field item-color="primary" base-color="primary" color="primary" variant="outlined" label="Description"
         v-model="description" hide-details="auto" :rules="fieldRequired">
-        <!-- <template v-slot:append>
-          <v-icon color="primary">mdi-domain</v-icon>
-        </template> -->
       </v-text-field>
     </div>
 
@@ -54,9 +44,6 @@
 
       <v-text-field item-color="primary" base-color="primary" color="primary" variant="outlined" label="Event Start Time"
         v-model="eventStart" hide-details="auto" :rules="fieldRequired" type="time">
-        <!-- <template v-slot:append>
-    <v-icon color="primary">mdi-domain</v-icon>
-  </template> -->
       </v-text-field>
     </div>
 
@@ -66,16 +53,13 @@
 
       <v-text-field item-color="primary" base-color="primary" color="primary" variant="outlined" label="Event End Time"
         v-model="eventEnd" hide-details="auto" :rules="fieldRequired" type="time">
-        <!-- <template v-slot:append>
-<v-icon color="primary">mdi-domain</v-icon>
-</template> -->
       </v-text-field>
     </div>
 
 
 
 
-    <v-row class="mt-3">
+    <v-row class="mt-3 d-flex flex-row-reverse">
 
       <v-col cols="3">
         <v-btn color="primary" type="submit" :disabled="!form?.isValid" width="100%">
@@ -88,8 +72,7 @@
 <script lang="ts">
 import { computed, ref } from 'vue';
 import { fieldRequired } from '@/utils';
-import { $api } from '@/clients';
-import { useRouter } from 'vue-router';
+import { useApi } from '@/hooks'
 
 
 export default {
@@ -97,6 +80,7 @@ export default {
   props: ["dates"],
 
   setup(props) {
+    const $api = useApi()
     const startDate = ref<string>(props.dates.startStr)
     const endDate = ref<string>(props.dates.endStr)
     const name = ref<string>("")
