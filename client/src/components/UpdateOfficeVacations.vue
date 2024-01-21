@@ -9,7 +9,6 @@
             :text="`Please note that this value will be applied to the ${selectedReason.text} balance for all users. If you accidentally submit this form, you'll need to reset the value for users using the appropriate form.`"
           ></v-alert>
           <v-text-field v-model="state.user.value.location.name" label="Office" type="text" disabled></v-text-field>
-          <v-text-field v-model="vacation.value" label="Vacation Type" type="text"></v-text-field>
           <v-select
             v-model="selectedReason"
             :items="reasons"
@@ -19,6 +18,7 @@
             return-object
             single-line
           ></v-select>
+          <v-text-field v-model="vacation.value" label="Vacation Type" type="text" :rules='requiredStringRules'></v-text-field>
           <v-btn color="primary" type="submit" :disabled="!form?.isValid">Update Vacations</v-btn>
         </v-col>
       </v-row>
@@ -30,6 +30,7 @@
 import { $api } from '@/clients'
 import { ref } from 'vue'
 import { useState } from '../store'
+import { requiredStringRules } from '@/utils'
 
 export default {
   name: 'UpdateOfficeVacations',
@@ -71,6 +72,7 @@ export default {
       reasons,
       selectedReason,
       state,
+      requiredStringRules,
       UpdateVacations
     }
   }
