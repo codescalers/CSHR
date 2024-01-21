@@ -13,6 +13,15 @@
             density="comfortable"
             :rules="requiredRules"
           ></v-select>
+          <v-select
+            v-model="reporting_to"
+            :items="supervisors"
+            item-title="full_name"
+            item-value="id"
+            label="Team Lead"
+            return-object
+            density="comfortable"
+          ></v-select>
         </v-col>
         <v-col cols="6" v-if="selectedUser">
           <v-text-field
@@ -134,16 +143,6 @@
             return-object
             density="comfortable"
             :rules="requiredRules"
-          ></v-select>
-
-          <v-select
-            v-model="reporting_to"
-            :items="supervisors"
-            item-title="full_name"
-            item-value="id"
-            label="Team Lead"
-            return-object
-            density="comfortable"
           ></v-select>
         </v-col>
         <v-col cols="12">
