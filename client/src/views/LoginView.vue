@@ -100,7 +100,6 @@ export default defineComponent({
           email,
           password,
         },
-        rememberMe.value
       )
       const user = await $api.myprofile.getUser()
       state.user.value = user
