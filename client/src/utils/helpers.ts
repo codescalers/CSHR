@@ -17,9 +17,9 @@ export function devLog(...args: any[]): void {
 
 
 export const DASHBOARD_ITEMS = [
-  { id: 1, name: 'Set Vactions' },
+  { id: 1, name: 'Set Vacations' },
   { id: 2, name: 'Set User Vacations' },
-  { id: 3, name: 'Update Office Vacations' },
+  // { id: 3, name: 'Update Office Vacations' },
   { id: 4, name: 'Add Office' },
   { id: 5, name: 'Add User' },
   { id: 6, name: 'Update User Profile' },

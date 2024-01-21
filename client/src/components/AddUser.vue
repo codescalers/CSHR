@@ -135,7 +135,7 @@
             :items="supervisors"
             item-title="name"
             item-value="id"
-            label="Supervisors"
+            label="Team Lead"
             return-object
             density="comfortable"
           ></v-select>
@@ -250,11 +250,9 @@ export default {
         name: office.name
       }))
       location.value = offices.value[0]
-      supervisors.value = ((await $api.users.team.supervisors.list()) as any).map(
-        (supervisor: any) => ({ id: supervisor.id, name: supervisor.name }) ?? []
-      )
-      console.log(supervisors.value);
-      
+      supervisors.value = ((await $api.users.admin.list()) as any).filter((supervisor: any) => supervisor.user_type === "Supervisor")
+      .map((supervisor: any) => ({ id: supervisor.id, name: supervisor.full_name }))
+      selectedSupervisor.value = supervisors.value[0]
     })
 
     watch([birthdayDate, joiningDate], ([newBirthdayDate, newJoiningDate]) => {

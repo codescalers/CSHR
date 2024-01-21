@@ -3,8 +3,18 @@
     <v-form ref="form" @submit.prevent="addOffice">
       <v-row class="justify-center align-center">
         <v-col cols="12">
-          <v-text-field v-model="office.name" label="Name" type="text" :rules='requiredStringRules'></v-text-field>
-          <v-text-field v-model="office.country" label="Country" type="text" :rules='requiredStringRules'></v-text-field>
+          <v-text-field
+            v-model="office.name"
+            label="Name"
+            type="text"
+            :rules="requiredStringRules"
+          ></v-text-field>
+          <v-autocomplete
+            label="Country"
+            :items="countryList"
+            v-model='selectedCountry'
+            auto-select-first
+          ></v-autocomplete>
           <v-select
             v-model="selectedWeekend"
             :items="weekendOptions"
@@ -25,6 +35,7 @@
 import { ref } from 'vue'
 import { $api } from '@/clients'
 import { requiredRules, requiredStringRules } from '@/utils'
+import { countries } from "@/utils"
 
 export default {
   name: 'AddOffice',
@@ -41,12 +52,14 @@ export default {
       }
     ])
     const selectedWeekend = ref(weekendOptions.value[0])
+    const countryList = countries.map((c: any) => c.name)
+    const selectedCountry = ref(countryList[0]);
     const office = ref({
       name: '',
-      country: '',
+      country: selectedCountry.value,
       weekend: selectedWeekend.value.value
-    })
-
+    })    
+    
     async function addOffice() {
       await $api.office.create(office.value)
     }
@@ -58,6 +71,8 @@ export default {
       selectedWeekend,
       requiredRules,
       requiredStringRules,
+      countryList,
+      selectedCountry,
       addOffice
     }
   }

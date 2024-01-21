@@ -7,7 +7,7 @@ export module Api {
    */
   export type DashedDate = `${number}-${number}-${number}`
   export type Teams = "Business Development" | "Development" | "HR & Finance" | "QA" | "Marketing" | "Operations" | "Support" // prettier-ignore
-  export type Users = 'Admin' | 'User' | 'Supervisor'
+  export type Users = 'Admin' | 'User' | 'Team Lead'
   export type Gender = 'Male' | 'Female'
 
   export interface ClientOptions {
