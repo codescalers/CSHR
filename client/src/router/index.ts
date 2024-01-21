@@ -22,7 +22,10 @@ router.beforeEach(async (to, _, next) => {
     // Redirect the user to the login page
     next('/login')
     // if user is not admin hide dashboard and redirect to home
-  } else if (isAuthenticated.value && to.path === '/login' || !isAdmin.value && to.path === '/dashboard') {
+  } else if (
+    (isAuthenticated.value && to.path === '/login') ||
+    (!isAdmin.value && to.path === '/dashboard')
+  ) {
     // If authenticated and trying to access the login page, redirect to home
     next('/')
   } else {

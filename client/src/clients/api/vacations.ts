@@ -71,15 +71,13 @@ class VacationsBalanceApi extends ApiClientBase {
   }
 
   async list(query: Api.Inputs.UserId) {
-    return this.unwrap(this.$http.get(this.getUrl('', query)),
-      { transform : (d) => d.results }  
-    )
+    return this.unwrap(this.$http.get(this.getUrl('', query)), { transform: (d) => d.results })
   }
 
   async update(query: Api.Inputs.UserId, input: Api.Inputs.Vacation) {
-    return this.unwrap(this.$http.put(this.getUrl('', query), input),
-      { transform : (d) => d.results }  
-    )
+    return this.unwrap(this.$http.put(this.getUrl('', query), input), {
+      transform: (d) => d.results
+    })
   }
 }
 
@@ -116,8 +114,8 @@ class VacationsEditApi extends ApiClientBase {
 
 class VacationsGetAdminBalanceApi extends ApiClientBase {
   protected readonly path = '/get-admin-balance'
-  
-  constructor(options: Api.ClientOptions, prePath: string){
+
+  constructor(options: Api.ClientOptions, prePath: string) {
     super(options, prePath)
   }
   async list() {

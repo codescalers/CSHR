@@ -9,7 +9,7 @@ export const isAuthenticated = computed(() => {
 })
 
 export const isAdmin = computed(() => {
-  return state.user.value && state.user.value.user_type === "Admin" ? true : false;
+  return state.user.value && state.user.value.user_type === 'Admin' ? true : false
 })
 
 export interface $Globals {

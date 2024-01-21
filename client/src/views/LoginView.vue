@@ -62,7 +62,7 @@ export default defineComponent({
     const show = ref<boolean>(false)
     const rememberMe = ref<boolean>(false)
     const $router = useRouter()
-    const state = useState();
+    const state = useState()
 
     async function login(email: string, password: string) {
       await $api.auth.login(
@@ -72,9 +72,9 @@ export default defineComponent({
         },
         rememberMe.value
       )
-      const user = await $api.myprofile.getUser();
-      state.user.value = user;
-      state.rememberMe.value = rememberMe.value;
+      const user = await $api.myprofile.getUser()
+      state.user.value = user
+      state.rememberMe.value = rememberMe.value
       $router.push('/')
     }
 

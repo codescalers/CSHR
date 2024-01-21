@@ -56,7 +56,7 @@
             :rules="socialInsuranceRules"
           ></v-text-field>
         </v-col>
-        <v-col cols='6'>
+        <v-col cols="6">
           <v-text-field
             v-model="telegram_link"
             label="Telegram"
@@ -139,9 +139,8 @@
             return-object
             density="comfortable"
           ></v-select>
-
         </v-col>
-        <v-col cols='12'>
+        <v-col cols="12">
           <v-file-input
             v-model="imageInput"
             label="Image"
@@ -249,8 +248,9 @@ export default {
         name: office.name
       }))
       location.value = offices.value[0]
-      supervisors.value = ((await $api.users.admin.list()) as any).filter((supervisor: any) => supervisor.user_type === "Supervisor")
-      .map((supervisor: any) => ({ id: supervisor.id, name: supervisor.full_name }))
+      supervisors.value = ((await $api.users.admin.list()) as any)
+        .filter((supervisor: any) => supervisor.user_type === 'Supervisor')
+        .map((supervisor: any) => ({ id: supervisor.id, name: supervisor.full_name }))
       selectedSupervisor.value = supervisors.value[0]
     })
 
@@ -333,7 +333,7 @@ export default {
 </script>
 
 <style scoped>
-.v-picker.v-sheet{
+.v-picker.v-sheet {
   position: absolute !important;
   z-index: 1000 !important;
 }

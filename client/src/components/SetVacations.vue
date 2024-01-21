@@ -3,43 +3,44 @@
     <v-form ref="form" @submit.prevent="setVacations">
       <v-row class="justify-center align-center">
         <v-col cols="12">
-            <v-alert
-            class='mb-3'
-            type='info'
+          <v-alert
+            class="mb-3"
+            type="info"
             text="The provided figures reflect the current year's details for this office. Make sure to change the year if you want to set new data. Otherwise, the existing 2024 data will be amended."
-            >
-            </v-alert>
-            <v-alert
-              class='mb-3'
-              type="info"
-              text="You need to set the data annually."
-            ></v-alert>
-          <v-text-field v-model="office_balance.year" type="number" label="Year" :rules='requiredRules'></v-text-field>
+          >
+          </v-alert>
+          <v-alert class="mb-3" type="info" text="You need to set the data annually."></v-alert>
+          <v-text-field
+            v-model="office_balance.year"
+            type="number"
+            label="Year"
+            :rules="requiredRules"
+          ></v-text-field>
           <v-text-field
             v-model="office_balance.annual_leaves"
             type="number"
             label="Annual Leaves"
-            :rules='requiredRules'
+            :rules="requiredRules"
           ></v-text-field>
           <v-text-field
             v-model="office_balance.leave_excuses"
             type="number"
             label="Leave Excuses"
-            :rules='requiredRules'
+            :rules="requiredRules"
           ></v-text-field>
           <v-text-field
             v-model="office_balance.emergency_leaves"
             type="number"
             label="Emergency Leaves"
-            :rules='requiredRules'
+            :rules="requiredRules"
           ></v-text-field>
           <v-text-field
             v-model="formattedDates"
             label="Public Holidays"
             placeholder="Select or enter dates separated by commas"
-            @click="toggleDatePicker" 
-            :rules='requiredRules'  
-            readonly  
+            @click="toggleDatePicker"
+            :rules="requiredRules"
+            readonly
           >
             <template v-slot:append-inner>
               <v-icon>mdi-calendar</v-icon>
@@ -65,7 +66,7 @@
 import { $api } from '@/clients'
 import type { Api } from '@/types'
 import { computed, onMounted, ref } from 'vue'
-import moment from "moment"
+import moment from 'moment'
 import { requiredRules } from '@/utils'
 
 export default {
@@ -87,24 +88,27 @@ export default {
         weekend: ''
       }
     })
-    const selectedDates = ref([]);
+    const selectedDates = ref([])
 
     // const formattedDates = computed(() => {
     //   const mergedDates = [...selectedDates.value, ...office_balance.value.public_holidays].map(date => moment(date).format('YYYY-MM-DD')).join(', ');
-      
+
     //   return mergedDates
     // })
 
     const formattedDates = computed(() => {
       const combinedDates = [
         ...selectedDates.value,
-        ...office_balance.value.public_holidays.map(date => new Date(date))
-      ];
+        ...office_balance.value.public_holidays.map((date) => new Date(date))
+      ]
 
-      (selectedDates.value as any) = Array.from(new Set(combinedDates));
+      ;(selectedDates.value as any) = Array.from(new Set(combinedDates))
 
-      return combinedDates.sort((a, b) => a.getTime() - b.getTime()).map(date => moment(date).format('YYYY-MM-DD')).join(', ');
-    }); 
+      return combinedDates
+        .sort((a, b) => a.getTime() - b.getTime())
+        .map((date) => moment(date).format('YYYY-MM-DD'))
+        .join(', ')
+    })
 
     onMounted(async () => {
       await $api.auth.login({
@@ -115,20 +119,15 @@ export default {
     })
 
     async function setVacations() {
-      const {
-        annual_leaves,
-        compensation,
-        emergency_leaves,
-        leave_excuses,
-        year
-      } = office_balance.value
+      const { annual_leaves, compensation, emergency_leaves, leave_excuses, year } =
+        office_balance.value
       await $api.vacations.post_admin_balance.create({
         annual_leaves,
         compensation,
         emergency_leaves,
         leave_excuses,
         year,
-        public_holidays: formattedDates.value.split(", ")
+        public_holidays: formattedDates.value.split(', ')
       })
     }
 

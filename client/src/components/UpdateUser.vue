@@ -209,7 +209,7 @@ export default {
     const imageUrl = ref()
     const officeUsers = ref([])
     const selectedUser = ref()
-    const reporting_to = ref();
+    const reporting_to = ref()
 
     onMounted(async () => {
       offices.value = (await $api.office.list()).map((office: any) => ({
@@ -219,7 +219,9 @@ export default {
       officeUsers.value = await $api.users.admin.office_users.list()
       selectedUser.value = officeUsers.value[0]
       reporting_to.value = selectedUser.value.reporting_to[0]
-      supervisors.value = ((await $api.users.admin.list()) as any).filter((supervisor: any) => supervisor.user_type === "Supervisor")      
+      supervisors.value = ((await $api.users.admin.list()) as any).filter(
+        (supervisor: any) => supervisor.user_type === 'Supervisor'
+      )
     })
 
     watch([birthdayDate, joiningDate], ([newBirthdayDate, newJoiningDate]) => {

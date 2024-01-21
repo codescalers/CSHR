@@ -81,15 +81,17 @@ export default {
       }
     ]
 
-    const filteredItems = computed(() => navItems.filter((item: any) => {
-      // Include all items except for 'Dashboard' when isAdmin is false
-      return isAdmin.value || item.path !== '/dashboard';
-    }))
+    const filteredItems = computed(() =>
+      navItems.filter((item: any) => {
+        // Include all items except for 'Dashboard' when isAdmin is false
+        return isAdmin.value || item.path !== '/dashboard'
+      })
+    )
 
     function logout() {
       if (state.rememberMe.value === false) {
-        state.access_token.value = '';
-        localStorage.clear();
+        state.access_token.value = ''
+        localStorage.clear()
       }
 
       $router.push('/login')

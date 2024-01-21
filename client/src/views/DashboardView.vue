@@ -6,7 +6,10 @@
       </v-col>
       <v-col cols="8">
         <v-card flat>
-          <v-card-title>Dashboard of <strong class="text-blue-lighten-1">{{ office }}</strong> office admins</v-card-title>
+          <v-card-title
+            >Dashboard of <strong class="text-blue-lighten-1">{{ office }}</strong> office
+            admins</v-card-title
+          >
           <v-divider class="mx-4 my-1"></v-divider>
           <component :is="selectedForm" />
         </v-card>
@@ -34,9 +37,9 @@ export default {
     DashboardList
   },
   setup() {
-    const state = useState();
-    const officeId = ref();
-    const office = ref();
+    const state = useState()
+    const officeId = ref()
+    const office = ref()
     const selectedItem = ref(items[0])
     const selectedForm = computed(() => {
       switch (selectedItem.value.id) {
@@ -55,7 +58,7 @@ export default {
       }
     })
 
-    onMounted(async() => {
+    onMounted(async () => {
       officeId.value = state.user.value?.location.id
       office.value = (await $api.office.read(officeId.value)).name
     })

@@ -3,8 +3,8 @@ import { ref } from 'vue'
 
 export const useState = createGlobalState(() => {
   const access_token = ref('')
-  const user = ref();
-  const rememberMe = ref(false);
-  
+  const user = ref()
+  const rememberMe = ref(false)
+
   return { access_token, user, rememberMe }
 })

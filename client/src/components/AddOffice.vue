@@ -12,7 +12,7 @@
           <v-autocomplete
             label="Country"
             :items="countryList"
-            v-model='selectedCountry'
+            v-model="selectedCountry"
             auto-select-first
           ></v-autocomplete>
           <v-select
@@ -22,7 +22,7 @@
             item-value="id"
             label="Weekend"
             return-object
-            :rules='requiredRules'
+            :rules="requiredRules"
           ></v-select>
           <v-btn color="primary" type="submit" :disabled="!form?.isValid">Add Office</v-btn>
         </v-col>
@@ -35,7 +35,7 @@
 import { ref } from 'vue'
 import { $api } from '@/clients'
 import { requiredRules, requiredStringRules } from '@/utils'
-import { countries } from "@/utils"
+import { countries } from '@/utils'
 
 export default {
   name: 'AddOffice',
@@ -53,13 +53,13 @@ export default {
     ])
     const selectedWeekend = ref(weekendOptions.value[0])
     const countryList = countries.map((c: any) => c.name)
-    const selectedCountry = ref(countryList[0]);
+    const selectedCountry = ref(countryList[0])
     const office = ref({
       name: '',
       country: selectedCountry.value,
       weekend: selectedWeekend.value.value
-    })    
-    
+    })
+
     async function addOffice() {
       await $api.office.create(office.value)
     }

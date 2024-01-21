@@ -72,9 +72,7 @@ class UsersAdminofficeUsersApi extends ApiClientBase {
   protected readonly path = '/office_users'
 
   list() {
-    return this.unwrap(this.$http.get(this.getUrl()),
-      { transform: (d) => d.results }
-    )
+    return this.unwrap(this.$http.get(this.getUrl()), { transform: (d) => d.results })
   }
 }
 
@@ -124,8 +122,9 @@ class UsersTeamApi extends ApiClientBase {
   }
 
   list(query?: Api.Inputs.List) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), 
-    {transform: d => d.results})
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
   }
 }
 
@@ -133,8 +132,8 @@ class UsersTeamSupervisorsApi extends ApiClientBase {
   protected readonly path = '/supervisors'
 
   async list(query?: Api.Inputs.List) {
-    return await this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)),
-    {transform: d => d.results}
-    )
+    return await this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
   }
 }

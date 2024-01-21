@@ -64,12 +64,10 @@ export module Api {
     sick_leaves: {
       reserved: number
       all: string
-     
     }
     compensation: {
       reserved: number
       all: string
- 
     }
     unpaid: {
       reserved: number
@@ -113,7 +111,7 @@ export module Api {
     }>
 
     export type Balance = MsgRes<BalanceVacation>
-    
+
     export interface Register {
       message: string
       results: Api.Inputs.Register
@@ -150,16 +148,16 @@ export module Api {
     }
 
     export interface GetAdminBalance {
-      annual_leaves: number,
-      compensation: number,
-      emergency_leaves: number,
-      leave_excuses: number,
-      year: number,
-      public_holidays: Date[],
+      annual_leaves: number
+      compensation: number
+      emergency_leaves: number
+      leave_excuses: number
+      year: number
+      public_holidays: Date[]
       location: {
-        id: number,
-        name: string,
-        country: string,
+        id: number
+        name: string
+        country: string
         weekend: string
       }
     }
@@ -188,7 +186,7 @@ export module Api {
       job_title: string
       address: string
       social_insurance_number: string
-      image?: string,
+      image?: string
     }
 
     export interface Refresh {
@@ -224,30 +222,30 @@ export module Api {
     export type UserSkills = { skills: string[] }
 
     export type Vacations = {
-      annual_leaves: number,
-      compensation: number,
-      emergency_leaves: number,
-      leave_excuses: number,
-      year: number,
+      annual_leaves: number
+      compensation: number
+      emergency_leaves: number
+      leave_excuses: number
+      year: number
       public_holidays: string[]
     }
 
     export type BalanceAdjustment = {
-      officeId: number,
-      value: number,
+      officeId: number
+      value: number
       reason: string
     }
 
     export type Office = {
-      name: string,
-      country: string,
+      name: string
+      country: string
       weekend: string
     }
 
     export type Vacation = {
-      annual_leaves: number,
-      emergency_leaves: number,
-      leave_excuses: number,
+      annual_leaves: number
+      emergency_leaves: number
+      leave_excuses: number
     }
   }
 }
