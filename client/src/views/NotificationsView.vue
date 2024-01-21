@@ -6,7 +6,7 @@
         <v-skeleton-loader type="table-row@5"></v-skeleton-loader>
       </template>
       <template v-slot:[`item.type`]="{ value }">
-        <v-chip :color="getColor(value)">
+        <v-chip :color="getStatusColor(value)">
           {{ value.split('_').join(' ') }}
         </v-chip>
       </template>
@@ -41,6 +41,7 @@ import { computed, onMounted, ref } from 'vue'
 import CustomVDialog from '@/components/vuetify/CustomVDialog.vue'
 import NotificationDetails from '@/components/NotificationDetails.vue'
 import { capitalize } from 'vue'
+import { getStatusColor } from '@/utils'
 
 export default {
   name: 'NotificationsView',
@@ -148,17 +149,6 @@ export default {
       loading.value = false
     })
 
-    function getColor(type: string) {
-      switch (type) {
-        case 'vacations':
-          return 'green'
-        case 'hr_letters':
-          return 'orange'
-        default:
-          return 'grey'
-      }
-    }
-
     async function readNotification(type: string, id: number) {
       return await $api.notifications.read(type, id)
     }
@@ -190,7 +180,7 @@ export default {
       hrDetails,
       vSections,
       hrSections,
-      getColor,
+      getStatusColor,
       readNotification,
       openDialog,
       closeDialog,

@@ -1,12 +1,12 @@
 <template>
   <VToolbar color="primary">
     <VSpacer />
-    <VMenu max-width="600">
+    <VMenu>
       <template #activator="{ props }">
         <VBtn icon="mdi-bell-outline" v-bind="props" />
       </template>
 
-      <VList>
+      <VList max-width="600" min-width="100%">
         <VListItem class="text-center" v-if="notifications.isLoading.value">
           <VProgressCircular indeterminate />
         </VListItem>
@@ -70,11 +70,12 @@
     </VMenu>
 
     <VDialog
-      route-query="notifiction"
-      :model-value="!!notifiction"
+      route-query="notification"
+      :model-value="!!notification"
       @update:model-value="selectedNotificationIndex = undefined"
+      min-width="min(94%, 1000px)"
     >
-      <VCard>{{ notifiction }}</VCard>
+      <VCard>{{ notification }}</VCard>
     </VDialog>
   </VToolbar>
 </template>
@@ -94,16 +95,16 @@ export default {
     const notifications = useAsyncState(() => $api.notifications.list(), [])
 
     const selectedNotificationIndex = useRouteQuery<undefined | number>(
-      'selected-notifiction',
+      'selected-notification',
       undefined,
       { transform: Number }
     )
 
-    const notifiction = computed(() => {
+    const notification = computed(() => {
       return notifications.state.value[selectedNotificationIndex.value ?? -1]
     })
 
-    return { user, notifications, selectedNotificationIndex, notifiction, getStatusColor }
+    return { user, notifications, selectedNotificationIndex, notification, getStatusColor }
   }
 }
 </script>

@@ -27,12 +27,17 @@ export const passwordRules = [
 
 export function getStatusColor(status: string) {
   switch (status) {
+    case 'vacations':
     case 'approved':
       return 'green'
+
+    case 'hr_letters':
     case 'pending':
       return 'orange'
+
     case 'rejected':
       return 'red'
+
     default:
       return 'grey'
   }
