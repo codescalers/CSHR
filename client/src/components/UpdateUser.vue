@@ -144,7 +144,6 @@
             label="Team Lead"
             return-object
             density="comfortable"
-            :rules="requiredRules"
           ></v-select>
         </v-col>
         <v-col cols="12">
@@ -241,9 +240,9 @@ export default {
     async function updateUser() {
       await $api.myprofile.update(selectedUser.value.id, {
         ...selectedUser.value,
-        image: selectedUser.value.image || imageUrl.value,
+        image: imageUrl.value || null,
         location: selectedUser.value.location.id,
-        reporting_to: [reporting_to.value.id]
+        reporting_to: reporting_to.value ? [reporting_to.value.id] : []
       })
     }
 
