@@ -3,9 +3,7 @@
     <v-card-title class="font-weight-bold mb-3"> {{ $props.title }} </v-card-title>
 
     <v-card-subtitle>
-      <v-chip :color="getStatusColor($props.status)">
-        {{ $props.status }}
-      </v-chip>
+      <v-chip :color="color" :text="$props.status" />
     </v-card-subtitle>
 
     <v-row class="mt-4">
@@ -34,9 +32,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
+import { getStatusColor } from '@/utils'
 
-export default defineComponent({
+export default {
   name: 'NotificationDetails',
   props: {
     eventId: {
@@ -61,27 +60,17 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const getStatusColor = (status: string) => {
-      switch (status) {
-        case 'approved':
-          return 'green'
-        case 'pending':
-          return 'orange'
-        case 'rejected':
-          return 'red'
-        default:
-          return 'grey'
-      }
-    }
+    const color = computed(() => getStatusColor(props.status))
 
     const closeDialog = () => {
       props.onClose()
     }
 
     return {
+      color,
       closeDialog,
       getStatusColor
     }
   }
-})
+}
 </script>

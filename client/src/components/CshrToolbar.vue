@@ -28,7 +28,11 @@
               </VListItemSubtitle>
 
               <template #append>
-                <VChip :text="notification.type" class="ml-4" />
+                <VChip
+                  :color="getStatusColor(notification.type)"
+                  :text="notification.type"
+                  class="ml-4"
+                />
               </template>
             </VListItem>
 
@@ -80,6 +84,7 @@ import { computed } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { useApi } from '@/hooks'
+import { getStatusColor } from '@/utils'
 
 export default {
   name: 'CshrToolbar',
@@ -98,7 +103,7 @@ export default {
       return notifications.state.value[selectedNotificationIndex.value ?? -1]
     })
 
-    return { user, notifications, selectedNotificationIndex, notifiction }
+    return { user, notifications, selectedNotificationIndex, notifiction, getStatusColor }
   }
 }
 </script>
