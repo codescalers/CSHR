@@ -144,7 +144,6 @@
         <v-col cols='12'>
           <v-file-input
             v-model="imageInput"
-            id="image-input"
             label="Image"
             variant="filled"
             accept="image/*"

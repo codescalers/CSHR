@@ -35,12 +35,6 @@
             :rules="emailRules"
           ></v-text-field>
           <v-text-field
-            v-model="selectedUser.password"
-            label="Password"
-            density="comfortable"
-            :rules="passwordRules"
-          ></v-text-field>
-          <v-text-field
             v-model="selectedUser.mobile_number"
             label="Mobile Number"
             type="number"
@@ -143,26 +137,25 @@
           ></v-select>
 
           <v-select
-            v-model="selectedUser.reporting_to"
+            v-model="reporting_to"
             :items="supervisors"
-            item-title="name"
+            item-title="full_name"
             item-value="id"
-            label="Supervisors"
+            label="Team Lead"
             return-object
             density="comfortable"
-            multiple
+            :rules="requiredRules"
           ></v-select>
         </v-col>
         <v-col cols="12">
           <v-file-input
-            :v-model="image"
+            v-model="image"
             label="Image"
             variant="filled"
             accept="image/*"
             :show-size="1024"
             prepend-icon="mdi-camera"
             @input="chooseImage"
-            @change="chooseImage"
             density="comfortable"
           ></v-file-input>
           <v-img
@@ -185,7 +178,6 @@ import { $api } from '@/clients'
 import {
   nameRules,
   emailRules,
-  passwordRules,
   mobileRules,
   jobRules,
   addressRules,
@@ -209,7 +201,7 @@ export default {
       'Operations',
       'Support'
     ]
-    const types = ['Admin', 'User', 'Supervisor']
+    const types = ['Admin', 'User', 'Team Lead']
     const genders = ['Male', 'Female']
     const birthdayDate = ref(new Date())
     const joiningDate = ref(new Date())
@@ -219,18 +211,17 @@ export default {
     const imageUrl = ref()
     const officeUsers = ref([])
     const selectedUser = ref()
+    const reporting_to = ref();
 
     onMounted(async () => {
       offices.value = (await $api.office.list()).map((office: any) => ({
         id: office.id,
         name: office.name
       }))
-      supervisors.value = ((await $api.users.team.supervisors.list()) as any).map(
-        (supervisor: any) => ({ id: supervisor.id, name: supervisor.name } ?? [])
-      )
-
       officeUsers.value = await $api.users.admin.office_users.list()
       selectedUser.value = officeUsers.value[0]
+      reporting_to.value = selectedUser.value.reporting_to[0]
+      supervisors.value = ((await $api.users.admin.list()) as any).filter((supervisor: any) => supervisor.user_type === "Supervisor")      
     })
 
     watch([birthdayDate, joiningDate], ([newBirthdayDate, newJoiningDate]) => {
@@ -250,8 +241,9 @@ export default {
     async function updateUser() {
       await $api.myprofile.update(selectedUser.value.id, {
         ...selectedUser.value,
-        image: imageUrl.value,
-        location: selectedUser.value.location.id
+        image: selectedUser.value.image || imageUrl.value,
+        location: selectedUser.value.location.id,
+        reporting_to: [reporting_to.value.id]
       })
     }
 
@@ -281,9 +273,9 @@ export default {
       supervisors,
       officeUsers,
       selectedUser,
+      reporting_to,
       nameRules,
       emailRules,
-      passwordRules,
       mobileRules,
       jobRules,
       addressRules,
