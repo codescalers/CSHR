@@ -31,24 +31,7 @@
         </v-col>
       </v-row>
 
-      <!-- <v-row class="text-center">
-        <v-col cols="6">
-          <b>Date</b>
-        </v-col>
-        <v-col cols="6">
-          {{ date }}
-        </v-col>
-      </v-row>
 
-
-      <v-row class="text-center">
-        <v-col cols="6">
-          <b>Time</b>
-        </v-col>
-        <v-col cols="6">
-          {{ time }}
-        </v-col>
-      </v-row> -->
 
     </v-card>
     <v-card elevation="0" variant="outlined" color="white" class="px-4">

@@ -1,4 +1,8 @@
 <template>
+  {{ selected }}
+  <v-checkbox v-model="selected" label="Meetings" value="Meetings"></v-checkbox>
+  <v-checkbox v-model="selected" label="Events" value="Events"></v-checkbox>
+  <v-checkbox v-model="selected" label="Vacations" value="Vacations"></v-checkbox>
   <div class="ma-7 pa-7">
     <FullCalendar :options="options" />
   </div>
@@ -44,7 +48,7 @@ import eventCard from '@/components/cards/eventCard.vue';
 import vacationCard from '@/components/cards/vacationCard.vue';
 
 
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import type { Api } from "@/types";
 import { $api } from "@/clients";
 import type { EventClickArg } from "@fullcalendar/core/index.js";
@@ -78,33 +82,31 @@ export default {
 
 
     const dates = ref<any>();
+    const selected = ref(["Events", "Vacations", "Meetings"]);
+    const isEventsPushed = ref<Boolean>(false);
+    const isMeetingPushed = ref<Boolean>(false);
+    const isLeavePushed = ref<Boolean>(false);
     const showDialog = ref<{ [key: string]: boolean }>({})
     const onSelect = async (arg: any) => {
       calendar.value = arg.view.calendar;
       dates.value = arg
 
-      const validated: boolean = validateDate(arg.start);
-      if (validated) {
-        if (dates.value) {
-          openDialog(arg.startStr);
-        }
-      } else {
-        calendar.value?.unselect();
-      }
+      openDialog(arg.startStr);
+
 
     };
 
-    const validateDate = (startDate: Date) => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Set the time to midnight for accurate comparison
+    // const validateDate = (startDate: Date) => {
+    //   const today = new Date();
+    //   today.setHours(0, 0, 0, 0); // Set the time to midnight for accurate comparison
 
-      if (startDate < today) {
-        console.error("Start date cannot be in the past.");
-        return false;
-      }
+    //   if (startDate < today) {
+    //     console.error("Start date cannot be in the past.");
+    //     return false;
+    //   }
 
-      return true;
-    };
+    //   return true;
+    // };
 
     const onClick = async (arg: EventClickArg) => {
       calendar.value = arg.view.calendar;
@@ -150,6 +152,70 @@ export default {
 
     });
 
+
+    const removeVacations = () => {
+      options.value.events = options.value.events.filter((event: any) => {
+        return event.title !== "Vacation";
+      });
+    }
+    const removeMeetings = () => {
+      options.value.events = options.value.events.filter((event: any) => {
+        return event.title !== "Meeting";
+      });
+    }
+    const removeEvents = () => {
+      options.value.events = options.value.events.filter((event: any) => {
+        return event.title !== "Event";
+      });
+    }
+
+    watch(
+      () => selected.value,
+      (value, oldValue) => {
+        if (value !== oldValue) {
+          
+          if (!selected.value.includes("Vacations")) {
+            removeVacations();
+            isLeavePushed.value = false;
+          } else {
+            if (!isLeavePushed.value) {
+              for (const vacation of vacations.value) {
+                pushVacation(vacation);
+              }
+            }
+          }
+
+
+          if (!selected.value.includes("Meetings")) {
+            removeMeetings();
+            isMeetingPushed.value = false;
+          } else {
+            if (!isMeetingPushed.value) {
+              for (const meeting of meetings.value) {
+                pushMeeting(meeting);
+              }
+            }
+          }
+
+
+
+          if (!selected.value.includes("Events")) {
+            removeEvents();
+            isEventsPushed.value = false;
+          }
+          else {
+            if (!isEventsPushed.value) {
+              for (const event of events.value) {
+                pushEvent(event);
+              }
+            }
+          }
+        }
+
+
+      },
+    );
+
     async function getMeetings() {
       meetings.value = await $api.meeting.list();
       for (const meeting of meetings.value) {
@@ -162,18 +228,22 @@ export default {
         pushEvent(event);
       }
     }
-
     async function getVacations() {
       vacations.value = await $api.vacations.list();
       for (const vacation of vacations.value) {
         pushVacation(vacation);
       }
     }
+
+
     onMounted(async () => {
       await getMeetings();
       await getEvents();
       await getVacations();
     })
+
+
+
     const handelDates = (dates: any): any => {
       const endDate = new Date(dates.end || '');
       if (dates.cut) {
@@ -193,6 +263,8 @@ export default {
       return dates;
     };
 
+
+
     const pushVacation = (v: Api.Vacation) => {
       const dates = handelDates({
         end: v.end_date,
@@ -210,8 +282,8 @@ export default {
         allDay: true,
       };
       options.value.events = [...(options.value.events as []), vacation];
+      isLeavePushed.value = true;
     };
-
     const pushEvent = (e: Api.Inputs.Event) => {
       const dates = handelDates({
         end: e.end_date,
@@ -229,8 +301,8 @@ export default {
         allDay: true,
       };
       options.value.events = [...(options.value.events as []), event];
+      isEventsPushed.value = true;
     };
-
     const pushMeeting = (m: Api.Meetings) => {
       const dates = handelDates({
         end: m.date,
@@ -248,13 +320,17 @@ export default {
         allDay: true,
       };
       options.value.events = [...(options.value.events as []), meeting];
+      isMeetingPushed.value = true;
     };
+
+
+
+
     function closeDialog(id: string | number) {
       isViewRequest.value, isEvent.value, isMeeting.value, isLeave.value = false;
       event.value, meeting.value, dates.value = undefined;
       showDialog.value[id] = false
     }
-
     async function openDialog(id: string | number) {
       showDialog.value[id] = true
     }
@@ -272,6 +348,7 @@ export default {
       options,
       dates,
       vacation,
+      selected,
       closeDialog,
       openDialog,
       onSelect,
