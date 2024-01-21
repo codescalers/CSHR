@@ -74,6 +74,7 @@ export default defineComponent({
       )
       const user = await $api.myprofile.getUser();
       state.user.value = user;
+      state.rememberMe.value = rememberMe.value;
       $router.push('/')
     }
 
