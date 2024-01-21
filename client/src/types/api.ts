@@ -238,6 +238,10 @@ export module Api {
       actual_days: number
     }
 
+    export interface ActualDays {
+      start_date: any
+      end_date: any
+    }
     export interface Meeting {
       date: any
       meeting_link: string

@@ -34,34 +34,52 @@ export class VacationsApi extends ApiClientBase {
     )
     return userBalance
   }
-  async list() {}
+  async list(query?: any) {
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.Vacation>>(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
+  }
+  // async list() {}
 
   async create(input: Api.Inputs.Leave) {
     ApiClientBase.assertUser()
-    const event = await this.unwrap(
+    const vacation = await this.unwrap(
       this.$http.post<Api.Returns.LeaveRequest>(this.getUrl(''), input),
       { transform: (d) => d.results }
     )
 
-    return event
+    return vacation
   }
   async read(id: number) {}
 
-  async delete(id: number) {}
+ 
+  async delete(id: number) {
+    return this.unwrap(this.$http.delete<any>(this.getUrl(`/${id}`)), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsApproveApi extends ApiClientBase {
   protected readonly path = '/approve'
 
-  async update(id: number) {}
-}
+  async update(id: any) {
+    return this.unwrap(this.$http.put<any>(this.getUrl(`/${id}`)), {
+      transform: (d) => d.results
+    })
+  }}
 
 class VacationsRejectApi extends ApiClientBase {
   protected readonly path = '/reject'
 
   async read(id: number) {}
+  
 
-  async update(id: number) {}
+  async update(id: number) {
+    return this.unwrap(this.$http.put<any>(this.getUrl(`/${id}`)), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsBalanceApi extends ApiClientBase {
@@ -89,7 +107,16 @@ class VacationsBalanceAdjustmentApi extends ApiClientBase {
 class VacationsCalculateApi extends ApiClientBase {
   protected readonly path = '/calculate'
 
-  async list() {}
+
+
+  async list(query: Api.Inputs.ActualDays) {
+    ApiClientBase.assertUser()
+    const calculation = await this.unwrap(
+      this.$http.get<any>(this.getUrl('', query)),
+      { transform: (d) => d.results }
+    )
+    return calculation
+  }
 }
 
 class VacationsCommentApi extends ApiClientBase {
@@ -103,7 +130,16 @@ class VacationsEditApi extends ApiClientBase {
 
   async read(id: number) {}
 
-  async update(id: number) {}
+  async update(id: number, input: Api.Inputs.Leave) {
+    ApiClientBase.assertUser()
+    const vacation = await this.unwrap(
+      this.$http.put<Api.Returns.LeaveRequest>(this.getUrl(`/${id}`), input),
+      { transform: (d) => d.results }
+    )
+
+    return vacation
+  }
+  // async update(id: number) {}
 }
 
 class VacationsGetAdminBalanceApi extends ApiClientBase {

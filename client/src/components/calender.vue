@@ -164,7 +164,7 @@ export default {
     }
 
     async function getVacations() {
-      vacations.value = await $api.vacations.user.list();
+      vacations.value = await $api.vacations.list();
       for (const vacation of vacations.value) {
         pushVacation(vacation);
       }
