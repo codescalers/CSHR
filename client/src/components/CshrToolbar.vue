@@ -68,7 +68,7 @@
         />
       </VList>
     </VMenu>
-    <NotificationDetailsDialog v-model="selectedNotification" />
+    <NotificationDetailsDialog route-query="toolbar-notification" v-model="selectedNotification" />
   </VToolbar>
 </template>
 

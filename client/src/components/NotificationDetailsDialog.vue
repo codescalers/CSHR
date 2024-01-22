@@ -1,6 +1,6 @@
 <template>
   <VDialog
-    route-query="notification-dialog"
+    :route-query="routeQuery + '-dialog'"
     :model-value="!!selected"
     @update:model-value="closeDialog"
     min-width="min(94%, 1000px)"
@@ -41,6 +41,7 @@ export default {
   name: 'NotificationDetailsDialog',
   components: { NotificationDetails },
   props: {
+    routeQuery: { type: String, required: true },
     modelValue: Object as PropType<Api.Returns.Notification>
   },
   emits: {
@@ -48,7 +49,7 @@ export default {
   },
   setup(props, ctx) {
     const $api = useApi()
-    const selected = useRouteQuery<undefined | string>('selected-notification', undefined)
+    const selected = useRouteQuery<undefined | string>('selected-' + props.routeQuery, undefined)
     const notification = computedAsync<any>(() => {
       const [type, id] = selected.value?.split('|') ?? []
       if (!isNaN(+id) && ['hr_letters', 'vacations'].includes(type)) {
