@@ -27,8 +27,8 @@ dependencies:
     specifier: ^4.2.5
     version: 4.2.5(vue@3.4.3)
   vue3-notifier:
-    specifier: ^1.0.2
-    version: 1.0.2(typescript@5.3.3)
+    specifier: ^1.0.3
+    version: 1.0.3(typescript@5.3.3)
   vuetify:
     specifier: ^3.4.9
     version: 3.4.9(typescript@5.3.3)(vite-plugin-vuetify@2.0.1)(vue@3.4.3)
@@ -1729,8 +1729,8 @@ packages:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
     dev: true
 
-  /gsap@3.12.4:
-    resolution: {integrity: sha512-1ByAq8dD0W4aBZ/JArgaQvc0gyUfkGkP8mgAQa0qZGdpOKlSOhOf+WNXjoLimKaKG3Z4Iu6DKZtnyszqQeyqWQ==}
+  /gsap@3.12.5:
+    resolution: {integrity: sha512-srBfnk4n+Oe/ZnMIOXt3gT605BX9x5+rh/prT2F1SsNJsU1XuMiP0E2aptW481OnonOGACZWBqseH5Z7csHxhQ==}
     dev: false
 
   /has-flag@3.0.0:
@@ -2970,11 +2970,11 @@ packages:
       typescript: 5.3.3
     dev: true
 
-  /vue3-notifier@1.0.2(typescript@5.3.3):
-    resolution: {integrity: sha512-o/RlQhA4N7WYO5mtwHCJE04CgSUGUbpF++1nyGWgPw9v5QDQGzf85XTygQq2m0LJcVBMLo6D9v/YDkUl5gtYTw==}
+  /vue3-notifier@1.0.3(typescript@5.3.3):
+    resolution: {integrity: sha512-W8cZtq3N7NJLNaP+LDOpABusSyT1zAHEvHFPuGn+Jo/rxHHrbFGD0jar8vDXOmhti7ZqenaTiRz1nKHA/9Cu7g==}
     dependencies:
       chalk: 5.3.0
-      gsap: 3.12.4
+      gsap: 3.12.5
       vue: 3.4.3(typescript@5.3.3)
     transitivePeerDependencies:
       - typescript
