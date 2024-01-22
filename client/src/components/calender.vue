@@ -75,7 +75,7 @@ import meetingCard from '@/components/cards/meetingCard.vue'
 import eventCard from '@/components/cards/eventCard.vue'
 import vacationCard from '@/components/cards/vacationCard.vue'
 
-import { ref, watchEffect } from 'vue'
+import { ref, computed } from 'vue'
 import type { Api } from '@/types'
 import { useApi } from '@/hooks'
 import type { EventClickArg, CalendarApi, DayCellMountArg } from '@fullcalendar/core/index.js'
@@ -155,7 +155,27 @@ export default {
     const $api = useApi()
     const meetings = useAsyncState($api.meeting.list(), [])
     const events = useAsyncState($api.event.list(), [])
-    const vacations = useAsyncState($api.vacations.list(), [])
+    useAsyncState($api.vacations.list(), [], {
+      onSuccess(data) {
+        vacations.execute(undefined, data)
+      }
+    })
+
+    const vacations = useAsyncState(
+      async (vacations: Api.Vacation[]) => {
+        const ids = vacations.map((v) => v.applying_user)
+        const users = await Promise.all(
+          ids.map((id) => $api.users.getuser(id, { disableNotify: true }))
+        )
+
+        return vacations.map((v, i) => {
+          v.user = users[i]
+          return v
+        })
+      },
+      [],
+      { immediate: false }
+    )
 
     const meeting = ref<Api.Meetings>()
     const isViewRequest = ref<Boolean>(false)
@@ -177,13 +197,11 @@ export default {
 
       openDialog(arg.startStr)
     }
-    async function normalizeVacation(v: Api.Vacation): Promise<any> {
+    function normalizeVacation(v: Api.Vacation) {
       const dates = handelDates(v.from_date, v.end_date)
 
-      const applyingUser = await getUser(v.applying_user)
-
       return {
-        title: `${applyingUser}'s Vacation`,
+        title: `${v.user!.full_name}'s Vacation`,
         color: 'primary',
         start: dates.start,
         end: dates.end,
@@ -216,23 +234,18 @@ export default {
       isViewRequest.value = true
     }
 
-    const normalizeVacationAsync = async (vacation: any) => {
-      return await normalizeVacation(vacation)
-    }
-
     const plugins = [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin] as any
-    const eventsOption = ref([] as Array<any>)
 
-    watchEffect(async () => {
+    const eventsOption = computed(() => {
       const normalizedMeetings = selected.value.meetings
         ? meetings.state.value.map(normalizeMeeting)
         : []
       const normalizedEvents = selected.value.events ? events.state.value.map(normalizeEvent) : []
       const normalizedVacations = selected.value.vacations
-        ? await Promise.all(vacations.state.value.map(normalizeVacationAsync))
+        ? vacations.state.value.map(normalizeVacation)
         : []
 
-      eventsOption.value = [...normalizedMeetings, ...normalizedEvents, ...normalizedVacations]
+      return [...normalizedMeetings, ...normalizedEvents, ...normalizedVacations]
     })
 
     function dayCellDidMount({ el, date }: DayCellMountArg) {

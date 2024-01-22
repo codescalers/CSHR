@@ -40,6 +40,7 @@ export module Api {
     actual_days: number
     applying_user: number
     approval_user: number
+    user?: Api.User
   }
 
   export interface LeaveReason {
