@@ -3,7 +3,6 @@
   <v-row>
     <v-col cols="4">
       <v-checkbox v-model="selected.meetings" label="Meetings" />
-
     </v-col>
     <v-col cols="4">
       <v-checkbox v-model="selected.events" label="Events" />
@@ -11,36 +10,55 @@
     <v-col cols="4">
       <v-checkbox v-model="selected.vacations" label="Vacations" />
     </v-col>
-
-
   </v-row>
   <div class="ma-7 pa-7">
-    <FullCalendar class="fc" :options="{
-      ...options,
-      events: eventsOption,
-      dayCellDidMount: dayCellDidMountOption
-    }" />
+    <VProgressCircular v-if="events.isLoading.value" />
+    <FullCalendar
+      v-else
+      class="fc"
+      :options="{
+        ...options,
+        events: eventsOption,
+        dayCellDidMount
+      }"
+    />
   </div>
 
-  <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
+  <VDialog
+    v-if="dates?.startStr"
+    :routeQuery="dates?.startStr"
+    :modelValue="showDialog[dates?.startStr]"
+  >
     <v-card>
       <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isMeeting && meeting" :routeQuery="meeting.id" :modelValue="showDialog[meeting.id]">
+  <VDialog
+    v-if="isViewRequest && isMeeting && meeting"
+    :routeQuery="meeting.id"
+    :modelValue="showDialog[meeting.id]"
+  >
     <v-card>
       <meetingCard :meeting="meeting" @close-dialog="closeDialog(meeting.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isEvent && event" :routeQuery="event.name" :modelValue="showDialog[event.name]">
+  <VDialog
+    v-if="isViewRequest && isEvent && event"
+    :routeQuery="event.name"
+    :modelValue="showDialog[event.name]"
+  >
     <v-card>
       <eventCard :event="event" @close-dialog="closeDialog(event.name)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isLeave && vacation" :routeQuery="vacation.id" :modelValue="showDialog[vacation.id]">
+  <VDialog
+    v-if="isViewRequest && isLeave && vacation"
+    :routeQuery="vacation.id"
+    :modelValue="showDialog[vacation.id]"
+  >
     <v-card>
       <vacationCard :vacation="vacation" @close-dialog="closeDialog(vacation.id)" />
     </v-card>
@@ -57,11 +75,10 @@ import meetingCard from '@/components/cards/meetingCard.vue'
 import eventCard from '@/components/cards/eventCard.vue'
 import vacationCard from '@/components/cards/vacationCard.vue'
 
-import { ref, computed, watchEffect } from 'vue'
+import { ref, watchEffect } from 'vue'
 import type { Api } from '@/types'
 import { useApi } from '@/hooks'
-import type { EventClickArg } from '@fullcalendar/core/index.js'
-import type { CalendarApi } from '@fullcalendar/core/index.js'
+import type { EventClickArg, CalendarApi, DayCellMountArg } from '@fullcalendar/core/index.js'
 import { useAsyncState } from '@vueuse/core'
 
 function handelDates(start: any, end: any): any {
@@ -85,14 +102,14 @@ function handelDates(start: any, end: any): any {
   dates.start = new Date(dates.start)
 
   const endStr = `${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()}`
-  const startStr = `${dates.start.getFullYear()}-${dates.start.getMonth() + 1
-    }-${dates.start.getDate()}`
+  const startStr = `${dates.start.getFullYear()}-${
+    dates.start.getMonth() + 1
+  }-${dates.start.getDate()}`
 
   dates.endStr = endStr
   dates.startStr = startStr
   return dates
 }
-
 
 function normalizeEvent(e: Api.Inputs.Event): any {
   const dates = handelDates(e.from_date, e.end_date)
@@ -103,10 +120,10 @@ function normalizeEvent(e: Api.Inputs.Event): any {
     color: 'primary',
     start: dates.start,
     end: dates.end,
-    backgroundColor: 'offwhite',
+    // backgroundColor: 'offwhite',
+    // backgroundColor: 'red',
     id: e.name,
     allDay: true
-
   }
 }
 
@@ -123,7 +140,6 @@ function normalizeMeeting(m: Api.Meetings): any {
     allDay: true
   }
 }
-
 
 export default {
   name: 'calenderCshr',
@@ -164,7 +180,7 @@ export default {
     async function normalizeVacation(v: Api.Vacation): Promise<any> {
       const dates = handelDates(v.from_date, v.end_date)
 
-      const applyingUser = await getUser(v.applying_user);
+      const applyingUser = await getUser(v.applying_user)
 
       return {
         title: `${applyingUser}'s Vacation`,
@@ -201,41 +217,36 @@ export default {
     }
 
     const normalizeVacationAsync = async (vacation: any) => {
-      return await normalizeVacation(vacation);
-    };
+      return await normalizeVacation(vacation)
+    }
 
     const plugins = [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin] as any
-    const eventsOption = ref([] as Array<any>); 
+    const eventsOption = ref([] as Array<any>)
 
     watchEffect(async () => {
-      const normalizedMeetings = selected.value.meetings ? meetings.state.value.map(normalizeMeeting) : [];
-      const normalizedEvents = selected.value.events ? events.state.value.map(normalizeEvent) : [];
-      const normalizedVacations = selected.value.vacations ? await Promise.all(vacations.state.value.map(normalizeVacationAsync)) : [];
+      const normalizedMeetings = selected.value.meetings
+        ? meetings.state.value.map(normalizeMeeting)
+        : []
+      const normalizedEvents = selected.value.events ? events.state.value.map(normalizeEvent) : []
+      const normalizedVacations = selected.value.vacations
+        ? await Promise.all(vacations.state.value.map(normalizeVacationAsync))
+        : []
 
-      eventsOption.value = [...normalizedMeetings, ...normalizedEvents, ...normalizedVacations];
-    });
+      eventsOption.value = [...normalizedMeetings, ...normalizedEvents, ...normalizedVacations]
+    })
 
-    
+    function dayCellDidMount({ el, date }: DayCellMountArg) {
+      for (const event of events.state.value) {
+        const current = date.getTime()
+        const start = new Date(event.from_date).getTime() - 86_400_000
+        const end = new Date(event.end_date).getTime()
 
-    // const dayCellDidMountOption = computed(() => {
-    //   return ({ date, el }: { date: Date; el: HTMLElement }) => {
-    //     console.log("eventsOption.value", eventsOption.value);
-    //     const eventDates = eventsOption.value.map(event => new Date(event.start));
-    //     const isEventDate = eventDates.some(eventDate =>
-    //       eventDate.getDate() === date.getDate() && eventDate.getMonth() === date.getMonth()
-    //     );
-
-    //     if (isEventDate) {
-    //       el.style.backgroundColor = 'white';
-    //     }
-    //   };
-    // });
-
-    function dayCellDidMountOption({ date, el }: { date: Date; el: HTMLElement }){
-      console.log("el ",el)
-
-      console.log("el ",el && el.querySelector(".cshr-event"))
-
+        const shouldUpdate = current >= start && current <= end
+        if (shouldUpdate) {
+          el.style.backgroundColor = 'rgba(255, 255, 255, 0.05)'
+          return
+        }
+      }
     }
 
     async function getUser(id: any) {
@@ -256,12 +267,8 @@ export default {
       weekends: true,
       select: onSelect,
       eventClick: onClick,
-      editable: false,
-      // dayCellDidMount: dayCellDidMountOption
-
-
+      editable: false
     }
-
 
     function closeDialog(id: string | number) {
       isViewRequest.value, isEvent.value, isMeeting.value, (isLeave.value = false)
@@ -290,7 +297,7 @@ export default {
       dates,
       vacation,
       selected,
-      dayCellDidMountOption,
+      dayCellDidMount,
       closeDialog,
       openDialog,
       onSelect,
@@ -304,7 +311,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 .fc-bg-event {
