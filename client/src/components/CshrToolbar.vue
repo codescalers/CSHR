@@ -18,7 +18,7 @@
             v-for="(notification, index) in notifications.state.value"
             :key="notification.event_id"
           >
-            <VListItem class="pa-4" @click="selectedId = notification.event_id">
+            <VListItem class="pa-4" @click="selectedNotification = notification">
               <VListItemTitle class="text-wrap">
                 {{ notification.title }}
               </VListItemTitle>
@@ -68,36 +68,28 @@
         />
       </VList>
     </VMenu>
-
-    <VDialog
-      route-query="notification"
-      :model-value="!!notification"
-      @update:model-value="selectedId = undefined"
-      min-width="min(94%, 1000px)"
-    >
-      <VCard>{{ notification }}</VCard>
-    </VDialog>
+    <NotificationDetailsDialog v-model="selectedNotification" />
   </VToolbar>
 </template>
 
 <script lang="ts">
-import { useAsyncState, useArrayFind } from '@vueuse/core'
-import { useRouteQuery } from '@vueuse/router'
+import { ref } from 'vue'
+import { useAsyncState } from '@vueuse/core'
 import { useApi } from '@/hooks'
 import { getStatusColor } from '@/utils'
+import type { Api } from '@/types'
+import NotificationDetailsDialog from './NotificationDetailsDialog.vue'
 
 export default {
   name: 'CshrToolbar',
+  components: { NotificationDetailsDialog },
   setup() {
     const $api = useApi()
     const user = useAsyncState(() => $api.myprofile.getUser(), null)
     const notifications = useAsyncState(() => $api.notifications.list(), [])
+    const selectedNotification = ref<Api.Returns.Notification>()
 
-    const selectedId = useRouteQuery<undefined | string>('selected-notification', undefined)
-
-    const notification = useArrayFind(notifications.state, (f) => f.event_id == selectedId.value)
-
-    return { user, notifications, selectedId, notification, getStatusColor }
+    return { user, notifications, selectedNotification, getStatusColor }
   }
 }
 </script>
