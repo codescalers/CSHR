@@ -181,7 +181,7 @@ import {
   requiredStringRules,
   requiredRules
 } from '@/utils'
-import moment from 'moment'
+import { formatDate } from '@/utils'
 
 export default {
   name: 'AddUser',
@@ -265,8 +265,6 @@ export default {
       if (picker === 'birthdayPicker') birthdayPicker.value = !birthdayPicker.value
       else if (picker === 'joiningDatePicker') joiningDatePicker.value = !joiningDatePicker.value
     }
-
-    const formatDate = (date: any) => moment(date).format('YYYY-MM-DD')
 
     async function addUser() {
       await $api.auth.register(user.value as Api.Inputs.Register)

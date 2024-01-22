@@ -48,11 +48,11 @@
           </v-text-field>
 
           <v-date-picker
+            v-if="datePickerVisible"
             v-model="selectedDates"
-            multiple
             @click:prev="preventDefault"
             @click:next="preventDefault"
-            v-if="datePickerVisible"
+            multiple
           ></v-date-picker>
 
           <v-btn color="primary" type="submit" :disabled="!form?.isValid"> Set Balance </v-btn>
@@ -66,8 +66,8 @@
 import { $api } from '@/clients'
 import type { Api } from '@/types'
 import { computed, onMounted, ref } from 'vue'
-import moment from 'moment'
 import { requiredRules } from '@/utils'
+import { formatDate } from '@/utils'
 
 export default {
   name: 'SetVacations',
@@ -88,34 +88,24 @@ export default {
         weekend: ''
       }
     })
-    const selectedDates = ref([])
-
-    // const formattedDates = computed(() => {
-    //   const mergedDates = [...selectedDates.value, ...office_balance.value.public_holidays].map(date => moment(date).format('YYYY-MM-DD')).join(', ');
-
-    //   return mergedDates
-    // })
+    const selectedDates = ref([
+      ...office_balance.value.public_holidays.map((date) => new Date(date))
+    ])
 
     const formattedDates = computed(() => {
-      const combinedDates = [
-        ...selectedDates.value,
-        ...office_balance.value.public_holidays.map((date) => new Date(date))
-      ]
-
-      ;(selectedDates.value as any) = Array.from(new Set(combinedDates))
+      const combinedDates = [...selectedDates.value]
 
       return combinedDates
         .sort((a, b) => a.getTime() - b.getTime())
-        .map((date) => moment(date).format('YYYY-MM-DD'))
+        .map((date) => formatDate(date))
         .join(', ')
     })
 
     onMounted(async () => {
-      await $api.auth.login({
-        email: 'admin@gmail.com',
-        password: '0000'
-      })
       office_balance.value = await $api.vacations.get_admin_balance.list()
+      selectedDates.value = [
+        ...office_balance.value.public_holidays.map((date: any) => new Date(date))
+      ]
     })
 
     async function setVacations() {

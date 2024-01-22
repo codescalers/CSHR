@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export async function resolve<T>(promise: Promise<T>): Promise<[T, any]> {
   try {
     return [await promise, null]
@@ -23,3 +25,5 @@ export const DASHBOARD_ITEMS = [
   { id: 5, name: 'Add User' },
   { id: 6, name: 'Update User Profile' }
 ]
+
+export const formatDate = (date: any) => moment(date).format('YYYY-MM-DD')

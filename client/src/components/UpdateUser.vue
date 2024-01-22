@@ -182,9 +182,9 @@ import {
   socialInsuranceRules,
   telegramRules,
   requiredStringRules,
-  requiredRules
+  requiredRules,
+  formatDate
 } from '@/utils'
-import moment from 'moment'
 
 export default {
   name: 'UpdateUser',
@@ -235,8 +235,6 @@ export default {
       if (picker === 'birthdayPicker') birthdayPicker.value = !birthdayPicker.value
       else if (picker === 'joiningDatePicker') joiningDatePicker.value = !joiningDatePicker.value
     }
-
-    const formatDate = (date: any) => moment(date).format('YYYY-MM-DD')
 
     async function updateUser() {
       await $api.myprofile.update(selectedUser.value.id, {
