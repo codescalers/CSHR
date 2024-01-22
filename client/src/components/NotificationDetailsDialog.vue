@@ -1,12 +1,20 @@
 <template>
   <VDialog
     route-query="notification-dialog"
-    :model-value="!!notification"
+    :model-value="!!selected"
     @update:model-value="closeDialog"
     min-width="min(94%, 1000px)"
   >
+    <div class="d-flex justify-center align-center" v-if="!notification && selected">
+      <VCard>
+        <VCardText>
+          <VProgressCircular indeterminate />
+        </VCardText>
+      </VCard>
+    </div>
+
     <NotificationDetails
-      v-if="notification"
+      v-else-if="selected && notification"
       :title="
         notification.type === 'vacations'
           ? capitalize(notification.reason.split('_').join(' '))
