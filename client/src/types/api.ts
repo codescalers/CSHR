@@ -20,6 +20,7 @@ export module Api {
   export interface UnwrapOptions<T, R> {
     transform?: (data: T, res: AxiosResponse<T, any>) => R
     normalizeError?: (error: AxiosError<any>, res: AxiosResponse<T>) => string
+    disableNotify?: boolean
   }
 
   export interface Skill {

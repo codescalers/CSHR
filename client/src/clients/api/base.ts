@@ -86,7 +86,8 @@ export abstract class ApiClientBase {
     }
 
     if (err) {
-      ApiClientBase.$notifier?.notify({
+      
+      options.disableNotify !== true && ApiClientBase.$notifier?.notify({
         type: 'error',
         description: options.normalizeError?.(err, res) ?? ApiClientBase.normalizeError(err) ?? err
       })
@@ -94,7 +95,7 @@ export abstract class ApiClientBase {
       panic(err)
     }
 
-    if (typeof res.data === 'object' && 'message' in (res.data || {})) {
+    if (typeof res.data === 'object' && 'message' in (res.data || {}) && options.disableNotify !== true ) {
       ApiClientBase.$notifier?.notify({
         type: 'success',
         description: (res.data as any).message

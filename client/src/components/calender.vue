@@ -1,51 +1,46 @@
+<!-- eslint-disable vue/no-async-in-computed-properties -->
 <template>
-  <v-checkbox v-model="selected.meetings" label="Meetings" />
-  <v-checkbox v-model="selected.events" label="Events" />
-  <v-checkbox v-model="selected.vacations" label="Vacations" />
+  <v-row>
+    <v-col cols="4">
+      <v-checkbox v-model="selected.meetings" label="Meetings" />
+
+    </v-col>
+    <v-col cols="4">
+      <v-checkbox v-model="selected.events" label="Events" />
+    </v-col>
+    <v-col cols="4">
+      <v-checkbox v-model="selected.vacations" label="Vacations" />
+    </v-col>
+
+
+  </v-row>
   <div class="ma-7 pa-7">
-    <FullCalendar
-      :options="{
-        ...options,
-        events: eventsOption
-      }"
-    />
+    <FullCalendar class="fc" :options="{
+      ...options,
+      events: eventsOption,
+      dayCellDidMount: dayCellDidMountOption
+    }" />
   </div>
 
-  <VDialog
-    v-if="dates?.startStr"
-    :routeQuery="dates?.startStr"
-    :modelValue="showDialog[dates?.startStr]"
-  >
+  <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
     <v-card>
       <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isMeeting && meeting"
-    :routeQuery="meeting.id"
-    :modelValue="showDialog[meeting.id]"
-  >
+  <VDialog v-if="isViewRequest && isMeeting && meeting" :routeQuery="meeting.id" :modelValue="showDialog[meeting.id]">
     <v-card>
       <meetingCard :meeting="meeting" @close-dialog="closeDialog(meeting.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isEvent && event"
-    :routeQuery="event.name"
-    :modelValue="showDialog[event.name]"
-  >
+  <VDialog v-if="isViewRequest && isEvent && event" :routeQuery="event.name" :modelValue="showDialog[event.name]">
     <v-card>
       <eventCard :event="event" @close-dialog="closeDialog(event.name)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isLeave && vacation"
-    :routeQuery="vacation.id"
-    :modelValue="showDialog[vacation.id]"
-  >
+  <VDialog v-if="isViewRequest && isLeave && vacation" :routeQuery="vacation.id" :modelValue="showDialog[vacation.id]">
     <v-card>
       <vacationCard :vacation="vacation" @close-dialog="closeDialog(vacation.id)" />
     </v-card>
@@ -62,7 +57,7 @@ import meetingCard from '@/components/cards/meetingCard.vue'
 import eventCard from '@/components/cards/eventCard.vue'
 import vacationCard from '@/components/cards/vacationCard.vue'
 
-import { ref, computed } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 import type { Api } from '@/types'
 import { useApi } from '@/hooks'
 import type { EventClickArg } from '@fullcalendar/core/index.js'
@@ -90,40 +85,28 @@ function handelDates(start: any, end: any): any {
   dates.start = new Date(dates.start)
 
   const endStr = `${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()}`
-  const startStr = `${dates.start.getFullYear()}-${
-    dates.start.getMonth() + 1
-  }-${dates.start.getDate()}`
+  const startStr = `${dates.start.getFullYear()}-${dates.start.getMonth() + 1
+    }-${dates.start.getDate()}`
 
   dates.endStr = endStr
   dates.startStr = startStr
   return dates
 }
 
-function normalizeVacation(v: Api.Vacation): any {
-  const dates = handelDates(v.from_date, v.end_date)
-
-  return {
-    title: 'Vacation',
-    color: 'primary',
-    start: dates.start,
-    end: dates.end,
-    backgroundColor: 'primary',
-    id: v.id.toString(),
-    allDay: true
-  }
-}
 
 function normalizeEvent(e: Api.Inputs.Event): any {
   const dates = handelDates(e.from_date, e.end_date)
 
   return {
     title: 'Event',
+    classNames: ['cshr-event'],
     color: 'primary',
     start: dates.start,
     end: dates.end,
-    backgroundColor: 'primary',
+    backgroundColor: 'offwhite',
     id: e.name,
     allDay: true
+
   }
 }
 
@@ -140,6 +123,7 @@ function normalizeMeeting(m: Api.Meetings): any {
     allDay: true
   }
 }
+
 
 export default {
   name: 'calenderCshr',
@@ -168,7 +152,6 @@ export default {
     const calendar = ref<CalendarApi>()
 
     const dates = ref<any>()
-    console.log()
 
     const selected = ref({ events: true, vacations: true, meetings: true })
     const showDialog = ref<{ [key: string]: boolean }>({})
@@ -177,6 +160,21 @@ export default {
       dates.value = arg
 
       openDialog(arg.startStr)
+    }
+    async function normalizeVacation(v: Api.Vacation): Promise<any> {
+      const dates = handelDates(v.from_date, v.end_date)
+
+      const applyingUser = await getUser(v.applying_user);
+
+      return {
+        title: `${applyingUser}'s Vacation`,
+        color: 'primary',
+        start: dates.start,
+        end: dates.end,
+        backgroundColor: 'gray',
+        id: v.id.toString(),
+        allDay: true
+      }
     }
 
     const onClick = async (arg: EventClickArg) => {
@@ -192,7 +190,7 @@ export default {
         event.value = events.state.value.filter((event) => event.name === arg.event.id)[0]
         isEvent.value = true
         openDialog(event.value.name)
-      } else if (arg.event.title === 'Vacation') {
+      } else if (arg.event.title.includes('Vacation')) {
         vacation.value = vacations.state.value.filter(
           (vacation) => vacation.id === Number(arg.event.id)
         )[0]
@@ -202,14 +200,48 @@ export default {
       isViewRequest.value = true
     }
 
+    const normalizeVacationAsync = async (vacation: any) => {
+      return await normalizeVacation(vacation);
+    };
+
     const plugins = [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin] as any
-    const eventsOption = computed(() => {
-      return [
-        ...(selected.value.meetings ? meetings.state.value.map(normalizeMeeting) : []),
-        ...(selected.value.events ? events.state.value.map(normalizeEvent) : []),
-        ...(selected.value.vacations ? vacations.state.value.map(normalizeVacation) : [])
-      ]
-    })
+    const eventsOption = ref([] as Array<any>); 
+
+    watchEffect(async () => {
+      const normalizedMeetings = selected.value.meetings ? meetings.state.value.map(normalizeMeeting) : [];
+      const normalizedEvents = selected.value.events ? events.state.value.map(normalizeEvent) : [];
+      const normalizedVacations = selected.value.vacations ? await Promise.all(vacations.state.value.map(normalizeVacationAsync)) : [];
+
+      eventsOption.value = [...normalizedMeetings, ...normalizedEvents, ...normalizedVacations];
+    });
+
+    
+
+    // const dayCellDidMountOption = computed(() => {
+    //   return ({ date, el }: { date: Date; el: HTMLElement }) => {
+    //     console.log("eventsOption.value", eventsOption.value);
+    //     const eventDates = eventsOption.value.map(event => new Date(event.start));
+    //     const isEventDate = eventDates.some(eventDate =>
+    //       eventDate.getDate() === date.getDate() && eventDate.getMonth() === date.getMonth()
+    //     );
+
+    //     if (isEventDate) {
+    //       el.style.backgroundColor = 'white';
+    //     }
+    //   };
+    // });
+
+    function dayCellDidMountOption({ date, el }: { date: Date; el: HTMLElement }){
+      console.log("el ",el)
+
+      console.log("el ",el && el.querySelector(".cshr-event"))
+
+    }
+
+    async function getUser(id: any) {
+      const user = await $api.users.getuser(id, { disableNotify: true })
+      return user.first_name
+    }
 
     const options = {
       plugins,
@@ -224,8 +256,12 @@ export default {
       weekends: true,
       select: onSelect,
       eventClick: onClick,
-      editable: false
+      editable: false,
+      // dayCellDidMount: dayCellDidMountOption
+
+
     }
+
 
     function closeDialog(id: string | number) {
       isViewRequest.value, isEvent.value, isMeeting.value, (isLeave.value = false)
@@ -254,10 +290,12 @@ export default {
       dates,
       vacation,
       selected,
+      dayCellDidMountOption,
       closeDialog,
       openDialog,
       onSelect,
       onClick,
+      getUser,
       calenderRequest,
       meetingCard,
       eventCard,
@@ -266,3 +304,12 @@ export default {
   }
 }
 </script>
+
+
+<style scoped>
+.fc-bg-event {
+  background: hsl(302, 90%, 49%);
+  border: 1px solid #0d89ec;
+  color: #ffffff;
+}
+</style>

@@ -85,12 +85,20 @@ export default {
     },
     ])
 
-    function getDaysBetweenDates(date1: Date, date2: Date): number {
+    // function getDaysBetweenDates(date1: Date, date2: Date): number {
 
-      const timeDifference = Math.abs(date2.getTime() - date1.getTime());
-      const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
-      return daysDifference;
-    }
+    //   const timeDifference = Math.abs(date2.getTime() - date1.getTime());
+    //   const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+    //   return daysDifference;
+    // }
+
+    // async function calculateActualDays() {
+    //   return await $api.vacations.calculate.list({
+    //     start_date: startDate.value,
+    //     end_date: endDate.value,
+    //   }
+    //   )
+    // }
 
     async function createLeave() {
       if (leaveReason.value) {
@@ -99,7 +107,11 @@ export default {
             reason: leaveReason.value?.reason,
             from_date: startDate.value,
             end_date: endDate.value,
-            actual_days: getDaysBetweenDates(props.dates.start, props.dates.start),
+            actual_days: await $api.vacations.calculate.list({
+              start_date: props.dates.start,
+              end_date: props.dates.start,
+            }
+            ),
 
           },
         )
