@@ -50,8 +50,8 @@
           <v-date-picker
             v-if="datePickerVisible"
             v-model="selectedDates"
-            @click:prev="preventDefault"
-            @click:next="preventDefault"
+            @click:prev.prevent
+            @click:next.prevent
             multiple
           ></v-date-picker>
 
@@ -125,9 +125,6 @@ export default {
       datePickerVisible.value = !datePickerVisible.value
     }
 
-    function preventDefault(event: Event) {
-      event.preventDefault()
-    }
     return {
       form,
       office_balance,
@@ -136,8 +133,7 @@ export default {
       selectedDates,
       requiredRules,
       setVacations,
-      toggleDatePicker,
-      preventDefault
+      toggleDatePicker
     }
   }
 }
