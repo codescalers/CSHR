@@ -4,13 +4,13 @@
       <v-col cols="12" sm="12" md="3" class="pa-2 border rounded ma-2 align-self-start">
         <div class="pa-5">
           <v-avatar color="primary" size="50" class="d-flex mx-auto mt-5 mb-3">
-            <span class="text-h5 text-uppercase">{{ user?.full_name ? avatar : "?" }}</span>
+            <span class="text-h5 text-uppercase">{{user?.full_name ? avatar : "?" }}</span>
           </v-avatar>
           <div class=" text-center">
             <h5 clas=" text-h5 font-weight-bold ">
               {{ user?.full_name }}
             </h5>
-            <span>Working for {{ user?.location.country }} office</span>
+            <span>Working for {{  user?.location?.country }} office</span>
           </div>
 
         </div>
@@ -34,6 +34,7 @@ import { $api } from '@/clients';
 import { onMounted } from 'vue';
 import type { Api } from '@/types'
 import { useRoute } from 'vue-router';
+import { useAsyncState } from '@vueuse/core';
 export default defineComponent({
   components: {
     vacationBalance,
@@ -45,9 +46,13 @@ export default defineComponent({
     const balance = ref<Api.BalanceVacation>();
     const $route = useRoute();
 
+    // const user = useAsyncState($route.query.id ? $api.users.getuser(Number($route.query.id)) : $api.myprofile.getUser() , [])
+    // const balance = useAsyncState($api.vacations.getVacationBalance({ "user_ids": user.value?.id }), [])
+
+
     const avatar = computed(() => {
       if (user.value) {
-        let val = String(user.value.full_name);
+        let val = String(user.value?.full_name);
         return val.charAt(0);
       }
       return "??";

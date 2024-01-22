@@ -42,8 +42,7 @@ export default {
         });
         const getUserInfo = (dataKey: any) => {
             if (props.user) {
-                country.value = props.user.location.country;
-                console.log(country.value);
+                country.value = props.user.location?.country;
             }
             if (props.user && props.user[dataKey]) {
                 return props.user[dataKey];
