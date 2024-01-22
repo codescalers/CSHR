@@ -28,7 +28,8 @@ export default {
     import.meta.env.VITE_DEBUG === 'true' && test_api()
 
     onMounted(() => {
-      state.access_token.value = localStorage.access_token
+      state.access_token.value = localStorage.access_token,
+      Window
     })
   }
 }

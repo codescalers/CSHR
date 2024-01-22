@@ -3,6 +3,10 @@
     <v-row class="ma-5">
       <v-col cols="12" sm="12" md="3" class="pa-2 border rounded ma-2 align-self-start">
         <div class="pa-5">
+          
+          <!-- {{ Window.env.CSHR_API }} -->
+          <!-- <img :src="window.env.CSHR_API + user?.image" class="user-profile-image rounded-circle"
+            style="width:{size}px; height:{size}px;" title={user.full_name} /> -->
           <v-avatar color="primary" size="50" class="d-flex mx-auto mt-5 mb-3">
             <span class="text-h5 text-uppercase">{{ user?.full_name ? avatar : "?" }}</span>
           </v-avatar>
@@ -18,7 +22,7 @@
       <v-col cols="12" sm="12" md="8" class="pa-2 border rounded position-relative ma-2">
         <div>
           <personalInformation :user="user" />
-          <vacationBalance :balance="balance"/>
+          <vacationBalance :balance="balance" />
         </div>
 
       </v-col>
@@ -49,15 +53,15 @@ export default defineComponent({
       }
       return "??";
     });
-    
+
     async function getProfile() {
       user.value = await $api.myprofile.getUser();
 
-  
+
     }
 
     async function getUserBalance() {
-      balance.value = await $api.vacations.getVacationBalance( { "user_ids": user.value?.id});
+      balance.value = await $api.vacations.getVacationBalance({ "user_ids": user.value?.id });
 
     }
 
