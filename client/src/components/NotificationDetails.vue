@@ -1,34 +1,44 @@
 <template>
   <v-card class="pa-4">
-    <v-card-title class="font-weight-bold mb-3"> {{ $props.title }} </v-card-title>
+    <div class="d-flex my-2">
+      <v-card-title class="font-weight-bold mb-3"> {{ $props.title }} </v-card-title>
+  
+      <v-card-subtitle class="mt-2">
+        <v-chip :color="getStatusColor($props.status)">
+          {{ $props.status }}
+        </v-chip>
+      </v-card-subtitle>
+    </div>
 
-    <v-card-subtitle>
-      <v-chip :color="getStatusColor($props.status)">
-        {{ $props.status }}
-      </v-chip>
-    </v-card-subtitle>
+    <v-row no-gutters class="mx-3">
+      <v-col v-for="section in sections" :key="section.key" cols="12">
+        <v-card class="mb-6 elevation-12">
+          <v-card-title class="card-title bg-primary white--text">{{ section.title }}</v-card-title>
 
-    <v-row class="mt-4">
-      <v-col v-for="section in sections" :key="section.title" cols="12" md="6">
-        <v-list dense>
-          <v-list-item-group>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="mb-3 font-weight-bold">
-                  {{ section.title }}
-                </v-list-item-title>
-                <v-list-item-subtitle v-for="detail in section.details" :key="detail.label">
-                  {{ detail.label }}: {{ detail.value }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
+          <v-list class="custom-list">
+            <v-row v-for="detail in section.details" :key="detail.label" class="ma-1 bordered" no-gutters>
+              <v-col cols="3">
+                <v-list-item>
+                  <v-list-item-content class="ma-0">
+                    {{ detail.label }}
+                  </v-list-item-content>
+                </v-list-item>
+              </v-col>
+
+              <v-col cols="9">
+                <v-list-item>
+                  <v-list-item-content>
+                    {{ detail.value }}
+                  </v-list-item-content>
+                </v-list-item>
+              </v-col>
+            </v-row>
+          </v-list>
+        </v-card>
       </v-col>
     </v-row>
-
-    <v-card-actions class="mt-6">
-      <v-btn color="blue darken-1" @click="closeDialog()"> Close </v-btn>
+    <v-card-actions>
+      <v-btn color="primary" @click="closeDialog()">Close</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -85,3 +95,10 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.card-title{
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
+}
+</style>
