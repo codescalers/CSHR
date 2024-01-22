@@ -13,52 +13,32 @@
   </v-row>
   <div class="ma-7 pa-7">
     <VProgressCircular v-if="events.isLoading.value" />
-    <FullCalendar
-      v-else
-      class="fc"
-      :options="{
-        ...options,
-        events: eventsOption,
-        dayCellDidMount
-      }"
-    />
+    <FullCalendar v-else class="fc" :options="{
+      ...options,
+      events: eventsOption,
+      dayCellDidMount
+    }" />
   </div>
 
-  <VDialog
-    v-if="dates?.startStr"
-    :routeQuery="dates?.startStr"
-    :modelValue="showDialog[dates?.startStr]"
-  >
+  <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
     <v-card>
       <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isMeeting && meeting"
-    :routeQuery="meeting.id"
-    :modelValue="showDialog[meeting.id]"
-  >
+  <VDialog v-if="isViewRequest && isMeeting && meeting" :routeQuery="meeting.id" :modelValue="showDialog[meeting.id]">
     <v-card>
       <meetingCard :meeting="meeting" @close-dialog="closeDialog(meeting.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isEvent && event"
-    :routeQuery="event.name"
-    :modelValue="showDialog[event.name]"
-  >
+  <VDialog v-if="isViewRequest && isEvent && event" :routeQuery="event.name" :modelValue="showDialog[event.name]">
     <v-card>
       <eventCard :event="event" @close-dialog="closeDialog(event.name)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isLeave && vacation"
-    :routeQuery="vacation.id"
-    :modelValue="showDialog[vacation.id]"
-  >
+  <VDialog v-if="isViewRequest && isLeave && vacation" :routeQuery="vacation.id" :modelValue="showDialog[vacation.id]">
     <v-card>
       <vacationCard :vacation="vacation" @close-dialog="closeDialog(vacation.id)" />
     </v-card>
@@ -80,66 +60,10 @@ import type { Api } from '@/types'
 import { useApi } from '@/hooks'
 import type { EventClickArg, CalendarApi, DayCellMountArg } from '@fullcalendar/core/index.js'
 import { useAsyncState } from '@vueuse/core'
+import { normalizeEvent, normalizeVacation, normalizeMeeting } from '@/utils'
 
-function handelDates(start: any, end: any): any {
-  const dates = {
-    start,
-    end,
-    add: true,
-    cut: null,
-    endStr: null as null | string | Date,
-    startStr: null as null | string | Date
-  }
 
-  const endDate = new Date(dates.end || '')
-  if (dates.cut) {
-    endDate.setDate(endDate.getDate() - 1)
-  } else if (dates.add) {
-    endDate.setDate(endDate.getDate() + 1)
-  }
 
-  dates.end = endDate
-  dates.start = new Date(dates.start)
-
-  const endStr = `${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()}`
-  const startStr = `${dates.start.getFullYear()}-${
-    dates.start.getMonth() + 1
-  }-${dates.start.getDate()}`
-
-  dates.endStr = endStr
-  dates.startStr = startStr
-  return dates
-}
-
-function normalizeEvent(e: Api.Inputs.Event): any {
-  const dates = handelDates(e.from_date, e.end_date)
-
-  return {
-    title: 'Event',
-    classNames: ['cshr-event'],
-    color: 'primary',
-    start: dates.start,
-    end: dates.end,
-    // backgroundColor: 'offwhite',
-    // backgroundColor: 'red',
-    id: e.name,
-    allDay: true
-  }
-}
-
-function normalizeMeeting(m: Api.Meetings): any {
-  const dates = handelDates(m.date, m.date)
-
-  return {
-    title: 'Meeting',
-    color: 'secondary',
-    start: dates.start,
-    end: dates.end,
-    backgroundColor: 'primary',
-    id: m.id,
-    allDay: true
-  }
-}
 
 export default {
   name: 'calenderCshr',
@@ -197,19 +121,7 @@ export default {
 
       openDialog(arg.startStr)
     }
-    function normalizeVacation(v: Api.Vacation) {
-      const dates = handelDates(v.from_date, v.end_date)
 
-      return {
-        title: `${v.user!.full_name}'s Vacation`,
-        color: 'primary',
-        start: dates.start,
-        end: dates.end,
-        backgroundColor: 'gray',
-        id: v.id.toString(),
-        allDay: true
-      }
-    }
 
     const onClick = async (arg: EventClickArg) => {
       calendar.value = arg.view.calendar
@@ -235,7 +147,6 @@ export default {
     }
 
     const plugins = [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin] as any
-
     const eventsOption = computed(() => {
       const normalizedMeetings = selected.value.meetings
         ? meetings.state.value.map(normalizeMeeting)
@@ -249,10 +160,11 @@ export default {
     })
 
     function dayCellDidMount({ el, date }: DayCellMountArg) {
-      for (const event of events.state.value) {
+      console.log("eventsOption" ,eventsOption.value)
+      for (const event of eventsOption.value) {
         const current = date.getTime()
-        const start = new Date(event.from_date).getTime() - 86_400_000
-        const end = new Date(event.end_date).getTime()
+        const start = new Date(event.start).getTime() - 86_400_000
+        const end = new Date(event.end).getTime()
 
         const shouldUpdate = current >= start && current <= end
         if (shouldUpdate) {
@@ -260,11 +172,6 @@ export default {
           return
         }
       }
-    }
-
-    async function getUser(id: any) {
-      const user = await $api.users.getuser(id, { disableNotify: true })
-      return user.first_name
     }
 
     const options = {
@@ -297,7 +204,6 @@ export default {
       events,
       meetings,
       vacations,
-
       isViewRequest,
       isEvent,
       isLeave,
@@ -315,7 +221,6 @@ export default {
       openDialog,
       onSelect,
       onClick,
-      getUser,
       calenderRequest,
       meetingCard,
       eventCard,
@@ -324,11 +229,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.fc-bg-event {
-  background: hsl(302, 90%, 49%);
-  border: 1px solid #0d89ec;
-  color: #ffffff;
-}
-</style>
