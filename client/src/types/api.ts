@@ -64,12 +64,10 @@ export module Api {
     sick_leaves: {
       reserved: number
       all: string
-     
     }
     compensation: {
       reserved: number
       all: string
- 
     }
     unpaid: {
       reserved: number
@@ -113,7 +111,7 @@ export module Api {
     }>
 
     export type Balance = MsgRes<BalanceVacation>
-    
+
     export interface Register {
       message: string
       results: Api.Inputs.Register
@@ -135,7 +133,7 @@ export module Api {
       type: string
       title: string
       created_at: string
-      event_id: number
+      event_id: string
       user: {
         id: number
         full_name: string

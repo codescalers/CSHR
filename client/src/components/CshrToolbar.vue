@@ -18,7 +18,7 @@
             v-for="(notification, index) in notifications.state.value"
             :key="notification.event_id"
           >
-            <VListItem class="pa-4" @click="selectedNotificationIndex = index">
+            <VListItem class="pa-4" @click="selectedId = notification.event_id">
               <VListItemTitle class="text-wrap">
                 {{ notification.title }}
               </VListItemTitle>
@@ -72,7 +72,7 @@
     <VDialog
       route-query="notification"
       :model-value="!!notification"
-      @update:model-value="selectedNotificationIndex = undefined"
+      @update:model-value="selectedId = undefined"
       min-width="min(94%, 1000px)"
     >
       <VCard>{{ notification }}</VCard>
@@ -81,8 +81,7 @@
 </template>
 
 <script lang="ts">
-import { computed } from 'vue'
-import { useAsyncState } from '@vueuse/core'
+import { useAsyncState, useArrayFind } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { useApi } from '@/hooks'
 import { getStatusColor } from '@/utils'
@@ -94,17 +93,11 @@ export default {
     const user = useAsyncState(() => $api.myprofile.getUser(), null)
     const notifications = useAsyncState(() => $api.notifications.list(), [])
 
-    const selectedNotificationIndex = useRouteQuery<undefined | number>(
-      'selected-notification',
-      undefined,
-      { transform: Number }
-    )
+    const selectedId = useRouteQuery<undefined | string>('selected-notification', undefined)
 
-    const notification = computed(() => {
-      return notifications.state.value[selectedNotificationIndex.value ?? -1]
-    })
+    const notification = useArrayFind(notifications.state, (f) => f.event_id == selectedId.value)
 
-    return { user, notifications, selectedNotificationIndex, notification, getStatusColor }
+    return { user, notifications, selectedId, notification, getStatusColor }
   }
 }
 </script>
