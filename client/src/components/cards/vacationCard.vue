@@ -157,7 +157,7 @@ export default {
     },
     ])
 
-    const readOnly = ref<Boolean>(true)
+    const readOnly = ref<boolean>(true)
     const couldApprove = computed(() => {
       if (state.user.value.user_type === 'Admin'
         || state.user.value.user_type === 'Supervisor'
