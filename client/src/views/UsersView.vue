@@ -35,12 +35,9 @@ export default {
   },
   setup() {
     const users = ref<Api.User[]>([]);
-
-
     const countriesSet = new Set<string>();
     const countries = ref<Country[]>([]);
     const countryMap = new Map<number, string>();
-
 
     const $route = useRoute()
 

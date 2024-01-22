@@ -27,6 +27,12 @@ export class UsersApi extends ApiClientBase {
       transform: (d) => d.results
     })
   }
+  getuser(id: number, options: Api.UnwrapOptions<any, any> = {}) {
+    return this.unwrap(this.$http.get<Api.Returns.Profile>(this.getUrl(`/${id}`)), {
+      transform: (d) => d.results,
+      ...options
+    })
+  }
 
   read(id: number) {
     return this.unwrap(this.$http.get<Api.Returns.MsgRes<Api.User>>(this.getUrl(`/${id}`)), {
