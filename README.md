@@ -96,6 +96,6 @@ After executing the command, you should see a confirmation similar to the follow
 
 This indicates that the Docker containers are being created and the services are starting up.
 
-- ![docker-compose-deployments](docs/docker-compose-deployments.png)
+- ![docker-compose-deployments](docs/images/docker-compose-deployments.png)
 
 You can also take a look at [configuration.md](docs/configuration.md)
