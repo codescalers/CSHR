@@ -44,9 +44,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
+import { getStatusColor } from '@/utils'
 
-export default defineComponent({
+export default {
   name: 'NotificationDetails',
   props: {
     eventId: {
@@ -71,29 +72,19 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const getStatusColor = (status: string) => {
-      switch (status) {
-        case 'approved':
-          return 'green'
-        case 'pending':
-          return 'orange'
-        case 'rejected':
-          return 'red'
-        default:
-          return 'grey'
-      }
-    }
+    const color = computed(() => getStatusColor(props.status))
 
     const closeDialog = () => {
       props.onClose()
     }
 
     return {
+      color,
       closeDialog,
       getStatusColor
     }
   }
-})
+}
 </script>
 
 <style scoped>

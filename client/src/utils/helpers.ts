@@ -24,3 +24,21 @@ export const passwordRules = [
   (v: string) => !!v || 'Password is required.',
   (v: string) => v.length > 3 || 'Password must be more than 3 characters.'
 ]
+
+export function getStatusColor(status: string) {
+  switch (status) {
+    case 'vacations':
+    case 'approved':
+      return 'green'
+
+    case 'hr_letters':
+    case 'pending':
+      return 'orange'
+
+    case 'rejected':
+      return 'red'
+
+    default:
+      return 'grey'
+  }
+}
