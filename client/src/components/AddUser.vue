@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form ref="form" @submit.prevent="addUser">
+    <v-form ref="form" @submit.prevent>
       <v-row class="justify-center align-center">
         <v-col cols="6">
           <v-text-field
@@ -158,7 +158,7 @@
             height="200"
             class="justify-center mb-5"
           ></v-img>
-          <v-btn color="primary" type="submit" :disabled="!form?.isValid">Add User</v-btn>
+          <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading='isLoading' @click="execute">Add User</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -182,6 +182,7 @@ import {
   requiredRules
 } from '@/utils'
 import { formatDate } from '@/utils'
+import { useAsyncState } from '@vueuse/core'
 
 export default {
   name: 'AddUser',
@@ -266,9 +267,9 @@ export default {
       else if (picker === 'joiningDatePicker') joiningDatePicker.value = !joiningDatePicker.value
     }
 
-    async function addUser() {
+    const {execute, isLoading} = useAsyncState(async() => {
       await $api.auth.register(user.value as Api.Inputs.Register)
-    }
+    }, null, {immediate: false})
 
     function chooseImage(event: any) {
       let input = event.target
@@ -322,9 +323,10 @@ export default {
       telegramRules,
       requiredStringRules,
       requiredRules,
+      isLoading,
       toggleDatePicker,
-      addUser,
-      chooseImage
+      chooseImage,
+      execute
     }
   }
 }

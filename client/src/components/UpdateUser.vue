@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form ref="form" @submit.prevent="updateUser">
+    <v-form ref="form" @submit.prevent>
       <v-row class="justify-center align-center">
         <v-col cols="12">
           <v-select
@@ -163,7 +163,7 @@
             height="200"
             class="justify-center mb-5"
           ></v-img>
-          <v-btn color="primary" type="submit" :disabled="!form?.isValid">Update User</v-btn>
+          <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading='isLoading' @click="execute">Update User</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -185,6 +185,7 @@ import {
   requiredRules,
   formatDate
 } from '@/utils'
+import { useAsyncState } from '@vueuse/core'
 
 export default {
   name: 'UpdateUser',
@@ -236,15 +237,6 @@ export default {
       else if (picker === 'joiningDatePicker') joiningDatePicker.value = !joiningDatePicker.value
     }
 
-    async function updateUser() {
-      await $api.myprofile.update(selectedUser.value.id, {
-        ...selectedUser.value,
-        image: imageUrl.value || null,
-        location: selectedUser.value.location.id,
-        reporting_to: reporting_to.value ? [reporting_to.value.id] : []
-      })
-    }
-
     function chooseImage(event: any) {
       let input = event.target
       if (input && input.files) {
@@ -255,6 +247,16 @@ export default {
         reader.readAsDataURL(input.files[0])
       }
     }
+
+    const {execute, isLoading} = useAsyncState(async() => {
+      await $api.myprofile.update(selectedUser.value.id, {
+        ...selectedUser.value,
+        image: imageUrl.value || null,
+        location: selectedUser.value.location.id,
+        reporting_to: reporting_to.value ? [reporting_to.value.id] : []
+      })
+    }, null, {immediate: false})
+
 
     return {
       form,
@@ -281,8 +283,9 @@ export default {
       telegramRules,
       requiredStringRules,
       requiredRules,
+      isLoading,
+      execute,
       toggleDatePicker,
-      updateUser,
       chooseImage
     }
   }

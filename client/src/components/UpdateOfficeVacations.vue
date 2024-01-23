@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form ref="form" @submit.prevent="UpdateVacations">
+    <v-form ref="form" @submit.prevent>
       <v-row class="justify-center align-center">
         <v-col cols="12">
           <v-alert
@@ -29,7 +29,7 @@
             type="text"
             :rules="requiredStringRules"
           ></v-text-field>
-          <v-btn color="primary" type="submit" :disabled="!form?.isValid">Update Vacations</v-btn>
+          <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading='isLoading' @click="execute">Update Vacations</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -41,6 +41,7 @@ import { $api } from '@/clients'
 import { ref } from 'vue'
 import { useState } from '../store'
 import { requiredStringRules } from '@/utils'
+import { useAsyncState } from '@vueuse/core'
 
 export default {
   name: 'UpdateOfficeVacations',
@@ -72,9 +73,9 @@ export default {
       reason: selectedReason.value.value
     })
 
-    async function UpdateVacations() {
+    const {execute, isLoading} = useAsyncState(async() => {
       await $api.vacations.balance.adjustment.update(vacation.value)
-    }
+    }, null, {immediate: false})
 
     return {
       form,
@@ -83,7 +84,8 @@ export default {
       selectedReason,
       state,
       requiredStringRules,
-      UpdateVacations
+      isLoading,
+      execute
     }
   }
 }

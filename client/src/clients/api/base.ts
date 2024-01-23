@@ -91,7 +91,11 @@ export abstract class ApiClientBase {
       panic(err)
     }
 
-    if (typeof res.data === 'object' && 'message' in (res.data || {})) {
+    if (
+      (res.config.method === 'post' || res.config.method === 'put') &&
+      typeof res.data === 'object' &&
+      'message' in (res.data || {})
+    ) {
       ApiClientBase.$notifier?.notify({
         type: 'success',
         description: (res.data as any).message

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form ref="form" @submit.prevent="updateVacations">
+    <v-form ref="form" @submit.prevent>
       <v-row class="justify-center align-center">
         <v-col cols="12">
           <v-text-field
@@ -37,7 +37,7 @@
             type="number"
             :rules="requiredRules"
           ></v-text-field>
-          <v-btn color="primary" type="submit" :disabled="!form?.isValid">Set Vacations</v-btn>
+          <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading='isLoading' @click="execute">Set Vacations</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -49,6 +49,7 @@ import { $api } from '@/clients'
 import { useState } from '@/store'
 import { requiredRules, requiredStringRules } from '@/utils'
 import { onMounted, ref, watchEffect } from 'vue'
+import { useAsyncState } from '@vueuse/core'
 
 export default {
   name: 'SetUserVacations',
@@ -86,9 +87,9 @@ export default {
       selectedUser.value = users.value[0]
     })
 
-    async function updateVacations() {
+    const {execute, isLoading} = useAsyncState(async() => {
       await $api.vacations.balance.update({ user_ids: selectedUser.value.id }, vacation.value)
-    }
+    }, null, {immediate: false})
 
     return {
       form,
@@ -100,7 +101,8 @@ export default {
       vacation,
       requiredStringRules,
       requiredRules,
-      updateVacations
+      isLoading,
+      execute
     }
   }
 }

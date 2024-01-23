@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form ref="form" @submit.prevent="addOffice">
+    <v-form ref="form" @submit.prevent>
       <v-row class="justify-center align-center">
         <v-col cols="12">
           <v-text-field
@@ -24,7 +24,7 @@
             return-object
             :rules="requiredRules"
           ></v-select>
-          <v-btn color="primary" type="submit" :disabled="!form?.isValid">Add Office</v-btn>
+          <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading='isLoading' @click="execute">Add Office</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -36,6 +36,7 @@ import { ref } from 'vue'
 import { $api } from '@/clients'
 import { requiredRules, requiredStringRules } from '@/utils'
 import { countries } from '@/utils'
+import { useAsyncState } from '@vueuse/core'
 
 export default {
   name: 'AddOffice',
@@ -60,9 +61,9 @@ export default {
       weekend: selectedWeekend.value.value
     })
 
-    async function addOffice() {
+    const {execute, isLoading} = useAsyncState(async() => {
       await $api.office.create(office.value)
-    }
+    }, null, {immediate: false})
 
     return {
       form,
@@ -73,7 +74,8 @@ export default {
       requiredStringRules,
       countryList,
       selectedCountry,
-      addOffice
+      isLoading,
+      execute
     }
   }
 }

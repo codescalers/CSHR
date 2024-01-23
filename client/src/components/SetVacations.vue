@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form ref="form" @submit.prevent="setVacations">
+    <v-form ref="form" @submit.prevent>
       <v-row class="justify-center align-center">
         <v-col cols="12">
           <v-alert
@@ -55,7 +55,15 @@
             multiple
           ></v-date-picker>
 
-          <v-btn color="primary" type="submit" :disabled="!form?.isValid"> Set Balance </v-btn>
+          <v-btn
+            color="primary"
+            type="submit"
+            :disabled="!form?.isValid"
+            :loading="isLoading"
+            @click="execute"
+          >
+            Set Balance
+          </v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -68,6 +76,7 @@ import type { Api } from '@/types'
 import { computed, onMounted, ref } from 'vue'
 import { requiredRules } from '@/utils'
 import { formatDate } from '@/utils'
+import { useAsyncState } from '@vueuse/core'
 
 export default {
   name: 'SetVacations',
@@ -108,22 +117,26 @@ export default {
       ]
     })
 
-    async function setVacations() {
-      const { annual_leaves, compensation, emergency_leaves, leave_excuses, year } =
-        office_balance.value
-      await $api.vacations.post_admin_balance.create({
-        annual_leaves,
-        compensation,
-        emergency_leaves,
-        leave_excuses,
-        year,
-        public_holidays: formattedDates.value.split(', ')
-      })
-    }
-
     function toggleDatePicker() {
       datePickerVisible.value = !datePickerVisible.value
     }
+
+    const { execute, isLoading } = useAsyncState(
+      async () => {
+        const { annual_leaves, compensation, emergency_leaves, leave_excuses, year } =
+          office_balance.value
+        await $api.vacations.post_admin_balance.create({
+          annual_leaves,
+          compensation,
+          emergency_leaves,
+          leave_excuses,
+          year,
+          public_holidays: formattedDates.value.split(', ')
+        })
+      },
+      null,
+      { immediate: false }
+    )
 
     return {
       form,
@@ -132,8 +145,9 @@ export default {
       formattedDates,
       selectedDates,
       requiredRules,
-      setVacations,
-      toggleDatePicker
+      isLoading,
+      toggleDatePicker,
+      execute
     }
   }
 }
