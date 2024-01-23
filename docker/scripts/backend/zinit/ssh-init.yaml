@@ -1,2 +1,2 @@
-exec: sh -c "/bin/bash server_dir/scripts/server.sh"
+exec: sh -c "/bin/bash server_dir/docker/scripts/backend/server.sh"
 log: stdout
