@@ -1,7 +1,7 @@
 #!/bin/sh
 
 cd server_dir
-CONFIG_DIR=config
+CONFIG_DIR=server_dir/config
 ENV_DIR=${CONFIG_DIR}/.env
 poetry config installer.max-workers 10
 poetry install --no-root --no-interaction --no-ansi -vvv

@@ -1,4 +1,3 @@
 exec: sh -c "/bin/bash server_dir/scripts/config.sh"
 oneshot: true
-after:
-  - ssh-init
+log: stdout
