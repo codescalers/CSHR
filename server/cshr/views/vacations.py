@@ -184,9 +184,9 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
         """Method to create a new vacation request"""
         if (
             request.data.get("end_date")
-            and type(request.data["end_date"]) == str
+            and type(request.data["end_date"]) is str
             and request.data.get("from_date")
-            and type(request.data["from_date"]) == str
+            and type(request.data["from_date"]) is str
         ):
             start_date: List[str] = request.data.get("from_date").split(
                 "-"
