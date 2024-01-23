@@ -18,18 +18,18 @@ runserver:
 runclient:
 	$(client) && pnpm i && pnpm dev
 test:
-	$(CMD) python3 manage.py test
+	$(server) && $(CMD) python3 manage.py test
 lint:
-	$(CMD) black server/  --exclude=__init__.py
-	$(CMD) flake8 server/  --exclude=__init__.py
+	$(server) && $(CMD) black server/  --exclude=__init__.py
+	$(server) && $(CMD) flake8 server/  --exclude=__init__.py
 	$(client) && pnpm lint
 migrate:
-	$(CMD) python3 manage.py makemigrations
-	$(CMD) python3 manage.py migrate
+	$(server) && $(CMD) python3 manage.py makemigrations
+	$(server) && $(CMD) python3 manage.py migrate
 user:
-	$(CMD) python3 manage.py createsuperuser
+	$(server) && $(CMD) python3 manage.py createsuperuser
 data:
-	$(CMD) python3 manage.py create locations users
+	$(server) && $(CMD) python3 manage.py create locations users
 deploy:
 	$(terraform) && terraform init && terraform apply -auto-approve
 destroy:

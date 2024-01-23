@@ -10,33 +10,33 @@ urlpatterns = [
         "api/",
         include(
             [
-                path("auth/", include("cshr.routs.auth")),
-                path("office/", include("cshr.routs.office")),
+                path("auth/", include("cshr.routes.auth")),
+                path("office/", include("cshr.routes.office")),
                 path(
                     "evaluation/",
-                    include("cshr.routs.evaluation"),
+                    include("cshr.routes.evaluation"),
                 ),
-                path("users/", include("cshr.routs.users")),
+                path("users/", include("cshr.routes.users")),
                 path(
-                    "training_courses/", include("cshr.routs.training_courses")
+                    "training_courses/", include("cshr.routes.training_courses")
                 ),
-                path("myprofile/", include("cshr.routs.myinfo")),
-                path("meeting/", include("cshr.routs.meetings")),
-                path("event/", include("cshr.routs.event")),
-                path("home/", include("cshr.routs.landing_page")),
-                path("compensations/", include("cshr.routs.compensation")),
-                path("hr_letters/", include("cshr.routs.hr_letters")),
-                path("vacations/", include("cshr.routs.vacations")),
-                path("requests/", include("cshr.routs.requests")),
+                path("myprofile/", include("cshr.routes.myinfo")),
+                path("meeting/", include("cshr.routes.meetings")),
+                path("event/", include("cshr.routes.event")),
+                path("home/", include("cshr.routes.landing_page")),
+                path("compensations/", include("cshr.routes.compensation")),
+                path("hr_letters/", include("cshr.routes.hr_letters")),
+                path("vacations/", include("cshr.routes.vacations")),
+                path("requests/", include("cshr.routes.requests")),
                 path(
                     "official_documents/",
-                    include("cshr.routs.official_documents"),
+                    include("cshr.routes.official_documents"),
                 ),
                 path(
                     "company_properties/",
-                    include("cshr.routs.company_properties"),
+                    include("cshr.routes.company_properties"),
                 ),
-                path("notifications/", include("cshr.routs.notifications")),
+                path("notifications/", include("cshr.routes.notifications")),
             ]
         ),
     ),

@@ -12,7 +12,6 @@ from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from cshr.api.response import CustomResponse
-from cshr.utils.parse_date import CSHRDate
 
 
 class BaseEventsAPIView(ListAPIView, GenericAPIView):
