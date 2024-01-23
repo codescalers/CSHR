@@ -213,16 +213,20 @@ export default {
     const reporting_to = ref()
 
     onMounted(async () => {
-      offices.value = (await $api.office.list()).map((office: any) => ({
-        id: office.id,
-        name: office.name
-      }))
-      officeUsers.value = await $api.users.admin.office_users.list()
-      selectedUser.value = officeUsers.value[0]
-      reporting_to.value = selectedUser.value.reporting_to[0]
-      supervisors.value = ((await $api.users.admin.list()) as any).filter(
-        (supervisor: any) => supervisor.user_type === 'Supervisor'
-      )
+      try {
+        offices.value = (await $api.office.list()).map((office: any) => ({
+          id: office.id,
+          name: office.name
+        }))
+        officeUsers.value = await $api.users.admin.office_users.list()
+        selectedUser.value = officeUsers.value[0]
+        reporting_to.value = selectedUser.value.reporting_to[0]
+        supervisors.value = ((await $api.users.admin.list()) as any).filter(
+          (supervisor: any) => supervisor.user_type === 'Supervisor'
+        )
+      } catch (error) {
+        console.error(error)
+      }
     })
 
     watch([birthdayDate, joiningDate], ([newBirthdayDate, newJoiningDate]) => {

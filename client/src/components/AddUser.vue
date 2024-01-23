@@ -244,15 +244,20 @@ export default {
     }))
 
     onMounted(async () => {
-      offices.value = (await $api.office.list()).map((office: any) => ({
-        id: office.id,
-        name: office.name
-      }))
-      location.value = offices.value[0]
-      supervisors.value = ((await $api.users.admin.list()) as any)
-        .filter((supervisor: any) => supervisor.user_type === 'Supervisor')
-        .map((supervisor: any) => ({ id: supervisor.id, name: supervisor.full_name }))
-      selectedSupervisor.value = supervisors.value[0]
+      try {
+        offices.value = (await $api.office.list()).map((office: any) => ({
+          id: office.id,
+          name: office.name
+        }))
+  
+        location.value = offices.value[0]
+        supervisors.value = ((await $api.users.admin.list()) as any)
+          .filter((supervisor: any) => supervisor.user_type === 'Supervisor')
+          .map((supervisor: any) => ({ id: supervisor.id, name: supervisor.full_name }))
+        selectedSupervisor.value = supervisors.value[0]
+      } catch (error) {
+        console.error(error);
+      }
     })
 
     watch([birthdayDate, joiningDate], ([newBirthdayDate, newJoiningDate]) => {

@@ -67,24 +67,32 @@ export default {
     })
 
     watchEffect(async () => {
-      if (selectedUser.value) {
-        const result = await $api.vacations.balance.list({
-          user_ids: selectedUser.value.id
-        })
-        userVacations.value = result ? result[0] : null
-        if (userVacations.value) {
-          const { annual_leaves, leave_excuses, emergency_leaves } = userVacations.value
-          vacation.value.annual_leaves = annual_leaves.all
-          vacation.value.leave_excuses = leave_excuses.all
-          vacation.value.emergency_leaves = emergency_leaves.all
+      try {
+        if (selectedUser.value) {
+          const result = await $api.vacations.balance.list({
+            user_ids: selectedUser.value.id
+          })
+          userVacations.value = result ? result[0] : null
+          if (userVacations.value) {
+            const { annual_leaves, leave_excuses, emergency_leaves } = userVacations.value
+            vacation.value.annual_leaves = annual_leaves.all
+            vacation.value.leave_excuses = leave_excuses.all
+            vacation.value.emergency_leaves = emergency_leaves.all
+          }
         }
+      } catch (error) {
+        console.error(error)
       }
     })
 
     onMounted(async () => {
-      officeUsers.value = await $api.users.admin.office_users.list()
-      users.value = officeUsers.value?.map((user: any) => ({ id: user.id, name: user.full_name }))
-      selectedUser.value = users.value[0]
+      try {
+        officeUsers.value = await $api.users.admin.office_users.list()
+        users.value = officeUsers.value?.map((user: any) => ({ id: user.id, name: user.full_name }))
+        selectedUser.value = users.value[0]
+      } catch (error) {
+        console.error(error)
+      }
     })
 
     const {execute, isLoading} = useAsyncState(async() => {

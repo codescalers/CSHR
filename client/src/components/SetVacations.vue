@@ -111,10 +111,14 @@ export default {
     })
 
     onMounted(async () => {
-      office_balance.value = await $api.vacations.get_admin_balance.list()
-      selectedDates.value = [
-        ...office_balance.value.public_holidays.map((date: any) => new Date(date))
-      ]
+      try {
+        office_balance.value = await $api.vacations.get_admin_balance.list()
+        selectedDates.value = [
+          ...office_balance.value.public_holidays.map((date: any) => new Date(date))
+        ]
+      } catch (error) {
+        console.error(error)
+      }
     })
 
     function toggleDatePicker() {

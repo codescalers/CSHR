@@ -103,8 +103,8 @@ export default defineComponent({
           password: password.value,
         },
       )
-      const user = await $api.myprofile.getUser()
-      state.user.value = user
+      const user = useAsyncState(async() => await $api.myprofile.getUser(), null)
+      state.user.value = user.state
       state.rememberMe.value = rememberMe.value
       $router.push('/')
     }, null, {immediate: false})

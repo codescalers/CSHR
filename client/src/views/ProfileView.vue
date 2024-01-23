@@ -10,7 +10,7 @@
             <h5 clas=" text-h5 font-weight-bold ">
               {{ user?.full_name }}
             </h5>
-            <span>Working for {{ user?.location.country }} office</span>
+            <span>Working for {{ user?.location?.country }} office</span>
           </div>
         </div>
       </v-col>
@@ -50,17 +50,13 @@ export default defineComponent({
       return '??'
     })
 
-    async function getProfile() {
-      user.value = state.user.value
-    }
-
-    async function getUserBalance() {
-      balance.value = await $api.vacations.getVacationBalance({ user_ids: user.value?.id })
-    }
-
     onMounted(async () => {
-      await getProfile()
-      await getUserBalance()
+      try {
+        user.value = state.user.value.value
+        balance.value = await $api.vacations.getVacationBalance({ user_ids: user.value?.id })
+      } catch (error) {
+        console.error(error)
+      }
     })
 
     return {

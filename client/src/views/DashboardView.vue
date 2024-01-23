@@ -59,8 +59,12 @@ export default {
     })
 
     onMounted(async () => {
-      officeId.value = state.user.value?.location.id
-      office.value = (await $api.office.read(officeId.value)).name
+      try {
+        officeId.value = state.user.value?.location.id
+        office.value = (await $api.office.read(officeId.value)).name
+      } catch (error) {
+        console.error(error)
+      }
     })
 
     function onItemSelected(item: any) {
