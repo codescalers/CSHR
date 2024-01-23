@@ -3,13 +3,9 @@
     <v-row class="ma-5">
       <v-col cols="12" sm="12" md="3" class="pa-2 border rounded ma-2 align-self-start">
         <div class="pa-5">
+ <profileImage :image="user?.image" :fullName="user?.full_name"/>
           
-          <!-- {{ Window.env.CSHR_API }} -->
-          <img :src="imageSrc + user?.image" class="user-profile-image rounded-circle"
-            style="width:{size}px; height:{size}px;" title={user.full_name} />
-          <v-avatar color="primary" size="50" class="d-flex mx-auto mt-5 mb-3">
-            <span class="text-h5 text-uppercase">{{ user?.full_name ? avatar : "?" }}</span>
-          </v-avatar>
+           
           <div class=" text-center">
             <h5 clas=" text-h5 font-weight-bold ">
               {{ user?.full_name }}
@@ -34,6 +30,8 @@
 import { computed, defineComponent, ref } from 'vue';
 import vacationBalance from "@/components/vacationBalance.vue";
 import personalInformation from "@/components/personalInformation.vue";
+import profileImage from "@/components/profileImage.vue";
+
 import { $api } from '@/clients';
 import { onMounted } from 'vue';
 import type { Api } from '@/types'
@@ -41,19 +39,12 @@ export default defineComponent({
   components: {
     vacationBalance,
     personalInformation,
+    profileImage,
   },
 
   setup() {
     const user = ref<Api.User>();
     const balance = ref<Api.BalanceVacation>();
-    const imageSrc = window.env.CSHR_API
-    const avatar = computed(() => {
-      if (user.value) {
-        let val = String(user.value.full_name);
-        return val.charAt(0);
-      }
-      return "??";
-    });
 
     async function getProfile() {
       user.value = await $api.myprofile.getUser();
@@ -69,12 +60,11 @@ export default defineComponent({
     })
 
     return {
-      avatar,
       user,
       balance,
-      imageSrc,
       vacationBalance,
       personalInformation,
+      profileImage,
     }
   }
 })
