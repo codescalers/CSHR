@@ -5,5 +5,5 @@ interface ImportMetaEnv {
   VITE_TITLE: string
   VITE_FAVICON: string
   VITE_LOGO: string
-  CSHR_API: string
+  SERVER_DOMAIN_NAME_API: string
 }

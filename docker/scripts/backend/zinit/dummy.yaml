@@ -1,0 +1,14 @@
+# The users keyword should be removed from the command of creating locations and users in production.
+
+# ###########################################################
+# $$$$$$$ Use these commands only in development mode $$$$$$$
+# -----------------------------------------------------------
+# $ poetry run python3 manage.py collectstatic --skip-checks"
+# $ poetry run python3 manage.py create locations users
+# -----------------------------------------------------------
+# ###########################################################
+
+# exec: sh -c "cd server_dir; poetry run python3 manage.py create locations"
+# after:
+#   - migrate
+# oneshot: true
