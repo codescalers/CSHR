@@ -40,7 +40,7 @@ services:
       context: .
       dockerfile: client/Dockerfile
     ports:
-      - "8080:8080"
+      - "8080:80"
     environment:
       - CSHR_API=https://cshrserver.gent01.dev.grid.tf
     depends_on:
