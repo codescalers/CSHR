@@ -31,9 +31,7 @@ class BaseMeetingsApiView(ListAPIView, GenericAPIView):
                 return CustomResponse.bad_request(
                     message='Ensure that the "host_user" field is included in the payload.'
                 )
-            saved = serializer.save(
-                host_user=current_user, invited_users=[]
-            )
+            saved = serializer.save(host_user=current_user, invited_users=[])
             response_date: Dict = send_meeting_to_calendar(saved)
             return CustomResponse.success(
                 data=response_date,
