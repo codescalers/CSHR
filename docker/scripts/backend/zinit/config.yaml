@@ -1,3 +1,2 @@
 exec: sh -c "/bin/bash server_dir/scripts/config.sh"
 oneshot: true
-log: stdout
