@@ -60,9 +60,6 @@ After executing
 make install && make migrate
 ```
 
-<<<<<<< Updated upstream
-Please refer to [.env.template](./config/.env.template) for all required values. Ensure all values are populated in the `.env` file within the [config](./config/) directory.
-=======
 Please refer to [.env.template](./config/.env.template) for all required values. Ensure all values are populated in the `.env` file within the [config](./config/) directory.
 
 ## Runing the project using Docker and Docker Compose
@@ -88,4 +85,5 @@ After executing the command, you should see a confirmation similar to the follow
 This indicates that the Docker containers are being created and the services are starting up.
 
 - ![docker-compose-deployments](docs/docker-compose-deployments.png)
->>>>>>> Stashed changes
+
+You can also take a look at [configuration.md](docs/configuration.md)
