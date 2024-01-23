@@ -26,15 +26,12 @@ export abstract class ApiClientBase {
     this.$http = options.$http
   }
 
-  protected static login(user: Api.LoginUser, rememberUser: boolean) {
+  protected static login(user: Api.LoginUser) {
     ApiClientBase.USER = user
     const state = useState()
     const { access_token } = state
     access_token.value = user.access_token
-    useStorage('access_token', access_token.value, sessionStorage, { mergeDefaults: true })
-    if (rememberUser) {
-      useStorage('access_token', access_token.value, localStorage, { mergeDefaults: true })
-    }
+    useStorage('access_token', access_token.value, localStorage, { mergeDefaults: true })
   }
 
   protected static refresh(res: Api.Returns.Refresh) {
@@ -94,7 +91,11 @@ export abstract class ApiClientBase {
       panic(err)
     }
 
-    if (typeof res.data === 'object' && 'message' in (res.data || {})) {
+    if (
+      (res.config.method === 'post' || res.config.method === 'put') &&
+      typeof res.data === 'object' &&
+      'message' in (res.data || {})
+    ) {
       ApiClientBase.$notifier?.notify({
         type: 'success',
         description: (res.data as any).message

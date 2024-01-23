@@ -8,6 +8,10 @@ export const isAuthenticated = computed(() => {
   return state.access_token.value ? true : false
 })
 
+export const isAdmin = computed(() => {
+  return state.user.value?.value && state.user.value.value.user_type === 'Admin' ? true : false
+})
+
 export interface $Globals {
   app: App<Element>
   env: ImportMetaEnv
