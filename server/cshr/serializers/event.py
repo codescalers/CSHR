@@ -1,6 +1,6 @@
 from typing import Dict
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from server.cshr.models.event import Event
+from cshr.models.event import Event
 
 
 class EventSerializer(ModelSerializer):

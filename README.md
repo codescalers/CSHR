@@ -72,11 +72,22 @@ Create a `.env` file beside the [config](./config/) directory and set the necess
 
 2. Execute Docker Compose
 
-Run the following command to start the Docker containers:
+Run the following command to start the Docker containers and please make sure that you are on the root of the project:
 
 ```sh
-docker compose --env-file=./config/.env up --build -d 
+# --> To run all services
+
+└─(✹)──> docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up --build -d 
+
+# --> To stop all services
+└─(✹)──> docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down 
+
 ```
+
+Also, you can excute the command using Make:
+
+- make docker-up **To run all services**
+- make docker-down **To stop all services**
 
 After executing the command, you should see a confirmation similar to the following:
 

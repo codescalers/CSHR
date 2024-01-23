@@ -1,7 +1,7 @@
 """ database office model """
 from django.db import models
 
-from server.cshr.models.abstracts import TimeStamp
+from cshr.models.abstracts import TimeStamp
 
 
 class WEEKEND_DAYS(models.TextChoices):

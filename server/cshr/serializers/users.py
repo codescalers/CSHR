@@ -9,17 +9,17 @@ from rest_framework.serializers import (
     Serializer,
     IntegerField,
 )
-from server.cshr.models.users import User, UserSkills
-from server.cshr.serializers.Image_upload import Base64ImageField
-from server.cshr.serializers.training_courses import TrainingCoursesSerializer
-from server.cshr.serializers.company_properties import CompanyPropertiesSerializer
-from server.cshr.services.training_courses import get_training_courses_for_a_user
-from server.cshr.services.company_properties import (
+from cshr.models.users import User, UserSkills
+from cshr.serializers.Image_upload import Base64ImageField
+from cshr.serializers.training_courses import TrainingCoursesSerializer
+from cshr.serializers.company_properties import CompanyPropertiesSerializer
+from cshr.services.training_courses import get_training_courses_for_a_user
+from cshr.services.company_properties import (
     get_all_company_properties_for_a_user,
 )
-from server.cshr.services.evaluations import get_evaluations_for_a_user
-from server.cshr.serializers.userEvaluation import UserEvaluationSerializer
-from server.cshr.serializers.office import OfficeSerializer
+from cshr.services.evaluations import get_evaluations_for_a_user
+from cshr.serializers.userEvaluation import UserEvaluationSerializer
+from cshr.serializers.office import OfficeSerializer
 
 
 class ActiveUserSerializer(Serializer):

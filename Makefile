@@ -1,17 +1,20 @@
 
 CMD:=poetry run
 client:=cd client
+server:=cd server
 terraform:=cd terraform
 
 docker-up:
-	docker-compose up --build -d
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up --build -d
+docker-down:
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down
 install:
-	pip3 install poetry
-	poetry install
-	poetry check
-	cd client && pnpm i && cd ..
+	$(server) && pip3 install poetry
+	$(server) && poetry install
+	$(server) && poetry check
+	$(client) && npm i -g pnpm && pnpm i
 runserver:
-	$(CMD) python3 manage.py runserver
+	$(server) && $(CMD) python3 manage.py runserver
 runclient:
 	$(client) && pnpm i && pnpm dev
 test:

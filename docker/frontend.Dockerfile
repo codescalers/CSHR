@@ -1,25 +1,26 @@
 # build stage
 FROM node:18.18.2 as build-stage
-WORKDIR /app
+WORKDIR /client
 
 ENV SERVER_DOMAIN_NAME_API=$SERVER_DOMAIN_NAME_API
 
-COPY ./client/package*.json ./
-COPY ./docker/scripts/frontend/build-env.sh ./scripts
-COPY client/ .
+# Copy package.json and package-lock.json separately to leverage Docker cache
+COPY ./client/package*.json ./client
+COPY ./docker/scripts/frontend/build-env.sh /client/scripts/
+COPY ./client /client
 
-RUN npm i -g pnpm && pnpm install && pnpm build
+RUN npm i -g pnpm && pnpm install
+RUN pnpm build
 
-# production stage
 FROM nginx:stable-alpine as production-stage
-COPY ./nginx/prod.conf /temp/prod.conf
+COPY ./nginx/prod.conf /etc/nginx/conf.d/default.conf
 
 # Use the environment variable in the configuration file
-RUN envsubst '$SERVER_DOMAIN_NAME_API' < /temp/prod.conf > /etc/nginx/conf.d/default.conf
-RUN chmod +x /app/scripts/build-env.sh
+RUN envsubst '$SERVER_DOMAIN_NAME_API' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
 
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-COPY --from=build-stage /app/scripts/build-env.sh /usr/share/nginx/html
+# Copy the build artifacts and build-env.sh from the build-stage
+COPY --from=build-stage /client/dist /usr/share/nginx/html
+COPY --from=build-stage /client/scripts/build-env.sh /usr/share/nginx/html
 
 EXPOSE 80
 

@@ -1,6 +1,6 @@
 from django.urls import path
-from server.cshr.views.compensation import CompensationApiView
-from server.cshr.views.compensation import (
+from cshr.views.compensation import CompensationApiView
+from cshr.views.compensation import (
     CompensationUpdateApiView,
     BaseCompensationApiView,
     CompensationUserApiView,

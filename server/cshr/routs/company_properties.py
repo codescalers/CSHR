@@ -1,5 +1,5 @@
 from django.urls import path
-from server.cshr.views.company_properties import (
+from cshr.views.company_properties import (
     CompanyPropertiesApiView,
     BaseCompanyPropertiesApiView,
 )

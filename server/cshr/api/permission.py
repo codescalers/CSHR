@@ -1,10 +1,10 @@
 from rest_framework import permissions
 from django.core.exceptions import PermissionDenied
 from rest_framework.request import Request
-from server.cshr.services.users import get_user_type_by_id
-from server.cshr.models.users import USER_TYPE
+from cshr.services.users import get_user_type_by_id
+from cshr.models.users import USER_TYPE
 from rest_framework.views import APIView
-from server.cshr.models.users import User
+from cshr.models.users import User
 
 
 class UserIsAuthenticated(permissions.BasePermission):

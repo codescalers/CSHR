@@ -2,7 +2,7 @@
 from typing import Dict, List
 from datetime import datetime, timedelta
 
-from server.cshr.api.response import CustomResponse
+from cshr.api.response import CustomResponse
 
 
 def get_dates_between_two_dates(start_date, end_date):

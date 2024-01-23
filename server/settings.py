@@ -1,5 +1,5 @@
 from datetime import timedelta
-from server.components import BASE_DIR, config
+from components import BASE_DIR, config
 import os
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -8,7 +8,7 @@ SECRET_KEY = config("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG") == "ON"
 
-CELERY_IMPORTS = ("server.cshr.celery.send_email",)
+CELERY_IMPORTS = ("cshr.celery.send_email",)
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_celery_beat",
-    "server.cshr",
+    "cshr",
     # Third party
     "corsheaders",
     "drf_yasg",
@@ -48,7 +48,7 @@ MIDDLEWARE = [
 ]
 
 
-ROOT_URLCONF = "server.urls"
+ROOT_URLCONF = "urls"
 
 TEMPLATES = [
     {
@@ -66,7 +66,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "server.wsgi.application"
+WSGI_APPLICATION = "wsgi.application"
 
 
 # Database

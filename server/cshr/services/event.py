@@ -1,10 +1,10 @@
 """This file contains everything related to the Event model."""
 import datetime
-from server.cshr.models.event import Event
+from cshr.models.event import Event
 from typing import Any, Dict, List
 
-from server.cshr.models.users import User
-from server.cshr.serializers.event import EventSerializer
+from cshr.models.users import User
+from cshr.serializers.event import EventSerializer
 
 
 def get_event_by_id(id: str) -> Event:
@@ -39,7 +39,7 @@ def filter_events_by_day(day: int) -> List[Event]:
 
 
 def send_event_to_calendar(event: Event) -> Dict[str, Any]:
-    from server.cshr.services.landing_page import (
+    from cshr.services.landing_page import (
         LandingPageClassNameEnum,
         LandingPageTypeEnum,
     )

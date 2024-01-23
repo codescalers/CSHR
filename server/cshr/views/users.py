@@ -2,16 +2,16 @@ from typing import List
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.models.users import User, UserSkills
-from server.cshr.api.permission import (
+from cshr.models.users import User, UserSkills
+from cshr.api.permission import (
     IsAdmin,
     IsSupervisor,
     UserIsAuthenticated,
 )
-from server.cshr.services.office import get_office_by_id
-from server.cshr.utils.validations import Validator
-from server.cshr.api.response import CustomResponse
-from server.cshr.serializers.users import (
+from cshr.services.office import get_office_by_id
+from cshr.utils.validations import Validator
+from cshr.api.response import CustomResponse
+from cshr.serializers.users import (
     ActiveUserSerializer,
     BaseUserSerializer,
     GeneralUserSerializer,
@@ -22,7 +22,7 @@ from server.cshr.serializers.users import (
     UpdateUserSerializer,
     UserSkillsSerializer,
 )
-from server.cshr.services.users import (
+from cshr.services.users import (
     filter_users_by_birthdates,
     get_admin_office_users,
     get_all_skills,
@@ -32,7 +32,7 @@ from server.cshr.services.users import (
     get_user_team_leads,
     get_user_team_members,
 )
-from server.cshr.serializers.users import TeamSerializer
+from cshr.serializers.users import TeamSerializer
 
 
 class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):

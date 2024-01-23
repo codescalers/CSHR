@@ -1,9 +1,9 @@
 """This file contains everything related to the Meetings model."""
-from server.cshr.models.meetings import Meetings
+from cshr.models.meetings import Meetings
 from typing import Any, Dict, List
 
-from server.cshr.models.users import User
-from server.cshr.serializers.meetings import MeetingsSerializer
+from cshr.models.users import User
+from cshr.serializers.meetings import MeetingsSerializer
 
 
 def get_meeting_by_id(id: str) -> Meetings:
@@ -35,7 +35,7 @@ def filter_meetings_by_day(year: int, month: int, day: int) -> List[Meetings]:
 
 
 def send_meeting_to_calendar(meeting: Meetings) -> Dict[str, Any]:
-    from server.cshr.services.landing_page import (
+    from cshr.services.landing_page import (
         LandingPageClassNameEnum,
         LandingPageTypeEnum,
     )

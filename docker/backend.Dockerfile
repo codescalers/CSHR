@@ -29,10 +29,11 @@ RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download
   chmod +x /sbin/zinit && pip install poetry && poetry --version
 
 RUN mkdir -p /etc/zinit/
-RUN chmod +x ./docker/scripts/backend/*.sh
-
 COPY . /server_dir
-COPY ./scripts/backend/zinit /etc/zinit
+COPY ./docker/scripts/backend/zinit /etc/zinit
+COPY ./docker/scripts/backend/*.sh /docker/scripts/backend/
+
+RUN chmod +x /docker/scripts/backend/*.sh
 
 EXPOSE 8000
 ENTRYPOINT  ["zinit", "init"]

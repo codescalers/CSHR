@@ -28,8 +28,8 @@ services:
 
   backend:
     build:
-      context: .
-      dockerfile: backend.Dockerfile
+      context: ../
+      dockerfile: ./docker/backend.Dockerfile
     ports:
       - "8000:8000"
     environment:
@@ -65,8 +65,8 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: frontend.Dockerfile
+      context: ../
+      dockerfile: ./docker/frontend.Dockerfile
     ports:
       - "8080:80"
     environment:

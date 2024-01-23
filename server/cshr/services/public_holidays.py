@@ -1,5 +1,5 @@
 from typing import List
-from server.cshr.models.vacations import PublicHoliday
+from cshr.models.vacations import PublicHoliday
 from datetime import datetime
 
 

@@ -1,7 +1,7 @@
 """
 methods that will serve office endpoints
 """
-from server.cshr.models.office import Office
+from cshr.models.office import Office
 
 
 def get_office_by_id(id: str) -> Office:

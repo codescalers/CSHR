@@ -1,11 +1,11 @@
 from typing import Dict
 from django.utils.dateparse import parse_datetime
 from django.core.exceptions import ImproperlyConfigured
-from server.cshr.models.requests import TYPE_CHOICES, Requests
-from server.cshr.models.users import USER_TYPE, User
-from server.cshr.serializers.users import BaseUserSerializer, TeamSerializer
-from server.cshr.services.users import get_user_by_id
-from server.components import config
+from cshr.models.requests import TYPE_CHOICES, Requests
+from cshr.models.users import USER_TYPE, User
+from cshr.serializers.users import BaseUserSerializer, TeamSerializer
+from cshr.services.users import get_user_by_id
+from components import config
 import redis
 import json
 

@@ -1,5 +1,5 @@
 from django.urls import path
-from server.cshr.views.official_documents import (
+from cshr.views.official_documents import (
     OffcialDocumentAPIView,
     OfficialDocumentAcceptApiView,
     OfficialDocumentRejectApiView,

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from server import settings
+import settings
 from django.conf.urls.static import static
 
 
@@ -10,33 +10,33 @@ urlpatterns = [
         "api/",
         include(
             [
-                path("auth/", include("server.cshr.routs.auth")),
-                path("office/", include("server.cshr.routs.office")),
+                path("auth/", include("cshr.routs.auth")),
+                path("office/", include("cshr.routs.office")),
                 path(
                     "evaluation/",
-                    include("server.cshr.routs.evaluation"),
+                    include("cshr.routs.evaluation"),
                 ),
-                path("users/", include("server.cshr.routs.users")),
+                path("users/", include("cshr.routs.users")),
                 path(
-                    "training_courses/", include("server.cshr.routs.training_courses")
+                    "training_courses/", include("cshr.routs.training_courses")
                 ),
-                path("myprofile/", include("server.cshr.routs.myinfo")),
-                path("meeting/", include("server.cshr.routs.meetings")),
-                path("event/", include("server.cshr.routs.event")),
-                path("home/", include("server.cshr.routs.landing_page")),
-                path("compensations/", include("server.cshr.routs.compensation")),
-                path("hr_letters/", include("server.cshr.routs.hr_letters")),
-                path("vacations/", include("server.cshr.routs.vacations")),
-                path("requests/", include("server.cshr.routs.requests")),
+                path("myprofile/", include("cshr.routs.myinfo")),
+                path("meeting/", include("cshr.routs.meetings")),
+                path("event/", include("cshr.routs.event")),
+                path("home/", include("cshr.routs.landing_page")),
+                path("compensations/", include("cshr.routs.compensation")),
+                path("hr_letters/", include("cshr.routs.hr_letters")),
+                path("vacations/", include("cshr.routs.vacations")),
+                path("requests/", include("cshr.routs.requests")),
                 path(
                     "official_documents/",
-                    include("server.cshr.routs.official_documents"),
+                    include("cshr.routs.official_documents"),
                 ),
                 path(
                     "company_properties/",
-                    include("server.cshr.routs.company_properties"),
+                    include("cshr.routs.company_properties"),
                 ),
-                path("notifications/", include("server.cshr.routs.notifications")),
+                path("notifications/", include("cshr.routs.notifications")),
             ]
         ),
     ),

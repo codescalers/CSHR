@@ -1,5 +1,5 @@
 from django.urls import path
-from server.cshr.views.event import (
+from cshr.views.event import (
     EventApiView,
     BaseEventsAPIView,
     GetEventOnDayAPIView,

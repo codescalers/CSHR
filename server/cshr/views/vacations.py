@@ -1,5 +1,5 @@
-from server.cshr.serializers.users import TeamSerializer
-from server.cshr.serializers.vacations import (
+from cshr.serializers.users import TeamSerializer
+from cshr.serializers.vacations import (
     PostOfficeVacationBalanceSerializer,
     GetOfficeVacationBalanceSerializer,
     CalculateBalanceSerializer,
@@ -9,23 +9,23 @@ from server.cshr.serializers.vacations import (
     VacationsSerializer,
 )
 from typing import Dict, List
-from server.cshr.serializers.vacations import (
+from cshr.serializers.vacations import (
     VacationsUpdateSerializer,
     VacationBalanceSerializer,
     UserBalanceUpdateSerializer,
 )
-from server.cshr.api.permission import (
+from cshr.api.permission import (
     IsSupervisor,
     IsUser,
     UserIsAuthenticated,
     IsAdmin,
 )
-from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.models.users import USER_TYPE, User
-from server.cshr.services.office import get_office_by_id
-from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
-from server.cshr.services.users import get_user_by_id, get_users_by_id
-from server.cshr.services.vacations import (
+from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
+from cshr.models.users import USER_TYPE, User
+from cshr.services.office import get_office_by_id
+from cshr.utils.vacation_balance_helper import StanderdVacationBalance
+from cshr.services.users import get_user_by_id, get_users_by_id
+from cshr.services.vacations import (
     filter_balances_by_users,
     get_balance_by_user,
     get_vacation_by_id,
@@ -36,26 +36,26 @@ from server.cshr.services.vacations import (
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.api.response import CustomResponse
+from cshr.api.response import CustomResponse
 from datetime import datetime
-from server.cshr.utils.update_change_log import (
+from cshr.utils.update_change_log import (
     update_vacation_change_log,
 )
-from server.cshr.utils.email_messages_templates import (
+from cshr.utils.email_messages_templates import (
     # get_vacation_request_email_template,
     get_vacation_reply_email_template,
 )
 
-# from server.cshr.celery.send_email import send_email_for_request
-from server.cshr.celery.send_email import send_email_for_reply
-from server.cshr.models.vacations import (
+# from cshr.celery.send_email import send_email_for_request
+from cshr.celery.send_email import send_email_for_reply
+from cshr.models.vacations import (
     OfficeVacationBalance,
     PublicHoliday,
     Vacation,
     VacationBalance,
 )
-from server.cshr.services.vacations import get_vacations_by_user
-from server.cshr.utils.redis_functions import (
+from cshr.services.vacations import get_vacations_by_user
+from cshr.utils.redis_functions import (
     notification_commented,
     set_notification_request_redis,
     set_notification_reply_redis,
