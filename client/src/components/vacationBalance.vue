@@ -8,14 +8,14 @@
     </v-row>
     <v-row class=" text-center mt-0 mb-2">
       <v-col>
-        {{ balance ? balance[0].annual_leaves.reserved : "--" }} / {{ balance ? balance[0].annual_leaves.all : "--" }}
+        {{ balance ? balance[0]?.annual_leaves.reserved : "--" }} / {{ balance ? balance[0]?.annual_leaves.all : "--" }}
       </v-col>
       <v-col>
-        {{ balance ? balance[0].emergency_leaves.reserved : "--" }} / {{ balance ? balance[0].emergency_leaves.all : "--"
+        {{ balance ? balance[0]?.emergency_leaves.reserved : "--" }} / {{ balance ? balance[0]?.emergency_leaves.all : "--"
         }}
       </v-col>
       <v-col>
-        {{ balance ? balance[0].leave_excuses.reserved : "--" }} / {{ balance ? balance[0].leave_excuses.all : "--" }}
+        {{ balance ? balance[0]?.leave_excuses.reserved : "--" }} / {{ balance ? balance[0]?.leave_excuses.all : "--" }}
       </v-col>
     </v-row>
   </v-card>

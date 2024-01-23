@@ -3,7 +3,7 @@
     <officeFilters :countries="countries" />
 
     <v-row>
-
+      
       <v-col class="d-flex flex-wrap justify-center">
         <v-col v-for="user of users.state.value" :key="user?.id" xl="4" lg="6" md="12" sm="12" cols="12"
           class="px-5 py-5">
