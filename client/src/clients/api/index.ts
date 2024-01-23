@@ -72,9 +72,12 @@ export class ApiClient extends ApiClientBase {
   }
 
   private setAxiosRequestInterceptor() {
+    const token = localStorage.getItem("access_token")
     return this.$http.interceptors.request.use((req) => {
       if (ApiClientBase.user) {
         req.headers.set('Authorization', 'Bearer ' + ApiClientBase.user.access_token)
+      } else if (!ApiClientBase.user && token) {
+        req.headers.set('Authorization', 'Bearer ' + token)
       }
       return req
     })

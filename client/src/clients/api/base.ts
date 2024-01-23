@@ -41,17 +41,16 @@ export abstract class ApiClientBase {
       access_token: res.access,
       refresh_token: res.refresh
     }
-    /* TODO: sync in session storage */
   }
 
   protected static logout() {
     ApiClientBase.assertUser()
     ApiClientBase.USER = null
-    /* TODO: sync in session storage */
   }
 
   protected static assertUser() {
-    if (!ApiClientBase.USER) {
+    const token = localStorage.getItem("access_token")
+    if (!ApiClientBase.USER && !token) {
       panic(`Expected to login before using this route.`)
     }
   }
@@ -80,6 +79,12 @@ export abstract class ApiClientBase {
       ApiClientBase.USER
     ) {
       await ApiClientBase.$api.auth.refresh({ refresh: ApiClientBase.USER.refresh_token })
+    }
+    const token = localStorage.getItem("access_token")
+
+    if (err && !ApiClientBase.USER && token !== null) {
+      const user = await ApiClientBase.$api.myprofile.getUser();
+      (ApiClientBase.USER as any) = {...user}
     }
 
     if (err) {

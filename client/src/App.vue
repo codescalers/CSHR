@@ -11,6 +11,8 @@ import SideDrawer from './components/SideDrawer.vue'
 import { test_api } from '@/tests'
 import { onMounted } from 'vue'
 import { useState } from './store'
+import { $api } from './clients'
+import { useAsyncState } from '@vueuse/core'
 
 export default {
   name: 'App',
@@ -27,8 +29,9 @@ export default {
     /* Don't include this in production! */
     import.meta.env.VITE_DEBUG === 'true' && test_api()
 
-    onMounted(() => {
+    onMounted(async() => {
       state.access_token.value = localStorage.access_token
+      state.user.value = useAsyncState(async() => await $api.myprofile.getUser(), null).state
     })
   }
 }
