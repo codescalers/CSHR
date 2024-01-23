@@ -6,7 +6,7 @@ terraform:=cd terraform
 docker-up:
 	docker-compose up --build -d
 install:
-	pip3 install poetry
+	curl -sSL https://install.python-poetry.org | python3 -
 	poetry install
 	poetry check
 	cd client && pnpm i && cd ..
