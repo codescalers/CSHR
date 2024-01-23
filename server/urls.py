@@ -17,9 +17,7 @@ urlpatterns = [
                     include("cshr.routes.evaluation"),
                 ),
                 path("users/", include("cshr.routes.users")),
-                path(
-                    "training_courses/", include("cshr.routes.training_courses")
-                ),
+                path("training_courses/", include("cshr.routes.training_courses")),
                 path("myprofile/", include("cshr.routes.myinfo")),
                 path("meeting/", include("cshr.routes.meetings")),
                 path("event/", include("cshr.routes.event")),

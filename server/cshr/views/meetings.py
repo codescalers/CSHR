@@ -14,6 +14,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from cshr.api.response import CustomResponse
 
+
 class BaseMeetingsApiView(ListAPIView, GenericAPIView):
     """Class Meeting_APIVIEW to create a new meeting into database"""
 

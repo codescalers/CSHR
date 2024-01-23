@@ -20,8 +20,8 @@ runclient:
 test:
 	$(server) && $(CMD) python3 manage.py test
 lint:
-	$(server) && $(CMD) black server/  --exclude=__init__.py
-	$(server) && $(CMD) flake8 server/  --exclude=__init__.py
+	$(server) && $(CMD) black .  --exclude=__init__.py
+	$(server) && $(CMD) flake8 .  --exclude=__init__.py
 	$(client) && pnpm lint
 migrate:
 	$(server) && $(CMD) python3 manage.py makemigrations
