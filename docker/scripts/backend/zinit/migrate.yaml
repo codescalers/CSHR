@@ -1,4 +1,4 @@
-exec: sh -c "/bin/bash server_dir/server/scripts/migrate.sh"
+exec: sh -c "/bin/bash server_dir/scripts/migrate.sh"
 after:
   - migrations
 oneshot: true
