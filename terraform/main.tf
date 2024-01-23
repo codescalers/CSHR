@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "grid" {
-    mnemonics = "actual reveal dish guilt inner film scheme between lonely myself material replace" 
+    mnemonics = "" 
     network = "qa"
 }
 
@@ -34,23 +34,22 @@ resource "grid_deployment" "d1" {
     node = 2
     network_name = grid_network.net2.name
     vms {
-        name = "cshrservervm"
-        flist = "https://hub.grid.tf/omda.3bot/codescalersinternship-cshr_server-latest.flist"
+        name = ""
+        flist = ""
         cpu = 2 
         memory = 4096
         publicip = false
         planetary = true
-        entrypoint = "/sbin/zinit init"
+        entrypoint = ""
         env_vars = {
-            SSH_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCF3JezThwSchTvkF2oPtn8X6chevNsfE58dIY3/eg5zK9tKgNYIB2saoFh12a0AJU424sAeLO0HghhNhe/Co62xkzHhk6EpXWNSFkrlzw+FVn1FKDZbbOZH47sC3n6p5a3YhM4dALssZ/aZdpaKBgXkzk91usJ+GVa+eOnpMRBlHgi9PpvowyzPSKeH9ZcVRBPnVU+nQGyV+kd6RahNBoNgNrHu/QFI92yg/y/7Szus1IS0U92cWKf/K/Sot7O10kSjmj06lMGOO8zdENk/xrtUtRHzemCj+mq0Q/3KUMCGvdb/tH0TDeNenxvibummiym4VTcnYqbm+RDXWG8HUc/RPfEVBl8p1NGZnkBt6QJl5hddHaYwx8CCmf3maSrQFcmrWYtlUDBXYkPyrv0qmy2gM1PScntF/X9zhIfnELlyAVAKXfzVwixrBh7oOIAqefydSVcwWtCXoH38F5q/zo9bQv+eHntI83mZrUUT7JGirQF64fpJKbCZPhv0kUm9bF7DVQMiyRZdk748cgVp7dEzMVlrfZ2eIvZag5zmuJTPB7bw00+Ik9jNaOIhEoCWEaYBw7KmrLonesV8rWUkEAwWPe28bXCVmUZlgZbWJi7BFWCst2Z/j2WgScHbdAv28gAcneDW4yQmt2YaYqXqmwgSVCaD/irq5FSO4upmo5u0Q== mahmmoud.hassanein@gmail.com"
-            ENV="development"
-            DJANGO_DEBUG="ON"
-            EMAIL="codescalersinternship@gmail.com"
-            EMAIL_PASSWORD="ubunyyzgxeoxhnze"
-            EMAIL_HOST="smtp.gmail.com"
-            REDIS_HOST="redis://localhost:6379"
-            DJANGO_SUPERUSER_EMAIL="admin@gmail.com"
-            DJANGO_SUPERUSER_PASSWORD="0000"
+            ENV=""
+            DJANGO_DEBUG=""
+            EMAIL=""
+            EMAIL_PASSWORD=""
+            EMAIL_HOST=""
+            REDIS_HOST=""
+            DJANGO_SUPERUSER_EMAIL=""
+            DJANGO_SUPERUSER_PASSWORD=""
             SERVER_DOMAIN_NAME=format(data.grid_gateway_domain.server_domain.fqdn)
             CLIENT_DOMAIN_NAME=format(data.grid_gateway_domain.client_domain.fqdn)
         }
@@ -61,15 +60,14 @@ resource "grid_deployment" "d2" {
     node = 2
     network_name = grid_network.net2.name
     vms {
-        name = "cshrclientvm"
+        name = ""
         publicip = false
         planetary = true
-        flist = "https://hub.grid.tf/omda.3bot/codescalersinternship-cshr_client-latest.flist"
+        flist = ""
         cpu = 2
         memory = 4096
         entrypoint = "/sbin/zinit init"
         env_vars = {
-            SSH_KEY = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCF3JezThwSchTvkF2oPtn8X6chevNsfE58dIY3/eg5zK9tKgNYIB2saoFh12a0AJU424sAeLO0HghhNhe/Co62xkzHhk6EpXWNSFkrlzw+FVn1FKDZbbOZH47sC3n6p5a3YhM4dALssZ/aZdpaKBgXkzk91usJ+GVa+eOnpMRBlHgi9PpvowyzPSKeH9ZcVRBPnVU+nQGyV+kd6RahNBoNgNrHu/QFI92yg/y/7Szus1IS0U92cWKf/K/Sot7O10kSjmj06lMGOO8zdENk/xrtUtRHzemCj+mq0Q/3KUMCGvdb/tH0TDeNenxvibummiym4VTcnYqbm+RDXWG8HUc/RPfEVBl8p1NGZnkBt6QJl5hddHaYwx8CCmf3maSrQFcmrWYtlUDBXYkPyrv0qmy2gM1PScntF/X9zhIfnELlyAVAKXfzVwixrBh7oOIAqefydSVcwWtCXoH38F5q/zo9bQv+eHntI83mZrUUT7JGirQF64fpJKbCZPhv0kUm9bF7DVQMiyRZdk748cgVp7dEzMVlrfZ2eIvZag5zmuJTPB7bw00+Ik9jNaOIhEoCWEaYBw7KmrLonesV8rWUkEAwWPe28bXCVmUZlgZbWJi7BFWCst2Z/j2WgScHbdAv28gAcneDW4yQmt2YaYqXqmwgSVCaD/irq5FSO4upmo5u0Q== mahmmoud.hassanein@gmail.com"
             SERVER_BASE_URL=format("https://%s", data.grid_gateway_domain.server_domain.fqdn)
         }
     }

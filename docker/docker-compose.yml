@@ -34,8 +34,6 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # Machine access
-      - SSH_KEY=${SSH_KEY}
       # Backend configurations
       - ENV=${ENV}
       - DJANGO_DEBUG=${DJANGO_DEBUG}
