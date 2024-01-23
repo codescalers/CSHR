@@ -27,7 +27,7 @@ class StanderdVacationBalance:
                 if (
                     type(actual_value) is dict
                     and len(actual_value) > 0
-                    and field.name is not "actual_balance"
+                    and field.name != "actual_balance"
                 ):
                     for k, v in actual_value.items():
                         balance_attr: int = getattr(balance, k)
