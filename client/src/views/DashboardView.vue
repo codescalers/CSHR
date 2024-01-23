@@ -60,7 +60,7 @@ export default {
 
     onMounted(async () => {
       try {
-        officeId.value = state.user.value?.location.id
+        officeId.value = state.user.value.value?.location.id
         office.value = (await $api.office.read(officeId.value)).name
       } catch (error) {
         console.error(error)

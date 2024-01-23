@@ -4,7 +4,7 @@
       <v-row class="justify-center align-center">
         <v-col cols="12">
           <v-text-field
-            v-model="state.user.value.location.name"
+            v-model="state.user.value.value.location.name"
             label="Office"
             type="text"
             :rules="requiredStringRules"

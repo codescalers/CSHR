@@ -9,7 +9,7 @@
             :text="`Please note that this value will be applied to the ${selectedReason.text} balance for all users. If you accidentally submit this form, you'll need to reset the value for users using the appropriate form.`"
           ></v-alert>
           <v-text-field
-            v-model="state.user.value.location.name"
+            v-model="state.user.value.value.location.name"
             label="Office"
             type="text"
             disabled
@@ -68,7 +68,7 @@ export default {
     const selectedReason = ref(reasons.value[0])
 
     const vacation = ref({
-      officeId: state.user.value.location.id,
+      officeId: state.user.value.value.location.id,
       value: 1,
       reason: selectedReason.value.value
     })
