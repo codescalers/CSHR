@@ -21,7 +21,7 @@ redis_instance = redis.StrictRedis(host=R_HOST, port=R_PORT, db=0)
 def set_notification_request_redis(data: Dict) -> bool:
     """this function set requests notifications"""
     applying_user = None
-    if type(data["applying_user"]) != int and data.get("applying_user").get("id"):
+    if type(data["applying_user"]) is not int and data.get("applying_user").get("id"):
         applying_user = data["applying_user"]["id"]
     else:
         applying_user = data["applying_user"]

@@ -44,8 +44,12 @@ export default {
     const selectedNotification = ref<any>()
 
     onMounted(async () => {
-      notifications.value = await $api.notifications.list()
-      loading.value = false
+      try {
+        notifications.value = await $api.notifications.list()
+        loading.value = false
+      } catch (error) {
+        console.error(error)
+      }
     })
 
     async function readNotification(type: string, id: number) {

@@ -184,9 +184,9 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
         """Method to create a new vacation request"""
         if (
             request.data.get("end_date")
-            and type(request.data["end_date"]) == str
+            and type(request.data["end_date"]) is str
             and request.data.get("from_date")
-            and type(request.data["from_date"]) == str
+            and type(request.data["from_date"]) is str
         ):
             start_date: List[str] = request.data.get("from_date").split(
                 "-"
@@ -618,13 +618,12 @@ class UserVacationBalanceApiView(GenericAPIView):
     def get(self, request: Request) -> Response:
         """Get method to get all user balance"""
         user_ids = request.query_params.get("user_ids")
-        user_ids = user_ids.split(",")
-
         if user_ids is None:
             return CustomResponse.bad_request(
                 message="You must send `user_id` as a query_params."
             )
 
+        user_ids = user_ids.split(",")
         users: User = get_users_by_id(user_ids)
 
         v: StanderdVacationBalance = StanderdVacationBalance()
@@ -645,14 +644,14 @@ class UserVacationBalanceApiView(GenericAPIView):
         """Use this endpoint to update user balance"""
 
         user_ids = request.query_params.get("user_ids")
-        user_ids = user_ids.split(",")
-
         if user_ids is None:
             return CustomResponse.bad_request(
                 message="You must send `user_id` as a query_params."
             )
 
+        user_ids = user_ids.split(",")
         users: User = get_users_by_id(user_ids)
+
         v: StanderdVacationBalance = StanderdVacationBalance()
 
         balances = filter_balances_by_users(users)

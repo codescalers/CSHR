@@ -5,13 +5,13 @@ import type { Api } from '@/types'
 export class AuthApi extends ApiClientBase {
   protected readonly path = '/auth'
 
-  async login(input: Api.Inputs.Login, rememberUser: boolean = false) {
+  async login(input: Api.Inputs.Login) {
     const user = await this.unwrap(
       this.$http.post<Api.Returns.Login>(this.getUrl('/login'), input),
       { transform: (d) => d.results }
     )
 
-    ApiClientBase.login(user, rememberUser)
+    ApiClientBase.login(user)
 
     return user
   }

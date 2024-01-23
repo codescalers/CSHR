@@ -4,7 +4,7 @@
       <v-navigation-drawer v-if="$route.path != '/login'" theme="dark" permanent>
         <v-img :src="logo" max-width="150" class="ml-3 mt-10 mb-4"></v-img>
         <v-list color="transparent">
-          <template v-for="item in navItems" :key="item.title">
+          <template v-for="item in filteredItems" :key="item.title">
             <v-list-item
               :prepend-icon="item.icon"
               :class="{ 'router-link-active': $route.path === item.path }"
@@ -34,7 +34,8 @@
 import { useRoute, useRouter } from 'vue-router'
 import logo from '@/assets/cshr_logo.png'
 import { useState } from '@/store'
-import { useStorage } from '@vueuse/core'
+import { isAdmin } from '@/hooks'
+import { computed } from 'vue'
 import CshrToolbar from './CshrToolbar.vue'
 
 export default {
@@ -85,9 +86,19 @@ export default {
       }
     ]
 
+    const filteredItems = computed(() =>
+      navItems.filter((item: any) => {
+        // Include all items except for 'Dashboard' when isAdmin is false
+        return isAdmin.value || item.path !== '/dashboard'
+      })
+    )
+
     function logout() {
-      state.access_token.value = ''
-      useStorage('access_token', state.access_token.value, sessionStorage, { mergeDefaults: true })
+      if (state.rememberMe.value === false) {
+        state.access_token.value = ''
+        localStorage.clear()
+      }
+
       $router.push('/login')
     }
 
@@ -95,6 +106,8 @@ export default {
       logo,
       $route,
       navItems,
+      isAdmin,
+      filteredItems,
       logout
     }
   }
