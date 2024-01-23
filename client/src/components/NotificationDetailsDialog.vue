@@ -5,7 +5,7 @@
     @update:model-value="closeDialog"
     min-width="min(94%, 1000px)"
   >
-    <div class="d-flex justify-center align-center" v-if="!notification && selected">
+    <div class="d-flex justify-center align-center" v-if="notification.isLoading.value && selected">
       <VCard>
         <VCardText>
           <VProgressCircular indeterminate />
@@ -14,15 +14,15 @@
     </div>
 
     <NotificationDetails
-      v-else-if="selected && notification"
+      v-else-if="selected && notification.state.value"
       :title="
-        notification.type === 'vacations'
-          ? capitalize(notification.reason.split('_').join(' '))
+        notification.state.value.type === 'vacations'
+          ? capitalize(notification.state.value.reason.split('_').join(' '))
           : 'Applying for an HR Letter'
       "
-      :eventId="notification.event_id"
-      :sections="getSections(notification)"
-      :status="notification.status"
+      :eventId="notification.state.value.event_id"
+      :sections="getSections(notification.state.value)"
+      :status="notification.state.value.status"
       @close="closeDialog"
     />
   </VDialog>
@@ -32,7 +32,7 @@
 import { useRouteQuery } from '@vueuse/router'
 import { watch, type PropType, capitalize } from 'vue'
 import type { Api } from '@/types'
-import { computedAsync } from '@vueuse/core'
+import { useAsyncState } from '@vueuse/core'
 import { useApi } from '@/hooks'
 
 import NotificationDetails from './NotificationDetails.vue'
@@ -50,13 +50,17 @@ export default {
   setup(props, ctx) {
     const $api = useApi()
     const selected = useRouteQuery<undefined | string>('selected-' + props.routeQuery, undefined)
-    const notification = computedAsync<any>(() => {
-      const [type, id] = selected.value?.split('|') ?? []
-      if (!isNaN(+id) && ['hr_letters', 'vacations'].includes(type)) {
-        return $api.notifications.read(type, +id)
-      }
-      return undefined
-    }, undefined)
+    const notification = useAsyncState(
+      async (selected?: string) => {
+        const [type, id] = selected?.split('|') ?? []
+        if (!isNaN(+id) && ['hr_letters', 'vacations'].includes(type)) {
+          return $api.notifications.read(type, +id)
+        }
+        return undefined
+      },
+      undefined,
+      { immediate: false }
+    )
 
     watch(
       () => props.modelValue,
@@ -64,6 +68,10 @@ export default {
         selected.value = notification ? `${notification.type}|${notification.event_id}` : undefined
       }
     )
+
+    watch(selected, (value) => {
+      notification.execute(undefined, value)
+    })
 
     function getSections(data: any) {
       if (data.type === 'vacations')
