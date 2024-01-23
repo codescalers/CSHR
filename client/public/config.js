@@ -1,3 +1,3 @@
 window.env = {
-  CSHR_API: '$CSHR_API',
+  CSHR_API: 'https://cshrserver.gent01.dev.grid.tf',
 };
