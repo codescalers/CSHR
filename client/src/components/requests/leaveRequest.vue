@@ -31,7 +31,7 @@
     <v-row class="mt-3 d-flex flex-row-reverse">
 
       <v-col cols="3">
-        <v-btn color="primary" type="submit" :disabled="!form?.isValid || !isValid" width="100%">
+        <v-btn color="primary" type="submit" :disabled="!form?.isValid || !isValid" width="100%" >
           Submit
         </v-btn>
       </v-col>
@@ -41,6 +41,7 @@
 <script lang="ts">
 import { useApi } from '@/hooks'
 import type { Api } from '@/types';
+import { useAsyncState } from '@vueuse/core';
 import { computed, ref } from 'vue';
 
 
@@ -51,8 +52,8 @@ export default {
   setup(props) {
     const $api = useApi()
     const form = ref()
-    const startDate = ref<any>(props.dates.startStr)
-    const endDate = ref<any>(props.dates.endStr)
+    const startDate = ref<Date>(props.dates.startStr)
+    const endDate = ref<Date>(props.dates.endStr)
     const leaveReason = ref<Api.LeaveReason>()
 
     const isValid = computed(() => {
@@ -85,37 +86,24 @@ export default {
     },
     ])
 
-    // function getDaysBetweenDates(date1: Date, date2: Date): number {
-
-    //   const timeDifference = Math.abs(date2.getTime() - date1.getTime());
-    //   const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
-    //   return daysDifference;
-    // }
-
-    // async function calculateActualDays() {
-    //   return await $api.vacations.calculate.list({
-    //     start_date: startDate.value,
-    //     end_date: endDate.value,
-    //   }
-    //   )
-    // }
+    async function calculateActualDays() {
+      return await $api.vacations.calculate.list({
+        start_date: startDate.value,
+        end_date: endDate.value,
+      }
+      )
+    }
 
     async function createLeave() {
       if (leaveReason.value) {
-        await $api.vacations.create(
+        calculateActualDays()
+        useAsyncState($api.vacations.create(
           {
-            reason: leaveReason.value?.reason,
+            reason: leaveReason.value.reason,
             from_date: startDate.value,
             end_date: endDate.value,
-            actual_days: await $api.vacations.calculate.list({
-              start_date: props.dates.start,
-              end_date: props.dates.start,
-            }
-            ),
-
           },
-        )
-      }
+        ), [] )}
 
     }
 

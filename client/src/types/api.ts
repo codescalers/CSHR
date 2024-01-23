@@ -234,10 +234,10 @@ export module Api {
     }
 
     export interface Leave {
-      reason: string
+      reason: string | undefined
       from_date: any
       end_date: any
-      actual_days: number
+      actual_days?: number
     }
 
     export interface ActualDays {

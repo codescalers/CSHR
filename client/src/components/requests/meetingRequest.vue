@@ -52,6 +52,7 @@
 import { computed, ref } from 'vue';
 import { fieldRequired } from '@/utils';
 import { useApi } from '@/hooks'
+import { useAsyncState } from '@vueuse/core';
 
 
 export default {
@@ -78,13 +79,13 @@ export default {
    
 
     async function createMeeting() {
-      await $api.meeting.create(
+      useAsyncState($api.meeting.create(
         {
           date: meetingDateTime.value,
           meeting_link: meetingLink.value,
           location: location.value,
         },
-      )
+      ), [])
     }
 
     return {

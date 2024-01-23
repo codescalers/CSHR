@@ -160,7 +160,6 @@ export default {
     })
 
     function dayCellDidMount({ el, date }: DayCellMountArg) {
-      console.log("eventsOption" ,eventsOption.value)
       for (const event of eventsOption.value) {
         const current = date.getTime()
         const start = new Date(event.start).getTime() - 86_400_000
@@ -196,6 +195,15 @@ export default {
       showDialog.value[id] = false
     }
 
+    // function removeVacation(id:  number) {
+    //   console.log("Removing", id)
+    //   console.log("Removing meeting", meetings.state.value )
+    //   // vacations.state.value = vacations.state.value.filter(vacations.state.value.id === id)
+    //   // isViewRequest.value, isEvent.value, isMeeting.value, (isLeave.value = false)
+    //   // event.value, meeting.value, (dates.value = undefined)
+    //   // showDialog.value[id] = false
+    // }
+
     async function openDialog(id: string | number) {
       showDialog.value[id] = true
     }
@@ -221,6 +229,7 @@ export default {
       openDialog,
       onSelect,
       onClick,
+      // removeVacation,
       calenderRequest,
       meetingCard,
       eventCard,

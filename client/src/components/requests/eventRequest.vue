@@ -73,6 +73,7 @@
 import { computed, ref } from 'vue';
 import { fieldRequired } from '@/utils';
 import { useApi } from '@/hooks'
+import { useAsyncState } from '@vueuse/core';
 
 
 export default {
@@ -111,14 +112,16 @@ export default {
 
 
     async function createEvent() {
-      await $api.event.create(
+       useAsyncState($api.event.create(
         {
           name: name.value,
           description: description.value,
           from_date: from_date.value,
           end_date: end_date.value,
         },
-      )
+      ), [])
+
+      
     }
 
     return {

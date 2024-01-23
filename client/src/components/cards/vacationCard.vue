@@ -91,15 +91,16 @@
         </v-row>
         <v-row class="d-flex flex-row-reverse" v-if="!readOnly">
           <v-btn color="" class="ma-4" @click="readOnly = true">Cancel</v-btn>
-          <v-btn color="primary" class="ma-4" type="submit" :disabled="!form?.isValid" @click.stop="$emit('close-dialog', false)">
-            Submit 
+          <v-btn color="primary" class="ma-4" type="submit" :disabled="!form?.isValid"
+            >
+            Submit
           </v-btn>
 
         </v-row>
       </v-card>
     </v-form>
 
-    <v-row v-if="couldApprove">
+    <v-row v-if="couldApprove && vacation.status == 'pending'">
       <v-btn color="primary" class="ma-4" @click="handleApprove"
         @click.stop="$emit('close-dialog', false)">Approve</v-btn>
       <v-btn color="red" class="ma-4" @click="handleReject" @click.stop="$emit('close-dialog', false)">Reject</v-btn>
@@ -120,8 +121,9 @@ import { useAsyncState } from '@vueuse/core';
 export default {
   name: "vacationCard",
   props: ["vacation"],
-  emits: {
-    'close-dialog': (item: Boolean) => item
+  emits: { 
+    'close-dialog': (item: Boolean) => item,
+    // 'update-event': (item: number) => item
   },
 
   setup(props) {
@@ -183,24 +185,22 @@ export default {
       }
       return true;
     }
-
     async function handleDelete() {
-      return await $api.vacations.delete(props.vacation.id)
+      return useAsyncState($api.vacations.delete(props.vacation.id), [])
     }
     async function handleApprove() {
-      return await $api.vacations.approve.update(props.vacation.id
-      )
+      return useAsyncState($api.vacations.approve.update(props.vacation.id), [])
     }
     async function handleReject() {
-      return await $api.vacations.reject.update(props.vacation.id)
+      return useAsyncState($api.vacations.reject.update(props.vacation.id), [])
     }
 
-    async function calculateActualDays() {
-      return await $api.vacations.calculate.list({
+     async function calculateActualDays() {
+      return useAsyncState($api.vacations.calculate.list({
         start_date: startDate.value,
         end_date: endDate.value,
       }
-      )
+      ), [] )
     }
     function transformString(inputString: string): string {
       const words = inputString.split('_');
@@ -212,15 +212,18 @@ export default {
 
 
     async function updateVacation() {
-      const actualDays = await calculateActualDays()
-      await $api.vacations.edit.update(props.vacation.id,
+      // calculateActualDays()
+      const actualDays =await  calculateActualDays()
+
+      useAsyncState($api.vacations.edit.update(props.vacation.id,
         {
           reason: leaveReason.value.reason,
           from_date: startDate.value,
           end_date: endDate.value,
-          actual_days: actualDays
+          actual_days: actualDays.state.value
         },
-      )
+      ), [])
+
     }
 
 
