@@ -144,8 +144,12 @@ export default {
       }
     ])
     onMounted(async () => {
-      notifications.value = await $api.notifications.list()
-      loading.value = false
+      try {
+        notifications.value = await $api.notifications.list()
+        loading.value = false
+      } catch (error) {
+        console.error(error)
+      }
     })
 
     function getColor(type: string) {

@@ -1,4 +1,4 @@
-import { isAuthenticated } from '@/hooks'
+import { isAuthenticated, isAdmin } from '@/hooks'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -21,7 +21,11 @@ router.beforeEach(async (to, _, next) => {
   if (!isAuthenticated.value && to.path !== '/login') {
     // Redirect the user to the login page
     next('/login')
-  } else if (isAuthenticated.value && to.path === '/login') {
+    // if user is not admin hide dashboard and redirect to home
+  } else if (
+    (isAuthenticated.value && to.path === '/login') ||
+    (!isAdmin.value && to.path === '/dashboard')
+  ) {
     // If authenticated and trying to access the login page, redirect to home
     next('/')
   } else {

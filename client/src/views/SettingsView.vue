@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" @submit.prevent="change(old_password, new_password)">
+  <v-form ref="form" @submit.prevent>
     <v-row class="justify-center align-center">
       <v-col cols="7">
         <h1 class="mt-10">Change Password</h1>
@@ -23,7 +23,7 @@
       </v-col>
 
       <v-col cols="7">
-        <v-btn color="primary" type="submit" :disabled="!form?.isValid" width="100%">submit</v-btn>
+        <v-btn color="primary" type="submit" :disabled="!form?.isValid" width="100%" :loading='isLoading' @click="execute">submit</v-btn>
       </v-col>
     </v-row>
   </v-form>
@@ -33,6 +33,7 @@
 import { defineComponent, ref } from 'vue'
 import { $api } from '@/clients'
 import { passwordRules } from '@/utils'
+import { useAsyncState } from '@vueuse/core'
 
 export default defineComponent({
   setup() {
@@ -40,19 +41,20 @@ export default defineComponent({
     const old_password = ref<string>('')
     const new_password = ref<string>('')
 
-    async function change(old_password: string, new_password: string) {
+    const {execute, isLoading} = useAsyncState(async() => {
       await $api.auth.changePassword({
-        old_password,
-        new_password
+        old_password: old_password.value,
+        new_password: new_password.value
       })
-    }
+    }, null, {immediate: false})
 
     return {
       form,
       old_password,
       new_password,
-      change,
-      passwordRules
+      passwordRules,
+      isLoading,
+      execute
     }
   }
 })

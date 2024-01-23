@@ -11,6 +11,7 @@ export class VacationsApi extends ApiClientBase {
   readonly comment: VacationsCommentApi
   readonly edit: VacationsEditApi
   readonly get_admin_balance: VacationsGetAdminBalanceApi
+  readonly post_admin_balance: VacationsPostAdminBalanceApi
   readonly user: VacationsUserApi
 
   constructor(options: Api.ClientOptions) {
@@ -23,6 +24,7 @@ export class VacationsApi extends ApiClientBase {
     this.comment = new VacationsCommentApi(options, this.path)
     this.edit = new VacationsEditApi(options, this.path)
     this.get_admin_balance = new VacationsGetAdminBalanceApi(options, this.path)
+    this.post_admin_balance = new VacationsPostAdminBalanceApi(options, this.path)
     this.user = new VacationsUserApi(options, this.path)
   }
 
@@ -68,15 +70,26 @@ class VacationsBalanceApi extends ApiClientBase {
     this.adjustment = new VacationsBalanceAdjustmentApi(options, prePath + this.path)
   }
 
-  async list() {}
+  async list(query: Api.Inputs.UserId) {
+    return this.unwrap(this.$http.get(this.getUrl('', query)), { transform: (d) => d.results })
+  }
 
-  async update() {}
+  async update(query: Api.Inputs.UserId, input: Api.Inputs.Vacation) {
+    return this.unwrap(this.$http.put(this.getUrl('', query), input), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsBalanceAdjustmentApi extends ApiClientBase {
   protected readonly path = '/adjustment'
 
-  async update() {}
+  async update(input: Api.Inputs.BalanceAdjustment) {
+    ApiClientBase.assertUser()
+    return await this.unwrap(this.$http.put(this.getUrl(), input), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsCalculateApi extends ApiClientBase {
@@ -102,9 +115,26 @@ class VacationsEditApi extends ApiClientBase {
 class VacationsGetAdminBalanceApi extends ApiClientBase {
   protected readonly path = '/get-admin-balance'
 
-  async list() {}
+  constructor(options: Api.ClientOptions, prePath: string) {
+    super(options, prePath)
+  }
+  async list() {
+    ApiClientBase.assertUser()
+    return await this.unwrap(this.$http.get(this.getUrl()), {
+      transform: (d) => d.results
+    })
+  }
+}
 
-  async create(id: number) {}
+class VacationsPostAdminBalanceApi extends ApiClientBase {
+  protected readonly path = '/post-admin-balance'
+
+  async create(input: Api.Inputs.Vacations) {
+    ApiClientBase.assertUser()
+    return await this.unwrap(this.$http.post(this.getUrl(), input), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsUserApi extends ApiClientBase {
