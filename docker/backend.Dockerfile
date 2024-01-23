@@ -31,8 +31,8 @@ RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download
 RUN mkdir -p /etc/zinit/
 COPY ./server /server_dir
 COPY ./docker/scripts/backend/zinit /etc/zinit
-COPY ./config /config
-COPY ./docker/scripts/backend/*.sh /docker/scripts/backend/
+COPY ./docker/scripts/backend/*.sh /server_dir/scripts/
+COPY ./config /server_dir/config/
 
 RUN chmod +x /docker/scripts/backend/*.sh
 
