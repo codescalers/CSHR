@@ -19,6 +19,7 @@ COPY ./nginx/prod.conf /etc/nginx/conf.d/default.conf
 RUN envsubst '$SERVER_DOMAIN_NAME_API' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
 
 # Copy the build artifacts and build-env.sh from the build-stage
+RUN chmod +x /client/scripts/build-env.sh
 COPY --from=build-stage /client/dist /usr/share/nginx/html
 COPY --from=build-stage /client/scripts/build-env.sh /usr/share/nginx/html
 
