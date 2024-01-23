@@ -5,8 +5,8 @@
         <div class="pa-5">
           
           <!-- {{ Window.env.CSHR_API }} -->
-          <!-- <img :src="window.env.CSHR_API + user?.image" class="user-profile-image rounded-circle"
-            style="width:{size}px; height:{size}px;" title={user.full_name} /> -->
+          <img :src="imageSrc + user?.image" class="user-profile-image rounded-circle"
+            style="width:{size}px; height:{size}px;" title={user.full_name} />
           <v-avatar color="primary" size="50" class="d-flex mx-auto mt-5 mb-3">
             <span class="text-h5 text-uppercase">{{ user?.full_name ? avatar : "?" }}</span>
           </v-avatar>
@@ -46,6 +46,7 @@ export default defineComponent({
   setup() {
     const user = ref<Api.User>();
     const balance = ref<Api.BalanceVacation>();
+    const imageSrc = window.env.CSHR_API
     const avatar = computed(() => {
       if (user.value) {
         let val = String(user.value.full_name);
@@ -56,25 +57,22 @@ export default defineComponent({
 
     async function getProfile() {
       user.value = await $api.myprofile.getUser();
-
-
     }
 
     async function getUserBalance() {
       balance.value = await $api.vacations.getVacationBalance({ "user_ids": user.value?.id });
-
     }
 
     onMounted(async () => {
       await getProfile();
       await getUserBalance();
-
     })
 
     return {
       avatar,
       user,
       balance,
+      imageSrc,
       vacationBalance,
       personalInformation,
     }
