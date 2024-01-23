@@ -7,7 +7,7 @@ export module Api {
    */
   export type DashedDate = `${number}-${number}-${number}`
   export type Teams = "Business Development" | "Development" | "HR & Finance" | "QA" | "Marketing" | "Operations" | "Support" // prettier-ignore
-  export type Users = 'Admin' | 'User' | 'Supervisor'
+  export type Users = 'Admin' | 'User' | 'Team Lead'
   export type Gender = 'Male' | 'Female'
 
   export interface ClientOptions {
@@ -224,6 +224,21 @@ export module Api {
         user_certificates: Certificate[]
       }
     }
+
+    export interface GetAdminBalance {
+      annual_leaves: number
+      compensation: number
+      emergency_leaves: number
+      leave_excuses: number
+      year: number
+      public_holidays: Date[]
+      location: {
+        id: number
+        name: string
+        country: string
+        weekend: string
+      }
+    }
   }
   export module Inputs {
     export interface Event {
@@ -273,6 +288,7 @@ export module Api {
       job_title: string
       address: string
       social_insurance_number: string
+      image?: string
     }
 
     export interface Refresh {
@@ -303,6 +319,35 @@ export module Api {
 
     export type UsersActive = { user_id: number }
 
+    export type UserId = { user_ids: number }
+
     export type UserSkills = { skills: string[] }
+
+    export type Vacations = {
+      annual_leaves: number
+      compensation: number
+      emergency_leaves: number
+      leave_excuses: number
+      year: number
+      public_holidays: string[]
+    }
+
+    export type BalanceAdjustment = {
+      officeId: number
+      value: number
+      reason: string
+    }
+
+    export type Office = {
+      name: string
+      country: string
+      weekend: string
+    }
+
+    export type Vacation = {
+      annual_leaves: number
+      emergency_leaves: number
+      leave_excuses: number
+    }
   }
 }

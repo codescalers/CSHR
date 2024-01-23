@@ -50,7 +50,9 @@ class UsersAdminApi extends ApiClientBase {
   }
 
   list(query?: Api.Inputs.List) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
   }
 
   read(id: number) {
@@ -74,7 +76,9 @@ class UsersAdminApi extends ApiClientBase {
 class UsersAdminofficeUsersApi extends ApiClientBase {
   protected readonly path = '/office_users'
 
-  list() {}
+  list() {
+    return this.unwrap(this.$http.get(this.getUrl()), { transform: (d) => d.results })
+  }
 }
 
 class UsersBirthdatesApi extends ApiClientBase {
