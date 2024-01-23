@@ -6,6 +6,7 @@ import type { NotifierService } from 'vue3-notifier'
 import type { ApiClient } from './index'
 import { useStorage } from '@vueuse/core'
 import { useState } from '@/store'
+import { capitalize } from 'vue'
 
 export abstract class ApiClientBase {
   public static $api: ApiClient
@@ -62,8 +63,11 @@ export abstract class ApiClientBase {
     return this.prePath + this.path + route + '/?' + q
   }
 
-  private static normalizeError(err: AxiosError<any>) {
-    return err.response?.data?.detail ?? err.response?.data?.message ?? err.message
+  private static normalizeError(err: AxiosError<any>): string {
+    const responseData = err.response?.data;
+    const errorMessage = responseData?.message ?? err.message;
+    const errorName = capitalize(responseData?.error?.name?.[0]);
+    return `${errorMessage}${errorName ? `. ${errorName}` : ''}`;
   }
 
   protected async unwrap<T, R = T>(
