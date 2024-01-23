@@ -1,5 +1,5 @@
 from cshr.models.meetings import Meetings
-from typing import Dict, List
+from typing import List
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from cshr.models.users import User
 from cshr.serializers.users import BaseUserSerializer
@@ -9,9 +9,7 @@ class MeetingsSerializer(ModelSerializer):
     """Class to serialize Meeting objects"""
 
     invited_users: List[User] = SerializerMethodField()
-    date = SerializerMethodField()
-    host_user = SerializerMethodField()
-    host_user = SerializerMethodField()
+    host_user: User = SerializerMethodField()
 
     class Meta:
         model = Meetings
@@ -31,12 +29,3 @@ class MeetingsSerializer(ModelSerializer):
     def get_host_user(self, obj: Meetings) -> BaseUserSerializer:
         """Returns the  host user that made the meeting."""
         return BaseUserSerializer(obj.host_user).data
-
-    def get_date(self, obj: Meetings) -> Dict:
-        return {
-            "year": obj.date.year,
-            "month": obj.date.month,
-            "day": obj.date.day,
-            "hour": obj.date.hour,
-            "minute": obj.date.minute,
-        }

@@ -25,7 +25,7 @@ class StanderdVacationBalance:
             for field in balance._meta.fields:
                 actual_value: int = getattr(balance, field.name)
                 if (
-                    type(actual_value) == dict
+                    type(actual_value) is dict
                     and len(actual_value) > 0
                     and field.name != "actual_balance"
                 ):

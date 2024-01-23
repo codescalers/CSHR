@@ -34,6 +34,7 @@ Various tools are available for development:
 
 - **Terraform Script:** Deploy two machines in the Threefold grid for frontend/backend. Refer to the script in [./terraform](./terraform/main.tf).
 - **Testing Site Deployment:** Execute `make deploy` to deploy and `make destroy` to destroy the testing site.
+- **Poetry environment:** After pressing `make install` Poetry will be installed. However, to complete the setup, it's crucial to add the Poetry executable to the system's PATH by running the command `export PATH="/root/.local/bin:$PATH"`
 
 ## Development Mode Commands
 
