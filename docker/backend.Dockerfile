@@ -33,7 +33,7 @@ RUN mkdir -p /etc/zinit/
 COPY ./server /server_dir
 COPY ./docker/scripts/backend/zinit /etc/zinit
 COPY ./docker/scripts/backend/*.sh /server_dir/scripts/
-COPY ./config /server_dir/config/
+COPY ./config /config/
 
 RUN chmod +x /server_dir/scripts/*.sh
 
