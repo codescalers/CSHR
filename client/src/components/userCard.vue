@@ -1,9 +1,7 @@
 <template>
   <v-card color="title" class="py-10 ma-5 hover-card">
     <div class="d-flex align-center justify-center items-center py-0 font-weight-bold">
-      <v-avatar color="primary" size="50" class="d-flex mx-auto mt-5 mb-3">
-        <span class="text-h5 text-uppercase">{{ user?.image ? avatar(user.full_name) : "?" }}</span>
-      </v-avatar>
+      <profileImage  v-show="user" :image="user?.image" :fullName="user?.full_name"/>
 
     </div>
     <div class="my-3">
@@ -22,22 +20,18 @@
 </template>
 
 <script lang="ts">
+import profileImage from "./profileImage.vue";
 
 export default {
   name: 'UserCard',
   props: ["user"],
-
+  components: {
+    profileImage,
+  },
   setup(props) {
-    function avatar(name: string) {
-      if (name) {
-        let val = String(name);
-        return val.charAt(0);
-      }
-      return "??";
-    }
 
     return {
-      avatar,
+      profileImage,
     }
   }
 }

@@ -3,9 +3,7 @@
     <v-row class="ma-5">
       <v-col cols="12" sm="12" md="3" class="pa-2 border rounded ma-2 align-self-start">
         <div class="pa-5">
-          <v-avatar color="primary" size="50" class="d-flex mx-auto mt-5 mb-3">
-            <span class="text-h5 text-uppercase">{{user.state.value?.full_name ? avatar : "?" }}</span>
-          </v-avatar>
+          <profileImage :image="user.state.value?.image" :fullName="user.state.value?.full_name"/>
           <div class=" text-center">
             <h5 clas=" text-h5 font-weight-bold ">
               {{ user.state.value?.full_name }}
@@ -35,10 +33,12 @@ import { onMounted } from 'vue';
 import type { Api } from '@/types'
 import { useRoute } from 'vue-router';
 import { useAsyncState } from '@vueuse/core';
+import profileImage from "@/components/profileImage.vue";
 export default defineComponent({
   components: {
     vacationBalance,
     personalInformation,
+    profileImage,
   },
 
   setup() {
@@ -58,20 +58,13 @@ export default defineComponent({
       { immediate: false }
     )
 
-    const avatar = computed(() => {
-      if (user.state.value) {
-        let val = String(user.state.value?.full_name);
-        return val.charAt(0);
-      }
-      return "??";
-    });
 
     return {
-      avatar,
       user,
       balance,
       vacationBalance,
       personalInformation,
+      profileImage,
     }
   }
 })
