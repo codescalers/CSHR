@@ -7,6 +7,7 @@ from typing import Any, Union
 
 from server.cshr.models.abstracts import TimeStamp
 from server.cshr.models.office import Office
+from server.cshr.utils.dummy_data import create_locations
 from server.cshr.utils.generate import generate_random_color
 
 
@@ -46,11 +47,17 @@ class CshrBaseUserManger(BaseUserManager):
         if not email:
             raise ValueError("Users must have an email address")
 
+        try:
+            Office.objects.get(id=1)
+        except Office.DoesNotExist:
+            # That's mean there are no locations created, we do that to ignore the database get object error.
+            create_locations()
+
         user = self.model(
             email=self.normalize_email(email),
             birthday=datetime.datetime.now(),
             joining_at=datetime.datetime.now(),
-            location=Office.objects.get(id=2),  # Egypt office takes id 2
+            location=Office.objects.get(id=1),  # Egypt office takes id 1
             user_type=USER_TYPE.ADMIN,
             first_name="Codescalers",
             last_name="Admin",
