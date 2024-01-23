@@ -48,8 +48,10 @@ import { computed, ref } from 'vue';
 export default {
   name: "leaveRequest",
   props: ["dates"],
-
-  setup(props) {
+  emits: {
+    'create-event': () => true,
+  },
+  setup(props, ctx) {
     const $api = useApi()
     const form = ref()
     const startDate = ref<Date>(props.dates.startStr)
@@ -103,7 +105,11 @@ export default {
             from_date: startDate.value,
             end_date: endDate.value,
           },
-        ), [] )}
+        ), undefined , {
+        onSuccess(){
+          ctx.emit("create-event")
+        }
+      })}
 
     }
 

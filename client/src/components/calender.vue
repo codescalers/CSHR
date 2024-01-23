@@ -22,7 +22,9 @@
 
   <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
     <v-card>
-      <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)" />
+      <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)"
+        @update-vacation="updateVacation(dates?.startStr)" @update-meeting="updateMeeting(dates?.startStr)"
+        @update-event="updateEvent(dates?.startStr)" />
     </v-card>
   </VDialog>
 
@@ -40,7 +42,8 @@
 
   <VDialog v-if="isViewRequest && isLeave && vacation" :routeQuery="vacation.id" :modelValue="showDialog[vacation.id]">
     <v-card>
-      <vacationCard :vacation="vacation" @close-dialog="closeDialog(vacation.id)" />
+      <vacationCard :vacation="vacation" @close-dialog="closeDialog(vacation.id)"
+        @update-vacation="updateVacation(vacation.id)" />
     </v-card>
   </VDialog>
 </template>
@@ -77,14 +80,29 @@ export default {
 
   setup() {
     const $api = useApi()
-    const meetings = useAsyncState($api.meeting.list(), [])
-    const events = useAsyncState($api.event.list(), [])
-    useAsyncState($api.vacations.list(), [], {
+
+    const meeting = ref<Api.Meetings>()
+    const isViewRequest = ref<Boolean>(false)
+    const isEvent = ref<Boolean>(false)
+    const isMeeting = ref<Boolean>(false)
+    const isLeave = ref<Boolean>(false)
+    const event = ref<Api.Inputs.Event>()
+
+    const vacation = ref<Api.Vacation>()
+    const calendar = ref<CalendarApi>()
+
+    const dates = ref<any>()
+
+    const selected = ref({ events: true, vacations: true, meetings: true })
+    const showDialog = ref<{ [key: string]: boolean }>({})
+    const meetings = useAsyncState(() => $api.meeting.list(), [])
+    const events = useAsyncState(() => $api.event.list(), [])
+
+    const loadVacations = useAsyncState(() => $api.vacations.list(), [], {
       onSuccess(data) {
         vacations.execute(undefined, data)
       }
     })
-
     const vacations = useAsyncState(
       async (vacations: Api.Vacation[]) => {
         const ids = vacations.map((v) => v.applying_user)
@@ -101,20 +119,6 @@ export default {
       { immediate: false }
     )
 
-    const meeting = ref<Api.Meetings>()
-    const isViewRequest = ref<Boolean>(false)
-    const isEvent = ref<Boolean>(false)
-    const isMeeting = ref<Boolean>(false)
-    const isLeave = ref<Boolean>(false)
-    const event = ref<Api.Inputs.Event>()
-
-    const vacation = ref<Api.Vacation>()
-    const calendar = ref<CalendarApi>()
-
-    const dates = ref<any>()
-
-    const selected = ref({ events: true, vacations: true, meetings: true })
-    const showDialog = ref<{ [key: string]: boolean }>({})
     const onSelect = async (arg: any) => {
       calendar.value = arg.view.calendar
       dates.value = arg
@@ -195,15 +199,23 @@ export default {
       showDialog.value[id] = false
     }
 
-    // function removeVacation(id:  number) {
-    //   console.log("Removing", id)
-    //   console.log("Removing meeting", meetings.state.value )
-    //   // vacations.state.value = vacations.state.value.filter(vacations.state.value.id === id)
-    //   // isViewRequest.value, isEvent.value, isMeeting.value, (isLeave.value = false)
-    //   // event.value, meeting.value, (dates.value = undefined)
-    //   // showDialog.value[id] = false
-    // }
+    async function updateVacation(id: number |string) {
+      loadVacations.execute()
+      closeDialog(id)
 
+    }
+
+
+    async function updateMeeting(id: number | string) {
+      meetings.execute()
+      closeDialog(id)
+
+    }
+    async function updateEvent(id: number | string) {
+      events.execute()
+      closeDialog(id)
+
+    }
     async function openDialog(id: string | number) {
       showDialog.value[id] = true
     }
@@ -229,7 +241,9 @@ export default {
       openDialog,
       onSelect,
       onClick,
-      // removeVacation,
+      updateVacation,
+      updateMeeting,
+      updateEvent,
       calenderRequest,
       meetingCard,
       eventCard,

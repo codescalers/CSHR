@@ -79,8 +79,10 @@ import { useAsyncState } from '@vueuse/core';
 export default {
   name: "leaveRequest",
   props: ["dates"],
-
-  setup(props) {
+  emits: {
+    'create-event': () => true,
+  },
+  setup(props, ctx) {
     const $api = useApi()
     const startDate = ref<string>(props.dates.startStr)
     const endDate = ref<string>(props.dates.endStr)
@@ -112,16 +114,20 @@ export default {
 
 
     async function createEvent() {
-       useAsyncState($api.event.create(
+      useAsyncState($api.event.create(
         {
           name: name.value,
           description: description.value,
           from_date: from_date.value,
           end_date: end_date.value,
         },
-      ), [])
+      ), undefined, {
+        onSuccess() {
+          ctx.emit("create-event")
+        }
+      })
 
-      
+
     }
 
     return {

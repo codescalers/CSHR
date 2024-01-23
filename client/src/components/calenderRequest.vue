@@ -13,15 +13,15 @@
 
     <v-window v-model="tab">
       <v-window-item value="Leave">
-        <leaveRequest :dates="dates"></leaveRequest>
+        <leaveRequest :dates="dates" @create-event="createLeave()"></leaveRequest>
       </v-window-item>
 
       <v-window-item value="Meeting">
-        <meetingRequest :dates="dates" />
+        <meetingRequest :dates="dates" @create-event="createMeeting()" />
       </v-window-item>
 
       <v-window-item value="Event">
-        <eventRequest :dates="dates" />
+        <eventRequest :dates="dates" @create-event="createEvent()"/>
       </v-window-item>
     </v-window>
 
@@ -44,11 +44,24 @@ export default {
     meetingRequest,
   },
   emits: {
-    'close-dialog': (item: Boolean) => item
+    'close-dialog': (item: Boolean) => item,
+    'update-vacation': () => true,
+    'update-meeting': () => true,
+    'update-event': () => true,
   },
-  setup(props) {
+  setup(props,ctx) {
     const tabs = ["Leave", "Meeting", "Event"];
     const tab = ref<String>("")
+      async function createLeave() {
+        ctx.emit("update-vacation")
+    }
+
+    async function createMeeting() {
+        ctx.emit("update-meeting")
+    }
+    async function createEvent() {
+        ctx.emit("update-event")
+    }
 
     return {
       tab,
@@ -56,6 +69,9 @@ export default {
       leaveRequest,
       eventRequest,
       meetingRequest,
+      createEvent,
+      createLeave,
+      createMeeting,
     };
   },
 };

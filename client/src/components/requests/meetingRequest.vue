@@ -21,7 +21,7 @@
         v-model="meetingLink" hide-details="auto" :rules="fieldRequired">
 
       </v-text-field>
- 
+
     </div>
     <div class="mt-3">
 
@@ -58,8 +58,10 @@ import { useAsyncState } from '@vueuse/core';
 export default {
   name: "leaveRequest",
   props: ["dates"],
-
-  setup(props) {
+  emits: {
+    'create-event': () => true,
+  },
+  setup(props, ctx) {
     const $api = useApi()
     const startDate = ref<any>(props.dates.startStr)
     const meetingLink = ref<string>("")
@@ -76,7 +78,7 @@ export default {
 
       return val.toISOString();
     });
-   
+
 
     async function createMeeting() {
       useAsyncState($api.meeting.create(
@@ -85,7 +87,11 @@ export default {
           meeting_link: meetingLink.value,
           location: location.value,
         },
-      ), [])
+      ), undefined, {
+        onSuccess() {
+          ctx.emit("create-event")
+        }
+      })
     }
 
     return {

@@ -10,9 +10,9 @@
     <br>
 
     <v-row class="d-flex flex-row-reverse"
-      v-if="vacation.status == 'pending' && state.user.value.id == vacation.applying_user">
+      v-if="vacation.status == 'pending' && state.user.value.value.id == vacation.applying_user">
       <v-btn color="primary" class="ma-4" @click="readOnly = false">Update</v-btn>
-      <v-btn color="red" class="ma-4" @click="handleDelete" @click.stop="$emit('close-dialog', false)">Delete</v-btn>
+      <v-btn color="red" class="ma-4" @click="handleDelete">Delete</v-btn>
     </v-row>
 
     <v-form ref="form" @submit.prevent="updateVacation()">
@@ -91,8 +91,7 @@
         </v-row>
         <v-row class="d-flex flex-row-reverse" v-if="!readOnly">
           <v-btn color="" class="ma-4" @click="readOnly = true">Cancel</v-btn>
-          <v-btn color="primary" class="ma-4" type="submit" :disabled="!form?.isValid"
-            >
+          <v-btn color="primary" class="ma-4" type="submit" :disabled="!form?.isValid">
             Submit
           </v-btn>
 
@@ -101,9 +100,8 @@
     </v-form>
 
     <v-row v-if="couldApprove && vacation.status == 'pending'">
-      <v-btn color="primary" class="ma-4" @click="handleApprove"
-        @click.stop="$emit('close-dialog', false)">Approve</v-btn>
-      <v-btn color="red" class="ma-4" @click="handleReject" @click.stop="$emit('close-dialog', false)">Reject</v-btn>
+      <v-btn color="primary" class="ma-4" @click="handleApprove">Approve</v-btn>
+      <v-btn color="red" class="ma-4" @click="handleReject">Reject</v-btn>
 
     </v-row>
 
@@ -121,12 +119,12 @@ import { useAsyncState } from '@vueuse/core';
 export default {
   name: "vacationCard",
   props: ["vacation"],
-  emits: { 
+  emits: {
     'close-dialog': (item: Boolean) => item,
-    // 'update-event': (item: number) => item
+    'update-vacation': () => true,
   },
 
-  setup(props) {
+  setup(props, ctx) {
     const $api = useApi()
 
     const startDate = ref<Date>(props.vacation.from_date)
@@ -161,15 +159,15 @@ export default {
 
     const readOnly = ref<boolean>(true)
     const couldApprove = computed(() => {
-      if (state.user.value.user_type === 'Admin'
-        || state.user.value.user_type === 'Supervisor'
+      if (state.user.value.value.user_type === 'Admin'
+        || state.user.value.value.user_type === 'Supervisor'
       ) {
-        if (applyingUser.state.value?.id == state.user.value.id) {
+        if (applyingUser.state.value?.id == state.user.value.value.id) {
           return true;
 
         }
-        if (applyingUser.state.value?.reporting_to.includes(state.user.value.id)
-          && applyingUser.state.value?.location.name === state.user.value.location.name) {
+        if (applyingUser.state.value?.reporting_to.includes(state.user.value.value.id)
+          && applyingUser.state.value?.location.name === state.user.value.value.location.name) {
           return true;
         }
         return false
@@ -186,21 +184,33 @@ export default {
       return true;
     }
     async function handleDelete() {
-      return useAsyncState($api.vacations.delete(props.vacation.id), [])
+      return useAsyncState($api.vacations.delete(props.vacation.id), [], {
+        onSuccess() {
+          ctx.emit("update-vacation")
+        }
+      })
     }
     async function handleApprove() {
-      return useAsyncState($api.vacations.approve.update(props.vacation.id), [])
+      return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
+        onSuccess() {
+          ctx.emit("update-vacation")
+        }
+      })
     }
     async function handleReject() {
-      return useAsyncState($api.vacations.reject.update(props.vacation.id), [])
+      return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
+        onSuccess() {
+          ctx.emit("update-vacation")
+        }
+      })
     }
 
-     async function calculateActualDays() {
+    async function calculateActualDays() {
       return useAsyncState($api.vacations.calculate.list({
         start_date: startDate.value,
         end_date: endDate.value,
       }
-      ), [] )
+      ), [])
     }
     function transformString(inputString: string): string {
       const words = inputString.split('_');
@@ -212,8 +222,7 @@ export default {
 
 
     async function updateVacation() {
-      // calculateActualDays()
-      const actualDays =await  calculateActualDays()
+      const actualDays = await calculateActualDays()
 
       useAsyncState($api.vacations.edit.update(props.vacation.id,
         {
@@ -222,7 +231,11 @@ export default {
           end_date: endDate.value,
           actual_days: actualDays.state.value
         },
-      ), [])
+      ), null, {
+        onSuccess() {
+          ctx.emit("update-vacation")
+        }
+      })
 
     }
 
