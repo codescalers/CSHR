@@ -29,7 +29,7 @@ RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download
   chmod +x /sbin/zinit && pip install poetry && poetry --version
 
 RUN mkdir -p /etc/zinit/
-COPY . /server_dir
+COPY ./server /server_dir
 COPY ./docker/scripts/backend/zinit /etc/zinit
 COPY ./docker/scripts/backend/*.sh /docker/scripts/backend/
 
