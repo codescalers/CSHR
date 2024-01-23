@@ -8,7 +8,7 @@ from typing import Any, Union
 from cshr.models.abstracts import TimeStamp
 from cshr.models.office import Office
 from cshr.utils.generate import generate_random_color
-from server.cshr.utils.dummy_data import create_locations
+from cshr.utils.dummy_data import create_locations
 
 
 class TEAM(models.TextChoices):
