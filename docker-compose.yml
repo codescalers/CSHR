@@ -78,6 +78,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  backend_media:
 
 networks:
   cshr-network:
