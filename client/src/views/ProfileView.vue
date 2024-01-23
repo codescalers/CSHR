@@ -50,17 +50,6 @@ export default defineComponent({
       }
     })
 
-    // async function login(email: string, password: string) {
-    //   await $api.auth.login(
-    //     {
-    //       email,
-    //       password,
-    //     },
-    //     true
-    //   );
-    // }
-      // onMounted(() => {
-      //   login("admin@gmail.com", "0000")    })
     const balance = useAsyncState(
       async (id: number) => {
         return $api.vacations.getVacationBalance({ "user_ids": id })
