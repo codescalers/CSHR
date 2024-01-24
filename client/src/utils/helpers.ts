@@ -72,8 +72,7 @@ export function normalizeEvent(e: Api.Inputs.Event): any {
     color: 'primary',
     start: dates.start,
     end: dates.end,
-    // backgroundColor: 'offwhite',
-    // backgroundColor: 'red',
+    backgroundColor: 'primary',
     id: e.name,
     allDay: true
   }

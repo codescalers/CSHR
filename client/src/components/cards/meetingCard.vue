@@ -28,7 +28,7 @@
           <b>Meeting Link</b>
         </v-col>
         <v-col cols="6">
-          <a :href="meeting.meeting_link"><v-icon class="me-2"> mdi-link </v-icon>Meeting Link</a>
+          <a :href="meeting.meeting_link" target= _blank><v-icon class="me-2"> mdi-link </v-icon>Meeting Link</a>
         </v-col>
       </v-row>
 

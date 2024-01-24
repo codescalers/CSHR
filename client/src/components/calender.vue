@@ -12,15 +12,17 @@
     </v-col>
   </v-row>
   <div class="ma-7 pa-7">
-    <VProgressCircular v-if="events.isLoading.value" />
+    <div class="loading-container d-flex align-center justify-center"
+      v-if="events.isLoading.value || meetings.isLoading.value || loadVacations.isLoading.value">
+      <VProgressCircular />
+    </div>
     <FullCalendar v-else class="fc" :options="{
       ...options,
       events: eventsOption,
       dayCellDidMount
     }" />
   </div>
-
-  <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
+    <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
     <v-card>
       <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)"
         @update-vacation="updateVacation(dates?.startStr)" @update-meeting="updateMeeting(dates?.startStr)"
@@ -199,7 +201,7 @@ export default {
       showDialog.value[id] = false
     }
 
-    async function updateVacation(id: number |string) {
+    async function updateVacation(id: number | string) {
       loadVacations.execute()
       closeDialog(id)
 
@@ -244,6 +246,7 @@ export default {
       updateVacation,
       updateMeeting,
       updateEvent,
+      loadVacations,
       calenderRequest,
       meetingCard,
       eventCard,
