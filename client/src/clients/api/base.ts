@@ -30,17 +30,21 @@ export abstract class ApiClientBase {
   protected static login(user: Api.LoginUser) {
     ApiClientBase.USER = user
     const state = useState()
-    const { access_token } = state
+    const { access_token, refresh_token } = state
     access_token.value = user.access_token
+    refresh_token.value = user.refresh_token
     useStorage('access_token', access_token.value, localStorage, { mergeDefaults: true })
+    useStorage('refresh_token', refresh_token.value, localStorage, { mergeDefaults: true })
   }
 
-  protected static refresh(res: Api.Returns.Refresh) {
+  protected static refresh() {
+    const state = useState()
+    const {access_token, refresh_token } = state;
     ApiClientBase.assertUser()
     ApiClientBase.USER = {
       ...ApiClientBase.USER!,
-      access_token: res.access,
-      refresh_token: res.refresh
+      access_token: access_token.value,
+      refresh_token: refresh_token.value
     }
   }
 
@@ -66,8 +70,12 @@ export abstract class ApiClientBase {
   private static normalizeError(err: AxiosError<any>): string {
     const responseData = err.response?.data;
     const errorMessage = responseData?.message ?? err.message;
-    const errorName = capitalize(responseData?.error?.name?.[0]);
-    return `${errorMessage}${errorName ? `. ${errorName}` : ''}`;
+  
+    const errorDetails = Object.entries(responseData?.error || {})
+      .map(([_, value]) => `${value}`)
+      .join('. ');
+  
+    return `${errorMessage}${errorDetails ? `. ${capitalize(errorDetails)}` : ''}`;
   }
 
   protected async unwrap<T, R = T>(

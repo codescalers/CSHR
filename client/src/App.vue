@@ -30,8 +30,10 @@ export default {
     import.meta.env.VITE_DEBUG === 'true' && test_api()
 
     onMounted(async() => {
-      state.access_token.value = localStorage.access_token
-      state.user.value = useAsyncState(async() => await $api.myprofile.getUser(), null).state
+      const {access_token, refresh_token, user} = state
+      access_token.value = localStorage.access_token
+      refresh_token.value = localStorage.refresh_token
+      user.value = useAsyncState(async() => await $api.myprofile.getUser(), null).state
     })
   }
 }
