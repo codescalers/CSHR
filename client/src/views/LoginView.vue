@@ -23,7 +23,7 @@
         </v-card>
       </v-col>
       <v-col cols="12" md="5">
-        <v-form ref="form" @submit.prevent="login(email, password)">
+        <v-form ref="form" @submit.prevent>
           <v-img
             :src="logo"
             max-width="140"
@@ -55,7 +55,6 @@
               class="d-flex justify-content-between align-center pa-0"
             >
               <v-checkbox v-model="rememberMe" label="Remember me"></v-checkbox>
-              <!-- <v-btn color="primary" class="mb-6" variant='plain' style="text-transform: none !important;">Forgot password?</v-btn> -->
             </v-col>
 
             <v-col cols="7">
@@ -64,6 +63,8 @@
                 type="submit"
                 :disabled="!form?.isValid"
                 width="100%"
+                :loading='isLoading'
+                @click="execute"
               >
                 Login
               </v-btn>
@@ -76,31 +77,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import background from "@/assets/login.png";
-import logo from "@/assets/cshr_logo.png";
-import { $api } from "@/clients";
-import { emailRules, passwordRules } from "@/utils";
-import { useRouter } from "vue-router";
+import { defineComponent, ref } from 'vue'
+import background from '@/assets/login.png'
+import logo from '@/assets/cshr_logo.png'
+import { $api } from '@/clients'
+import { emailRules, passwordRules } from '@/utils'
+import { useRouter } from 'vue-router'
+import { useState } from '../store'
+import { useAsyncState } from '@vueuse/core'
 
 export default defineComponent({
   setup() {
-    const form = ref();
-    const email = ref<string>("");
-    const password = ref<string>("");
-    const show = ref<boolean>(false);
-    const rememberMe = ref<boolean>(false);
-    const $router = useRouter();
-    async function login(email: string, password: string) {
+    const form = ref()
+    const email = ref<string>('')
+    const password = ref<string>('')
+    const show = ref<boolean>(false)
+    const rememberMe = ref<boolean>(false)
+    const $router = useRouter()
+    const state = useState()
+
+    const {execute, isLoading} = useAsyncState(async() => {
       await $api.auth.login(
         {
-          email,
-          password,
+          email: email.value,
+          password: password.value,
         },
-        rememberMe.value
-      );
-      $router.push("/");
-    }
+      )
+      const user = useAsyncState(async() => await $api.myprofile.getUser(), null)
+      state.user.value = user.state
+      state.rememberMe.value = rememberMe.value
+      $router.push('/')
+    }, null, {immediate: false})
 
     return {
       form,
@@ -108,11 +115,12 @@ export default defineComponent({
       password,
       rememberMe,
       show,
-      login,
       emailRules,
       passwordRules,
       background,
       logo,
+      isLoading,
+      execute
     };
   },
 });

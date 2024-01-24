@@ -10,7 +10,6 @@
             </h5>
             <span>Working for {{ user.state.value?.location?.country }} office</span>
           </div>
-
         </div>
       </v-col>
       <v-col cols="12" sm="12" md="8" class="pa-2 border rounded position-relative ma-2">
@@ -18,18 +17,17 @@
           <personalInformation :user="user.state.value" />
           <vacationBalance :balance="balance.state.value" />
         </div>
-
       </v-col>
     </v-row>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
-import vacationBalance from "@/components/vacationBalance.vue";
-import personalInformation from "@/components/personalInformation.vue";
-import { $api } from '@/clients';
-import { onMounted } from 'vue';
+import { computed, defineComponent, ref } from 'vue'
+import vacationBalance from '@/components/vacationBalance.vue'
+import personalInformation from '@/components/personalInformation.vue'
+import { $api } from '@/clients'
+import { onMounted } from 'vue'
 import type { Api } from '@/types'
 import { useRoute } from 'vue-router';
 import { useAsyncState } from '@vueuse/core';
@@ -68,5 +66,4 @@ export default defineComponent({
     }
   }
 })
-
 </script>

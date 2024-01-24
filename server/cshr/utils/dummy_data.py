@@ -4,12 +4,12 @@ from server.cshr.models.office import WEEKEND_DAYS, Office
 from django.contrib.auth.hashers import make_password
 
 locations: List[Dict[str, Any]] = [
+    {"name": "Egypt", "country": "Egypt", "weekend": WEEKEND_DAYS.Friday_and_Saturday},
     {
         "name": "Belgium",
         "country": "Belgium",
         "weekend": WEEKEND_DAYS.Saturday_and_Sunday,
     },
-    {"name": "Egypt", "country": "Egypt", "weekend": WEEKEND_DAYS.Friday_and_Saturday},
     {"name": "India", "country": "India", "weekend": WEEKEND_DAYS.Saturday_and_Sunday},
     {
         "name": "Mauritius",
