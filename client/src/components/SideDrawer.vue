@@ -23,6 +23,7 @@
         </template>
       </v-navigation-drawer>
       <v-main style="min-height: 100vh">
+        <CshrToolbar v-if="$route.path != '/login'" @logout="logout" />
         <router-view />
       </v-main>
     </v-layout>
@@ -35,9 +36,13 @@ import logo from '@/assets/cshr_logo.png'
 import { useState } from '@/store'
 import { isAdmin } from '@/hooks'
 import { computed } from 'vue'
+import CshrToolbar from './CshrToolbar.vue'
 
 export default {
   name: 'SideDrawer',
+  components: {
+    CshrToolbar
+  },
   setup() {
     const $route = useRoute()
     const $router = useRouter()

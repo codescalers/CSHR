@@ -27,3 +27,21 @@ export const DASHBOARD_ITEMS = [
 ]
 
 export const formatDate = (date: any) => moment(date).format('YYYY-MM-DD')
+
+export function getStatusColor(status: string) {
+  switch (status) {
+    case 'vacations':
+    case 'approved':
+      return 'green'
+
+    case 'hr_letters':
+    case 'pending':
+      return 'orange'
+
+    case 'rejected':
+      return 'red'
+
+    default:
+      return 'grey'
+  }
+}
