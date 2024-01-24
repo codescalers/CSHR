@@ -20,7 +20,7 @@ export default {
   props: ["user"],
 
   setup(props) {
-    const imageSrc = window.env.CSHR_API
+    const imageSrc = window.env.SERVER_DOMAIN_NAME_API
     const avatar = computed(() => {
       if (props.user.full_name) {
         let val = String(props.user.full_name);
