@@ -53,30 +53,33 @@ export default {
       'joining_at'
     ]
 
-    const mappedData = computed(() => {
-      return profileInfoHeaders.map((header, index) => {
-        return { key: header, value: profileInfodata[index] }
-      })
-    })
-    const getUserInfo = (dataKey: any) => {
-      if (props.user) {
-        country.value = props.user.location?.country
-      }
-      if (props.user && props.user[dataKey]) {
-        return props.user[dataKey]
-      }
-      return '--'
+        const mappedData = computed(() => {
+            return profileInfoHeaders.map((header, index) => {
+                return { key: header, value: profileInfodata[index] };
+            });
+        });
+        const getUserInfo = (dataKey: any) => {
+            if (props.user) {
+                country.value = props.user.location?.name;
+            }
+            if (props.user && props.user[dataKey]) {
+                return props.user[dataKey];
+            }
+            return '--';
+        };
+
+
+        return {
+            country,
+            mappedData,
+            profileInfoHeaders,
+            profileInfodata,
+            getUserInfo,
+        }
     }
 
-    return {
-      country,
-      mappedData,
-      profileInfoHeaders,
-      profileInfodata,
-      getUserInfo
-    }
   }
-}
+
 </script>
 
 <style scoped>
