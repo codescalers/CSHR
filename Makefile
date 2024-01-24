@@ -4,6 +4,11 @@ client:=cd client
 server:=cd server
 terraform:=cd terraform
 
+help:
+	@echo "\n- Docker: To build and run a specific service, you can do that by executing 'make docker-up service=<service_name>'."
+	@echo "\n- To run a the backend project, you can do that by executing 'make runserver'."
+	@echo "\n- To run a the backend client, you can do that by executing 'make runclient'."
+
 docker-up:
 ifeq ($(service), frontend)
 	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up frontend --build -d
@@ -23,7 +28,7 @@ else ifeq ($(service), backend)
 else ifeq ($(service), postgres)
 	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -d postgres
 else
-	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -v
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down
 endif
 
 docker-logs:
