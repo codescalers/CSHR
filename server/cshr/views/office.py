@@ -1,17 +1,17 @@
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.models.office import Office
+from cshr.models.office import Office
 from ..serializers.office import OfficeSerializer
 from ..api.response import CustomResponse
-from server.cshr.api.permission import (
+from cshr.api.permission import (
     IsAdmin,
     IsUser,
     IsSupervisor,
     UserIsAuthenticated,
     CustomPermissions,
 )
-from server.cshr.services.office import get_office_by_id
+from cshr.services.office import get_office_by_id
 
 
 class BaseOfficeApiView(ListAPIView, GenericAPIView):

@@ -3,10 +3,10 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from ..serializers.company_properties import CompanyPropertiesSerializer
 from ..api.response import CustomResponse
-from server.cshr.models.users import User
-from server.cshr.api.permission import UserIsAuthenticated
-from server.cshr.services.users import get_user_by_id
-from server.cshr.services.company_properties import (
+from cshr.models.users import User
+from cshr.api.permission import UserIsAuthenticated
+from cshr.services.users import get_user_by_id
+from cshr.services.company_properties import (
     get_all_comopany_properties,
     get_company_properties_by_id,
 )

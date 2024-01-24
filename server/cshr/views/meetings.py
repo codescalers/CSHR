@@ -1,9 +1,9 @@
 from typing import Dict, List
-from server.cshr.serializers.meetings import MeetingsSerializer
-from server.cshr.models.users import User
-from server.cshr.api.permission import UserIsAuthenticated
-from server.cshr.services.users import get_user_by_id
-from server.cshr.services.meetings import (
+from cshr.serializers.meetings import MeetingsSerializer
+from cshr.models.users import User
+from cshr.api.permission import UserIsAuthenticated
+from cshr.services.users import get_user_by_id
+from cshr.services.meetings import (
     filter_meetings_by_day,
     get_all_meetings,
     get_meeting_by_id,
@@ -12,7 +12,7 @@ from server.cshr.services.meetings import (
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.api.response import CustomResponse
+from cshr.api.response import CustomResponse
 
 
 class BaseMeetingsApiView(ListAPIView, GenericAPIView):

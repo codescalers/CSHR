@@ -1,10 +1,10 @@
 from django.db import models
-from server.cshr.models.abstracts import TimeStamp
-from server.cshr.models.office import Office
+from cshr.models.abstracts import TimeStamp
+from cshr.models.office import Office
 
-from server.cshr.models.users import User
+from cshr.models.users import User
 
-from server.cshr.models.requests import Requests
+from cshr.models.requests import Requests
 import datetime
 
 

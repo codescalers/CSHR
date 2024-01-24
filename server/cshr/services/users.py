@@ -2,9 +2,9 @@
 from django.contrib.auth.hashers import check_password
 from django.db.models import Q
 from typing import List, Union
-from server.cshr.models.office import Office
+from cshr.models.office import Office
 
-from server.cshr.models.users import User, UserSkills
+from cshr.models.users import User, UserSkills
 
 
 def get_user_by_id(id: str) -> User:

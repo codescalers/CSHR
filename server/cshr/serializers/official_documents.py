@@ -2,8 +2,8 @@ from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
 )
-from server.cshr.models.official_documents import OffcialDocument
-from server.cshr.serializers.users import TeamSerializer
+from cshr.models.official_documents import OffcialDocument
+from cshr.serializers.users import TeamSerializer
 
 
 class OffcialDocumentSerializer(ModelSerializer):
