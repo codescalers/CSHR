@@ -9,10 +9,9 @@ docker-up:
 docker-down:
 	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -v
 install:
-	curl -sSL https://install.python-poetry.org | python3 -
 	$(server) && poetry install
 	$(server) && poetry check
-	$(client) && npm i -g pnpm && pnpm i
+	$(client) && pnpm i
 runserver:
 	$(server) && $(CMD) python3 manage.py runserver
 runclient:
