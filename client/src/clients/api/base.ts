@@ -83,20 +83,22 @@ export abstract class ApiClientBase {
     options: Api.UnwrapOptions<T, R> = {}
   ) {
     const [res, err] = await resolve(req$)
+    const access_token = localStorage.getItem("access_token")
+    const refresh_token = localStorage.getItem("refresh_token")
+    
     // check if error indicate the token needs to be refreshed
     if (
       err &&
       err.response.status == 401 &&
       err.response.data.code == 'token_not_valid' &&
-      ApiClientBase.USER
+      ApiClientBase.USER &&
+      refresh_token !== null
     ) {
-      await ApiClientBase.$api.auth.refresh({ refresh: ApiClientBase.USER.refresh_token })
+      await ApiClientBase.$api.auth.refresh({ refresh: refresh_token })
     }
-    const token = localStorage.getItem("access_token")
-
-    if (err && !ApiClientBase.USER && token !== null) {
+    if (err && !ApiClientBase.USER && access_token !== null && refresh_token !== null) {
       const user = await ApiClientBase.$api.myprofile.getUser();
-      (ApiClientBase.USER as any) = {...user}
+      ApiClientBase.USER = {...user, access_token, refresh_token}
     }
 
     if (err) {

@@ -4,7 +4,7 @@
       <v-row class="justify-center align-center">
         <v-col cols="12">
           <v-text-field
-            v-model="office.name"
+            v-model="name"
             label="Name"
             type="text"
             :rules="requiredStringRules"
@@ -52,22 +52,22 @@ export default {
         value: 'Saturday:Sunday'
       }
     ])
+    const name = ref('')
     const selectedWeekend = ref(weekendOptions.value[0])
     const countryList = countries.map((c: any) => c.name)
     const selectedCountry = ref(countryList[0])
-    const office = ref({
-      name: '',
-      country: selectedCountry.value,
-      weekend: selectedWeekend.value.value
-    })
 
     const {execute, isLoading} = useAsyncState(async() => {
-      await $api.office.create(office.value)
+      await $api.office.create({
+        name: name.value,
+        country: selectedCountry.value,
+        weekend: selectedWeekend.value.value
+      })
     }, null, {immediate: false})
 
     return {
       form,
-      office,
+      name,
       weekendOptions,
       selectedWeekend,
       requiredRules,
