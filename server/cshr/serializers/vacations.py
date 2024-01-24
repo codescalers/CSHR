@@ -3,15 +3,15 @@ from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
 )
-from server.cshr.models.users import User
-from server.cshr.models.vacations import (
+from cshr.models.users import User
+from cshr.models.vacations import (
     OfficeVacationBalance,
     PublicHoliday,
     Vacation,
     VacationBalance,
 )
-from server.cshr.serializers.office import OfficeSerializer
-from server.cshr.serializers.users import BaseUserSerializer, TeamSerializer
+from cshr.serializers.office import OfficeSerializer
+from cshr.serializers.users import BaseUserSerializer, TeamSerializer
 from rest_framework import serializers
 
 

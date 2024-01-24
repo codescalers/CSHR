@@ -1,11 +1,11 @@
 """This file contains everything related to the Vacation model."""
-from server.cshr.models.requests import STATUS_CHOICES, Requests
-from server.cshr.models.users import User
-from server.cshr.models.vacations import Vacation, VacationBalance
+from cshr.models.requests import STATUS_CHOICES, Requests
+from cshr.models.users import User
+from cshr.models.vacations import Vacation, VacationBalance
 from django.db.models import Q
 from typing import Any, Dict, List
 
-from server.cshr.serializers.vacations import LandingPageVacationsSerializer
+from cshr.serializers.vacations import LandingPageVacationsSerializer
 
 
 def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
@@ -107,7 +107,7 @@ def update_user_actual_balance(user_balance: VacationBalance) -> VacationBalance
 
 
 def send_vacation_to_calendar(vacation: Vacation) -> Dict[str, Any]:
-    from server.cshr.services.landing_page import (
+    from cshr.services.landing_page import (
         LandingPageClassNameEnum,
         LandingPageTypeEnum,
     )

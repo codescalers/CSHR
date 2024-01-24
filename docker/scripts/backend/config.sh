@@ -1,11 +1,12 @@
 #!/bin/sh
 
-cd server_dir
 CONFIG_DIR=config
 ENV_DIR=${CONFIG_DIR}/.env
+cd server_dir
 poetry config installer.max-workers 10
 poetry install --no-root --no-interaction --no-ansi -vvv
 DJANGO_SECRET_KEY=$(poetry run python3 -c 'from django.utils.crypto import get_random_string; print(get_random_string(50))')
+cd ..
 
 exec |
 	# Backend configurations

@@ -6,28 +6,28 @@ from ..serializers.compensation import (
     CompensationUpdateSerializer,
 )
 from ..api.response import CustomResponse
-from server.cshr.models.users import User
-from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import (
+from cshr.models.users import User
+from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
+from cshr.api.permission import (
     IsAdmin,
     IsUser,
     UserIsAuthenticated,
 )
-from server.cshr.services.users import get_user_by_id
-from server.cshr.services.compensation import (
+from cshr.services.users import get_user_by_id
+from cshr.services.compensation import (
     get_all_compensations,
     get_compensation_by_id,
     get_compensations_by_user,
 )
-from server.cshr.celery.send_email import send_email_for_request
-from server.cshr.celery.send_email import send_email_for_reply
-from server.cshr.utils.email_messages_templates import (
+from cshr.celery.send_email import send_email_for_request
+from cshr.celery.send_email import send_email_for_reply
+from cshr.utils.email_messages_templates import (
     get_compensation_reply_email_template,
 )
-from server.cshr.utils.email_messages_templates import (
+from cshr.utils.email_messages_templates import (
     get_compensation_request_email_template,
 )
-from server.cshr.utils.redis_functions import (
+from cshr.utils.redis_functions import (
     set_notification_request_redis,
     set_notification_reply_redis,
 )

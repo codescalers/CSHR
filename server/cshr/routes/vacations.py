@@ -1,5 +1,5 @@
 from django.urls import path
-from server.cshr.views.vacations import (
+from cshr.views.vacations import (
     BaseVacationsApiView,
     VacationCommentsAPIView,
     VacationsHelpersApiView,

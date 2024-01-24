@@ -1,10 +1,9 @@
 #!/bin/sh
 
-#!/bin/sh
 set -ex
 values="
 window.env = {
-  CSHR_API: '$CSHR_API',
+  SERVER_DOMAIN_NAME_API: '$SERVER_DOMAIN_NAME_API',
 };
 "
 # decide the config file path

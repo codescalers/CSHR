@@ -3,7 +3,7 @@
 if [ "$ENV" = "production" ]
 then
     echo "Runing on production mode."
-    echo "Waiting for postgres..."
+    echo "Waiting for postgres to be running on: $DATABASE_HOST"
 
     while ! nc -z $DATABASE_HOST $DATABASE_PORT; do
       sleep 0.1

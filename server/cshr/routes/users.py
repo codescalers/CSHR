@@ -1,7 +1,7 @@
 from django.urls import path
 
 
-from server.cshr.views.users import (
+from cshr.views.users import (
     AdminUserAPIView,
     BaseAdminUserAPIView,
     GeneralUserAPIView,
