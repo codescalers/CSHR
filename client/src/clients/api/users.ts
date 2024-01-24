@@ -22,8 +22,16 @@ export class UsersApi extends ApiClientBase {
     this.team = new UsersTeamApi(options, this.path)
   }
 
-  list(query?: Api.Inputs.List) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
+  list(query?: any) {
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
+  }
+  getuser(id: number, options: Api.UnwrapOptions<any, any> = {}) {
+    return this.unwrap(this.$http.get<Api.Returns.Profile>(this.getUrl(`/${id}`)), {
+      transform: (d) => d.results,
+      ...options
+    })
   }
   getuser(id: number, options: Api.UnwrapOptions<any, any> = {}) {
     return this.unwrap(this.$http.get<Api.Returns.Profile>(this.getUrl(`/${id}`)), {

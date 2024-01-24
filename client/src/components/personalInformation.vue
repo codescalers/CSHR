@@ -60,7 +60,7 @@ export default {
         });
         const getUserInfo = (dataKey: any) => {
             if (props.user) {
-                country.value = props.user.location.country;
+                country.value = props.user.location?.name;
             }
             if (props.user && props.user[dataKey]) {
                 return props.user[dataKey];
@@ -78,8 +78,8 @@ export default {
         }
     }
 
-   
   }
+
 </script>
 
 <style scoped>
