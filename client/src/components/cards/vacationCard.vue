@@ -135,7 +135,7 @@ export default {
     const state = useState()
     const leaveReasons = ref<Api.LeaveReason[]>([{
       name: "Public Holidays",
-      reason: "public_holidays"
+      reason: "public_holiday"
     }, {
       name: "Emergency Leaves",
       reason: "emergency_leaves",
