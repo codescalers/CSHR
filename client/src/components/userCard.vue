@@ -1,7 +1,7 @@
 <template>
   <v-card color="title" class="py-10 ma-5 hover-card">
     <div class="d-flex align-center justify-center items-center py-0 font-weight-bold">
-      <profileImage  v-show="user" :image="user?.image" :fullName="user?.full_name"/>
+      <profileImage  v-show="user" :user="user"/>
 
     </div>
     <div class="my-3">
@@ -12,7 +12,7 @@
         user.team }} </v-card-text>
       <v-card-text class="card-body light pt-0 pb-1" style="font-size: 0.875rem"> {{ user.email }} </v-card-text>
       <v-card-text class="card-body light pt-0 pb-1" style="font-size: 0.875rem">
-        {{ user.location.country }}</v-card-text>
+        {{ user.location.name }}</v-card-text>
 
     </div>
 

@@ -3,7 +3,7 @@
     <v-row class="ma-5">
       <v-col cols="12" sm="12" md="3" class="pa-2 border rounded ma-2 align-self-start">
         <div class="pa-5">
-          <profileImage :image="user.state.value?.image" :fullName="user.state.value?.full_name"/>
+          <profileImage :user="user.state.value"/>
           <div class=" text-center">
             <h5 clas=" text-h5 font-weight-bold ">
               {{ user.state.value?.full_name }}

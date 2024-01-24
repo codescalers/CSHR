@@ -3,8 +3,7 @@
     <v-card class="ma-5 pa-2 border rounded ma-2 align-self-start">
       <v-row class="ma-5">
         <v-col cols="12" class="py-5 px-2">
-          <span>You can change the selected office to discover the team in other offices.
-          </span>
+          <v-alert color="warning">You can change the selected office to discover the team in other offices.</v-alert>
         </v-col>
       </v-row>
       <v-row class="ma-5">
@@ -19,7 +18,7 @@
 
 
 
-            <v-autocomplete v-model="country" :items="countries" label="Office" @update:model-value="handleCountryChange"
+            <v-autocomplete v-model="office" :items="offices" label="Office" @update:model-value="handleOfficeChange"
               return-object item-title="country">
             </v-autocomplete>
 
@@ -41,25 +40,18 @@ import type { Country } from '@/types';
 
 export default {
   name: 'officeFilters',
-  props: ["countries"],
+  props: ["offices"],
 
   setup(props) {
     const $router = useRouter()
-    const country = ref<Country>();
+    const office = ref<Country>();
 
-
-
-    const handleCountryChange = () => {
-      $router.push({ path: '/users', query: { location_id: country.value?.id } });
+    const handleOfficeChange = () => {
+      $router.push({ path: '/users', query: { location_id: office.value?.id } });
     };
-
-
-
-
-
     return {
-      country,
-      handleCountryChange,
+      office,
+      handleOfficeChange,
 
     }
   }

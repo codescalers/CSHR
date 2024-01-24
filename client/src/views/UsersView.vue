@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-5">
-    <officeFilters :countries="countries" />
+    <officeFilters :offices="offices" />
 
     <v-row>
       
@@ -35,7 +35,7 @@ export default {
     officeFilters,
   },
   setup() {
-    const countries = ref<Country[]>([]);
+    const offices = ref<Country[]>([]);
     const $route = useRoute()
     let isFirstLoad = true;
 
@@ -48,7 +48,7 @@ export default {
     const users = useAsyncState(
       async (users: Api.User[]) => {
         if (isFirstLoad) {
-          countries.value = Array.from(new Set(users.map(user => user.location.id)))
+          offices.value = Array.from(new Set(users.map(user => user.location.id)))
             .map(id => {
               const user = users.find(u => u.location.id === id);
               return { id: user?.location.id ?? 0, country: user?.location.country ?? '' };
@@ -77,7 +77,7 @@ export default {
 
     return {
       users,
-      countries,
+      offices,
       UserCard,
       officeFilters,
 
