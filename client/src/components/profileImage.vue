@@ -1,10 +1,10 @@
 <template>
-  <div v-if="user.image?.includes('profile_image')">
+  <div v-if="user.image?.includes('profile_image')" class="d-flex justify-center mb-5">
     <img :src="imageSrc + user.image" class="user-profile-image rounded-circle"
-      style="width:{size}px; height:{size}px;" />
+      style="width:70px; height:70px;" />
   </div>
 
-  <div v-esle>
+  <div v-else>
     <v-avatar :color="user.image" size="50" class="d-flex mx-auto mt-5 mb-3">
       <span class="text-h5 text-uppercase">{{ avatar }}</span>
     </v-avatar>
@@ -20,7 +20,7 @@ export default {
   props: ["user"],
 
   setup(props) {
-    const imageSrc = window.env.SERVER_DOMAIN_NAME_API
+    const imageSrc = window.env.SERVER_DOMAIN_NAME_API.replace("api", "")
     const avatar = computed(() => {
       if (props.user.full_name) {
         let val = String(props.user.full_name);
