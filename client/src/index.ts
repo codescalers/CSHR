@@ -3,7 +3,7 @@ export {};
 declare global {
   interface Window {
     env: {
-      CSHR_API: string;
+      SERVER_DOMAIN_NAME_API: string;
     };
   }
 }

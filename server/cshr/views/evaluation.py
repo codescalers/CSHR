@@ -1,25 +1,25 @@
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.models.users import User
-from server.cshr.serializers.evaluation import (
+from cshr.models.users import User
+from cshr.serializers.evaluation import (
     UserEvaluationSerializer,
     EvaluationSerializer,
 )
-from server.cshr.api.response import CustomResponse
-from server.cshr.api.permission import (
+from cshr.api.response import CustomResponse
+from cshr.api.permission import (
     IsAdmin,
     IsSupervisor,
     UserIsAuthenticated,
     CustomPermissions,
 )
-from server.cshr.services.evaluation import (
+from cshr.services.evaluation import (
     filter_all_evaluations_based_on_user_and_year,
     get_evaluation_by_id,
     get_user_evaluation_by_id,
     all_user_evaluations,
 )
-from server.cshr.services.users import get_user_by_id
+from cshr.services.users import get_user_by_id
 
 
 class BaseUserEvaluationsAPIView(ListAPIView, GenericAPIView):

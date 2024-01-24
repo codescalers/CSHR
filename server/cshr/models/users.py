@@ -5,10 +5,10 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Anonym
 
 from typing import Any, Union
 
-from server.cshr.models.abstracts import TimeStamp
-from server.cshr.models.office import Office
-from server.cshr.utils.dummy_data import create_locations
-from server.cshr.utils.generate import generate_random_color
+from cshr.models.abstracts import TimeStamp
+from cshr.models.office import Office
+from cshr.utils.generate import generate_random_color
+from cshr.utils.dummy_data import create_locations
 
 
 class TEAM(models.TextChoices):

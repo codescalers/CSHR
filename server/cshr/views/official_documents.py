@@ -1,24 +1,24 @@
-from server.cshr.models.official_documents import OffcialDocument
-from server.cshr.models.users import User
-from server.cshr.serializers.official_documents import OffcialDocumentSerializer
+from cshr.models.official_documents import OffcialDocument
+from cshr.models.users import User
+from cshr.serializers.official_documents import OffcialDocumentSerializer
 
-from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import (
+from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
+from cshr.api.permission import (
     IsAdmin,
     IsUser,
 )
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.celery.send_email import send_email_for_reply, send_email_for_request
-from server.cshr.services.official_documents import get_official_document_by_id
-from server.cshr.services.users import get_user_by_id
-from server.cshr.utils.email_messages_templates import (
+from cshr.celery.send_email import send_email_for_reply, send_email_for_request
+from cshr.services.official_documents import get_official_document_by_id
+from cshr.services.users import get_user_by_id
+from cshr.utils.email_messages_templates import (
     get_official_document_request_email_template,
 )
 
-from server.cshr.api.response import CustomResponse
-from server.cshr.utils.redis_functions import (
+from cshr.api.response import CustomResponse
+from cshr.utils.redis_functions import (
     set_notification_reply_redis,
     set_notification_request_redis,
 )

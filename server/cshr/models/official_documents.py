@@ -1,5 +1,5 @@
 from django.db import models
-from server.cshr.models.requests import Requests
+from cshr.models.requests import Requests
 
 
 class OffcialDocument(Requests):

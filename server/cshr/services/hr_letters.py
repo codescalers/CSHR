@@ -1,6 +1,6 @@
-from server.cshr.models.hr_letters import HrLetters, UserDocuments
-from server.cshr.models.requests import STATUS_CHOICES
-from server.cshr.models.users import User
+from cshr.models.hr_letters import HrLetters, UserDocuments
+from cshr.models.requests import STATUS_CHOICES
+from cshr.models.users import User
 
 
 def get_hrLetter_by_id(id: str) -> HrLetters:
