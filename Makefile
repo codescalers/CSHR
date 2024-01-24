@@ -5,9 +5,38 @@ server:=cd server
 terraform:=cd terraform
 
 docker-up:
+ifeq ($(service), frontend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up frontend --build -d
+else ifeq ($(service), backend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up backend --build -d
+else ifeq ($(service), postgres)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up postgres --build -d
+else
 	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up --build -d
+endif
+
 docker-down:
+ifeq ($(service), frontend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -d frontend
+else ifeq ($(service), backend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -d backend
+else ifeq ($(service), postgres)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -d postgres
+else
 	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -v
+endif
+
+docker-logs:
+ifeq ($(service), frontend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs frontend
+else ifeq ($(service), backend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs backend
+else ifeq ($(service), postgres)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs postgres
+else
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs
+endif
+
 install:
 	$(server) && poetry install
 	$(server) && poetry check
