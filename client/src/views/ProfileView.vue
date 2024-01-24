@@ -43,7 +43,6 @@ export default defineComponent({
     const $route = useRoute();
     const user = useAsyncState($route.query.id ? $api.users.getuser(Number($route.query.id)) : $api.myprofile.getUser(), [], {
       onSuccess(data) {
-        console.log(data.id);
         balance.execute(undefined, data.id)
       }
     })
