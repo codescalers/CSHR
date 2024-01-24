@@ -8,9 +8,9 @@
     <v-card-title class="text-center"> From <b color="primary">{{ vacation.from_date }} </b> to <b color="primary">{{
       vacation.end_date }} </b> vacation</v-card-title>
     <br>
-
+    
     <v-row class="d-flex flex-row-reverse"
-      v-if="vacation.status == 'pending' && state.user.value.value.id == vacation.applying_user">
+      v-if="vacation.status == 'pending' && state.user.value.value.id == vacation.applying_user.id">
       <v-btn color="primary" class="ma-4" @click="readOnly = false">Update</v-btn>
       <v-btn color="red" class="ma-4" @click="handleDelete">Delete</v-btn>
     </v-row>
@@ -25,7 +25,7 @@
 
           </v-col>
           <v-col cols="3" class="text-right">
-            {{ applyingUser.state.value?.full_name }}
+            {{ vacation.user.full_name }}
 
           </v-col>
 
@@ -36,7 +36,7 @@
 
           </v-col>
           <v-col cols="3" class="text-right">
-            {{ vacation.approval_user ? vacation.approval_user : "Under approving" }}
+            {{ vacation.approval_user.email ? vacation.approval_user.email : "Under approving" }}
           </v-col>
         </v-row>
 
@@ -131,7 +131,6 @@ export default {
     const endDate = ref<Date>(props.vacation.end_date)
     const leaveReason = ref<Api.LeaveReason>({ name: transformString(props.vacation.reason), reason: props.vacation.reason })
     const form = ref()
-    const applyingUser = useAsyncState($api.users.getuser(props.vacation.applying_user), null)
     const state = useState()
     const leaveReasons = ref<Api.LeaveReason[]>([{
       name: "Public Holidays",
@@ -162,12 +161,12 @@ export default {
       if (state.user.value.value.user_type === 'Admin'
         || state.user.value.value.user_type === 'Supervisor'
       ) {
-        if (applyingUser.state.value?.id == state.user.value.value.id) {
+        if (props.vacation.user.id == state.user.value.value.id) {
           return true;
 
         }
-        if (applyingUser.state.value?.reporting_to.includes(state.user.value.value.id)
-          && applyingUser.state.value?.location.name === state.user.value.value.location.name) {
+        if (props.vacation.user.reporting_to.includes(state.user.value.value.id)
+          && props.vacation.user.location.name === state.user.value.value.location.name) {
           return true;
         }
         return false
@@ -248,7 +247,6 @@ export default {
       readOnly,
       form,
       state,
-      applyingUser,
       couldApprove,
       validateEndDate,
       updateVacation,

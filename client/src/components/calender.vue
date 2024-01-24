@@ -1,19 +1,21 @@
 <!-- eslint-disable vue/no-async-in-computed-properties -->
 <template>
   <v-row>
-    <v-col cols="4">
+    <v-col cols="3">
       <v-checkbox v-model="selected.meetings" label="Meetings" />
     </v-col>
-    <v-col cols="4">
+    <v-col cols="3">
       <v-checkbox v-model="selected.events" label="Events" />
     </v-col>
-    <v-col cols="4">
+    <v-col cols="3">
       <v-checkbox v-model="selected.vacations" label="Vacations" />
+    </v-col>
+    <v-col cols="3">
+      <v-checkbox v-model="selected.holidays" label="Holidays" />
     </v-col>
   </v-row>
   <div class="ma-7 pa-7">
-    <div class="loading-container d-flex align-center justify-center"
-      v-if="events.isLoading.value || meetings.isLoading.value || loadVacations.isLoading.value">
+    <div class="loading-container d-flex align-center justify-center" v-if="homes.isLoading.value">
       <VProgressCircular />
     </div>
     <FullCalendar v-else class="fc" :options="{
@@ -22,7 +24,7 @@
       dayCellDidMount
     }" />
   </div>
-    <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
+  <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
     <v-card>
       <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)"
         @update-vacation="updateVacation(dates?.startStr)" @update-meeting="updateMeeting(dates?.startStr)"
@@ -65,7 +67,7 @@ import type { Api } from '@/types'
 import { useApi } from '@/hooks'
 import type { EventClickArg, CalendarApi, DayCellMountArg } from '@fullcalendar/core/index.js'
 import { useAsyncState } from '@vueuse/core'
-import { normalizeEvent, normalizeVacation, normalizeMeeting } from '@/utils'
+import { normalizeEvent, normalizeVacation, normalizeMeeting, normalizeHoliday } from '@/utils'
 
 
 
@@ -82,7 +84,6 @@ export default {
 
   setup() {
     const $api = useApi()
-
     const meeting = ref<Api.Meetings>()
     const isViewRequest = ref<Boolean>(false)
     const isEvent = ref<Boolean>(false)
@@ -92,35 +93,64 @@ export default {
 
     const vacation = ref<Api.Vacation>()
     const calendar = ref<CalendarApi>()
-
     const dates = ref<any>()
-
-    const selected = ref({ events: true, vacations: true, meetings: true })
+    const selected = ref({ events: true, vacations: true, meetings: true, holidays: true })
     const showDialog = ref<{ [key: string]: boolean }>({})
-    const meetings = useAsyncState(() => $api.meeting.list(), [])
-    const events = useAsyncState(() => $api.event.list(), [])
+    const meetings = ref<Api.Meetings[]>([])
+    const vacations = ref<Api.Vacation[]>([])
+    const holidays = ref<Api.Holiday[]>([])
+    const events = ref<Api.Inputs.Event[]>([])
 
-    const loadVacations = useAsyncState(() => $api.vacations.list(), [], {
+    function filteHome(data: any) {
+
+      data.forEach((home: Api.Home) => {
+        if (home.title === "meeting") {
+          home.meeting.forEach((meeting: Api.Meetings) => {
+            meetings.value.push(meeting)
+          })
+        }
+        if (home.title === "public_holiday") {
+          home.holidays.forEach((holiday: Api.Holiday) => {
+            holidays.value.push(holiday)
+          })
+        }
+        if (home.title === "event") {
+          home.event.forEach((event: Api.Inputs.Event) => {
+            events.value.push(event)
+          })
+        }
+        if (home.title === "vacation") {
+          let users: number[] = []; // Initialize the array
+          console.log("home", home.vacation)
+          home.vacation.forEach(async (vacation: Api.Vacation) => {
+            console.log("vacation");
+            let v: Api.Vacation; // Initialize the array
+
+            v = vacation
+            const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true });
+
+            console.log(" v.value", user)
+            v.user = user
+
+
+            vacations.value.push(v)
+          })
+        }
+
+      });
+      console.log(vacations.value)
+
+
+    }
+
+    const homes = useAsyncState(() => $api.home.list({
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear()
+    }), [], {
       onSuccess(data) {
-        vacations.execute(undefined, data)
+        filteHome(data)
       }
-    })
-    const vacations = useAsyncState(
-      async (vacations: Api.Vacation[]) => {
-        const ids = vacations.map((v) => v.applying_user)
-        const users = await Promise.all(
-          ids.map((id) => $api.users.getuser(id, { disableNotify: true }))
-        )
-
-        return vacations.map((v, i) => {
-          v.user = users[i]
-          return v
-        })
-      },
-      [],
-      { immediate: false }
-    )
-
+    }
     const onSelect = async (arg: any) => {
       calendar.value = arg.view.calendar
       dates.value = arg
@@ -133,17 +163,17 @@ export default {
       calendar.value = arg.view.calendar
 
       if (arg.event.title === 'Meeting') {
-        meeting.value = meetings.state.value.filter(
+        meeting.value = meetings.value.filter(
           (meeting) => meeting.id === Number(arg.event.id)
         )[0]
         isMeeting.value = true
         openDialog(meeting.value.id)
       } else if (arg.event.title === 'Event') {
-        event.value = events.state.value.filter((event) => event.name === arg.event.id)[0]
+        event.value = events.value.filter((event) => event.name === arg.event.id)[0]
         isEvent.value = true
         openDialog(event.value.name)
       } else if (arg.event.title.includes('Vacation')) {
-        vacation.value = vacations.state.value.filter(
+        vacation.value = vacations.value.filter(
           (vacation) => vacation.id === Number(arg.event.id)
         )[0]
         isLeave.value = true
@@ -155,14 +185,16 @@ export default {
     const plugins = [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin] as any
     const eventsOption = computed(() => {
       const normalizedMeetings = selected.value.meetings
-        ? meetings.state.value.map(normalizeMeeting)
+        ? meetings.value.map(normalizeMeeting)
         : []
-      const normalizedEvents = selected.value.events ? events.state.value.map(normalizeEvent) : []
+      const normalizedEvents = selected.value.events ? events.value.map(normalizeEvent) : []
+      const normalizedHolidays = selected.value.holidays ? holidays.value.map(normalizeHoliday) : []
+
       const normalizedVacations = selected.value.vacations
-        ? vacations.state.value.map(normalizeVacation)
+        ? vacations.value.map(normalizeVacation)
         : []
 
-      return [...normalizedMeetings, ...normalizedEvents, ...normalizedVacations]
+      return [...normalizedMeetings, ...normalizedEvents, ...normalizedVacations, ...normalizedHolidays]
     })
 
     function dayCellDidMount({ el, date }: DayCellMountArg) {
@@ -202,19 +234,16 @@ export default {
     }
 
     async function updateVacation(id: number | string) {
-      loadVacations.execute()
       closeDialog(id)
 
     }
 
 
     async function updateMeeting(id: number | string) {
-      meetings.execute()
       closeDialog(id)
 
     }
     async function updateEvent(id: number | string) {
-      events.execute()
       closeDialog(id)
 
     }
@@ -224,7 +253,6 @@ export default {
 
     return {
       events,
-      meetings,
       vacations,
       isViewRequest,
       isEvent,
@@ -238,6 +266,7 @@ export default {
       dates,
       vacation,
       selected,
+      homes,
       dayCellDidMount,
       closeDialog,
       openDialog,
@@ -246,11 +275,11 @@ export default {
       updateVacation,
       updateMeeting,
       updateEvent,
-      loadVacations,
       calenderRequest,
       meetingCard,
       eventCard,
-      vacationCard
+      vacationCard,
+      meetings
     }
   }
 }

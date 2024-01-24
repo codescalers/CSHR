@@ -91,6 +91,21 @@ export function normalizeVacation(v: Api.Vacation) {
   }
 }
 
+export function normalizeHoliday(h: Api.Holiday) {
+  const dates = handelDates(h.holiday_date, h.holiday_date)
+
+  return {
+    title: `PublicVacation`,
+    color: 'primary',
+    start: dates.start,
+    end: dates.end,
+    backgroundColor: 'gray',
+    id: h.id.toString(),
+    allDay: true
+  }
+}
+
+
 export function normalizeMeeting(m: Api.Meetings): any {
   const dates = handelDates(m.date, m.date)
 

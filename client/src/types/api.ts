@@ -52,22 +52,22 @@ export module Api {
 
   export interface Salary {}
   export interface Meetings {
+    id: number
+    invited_users: any[]
     date: any
+    meeting_link: string
     host_user: {
       id: number
       full_name: string
       email: string
       image: string
+      team: string
       gender: string
-      skills: any[]
+      skills: []
       job_title: string
       user_certificates: any[]
     }
-    id: number
-    invited_users: any[]
-
     location: string
-    meeting_link: string
   }
   export interface User {
     id: number
@@ -240,6 +240,28 @@ export module Api {
       }
     }
   }
+  export interface Holiday {
+    id: number
+    location: {
+      id: number
+      name: string
+      country: string
+      weekend: string
+    }
+    holiday_date: any
+    expired: boolean
+  }
+
+  export interface Home {
+    id: number
+    title: string
+    className: string
+    eventName: string
+    info: Vacation | Inputs.Event | Meetings | Holiday
+    date: any
+    len?: number
+  }
+
   export module Inputs {
     export interface Event {
       name: string
