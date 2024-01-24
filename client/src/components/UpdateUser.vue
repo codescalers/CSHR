@@ -257,6 +257,7 @@ export default {
         ...selectedUser.value,
         image: imageUrl.value || null,
         location: selectedUser.value.location.id,
+        filename: image.value[0].name,
         reporting_to: reporting_to.value ? [reporting_to.value.id] : []
       })
     }, null, {immediate: false})
