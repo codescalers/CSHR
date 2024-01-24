@@ -1,9 +1,9 @@
 from django.db import models
 
-from server.cshr.models.abstracts import TimeStamp
+from cshr.models.abstracts import TimeStamp
 
 
-from server.cshr.models.users import User
+from cshr.models.users import User
 
 
 class TYPE_CHOICES(models.TextChoices):

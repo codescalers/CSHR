@@ -1,7 +1,7 @@
 from typing import Dict, List
-from server.cshr.models.requests import STATUS_CHOICES
-from server.cshr.models.users import User
-from server.cshr.models.vacations import (
+from cshr.models.requests import STATUS_CHOICES
+from cshr.models.users import User
+from cshr.models.vacations import (
     REASON_CHOICES,
     OfficeVacationBalance,
     Vacation,
@@ -11,7 +11,7 @@ from server.cshr.models.vacations import (
 import datetime
 import os
 
-from server.cshr.services.public_holidays import get_user_holidays
+from cshr.services.public_holidays import get_user_holidays
 
 
 class StanderdVacationBalance:

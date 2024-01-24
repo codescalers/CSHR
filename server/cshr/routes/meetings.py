@@ -1,5 +1,5 @@
 from django.urls import path
-from server.cshr.views.meetings import (
+from cshr.views.meetings import (
     MeetingsApiView,
     BaseMeetingsApiView,
     GetMeetingsOnDayAPIView,

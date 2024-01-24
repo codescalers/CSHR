@@ -1,22 +1,22 @@
 """This file contains everything related to the landing page functionalty."""
 import datetime
-from server.cshr.api.response import CustomResponse
-from server.cshr.models.event import Event
-from server.cshr.models.meetings import Meetings
-from server.cshr.models.users import User
-from server.cshr.models.vacations import PublicHoliday, Vacation
-from server.cshr.serializers.event import EventSerializer
-from server.cshr.serializers.meetings import MeetingsSerializer
-from server.cshr.serializers.public_holidays import PublicHolidaySerializer
-from server.cshr.serializers.users import BaseUserSerializer
-from server.cshr.serializers.vacations import LandingPageVacationsSerializer
-from server.cshr.services.event import filter_events_by_month_and_year
-from server.cshr.services.meetings import filter_meetings_by_month_and_year
-from server.cshr.services.public_holidays import (
+from cshr.api.response import CustomResponse
+from cshr.models.event import Event
+from cshr.models.meetings import Meetings
+from cshr.models.users import User
+from cshr.models.vacations import PublicHoliday, Vacation
+from cshr.serializers.event import EventSerializer
+from cshr.serializers.meetings import MeetingsSerializer
+from cshr.serializers.public_holidays import PublicHolidaySerializer
+from cshr.serializers.users import BaseUserSerializer
+from cshr.serializers.vacations import LandingPageVacationsSerializer
+from cshr.services.event import filter_events_by_month_and_year
+from cshr.services.meetings import filter_meetings_by_month_and_year
+from cshr.services.public_holidays import (
     filter_public_holidays_by_month_and_year,
 )
-from server.cshr.services.users import filter_users_by_berithday_month
-from server.cshr.services.vacations import filter_vacations_by_month_and_year
+from cshr.services.users import filter_users_by_berithday_month
+from cshr.services.vacations import filter_vacations_by_month_and_year
 from typing import Any, List, Dict, Union
 from itertools import chain
 from enum import Enum

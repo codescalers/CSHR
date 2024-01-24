@@ -1,7 +1,7 @@
 from django.db import models
-from server.cshr.models.abstracts import TimeStamp
-from server.cshr.models.requests import Requests
-from server.cshr.models.users import User
+from cshr.models.abstracts import TimeStamp
+from cshr.models.requests import Requests
+from cshr.models.users import User
 
 
 class DocumentsStatus(models.TextChoices):
