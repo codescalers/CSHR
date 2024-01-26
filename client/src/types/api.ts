@@ -212,7 +212,7 @@ export module Api {
       type: string
       title: string
       created_at: string
-      event_id: number
+      event_id: string
       user: {
         id: number
         full_name: string

@@ -1,4 +1,0 @@
-exec: sh -c "cd server_dir; echo $DJANGO_SUPERUSER_EMAIL && poetry run python3 manage.py createsuperuser --noinput"
-after:
-  - migrate
-oneshot: true

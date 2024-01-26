@@ -1,15 +1,14 @@
+import type { Api } from '@/types'
 import { ApiClientBase } from './base'
 
 export class NotificationsApi extends ApiClientBase {
   protected readonly path = '/notifications'
 
-  async list() {
+  list() {
     ApiClientBase.assertUser()
-    const notifications = await this.unwrap(this.$http.get(this.path), {
+    return this.unwrap(this.$http.get<{ results: Api.Returns.Notification[] }>(this.path), {
       transform: (d) => d.results
     })
-
-    return notifications
   }
 
   async read(type: string, id: number) {
