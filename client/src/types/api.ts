@@ -38,9 +38,10 @@ export module Api {
     end_date: any
     change_log: any[]
     actual_days: number
-    applying_user: number
+    applying_user: number | any
     approval_user: number
     user?: Api.User
+    isUpdated? : boolean
   }
 
   export interface LeaveReason {
@@ -257,7 +258,10 @@ export module Api {
     title: string
     className: string
     eventName: string
-    info: Vacation | Inputs.Event | Meetings | Holiday
+    vacation?: any
+    meeting? :any
+    event?: any
+    holidays?: any
     date: any
     len?: number
   }

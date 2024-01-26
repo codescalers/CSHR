@@ -8,9 +8,8 @@
     <v-card-title class="text-center"> From <b color="primary">{{ vacation.from_date }} </b> to <b color="primary">{{
       vacation.end_date }} </b> vacation</v-card-title>
     <br>
-    
-    <v-row class="d-flex flex-row-reverse"
-      v-if="vacation.status == 'pending' && state.user.value.value.id == vacation.applying_user.id">
+
+    <v-row class="d-flex flex-row-reverse" v-if="couldUpdate">
       <v-btn color="primary" class="ma-4" @click="readOnly = false">Update</v-btn>
       <v-btn color="red" class="ma-4" @click="handleDelete">Delete</v-btn>
     </v-row>
@@ -35,7 +34,10 @@
             <b> Approval User </b>
 
           </v-col>
-          <v-col cols="3" class="text-right">
+          <v-col cols="3" class="text-right" v-if="vacation.isUpdated">
+            {{ vacation.approval_user ? vacation.approval_user : "Under approving" }}
+          </v-col>
+          <v-col cols="3" class="text-right" v-else>
             {{ vacation.approval_user.email ? vacation.approval_user.email : "Under approving" }}
           </v-col>
         </v-row>
@@ -121,7 +123,11 @@ export default {
   props: ["vacation"],
   emits: {
     'close-dialog': (item: Boolean) => item,
-    'update-vacation': () => true,
+    'update-vacation': (item: any) => item,
+    'delete-vacation': () => true,
+    'status-vacation': (item: string) => item,
+
+
   },
 
   setup(props, ctx) {
@@ -132,6 +138,7 @@ export default {
     const leaveReason = ref<Api.LeaveReason>({ name: transformString(props.vacation.reason), reason: props.vacation.reason })
     const form = ref()
     const state = useState()
+    const readOnly = ref<boolean>(true)
     const leaveReasons = ref<Api.LeaveReason[]>([{
       name: "Public Holidays",
       reason: "public_holiday"
@@ -155,8 +162,19 @@ export default {
       reason: "compensation",
     },
     ])
+    const couldUpdate = computed(() => {
+      if (props.vacation.status == 'pending') {
+        if (props.vacation.isUpdated && state.user.value.value.id == props.vacation.applying_user) {
+          return true;
+        }
+        if (!props.vacation.isUpdated && state.user.value.value.id == props.vacation.applying_user.id) {
+          return true;
+        }
+        return false
+      }
+      return false
+    });
 
-    const readOnly = ref<boolean>(true)
     const couldApprove = computed(() => {
       if (state.user.value.value.user_type === 'Admin'
         || state.user.value.value.user_type === 'Supervisor'
@@ -185,21 +203,21 @@ export default {
     async function handleDelete() {
       return useAsyncState($api.vacations.delete(props.vacation.id), [], {
         onSuccess() {
-          ctx.emit("update-vacation")
+          ctx.emit("delete-vacation")
         }
       })
     }
     async function handleApprove() {
       return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
         onSuccess() {
-          ctx.emit("update-vacation")
+          ctx.emit("status-vacation", "Approve")
         }
       })
     }
     async function handleReject() {
       return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
         onSuccess() {
-          ctx.emit("update-vacation")
+          ctx.emit("status-vacation", "Reject")
         }
       })
     }
@@ -215,7 +233,6 @@ export default {
       const words = inputString.split('_');
       const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
       const resultString = capitalizedWords.join(' ');
-
       return resultString;
     }
 
@@ -231,8 +248,8 @@ export default {
           actual_days: actualDays.state.value
         },
       ), null, {
-        onSuccess() {
-          ctx.emit("update-vacation")
+        onSuccess(data) {
+          ctx.emit("update-vacation", data)
         }
       })
 
@@ -248,6 +265,7 @@ export default {
       form,
       state,
       couldApprove,
+      couldUpdate,
       validateEndDate,
       updateVacation,
       handleApprove,

@@ -80,7 +80,7 @@ export default {
   name: "leaveRequest",
   props: ["dates"],
   emits: {
-    'create-event': () => true,
+    'create-event': (item: any) => item,
   },
   setup(props, ctx) {
     const $api = useApi()
@@ -122,8 +122,8 @@ export default {
           end_date: end_date.value,
         },
       ), undefined, {
-        onSuccess() {
-          ctx.emit("create-event")
+        onSuccess(data) {
+          ctx.emit("create-event", data)
         }
       })
 

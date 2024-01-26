@@ -31,7 +31,7 @@
     <v-row class="mt-3 d-flex flex-row-reverse">
 
       <v-col cols="3">
-        <v-btn color="primary" type="submit" :disabled="!form?.isValid || !isValid" width="100%" >
+        <v-btn color="primary" type="submit" :disabled="!form?.isValid || !isValid" width="100%">
           Submit
         </v-btn>
       </v-col>
@@ -49,7 +49,7 @@ export default {
   name: "leaveRequest",
   props: ["dates"],
   emits: {
-    'create-event': () => true,
+    'create-event': (item: any) => item,
   },
   setup(props, ctx) {
     const $api = useApi()
@@ -105,11 +105,13 @@ export default {
             from_date: startDate.value,
             end_date: endDate.value,
           },
-        ), undefined , {
-        onSuccess(){
-          ctx.emit("create-event")
-        }
-      })}
+        ), undefined, {
+          onSuccess(data) {
+            console.log(data)
+            ctx.emit("create-event", data)
+          }
+        })
+      }
 
     }
 

@@ -5,23 +5,23 @@
       <v-icon class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
     </div>
     <div class="d-flex justify-center">
-      <v-tabs v-model="tab" color="primary" >
-      <v-tab v-for="tab in tabs" :key="tab" :value="tab"> {{ tab }}</v-tab>
-    </v-tabs>
+      <v-tabs v-model="tab" color="primary">
+        <v-tab v-for="tab in tabs" :key="tab" :value="tab"> {{ tab }}</v-tab>
+      </v-tabs>
     </div>
 
 
     <v-window v-model="tab">
       <v-window-item value="Leave">
-        <leaveRequest :dates="dates" @create-event="createLeave()"></leaveRequest>
+        <leaveRequest :dates="dates" @create-event="createLeave($event)"></leaveRequest>
       </v-window-item>
 
       <v-window-item value="Meeting">
-        <meetingRequest :dates="dates" @create-event="createMeeting()" />
+        <meetingRequest :dates="dates" @create-event="createMeeting($event)" />
       </v-window-item>
 
       <v-window-item value="Event">
-        <eventRequest :dates="dates" @create-event="createEvent()"/>
+        <eventRequest :dates="dates" @create-event="createEvent($event)" />
       </v-window-item>
     </v-window>
 
@@ -45,22 +45,23 @@ export default {
   },
   emits: {
     'close-dialog': (item: Boolean) => item,
-    'update-vacation': () => true,
-    'update-meeting': () => true,
-    'update-event': () => true,
+    'create-vacation': (item: any) => item,
+    'create-meeting': (item: any) => item,
+    'create-event': (item: any) => item,
   },
-  setup(props,ctx) {
+  setup(props, ctx) {
     const tabs = ["Leave", "Meeting", "Event"];
     const tab = ref<String>("")
-      async function createLeave() {
-        ctx.emit("update-vacation")
+    async function createLeave(data: any) {
+      ctx.emit("create-vacation", data)
     }
 
-    async function createMeeting() {
-        ctx.emit("update-meeting")
+
+    async function createMeeting(data: any) {
+      ctx.emit("create-meeting", data)
     }
-    async function createEvent() {
-        ctx.emit("update-event")
+    async function createEvent(data: any) {
+      ctx.emit("create-event", data)
     }
 
     return {

@@ -27,8 +27,8 @@
   <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
     <v-card>
       <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)"
-        @update-vacation="updateVacation(dates?.startStr)" @update-meeting="updateMeeting(dates?.startStr)"
-        @update-event="updateEvent(dates?.startStr)" />
+        @create-vacation="createVacation(dates?.startStr, $event)"
+        @create-meeting="createMeeting(dates?.startStr, $event)" @create-event="createEvent(dates?.startStr, $event)" />
     </v-card>
   </VDialog>
 
@@ -47,7 +47,8 @@
   <VDialog v-if="isViewRequest && isLeave && vacation" :routeQuery="vacation.id" :modelValue="showDialog[vacation.id]">
     <v-card>
       <vacationCard :vacation="vacation" @close-dialog="closeDialog(vacation.id)"
-        @update-vacation="updateVacation(vacation.id)" />
+        @status-vacation="updateVacationStatus(vacation.id, $event)"
+        @update-vacation="updateVacation(vacation.id, $event)" @delete-vacation="deleteVacation(vacation.id)" />
     </v-card>
   </VDialog>
 </template>
@@ -90,7 +91,6 @@ export default {
     const isMeeting = ref<Boolean>(false)
     const isLeave = ref<Boolean>(false)
     const event = ref<Api.Inputs.Event>()
-
     const vacation = ref<Api.Vacation>()
     const calendar = ref<CalendarApi>()
     const dates = ref<any>()
@@ -120,26 +120,16 @@ export default {
           })
         }
         if (home.title === "vacation") {
-          let users: number[] = []; // Initialize the array
-          console.log("home", home.vacation)
           home.vacation.forEach(async (vacation: Api.Vacation) => {
-            console.log("vacation");
-            let v: Api.Vacation; // Initialize the array
-
+            let v: Api.Vacation;
             v = vacation
             const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true });
-
-            console.log(" v.value", user)
             v.user = user
-
-
             vacations.value.push(v)
           })
         }
 
       });
-      console.log(vacations.value)
-
 
     }
 
@@ -150,7 +140,7 @@ export default {
       onSuccess(data) {
         filteHome(data)
       }
-    }
+    })
     const onSelect = async (arg: any) => {
       calendar.value = arg.view.calendar
       dates.value = arg
@@ -233,20 +223,60 @@ export default {
       showDialog.value[id] = false
     }
 
-    async function updateVacation(id: number | string) {
+    async function createVacation(id: number | string, data: any) {
+      data.vacation.forEach(async (vacation: Api.Vacation) => {
+        let v: Api.Vacation;
+        v = vacation
+        const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true });
+        v.user = user
+        vacations.value.push(v)
+      })
+      closeDialog(id)
+    }
+    async function createMeeting(id: number | string, data: any) {
+      data.meeting.forEach((meeting: Api.Meetings) => {
+        meetings.value.push(meeting)
+      })
+      closeDialog(id)
+
+    }
+    async function createEvent(id: number | string, data: any) {
+      data.event.forEach((event: Api.Inputs.Event) => {
+        events.value.push(event)
+      })
+
+      closeDialog(id)
+
+    }
+    async function deleteVacation(id: number | string) {
+      vacations.value = vacations.value.filter(vacation => vacation.id !== id);
       closeDialog(id)
 
     }
 
-
-    async function updateMeeting(id: number | string) {
+    async function updateVacation(id: number | string, data: any) {
+      vacations.value = vacations.value.filter(vacation => vacation.id !== id);
+      let v: Api.Vacation;
+      v = data
+      const user = await $api.users.getuser(data.applying_user, { disableNotify: true });
+      v.user = user
+      v.isUpdated = true;
+      vacations.value.push(v)
       closeDialog(id)
-
     }
-    async function updateEvent(id: number | string) {
+
+    async function updateVacationStatus(id: number, data: string) {
+      const vacationIndex = vacations.value.findIndex(vacation => vacation.id === id);
+      if (vacationIndex !== -1) {
+        if (data === "Approve") {
+          vacations.value[vacationIndex].status = "approved";
+        } else; if (data === "Reject") {
+          vacations.value[vacationIndex].status = "rejected";
+        }
+      }
       closeDialog(id)
-
     }
+
     async function openDialog(id: string | number) {
       showDialog.value[id] = true
     }
@@ -254,6 +284,7 @@ export default {
     return {
       events,
       vacations,
+      meetings,
       isViewRequest,
       isEvent,
       isLeave,
@@ -267,19 +298,22 @@ export default {
       vacation,
       selected,
       homes,
+      updateVacation,
       dayCellDidMount,
       closeDialog,
       openDialog,
       onSelect,
       onClick,
-      updateVacation,
-      updateMeeting,
-      updateEvent,
+      createVacation,
+      createMeeting,
+      createEvent,
+      deleteVacation,
+      updateVacationStatus,
       calenderRequest,
       meetingCard,
       eventCard,
       vacationCard,
-      meetings
+
     }
   }
 }
