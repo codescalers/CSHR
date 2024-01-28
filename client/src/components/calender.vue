@@ -18,49 +18,84 @@
     </v-col>
   </v-row>
   <div class="ma-7 pa-7">
-    <FullCalendar class="fc" :options="{
-      ...options,
-      events: eventsOption,
-      dayCellDidMount
-    }" />
+    <FullCalendar
+      class="fc"
+      :options="{
+        ...options,
+        events: eventsOption,
+        dayCellDidMount
+      }"
+    />
   </div>
-  <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
+  <VDialog
+    v-if="dates?.startStr"
+    :routeQuery="dates?.startStr"
+    :modelValue="showDialog[dates?.startStr]"
+  >
     <v-card>
-      <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)"
+      <calenderRequest
+        :dates="dates"
+        @close-dialog="closeDialog(dates?.startStr)"
         @create-vacation="createVacation(dates?.startStr, $event)"
-        @create-meeting="createMeeting(dates?.startStr, $event)" @create-event="createEvent(dates?.startStr, $event)" />
+        @create-meeting="createMeeting(dates?.startStr, $event)"
+        @create-event="createEvent(dates?.startStr, $event)"
+      />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isMeeting && meeting" :routeQuery="meeting.id" :modelValue="showDialog[meeting.id]">
+  <VDialog
+    v-if="isViewRequest && isMeeting && meeting"
+    :routeQuery="meeting.id"
+    :modelValue="showDialog[meeting.id]"
+  >
     <v-card>
       <meetingCard :meeting="meeting" @close-dialog="closeDialog(meeting.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isHoliday && holiday" :routeQuery="holiday.id" :modelValue="showDialog[holiday.id]">
+  <VDialog
+    v-if="isViewRequest && isHoliday && holiday"
+    :routeQuery="holiday.id"
+    :modelValue="showDialog[holiday.id]"
+  >
     <v-card>
       <holidayCard :holiday="holiday" @close-dialog="closeDialog(holiday.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isBirthday && birthday" :routeQuery="birthday.id" :modelValue="showDialog[birthday.id]">
+  <VDialog
+    v-if="isViewRequest && isBirthday && birthday"
+    :routeQuery="birthday.id"
+    :modelValue="showDialog[birthday.id]"
+  >
     <v-card>
       <birthdayCard :birthday="birthday" @close-dialog="closeDialog(birthday.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isEvent && event" :routeQuery="event.name" :modelValue="showDialog[event.name]">
+  <VDialog
+    v-if="isViewRequest && isEvent && event"
+    :routeQuery="event.name"
+    :modelValue="showDialog[event.name]"
+  >
     <v-card>
       <eventCard :event="event" @close-dialog="closeDialog(event.name)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isLeave && vacation" :routeQuery="vacation.id" :modelValue="showDialog[vacation.id]">
+  <VDialog
+    v-if="isViewRequest && isLeave && vacation"
+    :routeQuery="vacation.id"
+    :modelValue="showDialog[vacation.id]"
+  >
     <v-card>
-      <vacationCard :vacation="vacation" @close-dialog="closeDialog(vacation.id)"
+      <vacationCard
+        :vacation="vacation"
+        @close-dialog="closeDialog(vacation.id)"
         @status-vacation="updateVacationStatus(vacation.id, $event)"
-        @update-vacation="updateVacation(vacation.id, $event)" @delete-vacation="deleteVacation(vacation.id)" />
+        @update-vacation="updateVacation(vacation.id, $event)"
+        @delete-vacation="deleteVacation(vacation.id)"
+      />
     </v-card>
   </VDialog>
 </template>
@@ -80,10 +115,20 @@ import birthdayCard from '@/components/cards/birthdayCard.vue'
 import { ref, computed, reactive, watch } from 'vue'
 import type { Api } from '@/types'
 import { useApi } from '@/hooks'
-import type { EventClickArg, CalendarApi, DayCellMountArg, CalendarOptions } from '@fullcalendar/core/index.js'
+import type {
+  EventClickArg,
+  CalendarApi,
+  DayCellMountArg,
+  CalendarOptions
+} from '@fullcalendar/core/index.js'
 import { useAsyncState } from '@vueuse/core'
-import { normalizeEvent, normalizeVacation, normalizeMeeting, normalizeHoliday, normalizedBirthday } from '@/utils'
-
+import {
+  normalizeEvent,
+  normalizeVacation,
+  normalizeMeeting,
+  normalizeHoliday,
+  normalizedBirthday
+} from '@/utils'
 
 export default {
   name: 'calenderCshr',
@@ -94,7 +139,7 @@ export default {
     eventCard,
     vacationCard,
     holidayCard,
-    birthdayCard,
+    birthdayCard
   },
 
   setup() {
@@ -113,7 +158,13 @@ export default {
     const holiday = ref<Api.Holiday>()
     const calendar = ref<CalendarApi>()
     const dates = ref<any>()
-    const selected = ref({ events: true, vacations: true, meetings: true, holidays: true, birthdays: true })
+    const selected = ref({
+      events: true,
+      vacations: true,
+      meetings: true,
+      holidays: true,
+      birthdays: true
+    })
     const showDialog = ref<{ [key: string]: boolean }>({})
     const meetings = ref<Api.Meetings[]>([])
     const vacations = ref<Api.Vacation[]>([])
@@ -121,63 +172,66 @@ export default {
     const events = ref<Api.Inputs.Event[]>([])
     const birthdays = ref<Api.User[]>([])
 
-
     function filteHome(data: any) {
-
       data.forEach((home: Api.Home) => {
-        if (home.title === "meeting") {
+        if (home.title === 'meeting') {
           home.meeting.forEach((meeting: Api.Meetings) => {
             meetings.value.push(meeting)
           })
         }
-        if (home.title === "birthday") {
+        if (home.title === 'birthday') {
           home.users.forEach((birthday: Api.User) => {
-            let u: Api.User;
+            let u: Api.User
             u = birthday
             u.birthday = home.date
             birthdays.value.push(u)
           })
         }
-        if (home.title === "public_holiday") {
+        if (home.title === 'public_holiday') {
           home.holidays.forEach((holiday: Api.Holiday) => {
             holidays.value.push(holiday)
           })
         }
-        if (home.title === "event") {
+        if (home.title === 'event') {
           home.event.forEach((event: Api.Inputs.Event) => {
             events.value.push(event)
           })
         }
-        if (home.title === "vacation") {
+        if (home.title === 'vacation') {
           home.vacation.forEach(async (vacation: Api.Vacation) => {
-            let v: Api.Vacation;
+            let v: Api.Vacation
             v = vacation
-            const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true });
+            const user = await $api.users.getuser(vacation.applying_user.id, {
+              disableNotify: true
+            })
             v.user = user
             vacations.value.push(v)
           })
         }
-
-      });
-
+      })
     }
 
-    const homes = useAsyncState(() => $api.home.list({
-      month: currentDate.value.getMonth() + 1,
-      year: currentDate.value.getFullYear()
-    }), [], {
-      onSuccess(data) {
-        filteHome(data)
+    const homes = useAsyncState(
+      () =>
+        $api.home.list({
+          month: currentDate.value.getMonth() + 1,
+          year: currentDate.value.getFullYear()
+        }),
+      [],
+      {
+        onSuccess(data) {
+          filteHome(data)
+        }
       }
-    })
+    )
 
     watch(
       () => currentDate.value,
-      async newValue => {
+      async (newValue) => {
         console.log(newValue)
-        homes.execute();
-      },
-    );
+        homes.execute()
+      }
+    )
 
     const onSelect = async (arg: any) => {
       calendar.value = arg.view.calendar
@@ -186,14 +240,11 @@ export default {
       openDialog(arg.startStr)
     }
 
-
     const onClick = async (arg: EventClickArg) => {
       calendar.value = arg.view.calendar
 
       if (arg.event.title === 'Meeting') {
-        meeting.value = meetings.value.filter(
-          (meeting) => meeting.id === Number(arg.event.id)
-        )[0]
+        meeting.value = meetings.value.filter((meeting) => meeting.id === Number(arg.event.id))[0]
         isMeeting.value = true
         openDialog(meeting.value.id)
       } else if (arg.event.title === 'Event') {
@@ -201,7 +252,9 @@ export default {
         isEvent.value = true
         openDialog(event.value.name)
       } else if (arg.event.title === 'Birthday') {
-        birthday.value = birthdays.value.filter((birthday) => birthday.id === Number(arg.event.id))[0]
+        birthday.value = birthdays.value.filter(
+          (birthday) => birthday.id === Number(arg.event.id)
+        )[0]
         isBirthday.value = true
         openDialog(birthday.value.id)
       } else if (arg.event.title.includes('Vacation')) {
@@ -210,8 +263,7 @@ export default {
         )[0]
         isLeave.value = true
         openDialog(vacation.value.id)
-      }
-      else if (arg.event.title === 'Public Holiday') {
+      } else if (arg.event.title === 'Public Holiday') {
         holiday.value = holidays.value.filter((holiday) => holiday.id === Number(arg.event.id))[0]
         isHoliday.value = true
         openDialog(holiday.value.id)
@@ -221,18 +273,24 @@ export default {
 
     const plugins = [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin] as any
     const eventsOption = computed(() => {
-      const normalizedMeetings = selected.value.meetings
-        ? meetings.value.map(normalizeMeeting)
-        : []
+      const normalizedMeetings = selected.value.meetings ? meetings.value.map(normalizeMeeting) : []
       const normalizedEvents = selected.value.events ? events.value.map(normalizeEvent) : []
-      const normalizedBirthdays = selected.value.birthdays ? birthdays.value.map(normalizedBirthday) : []
+      const normalizedBirthdays = selected.value.birthdays
+        ? birthdays.value.map(normalizedBirthday)
+        : []
       const normalizedHolidays = selected.value.holidays ? holidays.value.map(normalizeHoliday) : []
 
       const normalizedVacations = selected.value.vacations
         ? vacations.value.map(normalizeVacation)
         : []
 
-      return [...normalizedMeetings, ...normalizedEvents, ...normalizedVacations, ...normalizedHolidays, ...normalizedBirthdays]
+      return [
+        ...normalizedMeetings,
+        ...normalizedEvents,
+        ...normalizedVacations,
+        ...normalizedHolidays,
+        ...normalizedBirthdays
+      ]
     })
 
     function dayCellDidMount({ el, date }: DayCellMountArg) {
@@ -263,7 +321,7 @@ export default {
       select: onSelect,
       eventClick: onClick,
       editable: false,
-      datesSet: (arg: any) => (currentDate.value = arg.view.currentStart),
+      datesSet: (arg: any) => (currentDate.value = arg.view.currentStart)
     })
 
     function closeDialog(id: string | number) {
@@ -274,9 +332,9 @@ export default {
 
     async function createVacation(id: number | string, data: any) {
       data.vacation.forEach(async (vacation: Api.Vacation) => {
-        let v: Api.Vacation;
+        let v: Api.Vacation
         v = vacation
-        const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true });
+        const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true })
         v.user = user
         vacations.value.push(v)
       })
@@ -287,7 +345,6 @@ export default {
         meetings.value.push(meeting)
       })
       closeDialog(id)
-
     }
     async function createEvent(id: number | string, data: any) {
       data.event.forEach((event: Api.Inputs.Event) => {
@@ -295,32 +352,31 @@ export default {
       })
 
       closeDialog(id)
-
     }
     async function deleteVacation(id: number | string) {
-      vacations.value = vacations.value.filter(vacation => vacation.id !== id);
+      vacations.value = vacations.value.filter((vacation) => vacation.id !== id)
       closeDialog(id)
-
     }
 
     async function updateVacation(id: number | string, data: any) {
-      vacations.value = vacations.value.filter(vacation => vacation.id !== id);
-      let v: Api.Vacation;
+      vacations.value = vacations.value.filter((vacation) => vacation.id !== id)
+      let v: Api.Vacation
       v = data
-      const user = await $api.users.getuser(data.applying_user, { disableNotify: true });
+      const user = await $api.users.getuser(data.applying_user, { disableNotify: true })
       v.user = user
-      v.isUpdated = true;
+      v.isUpdated = true
       vacations.value.push(v)
       closeDialog(id)
     }
 
     async function updateVacationStatus(id: number, data: string) {
-      const vacationIndex = vacations.value.findIndex(vacation => vacation.id === id);
+      const vacationIndex = vacations.value.findIndex((vacation) => vacation.id === id)
       if (vacationIndex !== -1) {
-        if (data === "Approve") {
-          vacations.value[vacationIndex].status = "approved";
-        } else; if (data === "Reject") {
-          vacations.value[vacationIndex].status = "rejected";
+        if (data === 'Approve') {
+          vacations.value[vacationIndex].status = 'approved'
+        } else;
+        if (data === 'Reject') {
+          vacations.value[vacationIndex].status = 'rejected'
         }
       }
       closeDialog(id)
@@ -368,8 +424,7 @@ export default {
       eventCard,
       vacationCard,
       holidayCard,
-      birthdayCard,
-
+      birthdayCard
     }
   }
 }
