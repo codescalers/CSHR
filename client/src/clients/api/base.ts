@@ -87,25 +87,8 @@ export abstract class ApiClientBase {
     const refresh_token = localStorage.getItem("refresh_token")
     
     // check if error indicate the token needs to be refreshed
-    if (access_token && refresh_token && !isValidToken(access_token)) {
-      if (isValidToken(refresh_token)) {
-        await ApiClientBase.$api.auth.refresh({ refresh: refresh_token })
-      } else {
-        ApiClientBase.$router.push('/login')
-      }
-    }
-    if (err && !ApiClientBase.USER && access_token !== null && refresh_token !== null) {
-      const user = await ApiClientBase.$api.myprofile.getUser();
-      ApiClientBase.USER = {...user, access_token, refresh_token}
-    }
-
-    if (err) {
-      ApiClientBase.$notifier?.notify({
-        type: 'error',
-        description: options.normalizeError?.(err, res) ?? ApiClientBase.normalizeError(err) ?? err
-      })
-
-      panic(err)
+    if (access_token && refresh_token && !isValidToken(access_token) && isValidToken(refresh_token)) {
+      await ApiClientBase.$api.auth.refresh({ refresh: refresh_token })
     }
 
     if (
@@ -118,6 +101,18 @@ export abstract class ApiClientBase {
         description: (res.data as any).message
       })
     }
+
+    if (err) {
+      ApiClientBase.$notifier?.notify({
+        type: 'error',
+        description: options.normalizeError?.(err, res) ?? ApiClientBase.normalizeError(err) ?? err
+      })
+      if (err.response.status == 401) {
+        ApiClientBase.$router.push('/login')
+      }
+      panic(err)
+    }
+
 
     return (options.transform?.(res.data, res) ?? res.data) as R
   }
