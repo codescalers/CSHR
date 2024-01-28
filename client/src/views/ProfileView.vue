@@ -3,12 +3,18 @@
     <v-row class="ma-5">
       <v-col cols="12" sm="12" md="3" class="pa-2 border rounded ma-2 align-self-start">
         <div class="pa-5">
+<<<<<<< Updated upstream
           <profileImage :user="user.state.value" />
+=======
+          <div class="mb-5">
+            <profileImage :user="user.state.value"/>
+          </div>
+>>>>>>> Stashed changes
           <div class=" text-center">
-            <h5 clas=" text-h5 font-weight-bold ">
+            <h4 clas=" text-h5 font-weight-bold mb-3">
               {{ user.state.value?.full_name }}
-            </h5>
-            <span>Working for {{ user.state.value?.location?.country }} office</span>
+            </h4>
+            <span class="text-grey-lighten-1">Working for {{ user.state.value?.location?.country }} office</span>
           </div>
         </div>
       </v-col>
@@ -23,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import vacationBalance from '@/components/vacationBalance.vue'
 import personalInformation from '@/components/personalInformation.vue'
 import { $api } from '@/clients'

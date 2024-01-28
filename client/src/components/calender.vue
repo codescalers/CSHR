@@ -77,10 +77,10 @@ import vacationCard from '@/components/cards/vacationCard.vue'
 import holidayCard from '@/components/cards/holidayCard.vue'
 import birthdayCard from '@/components/cards/birthdayCard.vue'
 
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import type { Api } from '@/types'
 import { useApi } from '@/hooks'
-import type { EventClickArg, CalendarApi, DayCellMountArg } from '@fullcalendar/core/index.js'
+import type { EventClickArg, CalendarApi, DayCellMountArg, CalendarOptions } from '@fullcalendar/core/index.js'
 import { useAsyncState } from '@vueuse/core'
 import { normalizeEvent, normalizeVacation, normalizeMeeting, normalizeHoliday, normalizedBirthday } from '@/utils'
 
@@ -100,6 +100,7 @@ export default {
   setup() {
     const $api = useApi()
     const meeting = ref<Api.Meetings>()
+    const currentDate = ref<Date>(new Date())
     const isViewRequest = ref<Boolean>(false)
     const isEvent = ref<Boolean>(false)
     const isMeeting = ref<Boolean>(false)
@@ -239,7 +240,7 @@ export default {
       }
     }
 
-    const options = {
+    const options = reactive<any>({
       plugins,
       dayMaxEvents: true,
       initialView: 'dayGridMonth',
@@ -252,8 +253,9 @@ export default {
       weekends: true,
       select: onSelect,
       eventClick: onClick,
-      editable: false
-    }
+      editable: false,
+      datesSet: (arg: any) => (currentDate.value = arg.view.currentStart),
+    })
 
     function closeDialog(id: string | number) {
       isViewRequest.value, isEvent.value, isMeeting.value, (isLeave.value = false)
@@ -340,6 +342,7 @@ export default {
       birthday,
       selected,
       homes,
+      currentDate,
       updateVacation,
       dayCellDidMount,
       closeDialog,
