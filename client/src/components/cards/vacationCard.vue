@@ -163,33 +163,37 @@ export default {
     },
     ])
     const couldUpdate = computed(() => {
-      if (props.vacation.status == 'pending') {
-        if (props.vacation.isUpdated && state.user.value.value.id == props.vacation.applying_user) {
-          return true;
+      if (state.user.value) {
+
+        if (props.vacation.status == 'pending') {
+          if (props.vacation.isUpdated && state.user.value.value.id == props.vacation.applying_user) {
+            return true;
+          }
+          if (!props.vacation.isUpdated && state.user.value.value.id == props.vacation.applying_user.id) {
+            return true;
+          }
+          return false
         }
-        if (!props.vacation.isUpdated && state.user.value.value.id == props.vacation.applying_user.id) {
-          return true;
-        }
-        return false
       }
       return false
     });
 
     const couldApprove = computed(() => {
-      if (state.user.value.value.user_type === 'Admin'
-        || state.user.value.value.user_type === 'Supervisor'
-      ) {
-        if (props.vacation.user.id == state.user.value.value.id) {
-          return true;
+      if (state.user.value) {
+        if (state.user.value.value.user_type === 'Admin'
+          || state.user.value.value.user_type === 'Supervisor'
+        ) {
+          if (props.vacation.user.id == state.user.value.value.id) {
+            return true;
 
+          }
+          if (props.vacation.user.reporting_to.includes(state.user.value.value.id)
+            && props.vacation.user.location.name === state.user.value.value.location.name) {
+            return true;
+          }
+          return false
         }
-        if (props.vacation.user.reporting_to.includes(state.user.value.value.id)
-          && props.vacation.user.location.name === state.user.value.value.location.name) {
-          return true;
-        }
-        return false
       }
-
       return false
     });
 
