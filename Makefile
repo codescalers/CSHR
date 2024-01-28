@@ -22,11 +22,11 @@ endif
 
 docker-down:
 ifeq ($(service), frontend)
-	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -d frontend
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down frontend
 else ifeq ($(service), backend)
-	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -d backend
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down backend
 else ifeq ($(service), postgres)
-	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -d postgres
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down postgres
 else
 	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down
 endif
