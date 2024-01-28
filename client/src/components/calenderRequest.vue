@@ -1,4 +1,3 @@
-
 <template>
   <v-card elevation="0" variant="outlined" color="primary" class="pa-4">
     <div class="d-flex flex-row-reverse">
@@ -9,7 +8,6 @@
         <v-tab v-for="tab in tabs" :key="tab" :value="tab"> {{ tab }}</v-tab>
       </v-tabs>
     </div>
-
 
     <v-window v-model="tab">
       <v-window-item value="Leave">
@@ -24,44 +22,40 @@
         <eventRequest :dates="dates" @create-event="createEvent($event)" />
       </v-window-item>
     </v-window>
-
-
   </v-card>
 </template>
 <script lang="ts">
-import { ref } from 'vue';
-import leaveRequest from '@/components/requests/leaveRequest.vue';
-import eventRequest from './requests/eventRequest.vue';
-import meetingRequest from './requests/meetingRequest.vue';
-
+import { ref } from 'vue'
+import leaveRequest from '@/components/requests/leaveRequest.vue'
+import eventRequest from './requests/eventRequest.vue'
+import meetingRequest from './requests/meetingRequest.vue'
 
 export default {
-  name: "calenderRequest",
-  props: ["dates"],
+  name: 'calenderRequest',
+  props: ['dates'],
   components: {
     leaveRequest,
     eventRequest,
-    meetingRequest,
+    meetingRequest
   },
   emits: {
     'close-dialog': (item: Boolean) => item,
     'create-vacation': (item: any) => item,
     'create-meeting': (item: any) => item,
-    'create-event': (item: any) => item,
+    'create-event': (item: any) => item
   },
   setup(props, ctx) {
-    const tabs = ["Leave", "Meeting", "Event"];
-    const tab = ref<String>("")
+    const tabs = ['Leave', 'Meeting', 'Event']
+    const tab = ref<String>('')
     async function createLeave(data: any) {
-      ctx.emit("create-vacation", data)
+      ctx.emit('create-vacation', data)
     }
-
 
     async function createMeeting(data: any) {
-      ctx.emit("create-meeting", data)
+      ctx.emit('create-meeting', data)
     }
     async function createEvent(data: any) {
-      ctx.emit("create-event", data)
+      ctx.emit('create-event', data)
     }
 
     return {
@@ -72,8 +66,8 @@ export default {
       meetingRequest,
       createEvent,
       createLeave,
-      createMeeting,
-    };
-  },
-};
+      createMeeting
+    }
+  }
+}
 </script>
