@@ -1,12 +1,13 @@
 import type { AxiosError, AxiosInstance, AxiosResponse } from 'axios'
 
-import { panic, resolve } from '@/utils'
+import { isValidToken, panic, resolve } from '@/utils'
 import type { Api } from '@/types'
 import type { NotifierService } from 'vue3-notifier'
 import type { ApiClient } from './index'
 import { useStorage } from '@vueuse/core'
 import { useState } from '@/store'
 import { capitalize } from 'vue'
+import { useRouter } from 'vue-router'
 
 export abstract class ApiClientBase {
   public static $api: ApiClient
@@ -27,6 +28,7 @@ export abstract class ApiClientBase {
     this.$http = options.$http
   }
 
+  protected static $router = useRouter()
   protected static login(user: Api.LoginUser) {
     ApiClientBase.USER = user
     const state = useState()
@@ -37,14 +39,12 @@ export abstract class ApiClientBase {
     useStorage('refresh_token', refresh_token.value, localStorage, { mergeDefaults: true })
   }
 
-  protected static refresh() {
-    const state = useState()
-    const {access_token, refresh_token } = state;
-    ApiClientBase.assertUser()
+  protected static refresh(res: Api.Returns.Refresh) {
+    this.assertUser()
     ApiClientBase.USER = {
       ...ApiClientBase.USER!,
-      access_token: access_token.value,
-      refresh_token: refresh_token.value
+      access_token: res.access,
+      refresh_token: res.refresh
     }
   }
 
@@ -87,13 +87,7 @@ export abstract class ApiClientBase {
     const refresh_token = localStorage.getItem("refresh_token")
     
     // check if error indicate the token needs to be refreshed
-    if (
-      err &&
-      err.response.status == 401 &&
-      err.response.data.code == 'token_not_valid' &&
-      ApiClientBase.USER &&
-      refresh_token !== null
-    ) {
+    if (access_token && refresh_token && !isValidToken(access_token) && isValidToken(refresh_token)) {
       await ApiClientBase.$api.auth.refresh({ refresh: refresh_token })
     }
     if (err && !ApiClientBase.USER && access_token !== null && refresh_token !== null) {
@@ -121,6 +115,18 @@ export abstract class ApiClientBase {
         description: (res.data as any).message
       })
     }
+
+    if (err) {
+      ApiClientBase.$notifier?.notify({
+        type: 'error',
+        description: options.normalizeError?.(err, res) ?? ApiClientBase.normalizeError(err) ?? err
+      })
+      if (err.response.status == 401) {
+        ApiClientBase.$router.push('/login')
+      }
+      panic(err)
+    }
+
 
     return (options.transform?.(res.data, res) ?? res.data) as R
   }

@@ -1,11 +1,12 @@
 import { useState } from '@/store'
+import { isValidToken } from '@/utils'
 import { type App, inject, computed } from 'vue'
 
 export const $globals_key = Symbol('key:$globals')
 const state = useState()
 
 export const isAuthenticated = computed(() => {
-  return state.access_token.value ? true : false
+  return state.access_token.value && isValidToken(state.access_token.value) ? true : false
 })
 
 export const isAdmin = computed(() => {
