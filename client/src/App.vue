@@ -8,7 +8,6 @@
 import { useNotifier } from 'vue3-notifier'
 import { useApi } from '@/hooks'
 import SideDrawer from './components/SideDrawer.vue'
-import { test_api } from '@/tests'
 import { onMounted } from 'vue'
 import { useState } from './store'
 import { $api } from './clients'
@@ -25,9 +24,6 @@ export default {
     const notifier = useNotifier()
     const state = useState()
     api && notifier && api.setNotifier(notifier)
-
-    /* Don't include this in production! */
-    import.meta.env.VITE_DEBUG === 'true' && test_api()
 
     onMounted(async() => {
       const {access_token, refresh_token, user} = state

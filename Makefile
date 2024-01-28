@@ -4,10 +4,44 @@ client:=cd client
 server:=cd server
 terraform:=cd terraform
 
+help:
+	@echo "\n- Docker: To build and run a specific service, you can do that by executing 'make docker-up service=<service_name>'."
+	@echo "\n- To run a the backend project, you can do that by executing 'make runserver'."
+	@echo "\n- To run a the backend client, you can do that by executing 'make runclient'."
+
 docker-up:
-	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up --build
+ifeq ($(service), frontend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up frontend --build -d
+else ifeq ($(service), backend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up backend --build -d
+else ifeq ($(service), postgres)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up postgres --build -d
+else
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up --build -d
+endif
+
 docker-down:
-	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -v
+ifeq ($(service), frontend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -d frontend
+else ifeq ($(service), backend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -d backend
+else ifeq ($(service), postgres)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down -d postgres
+else
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down
+endif
+
+docker-logs:
+ifeq ($(service), frontend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs frontend
+else ifeq ($(service), backend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs backend
+else ifeq ($(service), postgres)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs postgres
+else
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs
+endif
+
 install:
 	$(server) && poetry install
 	$(server) && poetry check
