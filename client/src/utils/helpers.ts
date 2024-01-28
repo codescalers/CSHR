@@ -95,12 +95,25 @@ export function normalizeHoliday(h: Api.Holiday) {
   const dates = handelDates(h.holiday_date, h.holiday_date)
 
   return {
-    title: `PublicVacation`,
+    title: `Public Holiday`,
     color: 'primary',
     start: dates.start,
     end: dates.end,
     backgroundColor: 'gray',
     id: h.id.toString(),
+    allDay: true
+  }
+}
+export function normalizedBirthday(u: Api.User) {
+  const dates = handelDates(u.birthday, u.birthday)
+
+  return {
+    title: `Birthday`,
+    color: 'primary',
+    start: dates.start,
+    end: dates.end,
+    backgroundColor: 'gray',
+    id: u.id.toString(),
     allDay: true
   }
 }

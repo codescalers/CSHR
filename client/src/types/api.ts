@@ -262,6 +262,7 @@ export module Api {
     meeting? :any
     event?: any
     holidays?: any
+    users?:any
     date: any
     len?: number
   }

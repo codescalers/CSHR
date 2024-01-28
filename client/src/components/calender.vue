@@ -1,17 +1,20 @@
 <!-- eslint-disable vue/no-async-in-computed-properties -->
 <template>
   <v-row>
-    <v-col cols="3">
+    <v-col cols="2">
       <v-checkbox v-model="selected.meetings" label="Meetings" />
     </v-col>
-    <v-col cols="3">
+    <v-col cols="2">
       <v-checkbox v-model="selected.events" label="Events" />
     </v-col>
-    <v-col cols="3">
+    <v-col cols="2">
       <v-checkbox v-model="selected.vacations" label="Vacations" />
     </v-col>
-    <v-col cols="3">
+    <v-col cols="2">
       <v-checkbox v-model="selected.holidays" label="Holidays" />
+    </v-col>
+    <v-col cols="2">
+      <v-checkbox v-model="selected.birthdays" label="Birthdays" />
     </v-col>
   </v-row>
   <div class="ma-7 pa-7">
@@ -35,6 +38,18 @@
   <VDialog v-if="isViewRequest && isMeeting && meeting" :routeQuery="meeting.id" :modelValue="showDialog[meeting.id]">
     <v-card>
       <meetingCard :meeting="meeting" @close-dialog="closeDialog(meeting.id)" />
+    </v-card>
+  </VDialog>
+
+  <VDialog v-if="isViewRequest && isHoliday && holiday" :routeQuery="holiday.id" :modelValue="showDialog[holiday.id]">
+    <v-card>
+      <holidayCard :holiday="holiday" @close-dialog="closeDialog(holiday.id)" />
+    </v-card>
+  </VDialog>
+
+  <VDialog v-if="isViewRequest && isBirthday && birthday" :routeQuery="birthday.id" :modelValue="showDialog[birthday.id]">
+    <v-card>
+      <birthdayCard :birthday="birthday" @close-dialog="closeDialog(birthday.id)" />
     </v-card>
   </VDialog>
 
@@ -62,15 +77,15 @@ import calenderRequest from '@/components/calenderRequest.vue'
 import meetingCard from '@/components/cards/meetingCard.vue'
 import eventCard from '@/components/cards/eventCard.vue'
 import vacationCard from '@/components/cards/vacationCard.vue'
+import holidayCard from '@/components/cards/holidayCard.vue'
+import birthdayCard from '@/components/cards/birthdayCard.vue'
 
 import { ref, computed } from 'vue'
 import type { Api } from '@/types'
 import { useApi } from '@/hooks'
 import type { EventClickArg, CalendarApi, DayCellMountArg } from '@fullcalendar/core/index.js'
 import { useAsyncState } from '@vueuse/core'
-import { normalizeEvent, normalizeVacation, normalizeMeeting, normalizeHoliday } from '@/utils'
-
-
+import { normalizeEvent, normalizeVacation, normalizeMeeting, normalizeHoliday, normalizedBirthday } from '@/utils'
 
 
 export default {
@@ -80,7 +95,9 @@ export default {
     calenderRequest,
     meetingCard,
     eventCard,
-    vacationCard
+    vacationCard,
+    holidayCard,
+    birthdayCard,
   },
 
   setup() {
@@ -90,16 +107,22 @@ export default {
     const isEvent = ref<Boolean>(false)
     const isMeeting = ref<Boolean>(false)
     const isLeave = ref<Boolean>(false)
+    const isHoliday = ref<Boolean>(false)
+    const isBirthday = ref<Boolean>(false)
     const event = ref<Api.Inputs.Event>()
+    const birthday = ref<Api.User>()
     const vacation = ref<Api.Vacation>()
+    const holiday = ref<Api.Holiday>()
     const calendar = ref<CalendarApi>()
     const dates = ref<any>()
-    const selected = ref({ events: true, vacations: true, meetings: true, holidays: true })
+    const selected = ref({ events: true, vacations: true, meetings: true, holidays: true, birthdays: true })
     const showDialog = ref<{ [key: string]: boolean }>({})
     const meetings = ref<Api.Meetings[]>([])
     const vacations = ref<Api.Vacation[]>([])
     const holidays = ref<Api.Holiday[]>([])
     const events = ref<Api.Inputs.Event[]>([])
+    const birthdays = ref<Api.User[]>([])
+
 
     function filteHome(data: any) {
 
@@ -107,6 +130,14 @@ export default {
         if (home.title === "meeting") {
           home.meeting.forEach((meeting: Api.Meetings) => {
             meetings.value.push(meeting)
+          })
+        }
+        if (home.title === "birthday") {
+          home.users.forEach((birthday: Api.User) => {
+            let u: Api.User;
+            u = birthday
+            u.birthday = home.date
+            birthdays.value.push(u)
           })
         }
         if (home.title === "public_holiday") {
@@ -162,12 +193,21 @@ export default {
         event.value = events.value.filter((event) => event.name === arg.event.id)[0]
         isEvent.value = true
         openDialog(event.value.name)
+      } else if (arg.event.title === 'Birthday') {
+        birthday.value = birthdays.value.filter((birthday) => birthday.id === Number(arg.event.id))[0]
+        isBirthday.value = true
+        openDialog(birthday.value.id)
       } else if (arg.event.title.includes('Vacation')) {
         vacation.value = vacations.value.filter(
           (vacation) => vacation.id === Number(arg.event.id)
         )[0]
         isLeave.value = true
         openDialog(vacation.value.id)
+      }
+      else if (arg.event.title === 'Public Holiday') {
+        holiday.value = holidays.value.filter((holiday) => holiday.id === Number(arg.event.id))[0]
+        isHoliday.value = true
+        openDialog(holiday.value.id)
       }
       isViewRequest.value = true
     }
@@ -178,13 +218,14 @@ export default {
         ? meetings.value.map(normalizeMeeting)
         : []
       const normalizedEvents = selected.value.events ? events.value.map(normalizeEvent) : []
+      const normalizedBirthdays = selected.value.birthdays ? birthdays.value.map(normalizedBirthday) : []
       const normalizedHolidays = selected.value.holidays ? holidays.value.map(normalizeHoliday) : []
 
       const normalizedVacations = selected.value.vacations
         ? vacations.value.map(normalizeVacation)
         : []
 
-      return [...normalizedMeetings, ...normalizedEvents, ...normalizedVacations, ...normalizedHolidays]
+      return [...normalizedMeetings, ...normalizedEvents, ...normalizedVacations, ...normalizedHolidays, ...normalizedBirthdays]
     })
 
     function dayCellDidMount({ el, date }: DayCellMountArg) {
@@ -296,6 +337,10 @@ export default {
       eventsOption,
       dates,
       vacation,
+      holiday,
+      isHoliday,
+      isBirthday,
+      birthday,
       selected,
       homes,
       updateVacation,
@@ -313,6 +358,8 @@ export default {
       meetingCard,
       eventCard,
       vacationCard,
+      holidayCard,
+      birthdayCard,
 
     }
   }

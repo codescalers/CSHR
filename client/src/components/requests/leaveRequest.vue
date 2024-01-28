@@ -107,7 +107,6 @@ export default {
           },
         ), undefined, {
           onSuccess(data) {
-            console.log(data)
             ctx.emit("create-event", data)
           }
         })
