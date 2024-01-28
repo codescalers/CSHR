@@ -18,10 +18,7 @@
     </v-col>
   </v-row>
   <div class="ma-7 pa-7">
-    <div class="loading-container d-flex align-center justify-center" v-if="homes.isLoading.value">
-      <VProgressCircular />
-    </div>
-    <FullCalendar v-else class="fc" :options="{
+    <FullCalendar class="fc" :options="{
       ...options,
       events: eventsOption,
       dayCellDidMount
