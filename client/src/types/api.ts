@@ -20,16 +20,56 @@ export module Api {
   export interface UnwrapOptions<T, R> {
     transform?: (data: T, res: AxiosResponse<T, any>) => R
     normalizeError?: (error: AxiosError<any>, res: AxiosResponse<T>) => string
+    disableNotify?: boolean
   }
 
   export interface Skill {
     name: string
   }
 
+  export interface Vacation {
+    id: number
+    created_at: any
+    modified_at: any
+    type: string
+    status: string
+    reason: string
+    from_date: any
+    end_date: any
+    change_log: any[]
+    actual_days: number
+    applying_user: number | any
+    approval_user: number
+    user?: Api.User
+    isUpdated? : boolean
+  }
+
+  export interface LeaveReason {
+    name: string
+    reason: string
+  }
+
   export interface Certificate {}
 
   export interface Salary {}
-
+  export interface Meetings {
+    id: number
+    invited_users: any[]
+    date: any
+    meeting_link: string
+    host_user: {
+      id: number
+      full_name: string
+      email: string
+      image: string
+      team: string
+      gender: string
+      skills: []
+      job_title: string
+      user_certificates: any[]
+    }
+    location: string
+  }
   export interface User {
     id: number
     first_name: string
@@ -98,8 +138,12 @@ export module Api {
       message: string
       results: T
     }
+    export type Event = MsgRes<Event>
+    export type Meeting = MsgRes<Meeting>
 
     export type Profile = MsgRes<User>
+    export type AllMeetings = MsgRes<Meetings>
+
     export type Login = MsgRes<{
       id: number
       email: string
@@ -108,6 +152,41 @@ export module Api {
       full_name: string
       first_name: string
       last_name: string
+    }>
+
+    export type LeaveRequest = MsgRes<{
+      title: string
+      className: string
+      eventName: string
+      vacation: {
+        id: number
+        reason: string
+        from_date: any
+        end_date: any
+        status: string
+        applying_user: {
+          id: number
+          full_name: string
+          email: string
+          image: string
+          team: string
+          gender: string
+          skills: []
+          job_title: string
+          user_certificates: []
+        }
+        approval_user: {
+          email: string
+          team: string
+          gender: string
+          job_title: string
+        }
+        change_log: {}
+        type: string
+      }
+
+      len: number
+      date: any
     }>
 
     export type Balance = MsgRes<BalanceVacation>
@@ -162,7 +241,57 @@ export module Api {
       }
     }
   }
+  export interface Holiday {
+    id: number
+    location: {
+      id: number
+      name: string
+      country: string
+      weekend: string
+    }
+    holiday_date: any
+    expired: boolean
+  }
+
+  export interface Home {
+    id: number
+    title: string
+    className: string
+    eventName: string
+    vacation?: any
+    meeting? :any
+    event?: any
+    holidays?: any
+    users?:any
+    date: any
+    len?: number
+  }
+
   export module Inputs {
+    export interface Event {
+      name: string
+      description: string
+      from_date: any
+      end_date: any
+    }
+
+    export interface Leave {
+      reason: string | undefined
+      from_date: any
+      end_date: any
+      actual_days?: number
+    }
+
+    export interface ActualDays {
+      start_date: any
+      end_date: any
+    }
+    export interface Meeting {
+      date: any
+      meeting_link: string
+      location: string
+    }
+
     export interface Login {
       email: string
       password: string

@@ -12,9 +12,22 @@ export class EventApi extends ApiClientBase {
     this.exact = new EventExactApi(options, this.path)
   }
 
-  async list() {}
+ async list(query?: any) {
+    return this.unwrap(this.$http.get<Api.Returns.List<Api.Inputs.Event>>(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
+  }
 
-  async create() {}
+  async create(input: Api.Inputs.Event) {
+    ApiClientBase.assertUser()
+    const event = await this.unwrap(
+      this.$http.post<Api.Returns.Event>(this.getUrl(''), input),
+      { transform: (d) => d.results }
+    )
+
+    return event
+  }
+
 
   async read(id: number) {}
 

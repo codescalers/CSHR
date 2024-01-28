@@ -45,16 +45,7 @@
       <template #activator="{ props }">
         <div class="d-flex justify-center align-center mx-2">
           <VProgressCircular indeterminate v-if="user.isLoading.value" />
-          <VAvatar
-            v-else-if="user.state.value"
-            v-ripple
-            v-bind="props"
-            color="primary"
-            class="border"
-            :style="{ cursor: 'pointer' }"
-          >
-            <span class="text-h5 text-uppercase" v-text="user.state.value?.full_name[0] ?? '?'" />
-          </VAvatar>
+          <profileImage v-else-if="user.state.value" :with-link="true" :user="user.state.value" v-bind="props" />
         </div>
       </template>
 
@@ -79,10 +70,11 @@ import { useApi } from '@/hooks'
 import { getStatusColor } from '@/utils'
 import type { Api } from '@/types'
 import NotificationDetailsDialog from './NotificationDetailsDialog.vue'
+import profileImage from './profileImage.vue'
 
 export default {
   name: 'CshrToolbar',
-  components: { NotificationDetailsDialog },
+  components: { NotificationDetailsDialog, profileImage },
   setup() {
     const $api = useApi()
     const user = useAsyncState(() => $api.myprofile.getUser(), null)

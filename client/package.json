@@ -14,10 +14,17 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.9",
+    "@fullcalendar/daygrid": "^6.1.9",
+    "@fullcalendar/interaction": "^6.1.9",
+    "@fullcalendar/list": "^6.1.9",
+    "@fullcalendar/timegrid": "^6.1.9",
+    "@fullcalendar/vue3": "^6.1.9",
     "@mdi/font": "^7.4.47",
     "@vueuse/core": "^10.7.1",
     "@vueuse/router": "^10.7.1",
     "axios": "^1.6.3",
+    "calendar_options": "link:@fullcalendar/core/calendar_options",
     "moment": "^2.30.1",
     "pinia": "^2.1.7",
     "vue": "^3.3.11",

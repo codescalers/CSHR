@@ -90,11 +90,25 @@ export abstract class ApiClientBase {
     if (access_token && refresh_token && !isValidToken(access_token) && isValidToken(refresh_token)) {
       await ApiClientBase.$api.auth.refresh({ refresh: refresh_token })
     }
+    if (err && !ApiClientBase.USER && access_token !== null && refresh_token !== null) {
+      const user = await ApiClientBase.$api.myprofile.getUser();
+      ApiClientBase.USER = {...user, access_token, refresh_token}
+    }
+
+    if (err) {
+      
+      options.disableNotify !== true && ApiClientBase.$notifier?.notify({
+        type: 'error',
+        description: options.normalizeError?.(err, res) ?? ApiClientBase.normalizeError(err) ?? err
+      })
+
+      panic(err)
+    }
 
     if (
       (res.config.method === 'post' || res.config.method === 'put') &&
       typeof res.data === 'object' &&
-      'message' in (res.data || {})
+      'message' in (res.data || {}) && options.disableNotify !== true 
     ) {
       ApiClientBase.$notifier?.notify({
         type: 'success',

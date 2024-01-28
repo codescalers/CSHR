@@ -1,13 +1,28 @@
 <template>
-  <div v-if="user.image?.includes('profile_image')" class="d-flex justify-center mb-5">
-    <img :src="imageSrc + user.image" class="user-profile-image rounded-circle"
-      style="width:70px; height:70px;" />
-  </div>
+  <router-link v-if="withLink" :to="`/profile?id=${user.id}`" style="text-decoration: none;">
+    <div v-if="user.image?.includes('profile_image')" class="d-flex justify-center">
+      <img :src="imageSrc + user.image" class="user-profile-image rounded-circle"
+        style="width:70px; height:70px;" />
+    </div>
+  
+    <div v-else>
+      <v-avatar :color="user.image" size="50" class="d-flex mx-auto user-profile-logo">
+        <span class="text-h5 text-uppercase">{{ avatar }}</span>
+      </v-avatar>
+    </div>
+  </router-link>
 
   <div v-else>
-    <v-avatar :color="user.image" size="50" class="d-flex mx-auto mt-5 mb-3">
-      <span class="text-h5 text-uppercase">{{ avatar }}</span>
-    </v-avatar>
+    <div v-if="user.image?.includes('profile_image')" class="d-flex justify-center">
+      <img :src="imageSrc + user.image" class="user-profile-image rounded-circle"
+        style="width:70px; height:70px;" />
+    </div>
+  
+    <div v-else>
+      <v-avatar :color="user.image" size="50" class="d-flex mx-auto user-profile-logo">
+        <span class="text-h5 text-uppercase">{{ avatar }}</span>
+      </v-avatar>
+    </div>
   </div>
 </template>
 
@@ -17,7 +32,7 @@ import { computed } from 'vue';
 
 export default {
   name: 'profileImage',
-  props: ["user"],
+  props: ["user", "withLink"],
 
   setup(props) {
     const imageSrc = window.env.SERVER_DOMAIN_NAME_API.replace("api", "")
