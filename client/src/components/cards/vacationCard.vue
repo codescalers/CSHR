@@ -126,8 +126,6 @@ export default {
     'update-vacation': (item: any) => item,
     'delete-vacation': () => true,
     'status-vacation': (item: string) => item,
-
-
   },
 
   setup(props, ctx) {
