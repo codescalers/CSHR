@@ -462,4 +462,8 @@ export default {
 .fc-daygrid-block-event .fc-event-title {
   padding: 1px 9px;
 }
+
+button {
+  text-transform: capitalize !important;
+}
 </style>

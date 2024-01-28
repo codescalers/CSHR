@@ -3,7 +3,7 @@
     <VSpacer />
     <VMenu>
       <template #activator="{ props }">
-        <VBtn icon="mdi-bell-outline" v-bind="props" />
+        <VBtn icon="mdi-bell-outline" size="small" v-bind="props" />
       </template>
 
       <VList max-width="600" min-width="100%">
@@ -45,7 +45,12 @@
       <template #activator="{ props }">
         <div class="d-flex justify-center align-center mx-2">
           <VProgressCircular indeterminate v-if="user.isLoading.value" />
-          <profileImage v-else-if="user.state.value" :with-link="true" :user="user.state.value" v-bind="props" />
+          <profileImage
+            v-else-if="user.state.value"
+            :with-link="true"
+            :user="user.state.value"
+            v-bind="props"
+          />
         </div>
       </template>
 
