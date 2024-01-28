@@ -56,6 +56,7 @@ export function decodeAccessToken(token: string): JWTokenObject {
   return JSON.parse(jsonPayload);
 }
 
-export function isValidToken(token: string): boolean{
-  return Date.now() >= decodeAccessToken(token).exp * 1000
+export function isValidToken(token: string): boolean {
+  const decodedToken = decodeAccessToken(token);
+  return Date.now() < decodedToken.exp * 1000;
 }

@@ -24,14 +24,13 @@ export class AuthApi extends ApiClientBase {
   }
 
   async refresh(input: Api.Inputs.Refresh) {
-    ApiClientBase.assertUser()
-    const res = await this.unwrap(
-      this.$http.post<Api.Returns.Refresh>(this.getUrl('/token/refresh/'), input)
-    )
-
-    ApiClientBase.refresh()
-
-    return res
+    try {
+       const res = await this.$http.post<Api.Returns.Refresh>(this.getUrl('/token/refresh'), input)
+      ApiClientBase.refresh(res.data)  
+      return true    
+    } catch (error) {
+      return false
+    }
   }
 
   async changePassword(input: Api.Inputs.ChangePassword) {
