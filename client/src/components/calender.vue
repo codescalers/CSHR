@@ -18,84 +18,52 @@
     </v-col>
   </v-row>
   <div class="ma-7 pa-7">
-    <FullCalendar
-      class="fc"
-      :options="{
-        ...options,
-        events: eventsOption,
-        dayCellDidMount
-      }"
-    />
+    <div class="loading-container d-flex align-center justify-center  my-5" v-if="homes.isLoading.value">
+      <v-alert density="compact" class="pa-5" type="warning" text="Events are loading..."></v-alert>
+    </div>
+    <FullCalendar v-else class="fc" :options="{
+      ...options,
+      events: eventsOption,
+      dayCellDidMount
+    }" />
   </div>
-  <VDialog
-    v-if="dates?.startStr"
-    :routeQuery="dates?.startStr"
-    :modelValue="showDialog[dates?.startStr]"
-  >
+  <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
     <v-card>
-      <calenderRequest
-        :dates="dates"
-        @close-dialog="closeDialog(dates?.startStr)"
+      <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)"
         @create-vacation="createVacation(dates?.startStr, $event)"
-        @create-meeting="createMeeting(dates?.startStr, $event)"
-        @create-event="createEvent(dates?.startStr, $event)"
-      />
+        @create-meeting="createMeeting(dates?.startStr, $event)" @create-event="createEvent(dates?.startStr, $event)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isMeeting && meeting"
-    :routeQuery="meeting.id"
-    :modelValue="showDialog[meeting.id]"
-  >
+  <VDialog v-if="isViewRequest && isMeeting && meeting" :routeQuery="meeting.id" :modelValue="showDialog[meeting.id]">
     <v-card>
       <meetingCard :meeting="meeting" @close-dialog="closeDialog(meeting.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isHoliday && holiday"
-    :routeQuery="holiday.id"
-    :modelValue="showDialog[holiday.id]"
-  >
+  <VDialog v-if="isViewRequest && isHoliday && holiday" :routeQuery="holiday.id" :modelValue="showDialog[holiday.id]">
     <v-card>
       <holidayCard :holiday="holiday" @close-dialog="closeDialog(holiday.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isBirthday && birthday"
-    :routeQuery="birthday.id"
-    :modelValue="showDialog[birthday.id]"
-  >
+  <VDialog v-if="isViewRequest && isBirthday && birthday" :routeQuery="birthday.id" :modelValue="showDialog[birthday.id]">
     <v-card>
       <birthdayCard :birthday="birthday" @close-dialog="closeDialog(birthday.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isEvent && event"
-    :routeQuery="event.name"
-    :modelValue="showDialog[event.name]"
-  >
+  <VDialog v-if="isViewRequest && isEvent && event" :routeQuery="event.name" :modelValue="showDialog[event.name]">
     <v-card>
       <eventCard :event="event" @close-dialog="closeDialog(event.name)" />
     </v-card>
   </VDialog>
 
-  <VDialog
-    v-if="isViewRequest && isLeave && vacation"
-    :routeQuery="vacation.id"
-    :modelValue="showDialog[vacation.id]"
-  >
+  <VDialog v-if="isViewRequest && isLeave && vacation" :routeQuery="vacation.id" :modelValue="showDialog[vacation.id]">
     <v-card>
-      <vacationCard
-        :vacation="vacation"
-        @close-dialog="closeDialog(vacation.id)"
+      <vacationCard :vacation="vacation" @close-dialog="closeDialog(vacation.id)"
         @status-vacation="updateVacationStatus(vacation.id, $event)"
-        @update-vacation="updateVacation(vacation.id, $event)"
-        @delete-vacation="deleteVacation(vacation.id)"
-      />
+        @update-vacation="updateVacation(vacation.id, $event)" @delete-vacation="deleteVacation(vacation.id)" />
     </v-card>
   </VDialog>
 </template>
@@ -227,11 +195,12 @@ export default {
 
     watch(
       () => currentDate.value,
-      async (newValue) => {
-        console.log(newValue)
-        homes.execute()
-      }
-    )
+      async (newValue, oldValue) => {
+        if (newValue.getMonth() + 1 !== oldValue.getMonth() + 1 || newValue.getFullYear() !== oldValue.getFullYear()) {
+          homes.execute();
+        }
+      },
+    );
 
     const onSelect = async (arg: any) => {
       calendar.value = arg.view.calendar
