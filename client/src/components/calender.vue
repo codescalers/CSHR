@@ -77,7 +77,7 @@ import vacationCard from '@/components/cards/vacationCard.vue'
 import holidayCard from '@/components/cards/holidayCard.vue'
 import birthdayCard from '@/components/cards/birthdayCard.vue'
 
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import type { Api } from '@/types'
 import { useApi } from '@/hooks'
 import type { EventClickArg, CalendarApi, DayCellMountArg, CalendarOptions } from '@fullcalendar/core/index.js'
@@ -163,13 +163,22 @@ export default {
     }
 
     const homes = useAsyncState(() => $api.home.list({
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear()
+      month: currentDate.value.getMonth() + 1,
+      year: currentDate.value.getFullYear()
     }), [], {
       onSuccess(data) {
         filteHome(data)
       }
     })
+
+    watch(
+      () => currentDate.value,
+      async newValue => {
+        console.log(newValue)
+        homes.execute();
+      },
+    );
+
     const onSelect = async (arg: any) => {
       calendar.value = arg.view.calendar
       dates.value = arg
