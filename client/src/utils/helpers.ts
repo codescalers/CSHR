@@ -1,6 +1,7 @@
 import moment from 'moment'
 
 import type { Api } from "@/types"
+import type { JWTokenObject } from "@/types"
 
 export async function resolve<T>(promise: Promise<T>): Promise<[T, any]> {
   try {
@@ -148,4 +149,16 @@ export function getStatusColor(status: string) {
     default:
       return 'grey'
   }
+}
+export function decodeAccessToken(token: string): JWTokenObject {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+  return JSON.parse(jsonPayload);
+}
+
+export function isValidToken(token: string): boolean{
+  return Date.now() >= decodeAccessToken(token).exp * 1000
 }

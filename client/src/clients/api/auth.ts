@@ -29,7 +29,7 @@ export class AuthApi extends ApiClientBase {
       this.$http.post<Api.Returns.Refresh>(this.getUrl('/token/refresh/'), input)
     )
 
-    ApiClientBase.refresh(res)
+    ApiClientBase.refresh()
 
     return res
   }
