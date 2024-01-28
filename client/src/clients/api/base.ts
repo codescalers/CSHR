@@ -6,6 +6,7 @@ import type { NotifierService } from 'vue3-notifier'
 import type { ApiClient } from './index'
 import { useStorage } from '@vueuse/core'
 import { useState } from '@/store'
+import { capitalize } from 'vue'
 
 export abstract class ApiClientBase {
   public static $api: ApiClient
@@ -29,29 +30,32 @@ export abstract class ApiClientBase {
   protected static login(user: Api.LoginUser) {
     ApiClientBase.USER = user
     const state = useState()
-    const { access_token } = state
+    const { access_token, refresh_token } = state
     access_token.value = user.access_token
+    refresh_token.value = user.refresh_token
     useStorage('access_token', access_token.value, localStorage, { mergeDefaults: true })
+    useStorage('refresh_token', refresh_token.value, localStorage, { mergeDefaults: true })
   }
 
-  protected static refresh(res: Api.Returns.Refresh) {
+  protected static refresh() {
+    const state = useState()
+    const {access_token, refresh_token } = state;
     ApiClientBase.assertUser()
     ApiClientBase.USER = {
       ...ApiClientBase.USER!,
-      access_token: res.access,
-      refresh_token: res.refresh
+      access_token: access_token.value,
+      refresh_token: refresh_token.value
     }
-    /* TODO: sync in session storage */
   }
 
   protected static logout() {
     ApiClientBase.assertUser()
     ApiClientBase.USER = null
-    /* TODO: sync in session storage */
   }
 
   protected static assertUser() {
-    if (!ApiClientBase.USER) {
+    const token = localStorage.getItem("access_token")
+    if (!ApiClientBase.USER && !token) {
       panic(`Expected to login before using this route.`)
     }
   }
@@ -63,8 +67,15 @@ export abstract class ApiClientBase {
     return this.prePath + this.path + route + '/?' + q
   }
 
-  private static normalizeError(err: AxiosError<any>) {
-    return err.response?.data?.detail ?? err.response?.data?.message ?? err.message
+  private static normalizeError(err: AxiosError<any>): string {
+    const responseData = err.response?.data;
+    const errorMessage = responseData?.message ?? err.message;
+  
+    const errorDetails = Object.entries(responseData?.error || {})
+      .map(([_, value]) => `${value}`)
+      .join('. ');
+  
+    return `${errorMessage}${errorDetails ? `. ${capitalize(errorDetails)}` : ''}`;
   }
 
   protected async unwrap<T, R = T>(
@@ -72,14 +83,22 @@ export abstract class ApiClientBase {
     options: Api.UnwrapOptions<T, R> = {}
   ) {
     const [res, err] = await resolve(req$)
+    const access_token = localStorage.getItem("access_token")
+    const refresh_token = localStorage.getItem("refresh_token")
+    
     // check if error indicate the token needs to be refreshed
     if (
       err &&
       err.response.status == 401 &&
       err.response.data.code == 'token_not_valid' &&
-      ApiClientBase.USER
+      ApiClientBase.USER &&
+      refresh_token !== null
     ) {
-      await ApiClientBase.$api.auth.refresh({ refresh: ApiClientBase.USER.refresh_token })
+      await ApiClientBase.$api.auth.refresh({ refresh: refresh_token })
+    }
+    if (err && !ApiClientBase.USER && access_token !== null && refresh_token !== null) {
+      const user = await ApiClientBase.$api.myprofile.getUser();
+      ApiClientBase.USER = {...user, access_token, refresh_token}
     }
 
     if (err) {

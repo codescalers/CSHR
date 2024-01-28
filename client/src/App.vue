@@ -10,6 +10,8 @@ import { useApi } from '@/hooks'
 import SideDrawer from './components/SideDrawer.vue'
 import { onMounted } from 'vue'
 import { useState } from './store'
+import { $api } from './clients'
+import { useAsyncState } from '@vueuse/core'
 
 export default {
   name: 'App',
@@ -23,8 +25,11 @@ export default {
     const state = useState()
     api && notifier && api.setNotifier(notifier)
 
-    onMounted(() => {
-      state.access_token.value = localStorage.access_token
+    onMounted(async() => {
+      const {access_token, refresh_token, user} = state
+      access_token.value = localStorage.access_token
+      refresh_token.value = localStorage.refresh_token
+      user.value = useAsyncState(async() => await $api.myprofile.getUser(), null).state
     })
   }
 }
