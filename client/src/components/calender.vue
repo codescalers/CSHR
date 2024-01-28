@@ -19,9 +19,9 @@
   </v-row>
   <div class="ma-7 pa-7">
     <div class="loading-container d-flex align-center justify-center  my-5" v-if="homes.isLoading.value">
-      <v-alert density="compact" class="pa-5" type="warning" text="Events are loading..."></v-alert>
+      <v-alert density="compact" class="pa-5" type="info" text="Events are loading..."></v-alert>
     </div>
-    <FullCalendar v-else class="fc" :options="{
+    <FullCalendar class="fc" :options="{
       ...options,
       events: eventsOption,
       dayCellDidMount
