@@ -10,7 +10,21 @@ export const $vuetify = createVuetify({
     }
   },
   theme: {
-    defaultTheme: 'dark'
+    defaultTheme: 'dark',
+    themes: {
+      dark: {
+        dark: true,
+        colors: {
+        
+        }
+      },
+      light: {
+        dark: false,
+        colors: {
+        
+        }
+      }
+    }
   },
   components: {
     VDialog: CustomVDialog
