@@ -73,7 +73,7 @@ export function normalizeEvent(e: Api.Inputs.Event): any {
     color: 'primary',
     start: dates.start,
     end: dates.end,
-    backgroundColor: 'primary',
+    backgroundColor: 'gray',
     id: e.name,
     allDay: true
   }
@@ -86,7 +86,7 @@ export function normalizeVacation(v: Api.Vacation) {
     color: 'primary',
     start: dates.start,
     end: dates.end,
-    backgroundColor: 'gray',
+    backgroundColor: 'primary',
     id: v.id.toString(),
     allDay: true
   }
@@ -100,7 +100,7 @@ export function normalizeHoliday(h: Api.Holiday) {
     color: 'primary',
     start: dates.start,
     end: dates.end,
-    backgroundColor: 'gray',
+    backgroundColor: '#33b679',
     id: h.id.toString(),
     allDay: true
   }
@@ -113,7 +113,7 @@ export function normalizedBirthday(u: Api.User) {
     color: 'info',
     start: dates.start,
     end: dates.end,
-    backgroundColor: 'warning',
+    backgroundColor: '#d97900',
     id: u.id.toString(),
     allDay: true
   }
@@ -128,7 +128,7 @@ export function normalizeMeeting(m: Api.Meetings): any {
     color: 'secondary',
     start: dates.start,
     end: dates.end,
-    backgroundColor: 'primary',
+    backgroundColor: '#26609b',
     id: m.id,
     allDay: true
   }
