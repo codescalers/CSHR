@@ -2,19 +2,19 @@
 <template>
   <v-row class="justify-center py-4">
     <v-col cols="2">
-      <v-checkbox v-model="selected.meetings" label="Meetings" />
+      <v-checkbox v-model="selected.meetings" color="secondary" label="Meetings" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.events" label="Events" />
+      <v-checkbox v-model="selected.events" color="gray" label="Events" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.vacations" label="Vacations" />
+      <v-checkbox v-model="selected.vacations" color="primary" label="Vacations" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.holidays" label="Holidays" />
+      <v-checkbox v-model="selected.holidays" color="#33b679" label="Holidays" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.birthdays" label="Birthdays" />
+      <v-checkbox v-model="selected.birthdays" color="warning" label="Birthdays" />
     </v-col>
   </v-row>
   <v-divider class="d-flex mx-auto" style="width: 90%"></v-divider>
