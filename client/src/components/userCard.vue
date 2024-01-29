@@ -1,10 +1,15 @@
 <template>
   <v-card color="title" class="py-10 ma-5 hover-card">
+    <div  class="pa-5 d-flex flex-row-reverse">
+        <v-chip v-if="!user.is_active" color="red">
+          Inactive </v-chip>
+      </div>
     <div class="d-flex align-center justify-center items-center py-0 font-weight-bold">
-      <profileImage  v-show="user" :user="user"/>
+      <profileImage v-show="user" :user="user" />
 
     </div>
     <div class="my-3">
+   
       <v-card-title> {{ user.full_name }}</v-card-title>
 
 
@@ -39,7 +44,9 @@ export default {
 
 <style scoped>
 .hover-card:hover {
-  transform: scale(1.05); /* Increase the scale on hover */
-  transition: transform 0.3s ease; /* Add a smooth transition effect */
+  transform: scale(1.05);
+  /* Increase the scale on hover */
+  transition: transform 0.3s ease;
+  /* Add a smooth transition effect */
 }
 </style>

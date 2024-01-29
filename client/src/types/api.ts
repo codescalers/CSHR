@@ -142,11 +142,6 @@ export module Api {
     export type Meeting = MsgRes<Meeting>
 
     export type Profile = MsgRes<User>
-    export type Users = MsgRes<{
-      count: number
-      users: User[]
-    }>
-
     export type AllMeetings = MsgRes<Meetings>
 
     export type Login = MsgRes<{
