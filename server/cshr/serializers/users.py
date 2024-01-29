@@ -147,6 +147,7 @@ class SupervisorUserSerializer(ModelSerializer):
             "job_title",
             "address",
             "user_type",
+            "is_active",
         ]
 
     def get_user_certificates(self, obj):
@@ -211,6 +212,7 @@ class AdminUserSerializer(ModelSerializer):
             "job_title",
             "address",
             "user_type",
+            "is_active",
         ]
 
     def get_user_certificates(self, obj):
@@ -280,6 +282,7 @@ class SelfUserSerializer(ModelSerializer):
             "address",
             "user_type",
             "background_color",
+            "is_active",
         ]
 
     def get_user_certificates(self, obj):
@@ -314,6 +317,7 @@ class BaseUserSerializer(ModelSerializer):
     image = SerializerMethodField()
     skills = SerializerMethodField()
     user_certificates = SerializerMethodField()
+    location = SerializerMethodField()
 
     class Meta:
         model = User
@@ -327,7 +331,12 @@ class BaseUserSerializer(ModelSerializer):
             "skills",
             "job_title",
             "user_certificates",
+            "is_active",
+            "location"
         ]
+    
+    def get_location(self, obj):
+        return OfficeSerializer(obj.location).data
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color
@@ -338,6 +347,7 @@ class BaseUserSerializer(ModelSerializer):
     def get_user_certificates(self, obj):
         training_courses = get_training_courses_for_a_user(obj.id)
         return TrainingCoursesSerializer(training_courses, many=True).data
+
 
 
 class TeamSerializer(ModelSerializer):
@@ -359,6 +369,7 @@ class TeamSerializer(ModelSerializer):
             "mobile_number",
             "address",
             "location",
+            "is_active",
         ]
 
     def get_image(self, obj):
@@ -376,6 +387,7 @@ class BasicUserSerializer(ModelSerializer):
         fields = [
             "id",
             "full_name",
+            "is_active",
         ]
 
 
@@ -427,6 +439,7 @@ class UpdateUserSerializer(ModelSerializer):
             "address",
             "user_type",
             "background_color",
+            "is_active",
         ]
 
     def get_user_certificates(self, obj):

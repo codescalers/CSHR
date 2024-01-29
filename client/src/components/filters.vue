@@ -43,7 +43,7 @@ export default {
   name: 'officeFilters',
   props: ['offices'],
 
-  setup(props) {
+  setup() {
     const $router = useRouter()
     const office = ref<Country>()
 
