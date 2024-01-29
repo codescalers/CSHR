@@ -23,9 +23,7 @@ export class UsersApi extends ApiClientBase {
   }
 
   list(query?: any) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
-      transform: (d) => d.results
-    })
+      return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
   }
   getuser(id: number, options: Api.UnwrapOptions<any, any> = {}) {
     return this.unwrap(this.$http.get<Api.Returns.Profile>(this.getUrl(`/${id}`)), {
