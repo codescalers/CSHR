@@ -69,7 +69,6 @@
             <v-col cols="9" class="d-flex justify-end">
               <v-btn :disabled="!form?.isValid" @click="activateUser.execute()" :loading="isLoading" v-if="selectedUser"
                 :color="`${selectedUser.is_active ? 'error' : 'success'}`">
-                userIsActive = {{ userIsActive }}
                 {{ selectedUser.is_active ? 'Set as inactive user' : 'Set as active user' }}
               </v-btn>
             </v-col>
