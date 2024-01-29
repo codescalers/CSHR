@@ -35,7 +35,7 @@ export default {
 .expired {
   position: absolute;
   top: 15px;
-  left: -40px;
+  left: -32px;
   transform: rotate(-35deg);
   background: brown;
   padding: 4px;
@@ -45,6 +45,6 @@ export default {
   justify-content: center;
   align-items: center;
   font-weight: 700;
-  color: black;
+  color: white;
 }
 </style>
