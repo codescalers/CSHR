@@ -1,27 +1,33 @@
 <template>
-  <v-card elevation="0" variant="outlined" color="primary" class="pa-4">
-    <div class="d-flex flex-row-reverse">
-      <v-icon class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
-    </div>
-    <div class="d-flex justify-center">
-      <v-tabs v-model="tab" color="primary">
-        <v-tab v-for="tab in tabs" :key="tab" :value="tab"> {{ tab }}</v-tab>
-      </v-tabs>
-    </div>
+  <v-card elevation="0" color="" class="">
+    <v-card-title class="bg-primary">
+      <div class="d-flex flex-row-reverse">
+        <v-icon size="small" class="" @click.stop="$emit('close-dialog', false)">
+          mdi-close
+        </v-icon>
+      </div>
+    </v-card-title>
+    <v-container class="pa-6">
+      <div class="d-flex justify-center">
+        <v-tabs v-model="tab" color="">
+          <v-tab v-for="tab in tabs" :key="tab" :value="tab"> {{ tab }}</v-tab>
+        </v-tabs>
+      </div>
 
-    <v-window v-model="tab">
-      <v-window-item value="Leave">
-        <leaveRequest :dates="dates" @create-event="createLeave($event)"></leaveRequest>
-      </v-window-item>
+      <v-window v-model="tab">
+        <v-window-item value="Leave">
+          <leaveRequest :dates="dates" @create-event="createLeave($event)"></leaveRequest>
+        </v-window-item>
 
-      <v-window-item value="Meeting">
-        <meetingRequest :dates="dates" @create-event="createMeeting($event)" />
-      </v-window-item>
+        <v-window-item value="Meeting">
+          <meetingRequest :dates="dates" @create-event="createMeeting($event)" />
+        </v-window-item>
 
-      <v-window-item value="Event">
-        <eventRequest :dates="dates" @create-event="createEvent($event)" />
-      </v-window-item>
-    </v-window>
+        <v-window-item value="Event">
+          <eventRequest :dates="dates" @create-event="createEvent($event)" />
+        </v-window-item>
+      </v-window>
+    </v-container>
   </v-card>
 </template>
 <script lang="ts">
