@@ -91,7 +91,7 @@ class UsersSetActiveApi extends ApiClientBase {
   protected readonly path = '/set_active'
 
   update(input: Api.Inputs.UsersActive) {
-    return this.unwrap(this.$http.put<Api.Inputs.UsersActive>(this.getUrl(), input))
+    return this.unwrap(this.$http.put<any>(this.getUrl(), input))
   }
 }
 
@@ -99,7 +99,7 @@ class UsersSetInActiveApi extends ApiClientBase {
   protected readonly path = '/set_inactive'
 
   update(input: Api.Inputs.UsersActive) {
-    return this.unwrap(this.$http.put<Api.Inputs.UsersActive>(this.getUrl(), input))
+    return this.unwrap(this.$http.put<any>(this.getUrl(), input))
   }
 }
 
