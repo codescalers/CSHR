@@ -163,7 +163,31 @@
             height="200"
             class="justify-center mb-5"
           ></v-img>
-          <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading='isLoading' @click="execute">Update User</v-btn>
+          <v-row>
+            <v-col cols="3">
+              <v-btn
+                color="primary"
+                type="submit"
+                :disabled="!form?.isValid"
+                :loading="isLoading"
+                @click="execute"
+                >Update User</v-btn
+              >
+            </v-col>
+
+            <v-col cols="9" class="d-flex justify-end">
+              <v-btn
+                :disabled="!form?.isValid"
+                @click="activateUser"
+                :loading="isLoading"
+                v-if="selectedUser"
+                :color="`${selectedUser.is_active ? 'error' : 'success'}`"
+              >
+                userIsActive = {{ userIsActive }}
+                {{ selectedUser.is_active ? 'Set as inactive user' : 'Set as active user' }}
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
     </v-form>
@@ -211,6 +235,7 @@ export default {
     const officeUsers = ref([])
     const selectedUser = ref()
     const reporting_to = ref()
+    const userIsActive = ref<boolean>(selectedUser.value?.is_active)
 
     onMounted(async () => {
       try {
@@ -252,16 +277,38 @@ export default {
       }
     }
 
-    const {execute, isLoading} = useAsyncState(async() => {
+    const activateUser = async () => {
+      isLoading.value = true
+      if (selectedUser.value.is_active) {
+        selectedUser.value.is_active = userIsActive.value = false
+      } else {
+        selectedUser.value.is_active = userIsActive.value = true
+      }
+
       await $api.myprofile.update(selectedUser.value.id, {
         ...selectedUser.value,
         image: imageUrl.value || null,
         location: selectedUser.value.location.id,
         filename: image.value[0].name,
-        reporting_to: reporting_to.value ? [reporting_to.value.id] : []
+        reporting_to: reporting_to.value ? [reporting_to.value.id] : [],
+        is_active: userIsActive.value
       })
-    }, null, {immediate: false})
+      isLoading.value = false
+    }
 
+    const { execute, isLoading } = useAsyncState(
+      async () => {
+        await $api.myprofile.update(selectedUser.value.id, {
+          ...selectedUser.value,
+          image: imageUrl.value || null,
+          location: selectedUser.value.location.id,
+          filename: image.value[0].name,
+          reporting_to: reporting_to.value ? [reporting_to.value.id] : []
+        })
+      },
+      null,
+      { immediate: false }
+    )
 
     return {
       form,
@@ -289,8 +336,10 @@ export default {
       requiredStringRules,
       requiredRules,
       isLoading,
+      userIsActive,
       execute,
       toggleDatePicker,
+      activateUser,
       chooseImage
     }
   }
