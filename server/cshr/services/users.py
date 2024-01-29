@@ -84,9 +84,9 @@ def get_all_of_users(options=None) -> User:
     """Return all users"""
     if options:
         return User.objects.filter(location__id=options["location"]["id"]).order_by(
-            "-is_active"
-        )
-    return User.objects.all().order_by("-is_active")
+            "first_name"
+        ).order_by("-is_active")
+    return User.objects.all().order_by("first_name").order_by("-is_active")
 
 
 def get_admin_office_users(admin: User) -> User:
