@@ -15,12 +15,6 @@
             </v-list-item>
           </template>
         </v-list>
-
-        <template v-slot:append>
-          <div class="pa-2">
-            <v-btn block @click="logout"> Logout </v-btn>
-          </div>
-        </template>
       </v-navigation-drawer>
       <v-main style="min-height: 100vh">
         <CshrToolbar v-if="$route.path != '/login'" @logout="logout" />
