@@ -49,12 +49,12 @@ export default {
 }
 .inactive {
   position: absolute;
-  top: 15px;
+  top: 21px;
   left: -40px;
   transform: rotate(-35deg);
   background: brown;
   padding: 4px;
-  width: 197px;
+  width: 187px;
   text-align: center;
   margin: 0 auto;
   justify-content: center;
