@@ -15,6 +15,10 @@ export const $vuetify = createVuetify({
       dark: {
         dark: true,
         colors: {
+          primary: "#3399CC",
+          info: "#d9d9d9",
+          warning :"#fb8c00",
+          graytitle: "#333",
         
         }
       },

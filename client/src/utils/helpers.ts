@@ -110,10 +110,10 @@ export function normalizedBirthday(u: Api.User) {
 
   return {
     title: `Birthday`,
-    color: 'primary',
+    color: 'info',
     start: dates.start,
     end: dates.end,
-    backgroundColor: 'gray',
+    backgroundColor: 'warning',
     id: u.id.toString(),
     allDay: true
   }

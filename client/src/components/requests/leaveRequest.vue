@@ -2,9 +2,9 @@
   <v-form ref="form" @submit.prevent="createLeave()">
     <div class="mt-3">
       <v-text-field
-        color=""
-        item-color=""
-        base-color=""
+        color="info"
+        item-color="info"
+        base-color="info"
         variant="outlined"
         hide-details="auto"
         label="From"
@@ -19,9 +19,9 @@
 
     <div class="mt-3">
       <v-text-field
-        color=""
-        item-color=""
-        base-color=""
+        color="info"
+        item-color="info"
+        base-color="info"
         :readonly="true"
         variant="outlined"
         v-model="endDate"
@@ -36,9 +36,9 @@
 
     <div class="mt-3">
       <v-autocomplete
-        color=""
-        item-color=""
-        base-color=""
+        color="info"
+        item-color="info"
+        base-color="info"
         variant="outlined"
         v-model="leaveReason"
         :items="leaveReasons"
@@ -48,13 +48,8 @@
       >
       </v-autocomplete>
     </div>
-
-    <v-row class="mt-3 d-flex flex-row-reverse">
-      <v-col cols="3">
-        <v-btn color="primary" type="Submit" :disabled="!form?.isValid || !isValid" width="100%">
-          Submit
-        </v-btn>
-      </v-col>
+    <v-row class="pa-4 d-flex justify-end">
+      <v-btn color="primary" type="Submit" :disabled="!form?.isValid || !isValid"> Submit </v-btn>
     </v-row>
   </v-form>
 </template>

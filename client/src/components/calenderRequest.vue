@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="0" color="" class="">
-    <v-card-title class="bg-primary">
+    <v-card-title class="bg-graytitle">
       <div class="d-flex flex-row-reverse">
         <v-icon size="small" class="" @click.stop="$emit('close-dialog', false)">
           mdi-close
