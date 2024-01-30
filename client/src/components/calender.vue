@@ -471,4 +471,13 @@ button {
   color: #131313;
   font-weight: 500;
 }
+
+.fc-popover{
+  background-color: rgb(49 47 47) !important;
+  color: #ffffff;
+
+.fc-popover-header {
+  background-color: rgb(100, 99, 99) !important;
+}
+}
 </style>

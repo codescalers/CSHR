@@ -10,7 +10,7 @@
     <profileImage :with-link="true" v-show="birthday" :user="birthday" class="my-4" />
       <h4 class="text-center my-3">
         <strong class="text-info">{{ firstname }}'s</strong>
-        Birthday Today! 🎉🎂
+        Birthday Today!
       </h4>
       <!-- Wish a happy birthday to </h3> -->
     </div>
