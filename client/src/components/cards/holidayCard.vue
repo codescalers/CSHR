@@ -3,7 +3,6 @@
     <div class="d-flex flex-row-reverse">
       <v-icon class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
     </div>
-    <div class="d-flex expired" v-if="holiday.expired">expired</div>
     <v-card-title class="text-center mb-5 my-2">
       <h1 :class="`${holiday.expired ? 'text-error' : ''}`">{{ holiday.location.country }}</h1>
     </v-card-title>

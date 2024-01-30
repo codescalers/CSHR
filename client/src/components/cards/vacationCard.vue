@@ -9,12 +9,11 @@
       vacation.end_date }} </b> vacation</v-card-title>
     <br>
 
-    <v-row class="d-flex flex-row-reverse" v-if="couldUpdate">
-      <v-btn color="primary" class="ma-4" @click="readOnly = false">Update</v-btn>
-      <v-btn color="red" class="ma-4" @click="handleDelete">Delete</v-btn>
-    </v-row>
-
     <v-form ref="form" @submit.prevent="updateVacation()">
+      <v-row class="d-flex flex-row-reverse" v-if="couldUpdate">
+        <v-btn color="primary" class="ma-4" type="submit" :disabled="!form?.isValid || disabled">Update</v-btn>
+        <v-btn color="red" class="ma-4" @click="handleDelete">Delete</v-btn>
+      </v-row>
       <v-card elevation="0" class="pa-8">
         <v-row class="py-5">
           <v-col cols="3">
@@ -28,18 +27,7 @@
 
           </v-col>
 
-          <v-col cols="3">
-            <v-icon>mdi-account</v-icon>
 
-            <b> Approval User </b>
-
-          </v-col>
-          <v-col cols="3" class="text-right" v-if="vacation.isUpdated">
-            {{ vacation.approval_user ? vacation.approval_user : "Under approving" }}
-          </v-col>
-          <v-col cols="3" class="text-right" v-else>
-            {{ vacation.approval_user.email ? vacation.approval_user.email : "Under approving" }}
-          </v-col>
         </v-row>
 
         <v-row>
@@ -51,7 +39,7 @@
           </v-col>
           <v-col cols="4">
             <v-text-field color="primar'" item-color="primary" base-color="primary" variant="outlined" hide-details="auto"
-              label="From" v-model="startDate" :readonly="readOnly" type="date">
+              label="From" v-model="startDate" :readonly="!couldUpdate" type="date">
             </v-text-field>
           </v-col>
 
@@ -63,7 +51,7 @@
           </v-col>
           <v-col cols="4">
             <v-text-field color="primar'" item-color="primary" base-color="primary" variant="outlined" hide-details="auto"
-              label="To" v-model="endDate" :readonly="readOnly" type="date" :rules="[validateEndDate]">
+              label="To" v-model="endDate" :readonly="!couldUpdate" type="date" :rules="[validateEndDate]">
             </v-text-field>
           </v-col>
         </v-row>
@@ -78,7 +66,7 @@
           <v-col cols="4">
             <v-autocomplete color="primary" item-color="primary" base-color="primary" variant="outlined"
               v-model="leaveReason" :items="leaveReasons" label="Reason" return-object item-title="name"
-              :readonly="readOnly">
+              :readonly="!couldUpdate">
             </v-autocomplete>
 
           </v-col>
@@ -90,13 +78,6 @@
             {{ vacation.status }}
 
           </v-col>
-        </v-row>
-        <v-row class="d-flex flex-row-reverse" v-if="!readOnly">
-          <v-btn color="" class="ma-4" @click="readOnly = true">Cancel</v-btn>
-          <v-btn color="primary" class="ma-4" type="submit" :disabled="!form?.isValid">
-            Submit
-          </v-btn>
-
         </v-row>
       </v-card>
     </v-form>
@@ -111,7 +92,7 @@
 </template>
 <script lang="ts">
 import type { Api } from '@/types';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useState } from '@/store'
 import { useApi } from '@/hooks'
@@ -135,12 +116,9 @@ export default {
     const endDate = ref<Date>(props.vacation.end_date)
     const leaveReason = ref<Api.LeaveReason>({ name: transformString(props.vacation.reason), reason: props.vacation.reason })
     const form = ref()
+    const disabled = ref<boolean>(true)
     const state = useState()
-    const readOnly = ref<boolean>(true)
     const leaveReasons = ref<Api.LeaveReason[]>([{
-      name: "Public Holidays",
-      reason: "public_holiday"
-    }, {
       name: "Emergency Leaves",
       reason: "emergency_leaves",
     }, {
@@ -195,6 +173,14 @@ export default {
       return false
     });
 
+    watch([leaveReason, startDate, endDate], ([newLeaveReason, newStartDate, newEndDate], [oldLeaveReason, oldStartDate, oldEndDate]) => {
+      if (newLeaveReason.name !== oldLeaveReason.name || newStartDate !== oldStartDate || newEndDate !== oldEndDate) {
+        disabled.value = false;
+        return
+      }
+      disabled.value = true;
+
+    });
 
     function validateEndDate(value: any) {
       if (startDate.value && value <= startDate.value) {
@@ -260,10 +246,10 @@ export default {
 
     return {
       startDate,
+      disabled,
       endDate,
       leaveReason,
       leaveReasons,
-      readOnly,
       form,
       state,
       couldApprove,
