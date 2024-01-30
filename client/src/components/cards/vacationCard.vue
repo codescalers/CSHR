@@ -25,7 +25,7 @@
           >
         </v-row>
       </p>
-      <v-divider></v-divider>
+      <v-divider class="my-2"></v-divider>
       <v-form ref="form" @submit.prevent="updateVacation()">
         <v-card elevation="0" class="pa-4">
           <v-row class="py-2">
