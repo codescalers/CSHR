@@ -70,10 +70,10 @@ export function normalizeEvent(e: Api.Inputs.Event): any {
   return {
     title: 'Event',
     classNames: ['cshr-event'],
-    color: 'primary',
+    color: '#47a2ff',
     start: dates.start,
     end: dates.end,
-    backgroundColor: 'gray',
+    backgroundColor: '#47a2ff',
     id: e.name,
     allDay: true
   }
@@ -83,10 +83,10 @@ export function normalizeVacation(v: Api.Vacation) {
 
   return {
     title: `${v.user!.full_name}'s Vacation`,
-    color: 'primary',
+    color: '#fcd091',
     start: dates.start,
     end: dates.end,
-    backgroundColor: 'primary',
+    backgroundColor: '#fcd091',
     id: v.id.toString(),
     allDay: true
   }
@@ -97,10 +97,10 @@ export function normalizeHoliday(h: Api.Holiday) {
 
   return {
     title: `Public Holiday`,
-    color: 'primary',
+    color: '#5effb4',
     start: dates.start,
     end: dates.end,
-    backgroundColor: '#33b679',
+    backgroundColor: '#5effb4',
     id: h.id.toString(),
     allDay: true
   }
@@ -110,10 +110,10 @@ export function normalizedBirthday(u: Api.User) {
 
   return {
     title: `Birthday`,
-    color: 'info',
+    color: '#e0adf0',
     start: dates.start,
     end: dates.end,
-    backgroundColor: '#d97900',
+    backgroundColor: '#e0adf0',
     id: u.id.toString(),
     allDay: true
   }
@@ -125,10 +125,10 @@ export function normalizeMeeting(m: Api.Meetings): any {
 
   return {
     title: 'Meeting',
-    color: 'secondary',
+    color: '#efeaea',
     start: dates.start,
     end: dates.end,
-    backgroundColor: '#26609b',
+    backgroundColor: '#efeaea',
     id: m.id,
     allDay: true
   }

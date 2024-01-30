@@ -2,19 +2,19 @@
 <template>
   <v-row class="justify-center py-4">
     <v-col cols="2">
-      <v-checkbox v-model="selected.meetings" color="secondary" label="Meetings" />
+      <v-checkbox v-model="selected.meetings" color="#efeaea" label="Meetings" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.events" color="gray" label="Events" />
+      <v-checkbox v-model="selected.events" color="#47a2ff" label="Events" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.vacations" color="primary" label="Vacations" />
+      <v-checkbox v-model="selected.vacations" color="#fcd091" label="Vacations" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.holidays" color="#33b679" label="Holidays" />
+      <v-checkbox v-model="selected.holidays" color="#5effb4" label="Holidays" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.birthdays" color="warning" label="Birthdays" />
+      <v-checkbox v-model="selected.birthdays" color="#e0adf0" label="Birthdays" />
     </v-col>
   </v-row>
   <v-divider class="d-flex mx-auto" style="width: 90%"></v-divider>
@@ -465,5 +465,10 @@ export default {
 
 button {
   text-transform: capitalize !important;
+}
+
+.fc-event-title{
+  color: #131313;
+  font-weight: 500;
 }
 </style>
