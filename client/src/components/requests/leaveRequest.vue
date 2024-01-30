@@ -1,6 +1,11 @@
 
 <template>
   <v-form ref="form" @submit.prevent="createLeave()">
+
+    <v-alert density="compact" class="pa-5 my-5" type="warning">
+      {{ actualDays.state.value === 0 ? "Actual vacation days requested is zero, Selected days might include weekends or public holidays" : "Actual vacation days requested are " + actualDays.state.value +" days" }}
+    </v-alert>
+
     <div class="mt-3">
       <v-text-field color="primar'" item-color="primary" base-color="primary" variant="outlined" hide-details="auto"
         label="From" v-model="startDate" :readonly="true">
@@ -31,7 +36,8 @@
     <v-row class="mt-3 d-flex flex-row-reverse">
 
       <v-col cols="3">
-        <v-btn color="primary" type="submit" :disabled="!form?.isValid || !isValid" width="100%">
+        <v-btn color="primary" type="submit" :disabled="!form?.isValid || !isValid || actualDays.state.value === 0"
+          width="100%">
           Submit
         </v-btn>
       </v-col>
@@ -43,7 +49,7 @@ import { useApi } from '@/hooks'
 import type { Api } from '@/types';
 import { useAsyncState } from '@vueuse/core';
 import { computed, ref } from 'vue';
-
+import { useState } from '@/store'
 
 export default {
   name: "leaveRequest",
@@ -52,53 +58,52 @@ export default {
     'create-event': (item: any) => item,
   },
   setup(props, ctx) {
+    const state = useState()
     const $api = useApi()
     const form = ref()
     const startDate = ref<Date>(props.dates.startStr)
     const endDate = ref<Date>(props.dates.endStr)
     const leaveReason = ref<Api.LeaveReason>()
+    const actualDays = useAsyncState($api.vacations.calculate.list({
+      start_date: startDate.value,
+      end_date: endDate.value,
+    }
+    ), [])
 
     const isValid = computed(() => {
       let val = leaveReason.value ? true : false;
       return val;
     });
-
-
-    const leaveReasons = ref<Api.LeaveReason[]>([{
-      name: "Public Holidays",
-      reason: "public_holidays"
-    }, {
-      name: "Emergency Leaves",
-      reason: "emergency_leaves",
-    }, {
-      name: "Sick Leaves",
-      reason: "sick_leaves",
-    },
-    {
-      name: "Annual Leaves",
-      reason: "annual_leaves",
-    },
-    {
-      name: "Unpaid",
-      reason: "unpaid",
-    },
-    {
-      name: "Compensation",
-      reason: "compensation",
-    },
+    const leaveReasons = ref<Api.LeaveReason[]>([
     ])
 
-    async function calculateActualDays() {
-      return await $api.vacations.calculate.list({
-        start_date: startDate.value,
-        end_date: endDate.value,
+    const balance = useAsyncState($api.vacations.getVacationBalance({ "user_ids": state.user.value.value.id }), null, {
+      onSuccess(data: any) {
+        leaveReasons.value = [{
+          name: `Emergency Leaves  ${data[0].emergency_leaves.reserved} / ${data[0].emergency_leaves.all}`,
+          reason: "emergency_leaves",
+        }, {
+          name: `Sick Leaves  ${data[0].sick_leaves.reserved} / ∞`,
+          reason: "sick_leaves",
+        },
+        {
+          name: `Annual Leaves  ${data[0].annual_leaves.reserved} / ${data[0].annual_leaves.all}`,
+          reason: "annual_leaves",
+        },
+        {
+          name: `Unpaid ${data[0].unpaid.reserved} / ∞`,
+          reason: "unpaid",
+        },
+        {
+          name: `Compensation  ${data[0].compensation.reserved} / ∞`,
+          reason: "compensation",
+        },]
+
       }
-      )
-    }
+    })
 
     async function createLeave() {
       if (leaveReason.value) {
-        calculateActualDays()
         useAsyncState($api.vacations.create(
           {
             reason: leaveReason.value.reason,
@@ -121,6 +126,7 @@ export default {
       leaveReason,
       form,
       isValid,
+      actualDays,
       createLeave,
     };
   },
