@@ -1,5 +1,5 @@
 import { ApiClientBase } from '@/clients/api/base'
-import { isAuthenticated, isAdmin } from '@/hooks'
+// import { isAuthenticated, isAdmin } from '@/hooks'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -18,15 +18,15 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, _, next) => {
-  const isAuth = ApiClientBase.isAuth()
+  const user = ApiClientBase.user
 
-  console.log(to.path, { isAuth })
-
-  if (!isAuth) {
+  if (!user.value) {
     return to.path === '/login' ? next() : next('/login')
   }
 
-  // if (isAuth) {}
+  if (user.value.fullUser.user_type.toLowerCase() !== 'admin' && to.path === '/dashboard') {
+    return next('/')
+  }
 
   next()
 })

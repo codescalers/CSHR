@@ -19,11 +19,12 @@ import { computed, defineComponent } from 'vue'
 import vacationBalance from '@/components/vacationBalance.vue'
 import personalInformation from '@/components/personalInformation.vue'
 import { $api } from '@/clients'
-import { useRoute } from 'vue-router';
-import { useAsyncState } from '@vueuse/core';
-import profileImage from "@/components/profileImage.vue";
-import { useState } from '@/store'
-import UserCard from "@/components/userCard.vue"
+import { useRoute } from 'vue-router'
+import { useAsyncState } from '@vueuse/core'
+import profileImage from '@/components/profileImage.vue'
+// import { useState } from '@/store'
+import UserCard from '@/components/userCard.vue'
+import { ApiClientBase } from '@/clients/api/base'
 
 export default defineComponent({
   components: {
@@ -33,48 +34,57 @@ export default defineComponent({
   },
 
   setup() {
-    const $route = useRoute();
-    const state = useState()
-    const user = useAsyncState($route.query.id ? $api.users.getuser(Number($route.query.id)) : $api.myprofile.getUser(), [], {
-      onSuccess(data) {
-        balance.execute(undefined, data.id)
+    const $route = useRoute()
+    // const state = useState()
+    const storedUser = ApiClientBase.user
+    const user = useAsyncState(
+      $route.query.id ? $api.users.getuser(Number($route.query.id)) : $api.myprofile.getUser(),
+      [],
+      {
+        onSuccess(data) {
+          balance.execute(undefined, data.id)
+        }
       }
-    })
+    )
 
     const balance = useAsyncState(
       async (id: number) => {
-        return $api.vacations.getVacationBalance({ "user_ids": id })
+        return $api.vacations.getVacationBalance({ user_ids: id })
       },
       null,
       { immediate: false }
     )
 
     const showBalance = computed(() => {
-      if (state.user.value) {
-        if ((user.state.value && state.user.value.value) && (user.state.value.id === state.user.value.value.id)) {
-          return true;
-        }
-        else if (state.user.value.value && state.user.value.value.user_type === 'Admin') {
+      if (storedUser.value?.fullUser) {
+        if (
+          user.state.value &&
+          storedUser.value?.fullUser &&
+          user.state.value.id === storedUser.value?.fullUser.id
+        ) {
+          return true
+        } else if (storedUser.value?.fullUser && storedUser.value?.fullUser.user_type === 'Admin') {
           if (user.state.value.reporting_to) {
-            if (user.state.value.reporting_to.includes(state.user.value.value.id)
-              && user.state.value.location.name === state.user.value.value.location.name) {
-              return true;
+            if (
+              user.state.value.reporting_to.includes(storedUser.value?.fullUser.id) &&
+              user.state.value.location.name === storedUser.value?.fullUser.location.name
+            ) {
+              return true
             }
           }
           return false
         }
       }
       return false
-    });
+    })
 
     return {
       user,
-      state,
       balance,
       showBalance,
       vacationBalance,
       personalInformation,
-      profileImage,
+      profileImage
     }
   }
 })

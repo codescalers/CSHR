@@ -11,6 +11,8 @@ export class AuthApi extends ApiClientBase {
       { transform: (d) => d.results }
     )
 
+    console.log({ user })
+
     ApiClientBase.login(user as any)
 
     const fullUser = await ApiClientBase.$api.myprofile.getUser()
@@ -42,5 +44,9 @@ export class AuthApi extends ApiClientBase {
   async changePassword(input: Api.Inputs.ChangePassword) {
     ApiClientBase.assertUser()
     return this.unwrap(this.$http.put(this.getUrl('/change-password'), input))
+  }
+
+  logout() {
+    ApiClientBase.logout()
   }
 }

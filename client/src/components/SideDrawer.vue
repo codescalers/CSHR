@@ -16,9 +16,14 @@
           </template>
         </v-list>
       </v-navigation-drawer>
-      <v-main style="min-height: 100vh" v-if="isReadyRouter.state.value">
-        <CshrToolbar v-if="$route.path != '/login'" @logout="logout" />
-        <router-view />
+      <v-main style="min-height: 100vh">
+        <template v-if="isReadyRouter.state.value">
+          <CshrToolbar v-if="$route.path != '/login'" @logout="logout" />
+          <router-view />
+        </template>
+        <div class="d-flex justify-center align-center h-100" v-else>
+          <VProgressCircular size="80" width="5" indeterminate color="primary" />
+        </div>
       </v-main>
     </v-layout>
   </v-card>
@@ -28,10 +33,13 @@
 import { useRoute, useRouter } from 'vue-router'
 import { useAsyncState } from '@vueuse/core'
 import logo from '@/assets/cshr_logo.png'
-import { useState } from '@/store'
-import { isAdmin } from '@/hooks'
+// import { useState } from '@/store'
+// import { isAdmin } from '@/hooks'
 import { computed } from 'vue'
 import CshrToolbar from './CshrToolbar.vue'
+// import { ApiClientBase } from '@/clients/api/base'
+import { $api } from '@/clients'
+import { ApiClientBase } from '@/clients/api/base'
 
 export default {
   name: 'SideDrawer',
@@ -41,7 +49,8 @@ export default {
   setup() {
     const $route = useRoute()
     const $router = useRouter()
-    const state = useState()
+    // const state = useState()
+    const user = ApiClientBase.user
 
     const isReadyRouter = useAsyncState(async () => {
       await $router.isReady()
@@ -89,15 +98,19 @@ export default {
     const filteredItems = computed(() =>
       navItems.filter((item: any) => {
         // Include all items except for 'Dashboard' when isAdmin is false
-        return isAdmin.value || item.path !== '/dashboard'
+        // return isAdmin.value || item.path !== '/dashboard'
+        return (
+          user.value?.fullUser.user_type.toLowerCase() === 'admin' || item.path !== '/dashboard'
+        )
       })
     )
 
     function logout() {
-      if (state.rememberMe.value === false) {
-        state.access_token.value = ''
-        localStorage.clear()
-      }
+      $api.auth.logout()
+      // if (state.rememberMe.value === false) {
+      //   state.access_token.value = ''
+      //   localStorage.clear()
+      // }
 
       $router.push('/login')
     }
@@ -107,7 +120,7 @@ export default {
       logo,
       $route,
       navItems,
-      isAdmin,
+      // isAdmin,
       filteredItems,
       logout
     }

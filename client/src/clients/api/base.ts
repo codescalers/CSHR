@@ -6,21 +6,17 @@ import type { NotifierService } from 'vue3-notifier'
 import type { ApiClient } from './index'
 // import { useStorage } from '@vueuse/core'
 // import { useState } from '@/store'
-import { capitalize } from 'vue'
+import { capitalize, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 export abstract class ApiClientBase {
   public static USER_KEY = 'LOGGED_IN_USER'
   public static $api: ApiClient
-  private static USER: Api.LoginUser | null = null
+  private static readonly USER = ref<Api.LoginUser | null>(null)
   protected static $notifier?: NotifierService
 
-  public static get user(): Api.LoginUser | null {
+  public static get user() {
     return ApiClientBase.USER
-  }
-
-  public static isAuth(): boolean {
-    return ApiClientBase.user !== null
   }
 
   protected readonly $http: AxiosInstance
@@ -36,7 +32,7 @@ export abstract class ApiClientBase {
   // protected static $router = useRouter()
   protected static login(user: Api.LoginUser) {
     localStorage.setItem(ApiClientBase.USER_KEY, btoa(JSON.stringify(user)))
-    ApiClientBase.USER = user
+    ApiClientBase.USER.value = user
     console.log('login', { user })
 
     // const state = useState()
@@ -49,8 +45,8 @@ export abstract class ApiClientBase {
 
   protected static refresh(res: Api.Returns.Refresh) {
     this.assertUser()
-    ApiClientBase.USER = {
-      ...ApiClientBase.USER!,
+    ApiClientBase.USER.value = {
+      ...ApiClientBase.USER.value!,
       access_token: res.access,
       refresh_token: res.refresh
     }
@@ -59,7 +55,7 @@ export abstract class ApiClientBase {
   protected static logout() {
     ApiClientBase.assertUser()
     localStorage.removeItem(ApiClientBase.USER_KEY)
-    ApiClientBase.USER = null
+    ApiClientBase.USER.value = null
   }
 
   protected static assertUser() {
@@ -91,7 +87,9 @@ export abstract class ApiClientBase {
     options: Api.UnwrapOptions<T, R> = {}
   ) {
     const [res, err] = await resolve(req$)
-    const user = ApiClientBase.USER
+
+    // TODO: fix refresh token
+    // const user = ApiClientBase.USER
     // const access_token = localStorage.getItem('access_token')
     // const refresh_token = localStorage.getItem('refresh_token')
     // if (
