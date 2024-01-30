@@ -16,7 +16,7 @@
           </template>
         </v-list>
       </v-navigation-drawer>
-      <v-main style="min-height: 100vh">
+      <v-main style="min-height: 100vh" v-if="isReadyRouter.state.value">
         <CshrToolbar v-if="$route.path != '/login'" @logout="logout" />
         <router-view />
       </v-main>
@@ -26,6 +26,7 @@
 
 <script lang="ts">
 import { useRoute, useRouter } from 'vue-router'
+import { useAsyncState } from '@vueuse/core'
 import logo from '@/assets/cshr_logo.png'
 import { useState } from '@/store'
 import { isAdmin } from '@/hooks'
@@ -41,6 +42,11 @@ export default {
     const $route = useRoute()
     const $router = useRouter()
     const state = useState()
+
+    const isReadyRouter = useAsyncState(async () => {
+      await $router.isReady()
+      return true
+    }, false)
 
     const navItems = [
       {
@@ -97,6 +103,7 @@ export default {
     }
 
     return {
+      isReadyRouter,
       logo,
       $route,
       navItems,

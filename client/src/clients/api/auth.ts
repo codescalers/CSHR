@@ -11,9 +11,15 @@ export class AuthApi extends ApiClientBase {
       { transform: (d) => d.results }
     )
 
-    ApiClientBase.login(user)
+    ApiClientBase.login(user as any)
 
-    return user
+    const fullUser = await ApiClientBase.$api.myprofile.getUser()
+
+    const data = { ...user, fullUser }
+
+    ApiClientBase.login(data)
+
+    return data
   }
 
   register(input: Api.Inputs.Register) {
@@ -25,9 +31,9 @@ export class AuthApi extends ApiClientBase {
 
   async refresh(input: Api.Inputs.Refresh) {
     try {
-       const res = await this.$http.post<Api.Returns.Refresh>(this.getUrl('/token/refresh'), input)
-      ApiClientBase.refresh(res.data)  
-      return true    
+      const res = await this.$http.post<Api.Returns.Refresh>(this.getUrl('/token/refresh'), input)
+      ApiClientBase.refresh(res.data)
+      return true
     } catch (error) {
       return false
     }

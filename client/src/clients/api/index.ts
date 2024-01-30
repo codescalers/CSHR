@@ -47,6 +47,15 @@ export class ApiClient extends ApiClientBase {
     this.requestInterceptorId = this.setAxiosRequestInterceptor()
     ApiClientBase.$api = this
 
+    try {
+      const user = JSON.parse(atob(localStorage.getItem(ApiClientBase.USER_KEY) || '') || '""')
+      if (user) {
+        ApiClientBase.login(user)
+      }
+    } catch {
+      // Just avoid throw error
+    }
+
     this.auth = new AuthApi(options)
     this.company_properties = new CompanyPropertiesApi(options)
     this.compensations = new CompensationsApi(options)
@@ -72,7 +81,7 @@ export class ApiClient extends ApiClientBase {
   }
 
   private setAxiosRequestInterceptor() {
-    const token = localStorage.getItem("access_token")
+    const token = localStorage.getItem('access_token')
     return this.$http.interceptors.request.use((req) => {
       if (ApiClientBase.user) {
         req.headers.set('Authorization', 'Bearer ' + ApiClientBase.user.access_token)
