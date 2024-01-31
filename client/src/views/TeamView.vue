@@ -24,7 +24,9 @@
                 </v-list-item>
                 <v-list-item>
                   <v-list-item-content>
-                    <v-list-item-title class="text-body-2">Team: {{ person.team }}</v-list-item-title>
+                    <v-list-item-title class="text-body-2"
+                      >Team: {{ person.team }}</v-list-item-title
+                    >
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item>
@@ -41,7 +43,7 @@
       </v-row>
     </div>
 
-    <h3 class="my-6">My Team</h3>
+    <h2 class="my-6">My Team</h2>
 
     <v-data-table :headers="headers" :loading="loading" :items="team" class="mb-6">
       <template v-slot:loading>

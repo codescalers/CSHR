@@ -1,33 +1,35 @@
 <template>
-  <v-card class="pa-5">
+  <v-container class="ma-3 mx-auto">
+    <h2 class="my-3 mx-2">ThreeFold Team</h2>
     <officeFilters :offices="offices" />
-
-    <v-row>
-      <v-col class="d-flex flex-wrap justify-center">
-        <v-col
-          v-for="user of users.state.value"
-          :key="user?.id"
-          xl="4"
-          lg="6"
-          md="12"
-          sm="12"
-          cols="12"
-          class="px-5 py-5"
-        >
-          <div class="mt-1 text-center py-0 w-100">
-            <router-link class="routerLink" :to="{ name: 'profile', query: { id: user.id } }">
-              <UserCard :user="user" />
-            </router-link>
-          </div>
+    <v-card class="pa-2">
+      <v-row>
+        <v-col class="d-flex flex-wrap justify-start">
+          <v-col
+            v-for="user of users.state.value"
+            :key="user?.id"
+            xl="4"
+            lg="4"
+            md="6"
+            sm="12"
+            cols="12"
+            class=""
+          >
+            <div class="mt-1 text-center py-0 w-100">
+              <router-link class="routerLink" :to="{ name: 'profile', query: { id: user.id } }">
+                <UserCard :user="user" />
+              </router-link>
+            </div>
+          </v-col>
         </v-col>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="d-flex flex-wrap justify-center">
-        <v-pagination v-model="page" :length="count" rounded="circle"></v-pagination>
-      </v-col>
-    </v-row>
-  </v-card>
+      </v-row>
+      <v-row>
+        <v-col class="d-flex flex-wrap justify-center">
+          <v-pagination v-model="page" :length="count" rounded="circle"></v-pagination>
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">
