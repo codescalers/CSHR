@@ -4,17 +4,15 @@ import { isValidToken, panic, resolve } from '@/utils'
 import type { Api } from '@/types'
 import type { NotifierService } from 'vue3-notifier'
 import type { ApiClient } from './index'
-import { useStorage } from '@vueuse/core'
-import { useState } from '@/store'
-import { capitalize } from 'vue'
-import { useRouter } from 'vue-router'
+import { capitalize, ref } from 'vue'
 
 export abstract class ApiClientBase {
+  public static USER_KEY = 'LOGGED_IN_USER'
   public static $api: ApiClient
-  private static USER: Api.LoginUser | null = null
+  private static readonly USER = ref<Api.LoginUser | null>(null)
   protected static $notifier?: NotifierService
 
-  protected static get user(): Api.LoginUser | null {
+  public static get user() {
     return ApiClientBase.USER
   }
 
@@ -28,34 +26,28 @@ export abstract class ApiClientBase {
     this.$http = options.$http
   }
 
-  protected static $router = useRouter()
   protected static login(user: Api.LoginUser) {
-    ApiClientBase.USER = user
-    const state = useState()
-    const { access_token, refresh_token } = state
-    access_token.value = user.access_token
-    refresh_token.value = user.refresh_token
-    useStorage('access_token', access_token.value, localStorage, { mergeDefaults: true })
-    useStorage('refresh_token', refresh_token.value, localStorage, { mergeDefaults: true })
+    localStorage.setItem(ApiClientBase.USER_KEY, btoa(JSON.stringify(user)))
+    ApiClientBase.USER.value = user
   }
 
   protected static refresh(res: Api.Returns.Refresh) {
     this.assertUser()
-    ApiClientBase.USER = {
-      ...ApiClientBase.USER!,
+    ApiClientBase.login({
+      ...ApiClientBase.USER.value!,
       access_token: res.access,
       refresh_token: res.refresh
-    }
+    })
   }
 
   protected static logout() {
     ApiClientBase.assertUser()
-    ApiClientBase.USER = null
+    localStorage.removeItem(ApiClientBase.USER_KEY)
+    ApiClientBase.USER.value = null
   }
 
   protected static assertUser() {
-    const token = localStorage.getItem("access_token")
-    if (!ApiClientBase.USER && !token) {
+    if (!ApiClientBase.USER.value) {
       panic(`Expected to login before using this route.`)
     }
   }
@@ -68,33 +60,48 @@ export abstract class ApiClientBase {
   }
 
   private static normalizeError(err: AxiosError<any>): string {
-    const responseData = err.response?.data;
-    const errorMessage = responseData?.message ?? err.message;
-  
+    const responseData = err.response?.data
+    const errorMessage = responseData?.message ?? err.message
+
     const errorDetails = Object.entries(responseData?.error || {})
       .map(([_, value]) => `${value}`)
-      .join('. ');
-  
-    return `${errorMessage}${errorDetails ? `. ${capitalize(errorDetails)}` : ''}`;
+      .join('. ')
+
+    return `${errorMessage}${errorDetails ? `. ${capitalize(errorDetails)}` : ''}`
   }
 
   protected async unwrap<T, R = T>(
-    req$: Promise<AxiosResponse<T>>,
+    req$: () => Promise<AxiosResponse<T>>,
     options: Api.UnwrapOptions<T, R> = {}
   ) {
-    const [res, err] = await resolve(req$)
-    const access_token = localStorage.getItem("access_token")
-    const refresh_token = localStorage.getItem("refresh_token")
-    
-    // check if error indicate the token needs to be refreshed
-    if (access_token && refresh_token && !isValidToken(access_token) && isValidToken(refresh_token)) {
-      await ApiClientBase.$api.auth.refresh({ refresh: refresh_token })
+    const user = ApiClientBase.user.value
+    if (user && !isValidToken(user.access_token)) {
+      await resolve(ApiClientBase.$api.auth.refresh({ refresh: user.refresh_token }))
+    }
+
+    const req = await resolve(req$())
+    let res = req[0]
+    let err = req[1]
+
+    const { status, data = {} } = err?.response || {}
+
+    if (status === 401 && data.code === 'token_not_valid' && user) {
+      const [data, err2] = await resolve(
+        ApiClientBase.$api.auth.refresh({ refresh: user.refresh_token })
+      )
+
+      if (data === true && !err2) {
+        const req = await resolve(req$())
+        res = req[0]
+        err = req[1]
+      }
     }
 
     if (
       (res.config.method === 'post' || res.config.method === 'put') &&
       typeof res.data === 'object' &&
-      'message' in (res.data || {}) && options.disableNotify !== true 
+      'message' in (res.data || {}) &&
+      options.disableNotify !== true
     ) {
       ApiClientBase.$notifier?.notify({
         type: 'success',
@@ -107,12 +114,9 @@ export abstract class ApiClientBase {
         type: 'error',
         description: options.normalizeError?.(err, res) ?? ApiClientBase.normalizeError(err) ?? err
       })
-      if (err.response.status == 401) {
-        ApiClientBase.$router.push('/login')
-      }
+
       panic(err)
     }
-
 
     return (options.transform?.(res.data, res) ?? res.data) as R
   }

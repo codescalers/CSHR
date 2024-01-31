@@ -9,7 +9,7 @@
             :text="`Please note that this value will be applied to the ${selectedReason.text} balance for all users. If you accidentally submit this form, you'll need to reset the value for users using the appropriate form.`"
           ></v-alert>
           <v-text-field
-            v-model="state.user.value.value.location.name"
+            v-model="user!.fullUser.location.name"
             label="Office"
             type="text"
             disabled
@@ -29,7 +29,14 @@
             type="text"
             :rules="requiredStringRules"
           ></v-text-field>
-          <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading='isLoading' @click="execute">Update Vacations</v-btn>
+          <v-btn
+            color="primary"
+            type="submit"
+            :disabled="!form?.isValid"
+            :loading="isLoading"
+            @click="execute"
+            >Update Vacations</v-btn
+          >
         </v-col>
       </v-row>
     </v-form>
@@ -39,15 +46,15 @@
 <script lang="ts">
 import { $api } from '@/clients'
 import { ref } from 'vue'
-import { useState } from '../store'
 import { requiredStringRules } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
+import { ApiClientBase } from '@/clients/api/base'
 
 export default {
   name: 'UpdateOfficeVacations',
   setup() {
     const form = ref()
-    const state = useState()
+    const user = ApiClientBase.user
     const reasons = ref([
       {
         id: 1,
@@ -68,21 +75,25 @@ export default {
     const selectedReason = ref(reasons.value[0])
 
     const vacation = ref({
-      officeId: state.user.value.value.location.id,
+      officeId: user.value?.fullUser.location.id as any,
       value: 1,
       reason: selectedReason.value.value
     })
 
-    const {execute, isLoading} = useAsyncState(async() => {
-      await $api.vacations.balance.adjustment.update(vacation.value)
-    }, null, {immediate: false})
+    const { execute, isLoading } = useAsyncState(
+      async () => {
+        await $api.vacations.balance.adjustment.update(vacation.value)
+      },
+      null,
+      { immediate: false }
+    )
 
     return {
       form,
       vacation,
       reasons,
       selectedReason,
-      state,
+      user,
       requiredStringRules,
       isLoading,
       execute

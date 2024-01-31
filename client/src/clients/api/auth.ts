@@ -7,27 +7,31 @@ export class AuthApi extends ApiClientBase {
 
   async login(input: Api.Inputs.Login) {
     const user = await this.unwrap(
-      this.$http.post<Api.Returns.Login>(this.getUrl('/login'), input),
+      () => this.$http.post<Api.Returns.Login>(this.getUrl('/login'), input),
       { transform: (d) => d.results }
     )
 
-    ApiClientBase.login(user)
+    ApiClientBase.login(user as any)
+    const fullUser = await ApiClientBase.$api.myprofile.getUser()
 
-    return user
+    const data = { ...user, fullUser }
+    ApiClientBase.login(data)
+
+    return data
   }
 
   register(input: Api.Inputs.Register) {
     ApiClientBase.assertUser()
-    return this.unwrap(this.$http.post<Api.Returns.Register>(this.getUrl('/signup'), input), {
+    return this.unwrap(() => this.$http.post<Api.Returns.Register>(this.getUrl('/signup'), input), {
       transform: (d) => d.results
     })
   }
 
   async refresh(input: Api.Inputs.Refresh) {
     try {
-       const res = await this.$http.post<Api.Returns.Refresh>(this.getUrl('/token/refresh'), input)
-      ApiClientBase.refresh(res.data)  
-      return true    
+      const res = await this.$http.post<Api.Returns.Refresh>(this.getUrl('/token/refresh'), input)
+      ApiClientBase.refresh(res.data)
+      return true
     } catch (error) {
       return false
     }
@@ -35,6 +39,10 @@ export class AuthApi extends ApiClientBase {
 
   async changePassword(input: Api.Inputs.ChangePassword) {
     ApiClientBase.assertUser()
-    return this.unwrap(this.$http.put(this.getUrl('/change-password'), input))
+    return this.unwrap(() => this.$http.put(this.getUrl('/change-password'), input))
+  }
+
+  logout() {
+    ApiClientBase.logout()
   }
 }
