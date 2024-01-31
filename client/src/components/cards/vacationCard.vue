@@ -1,5 +1,6 @@
 <template>
   <v-card elevation="0" >
+
     <v-card-title class="bg-graytitle">
       <div class="d-flex flex-row-reverse">
         <v-icon size="small" class="me-2" @click.stop="$emit('close-dialog', false)">
@@ -13,7 +14,7 @@
     >
     <br />
 
-    <v-form ref="form" @submit.prevent="updateVacation()">
+    <v-form ref="form" @submit.prevent="updateVacation()" class="pa-4">
       <v-row class="d-flex flex-row-reverse" v-if="couldUpdate">
         <v-btn color="primary" class="ma-4" type="submit" :disabled="!form?.isValid || disabled">Update</v-btn>
         <v-btn color="red" class="ma-4" @click="handleDelete">Delete</v-btn>
@@ -78,7 +79,7 @@
       </v-card>
     </v-form>
 
-    <v-row v-if="couldApprove && vacation.status == 'pending'">
+    <v-row v-if="couldApprove && vacation.status == 'pending'" class="pa-4">
       <v-btn color="primary" class="ma-4" @click="handleApprove">Approve</v-btn>
       <v-btn color="red" class="ma-4" @click="handleReject">Reject</v-btn>
     </v-row>
