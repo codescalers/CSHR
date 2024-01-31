@@ -37,7 +37,7 @@ export default {
     officeFilters
   },
   setup() {
-    const offices = useAsyncState($api.office.list(),[],{ immediate: true })
+    const offices = useAsyncState($api.office.list(), [], { immediate: true })
     const $route = useRoute()
     let isFirstLoad = true
     const page = ref(1)
@@ -49,7 +49,11 @@ export default {
       {
         onSuccess(data) {
           if (data?.count) {
-            count.value = Math.ceil(data?.count / 10)
+            if (data?.count < 10) {
+              count.value = 0
+            } else {
+              count.value = Math.ceil(data?.count / 10)
+            }
           }
           users.execute(undefined, data?.results || [])
         }
@@ -74,7 +78,11 @@ export default {
           {
             onSuccess(data) {
               if (data?.count) {
-                count.value = Math.ceil(data?.count / 10)
+                if (data?.count < 10) {
+                  count.value = 0
+                } else {
+                  count.value = Math.ceil(data?.count / 10)
+                }
               }
               users.execute(undefined, data?.results || [])
             }
@@ -92,7 +100,11 @@ export default {
           {
             onSuccess(data) {
               if (data?.count) {
-                count.value = Math.ceil(data?.count / 10)
+                if (data?.count < 10) {
+                  count.value = 0
+                } else {
+                  count.value = Math.ceil(data?.count / 10)
+                }
               }
               users.execute(undefined, data?.results || [])
             }

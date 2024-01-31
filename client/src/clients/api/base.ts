@@ -110,6 +110,7 @@ export abstract class ApiClientBase {
     }
 
     if (err) {
+      console.log("err",err)
       ApiClientBase.$notifier?.notify({
         type: 'error',
         description: options.normalizeError?.(err, res) ?? ApiClientBase.normalizeError(err) ?? err
