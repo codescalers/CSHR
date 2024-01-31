@@ -122,12 +122,7 @@ import birthdayCard from '@/components/cards/birthdayCard.vue'
 import { ref, computed, reactive, watch } from 'vue'
 import type { Api } from '@/types'
 import { useApi } from '@/hooks'
-import type {
-  EventClickArg,
-  CalendarApi,
-  DayCellMountArg,
-  CalendarOptions
-} from '@fullcalendar/core/index.js'
+import type { EventClickArg, CalendarApi, DayCellMountArg } from '@fullcalendar/core/index.js'
 import { useAsyncState } from '@vueuse/core'
 import {
   normalizeEvent,
@@ -136,6 +131,9 @@ import {
   normalizeHoliday,
   normalizedBirthday
 } from '@/utils'
+import { ApiClientBase } from '@/clients/api/base'
+
+const cached_users = new Map<number, Api.User>()
 
 export default {
   name: 'calenderCshr',
@@ -150,6 +148,11 @@ export default {
   },
 
   setup() {
+    const me = ApiClientBase.user.value?.fullUser
+    if (me) {
+      cached_users.set(me.id, me)
+    }
+
     const $api = useApi()
     const meeting = ref<Api.Meetings>()
     const currentDate = ref<Date>(new Date())
@@ -179,8 +182,8 @@ export default {
     const events = ref<Api.Inputs.Event[]>([])
     const birthdays = ref<Api.User[]>([])
 
-    function filteHome(data: any) {
-      data.forEach((home: Api.Home) => {
+    async function filteHome(data: any) {
+      for (const home of data) {
         if (home.title === 'meeting') {
           home.meeting.forEach((meeting: Api.Meetings) => {
             meetings.value.push(meeting)
@@ -204,18 +207,26 @@ export default {
             events.value.push(event)
           })
         }
+
         if (home.title === 'vacation') {
-          home.vacation.forEach(async (vacation: Api.Vacation) => {
+          for (const vacation of home.vacation) {
             let v: Api.Vacation
             v = vacation
-            const user = await $api.users.getuser(vacation.applying_user.id, {
-              disableNotify: true
-            })
-            v.user = user
+
+            if (cached_users.has(vacation.applying_user.id)) {
+              v.user = cached_users.get(vacation.applying_user.id)
+            } else {
+              const user = await $api.users.getuser(vacation.applying_user.id, {
+                disableNotify: true
+              })
+              cached_users.set(vacation.applying_user.id, user)
+              v.user = user
+            }
+
             vacations.value.push(v)
-          })
+          }
         }
-      })
+      }
     }
 
     const homes = useAsyncState(
@@ -345,8 +356,15 @@ export default {
       data.vacation.forEach(async (vacation: Api.Vacation) => {
         let v: Api.Vacation
         v = vacation
-        const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true })
-        v.user = user
+
+        if (cached_users.has(vacation.applying_user.id)) {
+          v.user = cached_users.get(vacation.applying_user.id)
+        } else {
+          const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true })
+          cached_users.set(vacation.applying_user.id, user)
+          v.user = user
+        }
+
         vacations.value.push(v)
       })
       closeDialog(id)
@@ -373,8 +391,17 @@ export default {
       vacations.value = vacations.value.filter((vacation) => vacation.id !== id)
       let v: Api.Vacation
       v = data
-      const user = await $api.users.getuser(data.applying_user, { disableNotify: true })
-      v.user = user
+
+      if (cached_users.has(data.applying_user.id)) {
+        v.user = cached_users.get(data.applying_user.id)
+      } else {
+        const user = await $api.users.getuser(data.applying_user.id, {
+          disableNotify: true
+        })
+        cached_users.set(data.applying_user.id, user)
+        v.user = user
+      }
+
       v.isUpdated = true
       vacations.value.push(v)
       closeDialog(id)
@@ -467,17 +494,17 @@ button {
   text-transform: capitalize !important;
 }
 
-.fc-event-title{
+.fc-event-title {
   color: #131313;
   font-weight: 500;
 }
 
-.fc-popover{
+.fc-popover {
   background-color: rgb(49 47 47) !important;
   color: #ffffff;
 
-.fc-popover-header {
-  background-color: rgb(100, 99, 99) !important;
-}
+  .fc-popover-header {
+    background-color: rgb(100, 99, 99) !important;
+  }
 }
 </style>

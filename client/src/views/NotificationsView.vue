@@ -12,10 +12,11 @@
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon class="me-2" @click="selectedNotification = item" icon="mdi-eye" />
-        <NotificationDetailsDialog route-query="notification-view" v-model="selectedNotification" />
       </template>
     </v-data-table>
   </v-container>
+
+  <NotificationDetailsDialog route-query="notification-view" v-model="selectedNotification" />
 </template>
 
 <script lang="ts">
