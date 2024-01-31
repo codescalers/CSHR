@@ -9,6 +9,8 @@ from components import config
 import redis
 import json
 
+from server.cshr.api.response import CustomResponse
+
 
 try:
     _, R_HOST, R_PORT = config("REDIS_HOST").replace("//", "").split(":")
@@ -143,3 +145,12 @@ def ping_redis():
 
 def get_redis_conf() -> Dict[str, str]:
     return {"host": R_HOST, "port": R_PORT}
+
+def http_ensure_redis_error():
+    CustomResponse.bad_request(
+        message="Connection Refused",
+        error={
+            "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
+            "values": {"host": R_HOST, "port": R_PORT},
+        },
+    )

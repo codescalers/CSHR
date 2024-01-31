@@ -31,7 +31,7 @@ from cshr.utils.email_messages_templates import (
 
 from cshr.api.response import CustomResponse
 from cshr.utils.redis_functions import (
-    get_redis_conf,
+    http_ensure_redis_error,
     ping_redis,
     set_notification_request_redis,
     set_notification_reply_redis,
@@ -64,20 +64,10 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
                 current_user, serializer.data, saved.id
             )
 
-            redis_conf = get_redis_conf()
             try:
                 ping_redis()
             except:
-                return CustomResponse.bad_request(
-                    message="Connection Refused",
-                    error={
-                        "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                        "values": {
-                            "host": redis_conf.get("host"),
-                            "port": redis_conf.get("port"),
-                        },
-                    },
-                )
+                return http_ensure_redis_error()
 
             bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(
@@ -218,20 +208,10 @@ class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
         hr_letter.status = STATUS_CHOICES.APPROVED
         hr_letter.save()
 
-        redis_conf = get_redis_conf()
         try:
             ping_redis()
         except:
-            return CustomResponse.bad_request(
-                message="Connection Refused",
-                error={
-                    "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                    "values": {
-                        "host": redis_conf.get("host"),
-                        "port": redis_conf.get("port"),
-                    },
-                },
-            )
+            return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(hr_letter, "accepted", hr_letter.id)
         msg = get_hr_letter_reply_email_template(current_user, hr_letter, hr_letter.id)

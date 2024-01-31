@@ -57,7 +57,7 @@ from cshr.models.vacations import (
 )
 from cshr.services.vacations import get_vacations_by_user
 from cshr.utils.redis_functions import (
-    get_redis_conf,
+    http_ensure_redis_error,
     notification_commented,
     ping_redis,
     set_notification_request_redis,
@@ -299,20 +299,11 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             #     request.user, serializer.data, saved.id
             # )
 
-            redis_conf = get_redis_conf()
             try:
                 ping_redis()
             except:
-                return CustomResponse.bad_request(
-                    message="Connection Refused",
-                    error={
-                        "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                        "values": {
-                            "host": redis_conf.get("host"),
-                            "port": redis_conf.get("port"),
-                        },
-                    },
-                )
+                return http_ensure_redis_error()
+
             set_notification_request_redis(serializer.data)
 
             # sent = send_email_for_request(request.user.id, msg, "Vacation request")
@@ -498,27 +489,17 @@ class VacationsAcceptApiView(GenericAPIView):
 
         vacation.save()
         event_id = id
-        redis_conf = get_redis_conf()
         try:
             ping_redis()
         except:
-            return CustomResponse.bad_request(
-                message="Connection Refused",
-                error={
-                    "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                    "values": {
-                        "host": redis_conf.get("host"),
-                        "port": redis_conf.get("port"),
-                    },
-                },
-            )
+            return http_ensure_redis_error()
+
         bool1 = set_notification_reply_redis(vacation, "accepted", event_id)
-
         msg = get_vacation_reply_email_template(current_user, vacation, event_id)
-
         bool2 = send_email_for_reply.delay(
             current_user.id, vacation.applying_user.id, msg, "Vacation reply"
         )
+
         if bool1 and bool2:
             return CustomResponse.success(
                 message="Vacation request accepted", status_code=202
@@ -572,17 +553,10 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
 
         event_id = id
 
-        redis_conf = get_redis_conf()
         try:
             ping_redis()
         except:
-            return CustomResponse.bad_request(
-                message="Connection Refused",
-                error={
-                    "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                    "values": {"host": redis_conf.get('host'), "port": redis_conf.get('port')},
-                },
-            )
+            return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(vacation, "rejected", event_id)
         msg = get_vacation_reply_email_template(current_user, vacation, event_id)
@@ -618,17 +592,10 @@ class VacationCommentsAPIView(GenericAPIView):
         }
         update_vacation_change_log(vacation, comment)
 
-        redis_conf = get_redis_conf()
         try:
             ping_redis()
         except:
-            return CustomResponse.bad_request(
-                message="Connection Refused",
-                error={
-                    "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                    "values": {"host": redis_conf.get('host'), "port": redis_conf.get('port')},
-                },
-            )
+            return http_ensure_redis_error()
 
         notification_commented(vacation, request.user, "commented", id)
         return CustomResponse.success(

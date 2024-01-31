@@ -28,7 +28,7 @@ from cshr.utils.email_messages_templates import (
     get_compensation_request_email_template,
 )
 from cshr.utils.redis_functions import (
-    get_redis_conf,
+    http_ensure_redis_error,
     ping_redis,
     set_notification_request_redis,
     set_notification_reply_redis,
@@ -63,20 +63,10 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
                 current_user, serializer.data, saved.id
             )
 
-            redis_conf = get_redis_conf()
             try:
                 ping_redis()
             except:
-                return CustomResponse.bad_request(
-                    message="Connection Refused",
-                    error={
-                        "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                        "values": {
-                            "host": redis_conf.get("host"),
-                            "port": redis_conf.get("port"),
-                        },
-                    },
-                )
+                return http_ensure_redis_error()
 
             bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(
@@ -195,20 +185,11 @@ class CompensationAcceptApiView(ListAPIView, GenericAPIView):
         compensation.approval_user = current_user
         compensation.status = STATUS_CHOICES.APPROVED
         compensation.save()
-        redis_conf = get_redis_conf()
+
         try:
             ping_redis()
         except:
-            return CustomResponse.bad_request(
-                message="Connection Refused",
-                error={
-                    "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                    "values": {
-                        "host": redis_conf.get("host"),
-                        "port": redis_conf.get("port"),
-                    },
-                },
-            )
+            return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(compensation, "accepted", compensation.id)
         msg = get_compensation_reply_email_template(
@@ -239,20 +220,10 @@ class CompensationRejectApiView(ListAPIView, GenericAPIView):
         compensation.status = STATUS_CHOICES.REJECTED
         compensation.save()
 
-        redis_conf = get_redis_conf()
         try:
             ping_redis()
         except:
-            return CustomResponse.bad_request(
-                message="Connection Refused",
-                error={
-                    "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                    "values": {
-                        "host": redis_conf.get("host"),
-                        "port": redis_conf.get("port"),
-                    },
-                },
-            )
+            return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(compensation, "rejected", compensation.id)
         msg = get_compensation_reply_email_template(

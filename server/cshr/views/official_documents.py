@@ -19,7 +19,7 @@ from cshr.utils.email_messages_templates import (
 
 from cshr.api.response import CustomResponse
 from cshr.utils.redis_functions import (
-    get_redis_conf,
+    http_ensure_redis_error,
     ping_redis,
     set_notification_reply_redis,
     set_notification_request_redis,
@@ -45,20 +45,10 @@ class OffcialDocumentAPIView(GenericAPIView):
                 request.user, saved, saved.id
             )
 
-            redis_conf = get_redis_conf()
             try:
                 ping_redis()
             except:
-                return CustomResponse.bad_request(
-                    message="Connection Refused",
-                    error={
-                        "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                        "values": {
-                            "host": redis_conf.get("host"),
-                            "port": redis_conf.get("port"),
-                        },
-                    },
-                )
+                return http_ensure_redis_error()
 
             bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(
@@ -98,20 +88,10 @@ class OfficialDocumentAcceptApiView(GenericAPIView):
         document.status = STATUS_CHOICES.APPROVED
         document.save()
 
-        redis_conf = get_redis_conf()
         try:
             ping_redis()
         except:
-            return CustomResponse.bad_request(
-                message="Connection Refused",
-                error={
-                    "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
-                    "values": {
-                        "host": redis_conf.get("host"),
-                        "port": redis_conf.get("port"),
-                    },
-                },
-            )
+            return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(document, "accepted", document.id)
         msg = get_official_document_request_email_template(
