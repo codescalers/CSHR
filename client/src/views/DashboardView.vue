@@ -4,8 +4,9 @@
       <h2 class="font-weight-medium my-3">
         Dashboard of <strong class="text-primary">{{ office }}</strong> office admins
       </h2>
+      <v-divider></v-divider>
     </div>
-    <v-divider></v-divider>
+
     <v-row>
       <v-col cols="3">
         <DashboardList @item-selected="onItemSelected" />
@@ -87,3 +88,9 @@ export default {
   }
 }
 </script>
+<style>
+.v-list-item-title {
+  font-size: 0.875rem;
+  font-weight: 500 !important;
+}
+</style>
