@@ -9,7 +9,7 @@ from components import config
 import redis
 import json
 
-from server.cshr.api.response import CustomResponse
+from cshr.api.response import CustomResponse
 
 
 try:

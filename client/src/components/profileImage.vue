@@ -56,3 +56,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.user-profile-logo{
+  cursor: pointer;
+}
+</style>
