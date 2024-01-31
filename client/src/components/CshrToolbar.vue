@@ -48,7 +48,7 @@
           <VProgressCircular indeterminate v-if="user.isLoading.value" />
           <profileImage
             v-else-if="user.state.value"
-            :with-link="true"
+            :with-link="false"
             :user="user.state.value"
             v-bind="props"
           />

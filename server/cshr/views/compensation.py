@@ -28,6 +28,8 @@ from cshr.utils.email_messages_templates import (
     get_compensation_request_email_template,
 )
 from cshr.utils.redis_functions import (
+    http_ensure_redis_error,
+    ping_redis,
     set_notification_request_redis,
     set_notification_reply_redis,
 )
@@ -60,6 +62,12 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
             msg = get_compensation_request_email_template(
                 current_user, serializer.data, saved.id
             )
+
+            try:
+                ping_redis()
+            except:
+                return http_ensure_redis_error()
+
             bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(
                 current_user.id, msg, "Compensation request"
@@ -177,6 +185,12 @@ class CompensationAcceptApiView(ListAPIView, GenericAPIView):
         compensation.approval_user = current_user
         compensation.status = STATUS_CHOICES.APPROVED
         compensation.save()
+
+        try:
+            ping_redis()
+        except:
+            return http_ensure_redis_error()
+
         bool1 = set_notification_reply_redis(compensation, "accepted", compensation.id)
         msg = get_compensation_reply_email_template(
             current_user, compensation, compensation.id
@@ -205,6 +219,12 @@ class CompensationRejectApiView(ListAPIView, GenericAPIView):
         compensation.approval_user = current_user
         compensation.status = STATUS_CHOICES.REJECTED
         compensation.save()
+
+        try:
+            ping_redis()
+        except:
+            return http_ensure_redis_error()
+
         bool1 = set_notification_reply_redis(compensation, "rejected", compensation.id)
         msg = get_compensation_reply_email_template(
             current_user, compensation, compensation.id
