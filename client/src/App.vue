@@ -19,6 +19,8 @@ export default {
     const api = useApi()
     const notifier = useNotifier()
     api && notifier && api.setNotifier(notifier)
+    console.log("nenene");
+    
   }
 }
 </script>
