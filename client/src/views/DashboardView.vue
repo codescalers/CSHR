@@ -28,8 +28,8 @@ import UpdateOfficeVacations from '@/components/UpdateOfficeVacations.vue'
 import AddOffice from '@/components/AddOffice.vue'
 import AddUser from '@/components/AddUser.vue'
 import UpdateUser from '@/components/UpdateUser.vue'
-import { useState } from '../store'
 import { $api } from '@/clients'
+import { ApiClientBase } from '@/clients/api/base'
 
 export default {
   name: 'DashboardView',
@@ -37,7 +37,7 @@ export default {
     DashboardList
   },
   setup() {
-    const state = useState()
+    const user = ApiClientBase.user
     const officeId = ref()
     const office = ref()
     const selectedItem = ref(items[0])
@@ -60,7 +60,7 @@ export default {
 
     onMounted(async () => {
       try {
-        officeId.value = state.user.value.value?.location.id
+        officeId.value = user.value?.fullUser.location.id
         office.value = (await $api.office.read(officeId.value)).name
       } catch (error) {
         console.error(error)

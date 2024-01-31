@@ -41,11 +41,17 @@
         </template>
       </VList>
     </VMenu>
+
     <VMenu>
       <template #activator="{ props }">
         <div class="d-flex justify-center align-center mx-2">
           <VProgressCircular indeterminate v-if="user.isLoading.value" />
-          <profileImage v-else-if="user.state.value" :with-link="false" :user="user.state.value" v-bind="props" />
+          <profileImage
+            v-else-if="user.state.value"
+            :with-link="false"
+            :user="user.state.value"
+            v-bind="props"
+          />
         </div>
       </template>
 
