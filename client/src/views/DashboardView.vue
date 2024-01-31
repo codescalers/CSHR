@@ -1,16 +1,17 @@
 <template>
-  <v-container>
+  <v-container class="pa-6 mx-auto">
+    <div class="my-6">
+      <h2 class="font-weight-medium my-3">
+        Dashboard of <strong class="text-primary">{{ office }}</strong> office admins
+      </h2>
+    </div>
+    <v-divider></v-divider>
     <v-row>
-      <v-col cols="4">
+      <v-col cols="3">
         <DashboardList @item-selected="onItemSelected" />
       </v-col>
-      <v-col cols="8">
+      <v-col cols="9">
         <v-card flat>
-          <v-card-title
-            >Dashboard of <strong class="text-blue-lighten-1">{{ office }}</strong> office
-            admins</v-card-title
-          >
-          <v-divider class="mx-4 my-1"></v-divider>
           <component :is="selectedForm" />
         </v-card>
       </v-col>

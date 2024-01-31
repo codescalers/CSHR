@@ -1,7 +1,10 @@
 <template>
-  <v-container>
+  <v-container class="pa-6 mx-auto">
     <div v-if="supervisors && supervisors.length > 0">
-      <h3 class="my-6">Team Lead</h3>
+      <div class="my-6">
+        <h3 class="font-weight-medium my-6">Team Lead</h3>
+        <v-divider></v-divider>
+      </div>
       <v-row>
         <v-col v-for="(person, index) in supervisors" :key="index" cols="12" md="6" lg="6">
           <v-card class="elevation-4 my-4">
@@ -42,8 +45,10 @@
         </v-col>
       </v-row>
     </div>
-
-    <h2 class="my-6">My Team</h2>
+    <div class="my-6">
+      <h2 class="font-weight-medium my-6">My Team</h2>
+      <v-divider></v-divider>
+    </div>
 
     <v-data-table :headers="headers" :loading="loading" :items="team" class="mb-6">
       <template v-slot:loading>

@@ -1,6 +1,9 @@
 <template>
-  <v-container class="ma-3 mx-auto">
-    <h2 class="my-3 mx-2">ThreeFold Team</h2>
+  <v-container class="pa-6 mx-auto">
+    <div class="my-6">
+      <h2 class="font-weight-medium my-3">ThreeFold Team</h2>
+      <v-divider></v-divider>
+    </div>
     <officeFilters :offices="offices" />
     <v-card class="pa-2">
       <v-row>
@@ -8,7 +11,7 @@
           <v-col
             v-for="user of users.state.value"
             :key="user?.id"
-            xl="4"
+            xl="3"
             lg="4"
             md="6"
             sm="12"

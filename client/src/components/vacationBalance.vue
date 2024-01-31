@@ -37,3 +37,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.v-card {
+  box-shadow: none;
+}
+</style>

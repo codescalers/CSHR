@@ -1,5 +1,5 @@
 <template>
-  <v-card color="title" class="py-10 hover-card border">
+  <v-card color="title" class="py-10 hover-card border bg-graytitle">
     <div
       v-if="loading === true"
       class="d-flex align-center justify-center items-center py-0 font-weight-bold"

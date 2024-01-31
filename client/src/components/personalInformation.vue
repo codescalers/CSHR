@@ -86,6 +86,6 @@ export default {
 }
 
 .bordered {
-  border-bottom: 0.1px solid #8a8a8a !important;
+  border-bottom: 0.1px solid #3c3c3c !important;
 }
 </style>
