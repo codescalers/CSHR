@@ -1,23 +1,24 @@
 <!-- eslint-disable vue/no-async-in-computed-properties -->
 <template>
-  <v-row>
+  <v-row class="justify-center py-4">
     <v-col cols="2">
-      <v-checkbox v-model="selected.meetings" label="Meetings" />
+      <v-checkbox v-model="selected.meetings" color="#efeaea" label="Meetings" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.events" label="Events" />
+      <v-checkbox v-model="selected.events" color="#47a2ff" label="Events" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.vacations" label="Vacations" />
+      <v-checkbox v-model="selected.vacations" color="#fcd091" label="Vacations" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.holidays" label="Holidays" />
+      <v-checkbox v-model="selected.holidays" color="#5effb4" label="Holidays" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.birthdays" label="Birthdays" />
+      <v-checkbox v-model="selected.birthdays" color="#e0adf0" label="Birthdays" />
     </v-col>
   </v-row>
-  <div class="ma-7 pa-7">
+  <v-divider class="d-flex mx-auto" style="width: 90%"></v-divider>
+  <div class="ma-7 px-7">
     <div
       class="loading-container d-flex align-center justify-center my-5"
       v-if="homes.isLoading.value"
@@ -466,3 +467,44 @@ export default {
   }
 }
 </script>
+<style>
+.fc {
+  font-size: 0.875rem !important;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border: 1px solid #3c3c3c !important;
+}
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border: 1px solid #3c3c3c !important;
+}
+
+.fc .fc-button .fc-icon {
+  font-size: 1em;
+  vertical-align: baseline;
+}
+
+.fc-daygrid-block-event .fc-event-time,
+.fc-daygrid-block-event .fc-event-title {
+  padding: 1px 9px;
+}
+
+button {
+  text-transform: capitalize !important;
+}
+
+.fc-event-title {
+  color: #131313;
+  font-weight: 500;
+}
+
+.fc-popover {
+  background-color: rgb(49 47 47) !important;
+  color: #ffffff;
+
+  .fc-popover-header {
+    background-color: rgb(100, 99, 99) !important;
+  }
+}
+</style>
