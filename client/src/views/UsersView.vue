@@ -49,8 +49,7 @@ export default {
       {
         onSuccess(data) {
           if (data?.count) {
-            count.value = data.count / 10
-            count.value = Math.ceil(data.count / 10)
+            count.value = Math.ceil(data?.count / 10)
           }
           users.execute(undefined, data?.results || [])
         }
@@ -88,6 +87,9 @@ export default {
           undefined,
           {
             onSuccess(data) {
+              if (data?.count) {
+                count.value = Math.ceil(data?.count / 10)
+              }
               users.execute(undefined, data?.results || [])
             }
           }
@@ -103,6 +105,9 @@ export default {
           undefined,
           {
             onSuccess(data) {
+              if (data?.count) {
+                count.value = Math.ceil(data?.count / 10)
+              }
               users.execute(undefined, data?.results || [])
             }
           }
