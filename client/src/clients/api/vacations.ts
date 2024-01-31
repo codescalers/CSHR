@@ -153,7 +153,6 @@ class VacationsEditApi extends ApiClientBase {
 
     return vacation
   }
-  // async update(id: number) {}
 }
 
 class VacationsGetAdminBalanceApi extends ApiClientBase {

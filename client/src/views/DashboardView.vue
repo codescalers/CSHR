@@ -28,7 +28,6 @@ import UpdateOfficeVacations from '@/components/UpdateOfficeVacations.vue'
 import AddOffice from '@/components/AddOffice.vue'
 import AddUser from '@/components/AddUser.vue'
 import UpdateUser from '@/components/UpdateUser.vue'
-// import { useState } from '../store'
 import { $api } from '@/clients'
 import { ApiClientBase } from '@/clients/api/base'
 
@@ -38,7 +37,6 @@ export default {
     DashboardList
   },
   setup() {
-    // const state = useState()
     const user = ApiClientBase.user
     const officeId = ref()
     const office = ref()

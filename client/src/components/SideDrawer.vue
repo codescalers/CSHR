@@ -33,11 +33,8 @@
 import { useRoute, useRouter } from 'vue-router'
 import { useAsyncState } from '@vueuse/core'
 import logo from '@/assets/cshr_logo.png'
-// import { useState } from '@/store'
-// import { isAdmin } from '@/hooks'
 import { computed } from 'vue'
 import CshrToolbar from './CshrToolbar.vue'
-// import { ApiClientBase } from '@/clients/api/base'
 import { $api } from '@/clients'
 import { ApiClientBase } from '@/clients/api/base'
 
@@ -49,7 +46,6 @@ export default {
   setup() {
     const $route = useRoute()
     const $router = useRouter()
-    // const state = useState()
     const user = ApiClientBase.user
 
     const isReadyRouter = useAsyncState(async () => {
@@ -97,8 +93,6 @@ export default {
 
     const filteredItems = computed(() =>
       navItems.filter((item: any) => {
-        // Include all items except for 'Dashboard' when isAdmin is false
-        // return isAdmin.value || item.path !== '/dashboard'
         return (
           user.value?.fullUser.user_type.toLowerCase() === 'admin' || item.path !== '/dashboard'
         )
@@ -107,11 +101,6 @@ export default {
 
     function logout() {
       $api.auth.logout()
-      // if (state.rememberMe.value === false) {
-      //   state.access_token.value = ''
-      //   localStorage.clear()
-      // }
-
       $router.push('/login')
     }
 
@@ -120,7 +109,6 @@ export default {
       logo,
       $route,
       navItems,
-      // isAdmin,
       filteredItems,
       logout
     }

@@ -22,7 +22,6 @@ import { $api } from '@/clients'
 import { useRoute } from 'vue-router'
 import { useAsyncState } from '@vueuse/core'
 import profileImage from '@/components/profileImage.vue'
-// import { useState } from '@/store'
 import UserCard from '@/components/userCard.vue'
 import { ApiClientBase } from '@/clients/api/base'
 
@@ -35,7 +34,6 @@ export default defineComponent({
 
   setup() {
     const $route = useRoute()
-    // const state = useState()
     const storedUser = ApiClientBase.user
     const user = useAsyncState(
       $route.query.id ? $api.users.getuser(Number($route.query.id)) : $api.myprofile.getUser(),

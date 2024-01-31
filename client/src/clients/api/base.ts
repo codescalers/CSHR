@@ -4,10 +4,7 @@ import { isValidToken, panic, resolve } from '@/utils'
 import type { Api } from '@/types'
 import type { NotifierService } from 'vue3-notifier'
 import type { ApiClient } from './index'
-// import { useStorage } from '@vueuse/core'
-// import { useState } from '@/store'
 import { capitalize, ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 export abstract class ApiClientBase {
   public static USER_KEY = 'LOGGED_IN_USER'

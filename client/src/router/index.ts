@@ -1,5 +1,4 @@
 import { ApiClientBase } from '@/clients/api/base'
-// import { isAuthenticated, isAdmin } from '@/hooks'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -30,23 +29,5 @@ router.beforeEach(async (to, _, next) => {
 
   next()
 })
-
-// router.beforeEach(async (to, _, next) => {
-//   // If the user is not authenticated and route to login page
-//   if (!isAuthenticated.value && to.path !== '/login') {
-//     // Redirect the user to the login page
-//     next('/login')
-//     // if user is not admin hide dashboard and redirect to home
-//   } else if (
-//     (isAuthenticated.value && to.path === '/login') ||
-//     (!isAdmin.value && to.path === '/dashboard')
-//   ) {
-//     // If authenticated and trying to access the login page, redirect to home
-//     next('/')
-//   } else {
-//     // Continue navigation for other cases
-//     next()
-//   }
-// })
 
 export default router

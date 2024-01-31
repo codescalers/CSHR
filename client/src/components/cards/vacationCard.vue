@@ -131,7 +131,6 @@
 import type { Api } from '@/types'
 import { computed, ref } from 'vue'
 
-// import { useState } from '@/store'
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
@@ -157,7 +156,6 @@ export default {
     })
     const form = ref()
     const user = ApiClientBase.user
-    // const state = useState()
     const readOnly = ref<boolean>(true)
     const leaveReasons = ref<Api.LeaveReason[]>([
       {

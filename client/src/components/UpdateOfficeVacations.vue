@@ -46,7 +46,6 @@
 <script lang="ts">
 import { $api } from '@/clients'
 import { ref } from 'vue'
-// import { useState } from '../store'
 import { requiredStringRules } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
@@ -56,7 +55,6 @@ export default {
   setup() {
     const form = ref()
     const user = ApiClientBase.user
-    // const state = useState()
     const reasons = ref([
       {
         id: 1,
@@ -95,7 +93,6 @@ export default {
       vacation,
       reasons,
       selectedReason,
-      // state,
       user,
       requiredStringRules,
       isLoading,
