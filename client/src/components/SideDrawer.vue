@@ -2,7 +2,10 @@
   <v-card>
     <v-layout>
       <v-navigation-drawer v-if="$route.path != '/login'" theme="dark" permanent>
-        <v-img :src="logo" max-width="150" class="ml-3 mt-10 mb-4"></v-img>
+        <router-link to="/">
+          <v-img :src="logo" max-width="110" class="ml-3 mt-5 mb-4"></v-img>
+        </router-link>
+        <v-divider></v-divider>
         <v-list color="transparent">
           <template v-for="item in filteredItems" :key="item.title">
             <v-list-item
@@ -119,7 +122,8 @@ export default {
 <style scoped>
 .router-link {
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 400;
+  font-size: 0.875rem;
   color: var(--link-color);
   cursor: pointer;
 }

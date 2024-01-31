@@ -19,6 +19,8 @@ from cshr.utils.email_messages_templates import (
 
 from cshr.api.response import CustomResponse
 from cshr.utils.redis_functions import (
+    http_ensure_redis_error,
+    ping_redis,
     set_notification_reply_redis,
     set_notification_request_redis,
 )
@@ -42,10 +44,17 @@ class OffcialDocumentAPIView(GenericAPIView):
             msg = get_official_document_request_email_template(
                 request.user, saved, saved.id
             )
+
+            try:
+                ping_redis()
+            except:
+                return http_ensure_redis_error()
+
             bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(
                 request.user.id, msg, "Official Document request"
             )
+
             if bool1 and bool2:
                 return CustomResponse.success(
                     message="Document saved successfully", data=serializer.data
@@ -78,6 +87,12 @@ class OfficialDocumentAcceptApiView(GenericAPIView):
         document.approval_user = current_user
         document.status = STATUS_CHOICES.APPROVED
         document.save()
+
+        try:
+            ping_redis()
+        except:
+            return http_ensure_redis_error()
+
         bool1 = set_notification_reply_redis(document, "accepted", document.id)
         msg = get_official_document_request_email_template(
             current_user, document, document.id

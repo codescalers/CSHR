@@ -31,6 +31,8 @@ from cshr.utils.email_messages_templates import (
 
 from cshr.api.response import CustomResponse
 from cshr.utils.redis_functions import (
+    http_ensure_redis_error,
+    ping_redis,
     set_notification_request_redis,
     set_notification_reply_redis,
 )
@@ -61,6 +63,12 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
             msg = get_hr_letter_request_email_template(
                 current_user, serializer.data, saved.id
             )
+
+            try:
+                ping_redis()
+            except:
+                return http_ensure_redis_error()
+
             bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(
                 current_user.id, msg, "Hr Letter request"
@@ -199,6 +207,12 @@ class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
         hr_letter.approval_user = current_user
         hr_letter.status = STATUS_CHOICES.APPROVED
         hr_letter.save()
+
+        try:
+            ping_redis()
+        except:
+            return http_ensure_redis_error()
+
         bool1 = set_notification_reply_redis(hr_letter, "accepted", hr_letter.id)
         msg = get_hr_letter_reply_email_template(current_user, hr_letter, hr_letter.id)
         bool2 = send_email_for_reply.delay(

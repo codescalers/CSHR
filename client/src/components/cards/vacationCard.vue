@@ -1,9 +1,12 @@
 <template>
-  <v-card elevation="0" variant="outlined" color="white" class="pa-4">
-    <div class="d-flex flex-row-reverse">
-      <v-icon class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
-    </div>
-
+  <v-card elevation="0" >
+    <v-card-title class="bg-graytitle">
+      <div class="d-flex flex-row-reverse">
+        <v-icon size="small" class="me-2" @click.stop="$emit('close-dialog', false)">
+          mdi-close
+        </v-icon>
+      </div>
+    </v-card-title>
     <v-card-title class="text-center">
       From <b color="primary">{{ vacation.from_date }} </b> to
       <b color="primary">{{ vacation.end_date }} </b> vacation</v-card-title
@@ -25,7 +28,6 @@
           <v-col cols="3" class="text-right">
             {{ vacation.user.full_name }}
           </v-col>
-
 
         </v-row>
 
@@ -112,7 +114,7 @@ export default {
     const form = ref()
     const disabled = ref<boolean>(true)
     const user = ApiClientBase.user
-    const leaveReasons = ref<Api.LeaveReason[]>([])
+    const leaveReasons = ref<Api.LeaveReason[]>([ ])
 
     const balance = useAsyncState($api.vacations.getVacationBalance({ "user_ids": user.value?.fullUser.id }), null, {
       onSuccess(data: any) {
