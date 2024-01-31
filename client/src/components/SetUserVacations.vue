@@ -4,7 +4,7 @@
       <v-row class="justify-center align-center">
         <v-col cols="12">
           <v-text-field
-            v-model="state.user.value.value.location.name"
+            v-model="user!.fullUser.location.name"
             label="Office"
             type="text"
             :rules="requiredStringRules"
@@ -37,7 +37,14 @@
             type="number"
             :rules="requiredRules"
           ></v-text-field>
-          <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading='isLoading' @click="execute">Set Vacations</v-btn>
+          <v-btn
+            color="primary"
+            type="submit"
+            :disabled="!form?.isValid"
+            :loading="isLoading"
+            @click="execute"
+            >Set Vacations</v-btn
+          >
         </v-col>
       </v-row>
     </v-form>
@@ -46,16 +53,16 @@
 
 <script lang="ts">
 import { $api } from '@/clients'
-import { useState } from '@/store'
 import { requiredRules, requiredStringRules } from '@/utils'
 import { onMounted, ref, watchEffect } from 'vue'
 import { useAsyncState } from '@vueuse/core'
+import { ApiClientBase } from '@/clients/api/base'
 
 export default {
   name: 'SetUserVacations',
   setup() {
     const form = ref()
-    const state = useState()
+    const user = ApiClientBase.user
     const officeUsers = ref()
     const users = ref([])
     const selectedUser = ref()
@@ -95,13 +102,17 @@ export default {
       }
     })
 
-    const {execute, isLoading} = useAsyncState(async() => {
-      await $api.vacations.balance.update({ user_ids: selectedUser.value.id }, vacation.value)
-    }, null, {immediate: false})
+    const { execute, isLoading } = useAsyncState(
+      async () => {
+        await $api.vacations.balance.update({ user_ids: selectedUser.value.id }, vacation.value)
+      },
+      null,
+      { immediate: false }
+    )
 
     return {
       form,
-      state,
+      user,
       users,
       selectedUser,
       officeUsers,

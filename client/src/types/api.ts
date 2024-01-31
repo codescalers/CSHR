@@ -15,7 +15,7 @@ export module Api {
   }
 
   export type Path = `/${string}`
-  export type LoginUser = Api.Returns.Login['results']
+  export type LoginUser = Api.Returns.Login['results'] & { fullUser: Api.User }
 
   export interface UnwrapOptions<T, R> {
     transform?: (data: T, res: AxiosResponse<T, any>) => R

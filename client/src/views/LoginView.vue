@@ -2,7 +2,7 @@
   <v-container fluid class="pa-0">
     <v-row align="center" justify="center">
       <v-col cols="12" md="7">
-        <v-card height="100vh" style="background-color: black;">
+        <v-card height="100vh" style="background-color: black">
           <v-img :src="background" height="65%" cover />
           <div class="pa-2 pa-md-10 mx-auto">
             <v-card-title class="text-h6 text-md-h5 font-weight-bold">
@@ -10,33 +10,22 @@
             </v-card-title>
 
             <v-card-text>
-              A versatile management system with vacation request submissions
-              and seamless integration with a global calendar. Users across
-              offices can collectively view approved Vacations, Birthdates,
-              Events, Meetings, and Holidays, providing a centralized overview
-              for the entire organization.
+              A versatile management system with vacation request submissions and seamless
+              integration with a global calendar. Users across offices can collectively view
+              approved Vacations, Birthdates, Events, Meetings, and Holidays, providing a
+              centralized overview for the entire organization.
             </v-card-text>
-            <v-card-subtitle class="text-white">
-              Powered by CodeScalers Egypt.
-            </v-card-subtitle>
+            <v-card-subtitle class="text-white"> Powered by CodeScalers Egypt. </v-card-subtitle>
           </div>
         </v-card>
       </v-col>
       <v-col cols="12" md="5">
-        <v-form ref="form" @submit.prevent>
-          <v-img
-            :src="logo"
-            max-width="140"
-            class="mx-auto justify-center"
-          ></v-img>
+        <v-form v-model="valid" @submit.prevent>
+          <v-img :src="logo" max-width="140" class="mx-auto justify-center"></v-img>
           <h2 class="text-center my-5">Sign In</h2>
           <v-row class="justify-center align-center">
             <v-col cols="7">
-              <v-text-field
-                v-model="email"
-                label="Email"
-                :rules="emailRules"
-              ></v-text-field>
+              <v-text-field v-model="email" label="Email" :rules="emailRules"></v-text-field>
             </v-col>
 
             <v-col cols="7">
@@ -50,10 +39,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col
-              cols="7"
-              class="d-flex justify-content-between align-center pa-0"
-            >
+            <v-col cols="7" class="d-flex justify-content-between align-center pa-0">
               <v-checkbox v-model="rememberMe" label="Remember me"></v-checkbox>
             </v-col>
 
@@ -61,9 +47,9 @@
               <v-btn
                 color="primary"
                 type="submit"
-                :disabled="!form?.isValid"
+                :disabled="!valid"
                 width="100%"
-                :loading='isLoading'
+                :loading="isLoading"
                 @click="execute"
               >
                 Login
@@ -83,34 +69,28 @@ import logo from '@/assets/cshr_logo.png'
 import { $api } from '@/clients'
 import { emailRules, passwordRules } from '@/utils'
 import { useRouter } from 'vue-router'
-import { useState } from '../store'
 import { useAsyncState } from '@vueuse/core'
 
 export default defineComponent({
   setup() {
-    const form = ref()
+    const valid = ref(false)
     const email = ref<string>('')
     const password = ref<string>('')
     const show = ref<boolean>(false)
     const rememberMe = ref<boolean>(false)
-    const $router = useRouter()
-    const state = useState()
+    const router = useRouter()
 
-    const {execute, isLoading} = useAsyncState(async() => {
-      await $api.auth.login(
-        {
-          email: email.value,
-          password: password.value,
-        },
-      )
-      const user = useAsyncState(async() => await $api.myprofile.getUser(), null)
-      state.user.value = user.state
-      state.rememberMe.value = rememberMe.value
-      $router.push('/')
-    }, null, {immediate: false})
+    const { isLoading, execute } = useAsyncState(
+      () => $api.auth.login({ email: email.value, password: password.value }),
+      null,
+      {
+        immediate: false,
+        onSuccess: () => router.push('/')
+      }
+    )
 
     return {
-      form,
+      valid,
       email,
       password,
       rememberMe,
@@ -121,9 +101,9 @@ export default defineComponent({
       logo,
       isLoading,
       execute
-    };
-  },
-});
+    }
+  }
+})
 </script>
 <style scoped>
 :deep(.v-card-title) {
