@@ -3,7 +3,7 @@
     <VSpacer />
     <VMenu>
       <template #activator="{ props }">
-        <VBtn icon="mdi-bell-outline" v-bind="props" />
+        <VBtn icon="mdi-bell-outline" size="small" v-bind="props" />
       </template>
 
       <VList max-width="600" min-width="100%">

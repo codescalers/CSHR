@@ -1,69 +1,108 @@
 <!-- eslint-disable vue/no-async-in-computed-properties -->
 <template>
-  <v-row>
+  <v-row class="justify-center py-4">
     <v-col cols="2">
-      <v-checkbox v-model="selected.meetings" label="Meetings" />
+      <v-checkbox v-model="selected.meetings" color="#efeaea" label="Meetings" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.events" label="Events" />
+      <v-checkbox v-model="selected.events" color="#47a2ff" label="Events" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.vacations" label="Vacations" />
+      <v-checkbox v-model="selected.vacations" color="#fcd091" label="Vacations" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.holidays" label="Holidays" />
+      <v-checkbox v-model="selected.holidays" color="#5effb4" label="Holidays" />
     </v-col>
     <v-col cols="2">
-      <v-checkbox v-model="selected.birthdays" label="Birthdays" />
+      <v-checkbox v-model="selected.birthdays" color="#e0adf0" label="Birthdays" />
     </v-col>
   </v-row>
-  <div class="ma-7 pa-7">
-    <div class="loading-container d-flex align-center justify-center  my-5" v-if="homes.isLoading.value">
+  <v-divider class="d-flex mx-auto" style="width: 90%"></v-divider>
+  <div class="ma-7 px-7">
+    <div
+      class="loading-container d-flex align-center justify-center my-5"
+      v-if="homes.isLoading.value"
+    >
       <v-alert density="compact" class="pa-5" type="info" text="Events are loading..."></v-alert>
     </div>
-    <FullCalendar class="fc" :options="{
-      ...options,
-      events: eventsOption,
-      dayCellDidMount
-    }" />
+    <FullCalendar
+      class="fc"
+      :options="{
+        ...options,
+        events: eventsOption,
+        dayCellDidMount
+      }"
+    />
   </div>
-  <VDialog v-if="dates?.startStr" :routeQuery="dates?.startStr" :modelValue="showDialog[dates?.startStr]">
+  <VDialog
+    v-if="dates?.startStr"
+    :routeQuery="dates?.startStr"
+    :modelValue="showDialog[dates?.startStr]"
+  >
     <v-card>
-      <calenderRequest :dates="dates" @close-dialog="closeDialog(dates?.startStr)"
+      <calenderRequest
+        :dates="dates"
+        @close-dialog="closeDialog(dates?.startStr)"
         @create-vacation="createVacation(dates?.startStr, $event)"
-        @create-meeting="createMeeting(dates?.startStr, $event)" @create-event="createEvent(dates?.startStr, $event)" />
+        @create-meeting="createMeeting(dates?.startStr, $event)"
+        @create-event="createEvent(dates?.startStr, $event)"
+      />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isMeeting && meeting" :routeQuery="meeting.id" :modelValue="showDialog[meeting.id]">
+  <VDialog
+    v-if="isViewRequest && isMeeting && meeting"
+    :routeQuery="meeting.id"
+    :modelValue="showDialog[meeting.id]"
+  >
     <v-card>
       <meetingCard :meeting="meeting" @close-dialog="closeDialog(meeting.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isHoliday && holiday" :routeQuery="holiday.id" :modelValue="showDialog[holiday.id]">
+  <VDialog
+    v-if="isViewRequest && isHoliday && holiday"
+    :routeQuery="holiday.id"
+    :modelValue="showDialog[holiday.id]"
+  >
     <v-card>
       <holidayCard :holiday="holiday" @close-dialog="closeDialog(holiday.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isBirthday && birthday" :routeQuery="birthday.id" :modelValue="showDialog[birthday.id]">
+  <VDialog
+    v-if="isViewRequest && isBirthday && birthday"
+    :routeQuery="birthday.id"
+    :modelValue="showDialog[birthday.id]"
+  >
     <v-card>
       <birthdayCard :birthday="birthday" @close-dialog="closeDialog(birthday.id)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isEvent && event" :routeQuery="event.name" :modelValue="showDialog[event.name]">
+  <VDialog
+    v-if="isViewRequest && isEvent && event"
+    :routeQuery="event.name"
+    :modelValue="showDialog[event.name]"
+  >
     <v-card>
       <eventCard :event="event" @close-dialog="closeDialog(event.name)" />
     </v-card>
   </VDialog>
 
-  <VDialog v-if="isViewRequest && isLeave && vacation" :routeQuery="vacation.id" :modelValue="showDialog[vacation.id]">
+  <VDialog
+    v-if="isViewRequest && isLeave && vacation"
+    :routeQuery="vacation.id"
+    :modelValue="showDialog[vacation.id]"
+  >
     <v-card>
-      <vacationCard :vacation="vacation" @close-dialog="closeDialog(vacation.id)"
+      <vacationCard
+        :vacation="vacation"
+        @close-dialog="closeDialog(vacation.id)"
         @status-vacation="updateVacationStatus(vacation.id, $event)"
-        @update-vacation="updateVacation(vacation.id, $event)" @delete-vacation="deleteVacation(vacation.id)" />
+        @update-vacation="updateVacation(vacation.id, $event)"
+        @delete-vacation="deleteVacation(vacation.id)"
+      />
     </v-card>
   </VDialog>
 </template>
@@ -196,11 +235,14 @@ export default {
     watch(
       () => currentDate.value,
       async (newValue, oldValue) => {
-        if (newValue.getMonth() + 1 !== oldValue.getMonth() + 1 || newValue.getFullYear() !== oldValue.getFullYear()) {
-          homes.execute();
+        if (
+          newValue.getMonth() + 1 !== oldValue.getMonth() + 1 ||
+          newValue.getFullYear() !== oldValue.getFullYear()
+        ) {
+          homes.execute()
         }
-      },
-    );
+      }
+    )
 
     const onSelect = async (arg: any) => {
       calendar.value = arg.view.calendar
@@ -398,3 +440,44 @@ export default {
   }
 }
 </script>
+<style>
+.fc {
+  font-size: 0.875rem !important;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border: 1px solid #3c3c3c !important;
+}
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border: 1px solid #3c3c3c !important;
+}
+
+.fc .fc-button .fc-icon {
+  font-size: 1em;
+  vertical-align: baseline;
+}
+
+.fc-daygrid-block-event .fc-event-time,
+.fc-daygrid-block-event .fc-event-title {
+  padding: 1px 9px;
+}
+
+button {
+  text-transform: capitalize !important;
+}
+
+.fc-event-title{
+  color: #131313;
+  font-weight: 500;
+}
+
+.fc-popover{
+  background-color: rgb(49 47 47) !important;
+  color: #ffffff;
+
+.fc-popover-header {
+  background-color: rgb(100, 99, 99) !important;
+}
+}
+</style>

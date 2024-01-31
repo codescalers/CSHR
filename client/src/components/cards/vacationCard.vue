@@ -1,130 +1,116 @@
 <template>
-  <v-card elevation="0" variant="outlined" color="white" class="pa-4">
-    <div class="d-flex flex-row-reverse">
-      <v-icon class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
-    </div>
+  <v-card elevation="0">
+    <v-card-title class="bg-graytitle">
+      <div class="d-flex flex-row-reverse">
+        <v-icon class="me-2" size="small" @click.stop="$emit('close-dialog', false)">
+          mdi-close
+        </v-icon>
+      </div>
+    </v-card-title>
+    <v-container class="pa-6">
+      <p class="text-subtitle-1 text-center">
+        From <b>{{ vacation.from_date }} </b> to
+        <b color="primary">{{ vacation.end_date }} </b> vacation
 
-    <v-card-title class="text-center">
-      From <b color="primary">{{ vacation.from_date }} </b> to
-      <b color="primary">{{ vacation.end_date }} </b> vacation</v-card-title
-    >
-    <br />
-
-    <v-row class="d-flex flex-row-reverse" v-if="couldUpdate">
-      <v-btn color="primary" class="ma-4" @click="readOnly = false">Update</v-btn>
-      <v-btn color="red" class="ma-4" @click="handleDelete">Delete</v-btn>
-    </v-row>
-
-    <v-form ref="form" @submit.prevent="updateVacation()">
-      <v-card elevation="0" class="pa-8">
-        <v-row class="py-5">
-          <v-col cols="3">
-            <v-icon>mdi-account</v-icon>
-
-            <b> Applying User</b>
-          </v-col>
-          <v-col cols="3" class="text-right">
-            {{ vacation.user.full_name }}
-          </v-col>
-
-          <v-col cols="3">
-            <v-icon>mdi-account</v-icon>
-
-            <b> Approval User </b>
-          </v-col>
-          <v-col cols="3" class="text-right" v-if="vacation.isUpdated">
-            {{ vacation.approval_user ? vacation.approval_user : 'Under approving' }}
-          </v-col>
-          <v-col cols="3" class="text-right" v-else>
-            {{ vacation.approval_user.email ? vacation.approval_user.email : 'Under approving' }}
-          </v-col>
+        <v-row class="d-flex justify-center my-2" v-if="couldUpdate">
+          <v-btn color="primary" class="mx-1 my-2" @click="readOnly = false">Update</v-btn>
+          <v-btn color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
         </v-row>
+      </p>
+      <v-divider class="my-2"></v-divider>
+      <v-form ref="form" @submit.prevent="updateVacation()">
+        <v-card elevation="0" class="pa-4">
+          <v-row class="py-2">
+            <v-col cols="6" class="d-flex">
+              <v-icon class="mr-2">mdi-account</v-icon>
+              <p>
+                Applying User :
+                <span color="warning" class="mx-2">{{ vacation.user.full_name }}</span>
+              </p>
+            </v-col>
+            <v-col cols="6" class="d-flex">
+              <v-icon class="mr-2">mdi-account</v-icon>
 
-        <v-row>
-          <v-col cols="2">
-            <v-icon>mdi-calendar</v-icon>
+              <p>
+                Approval User :
+                <span class="mx-2" v-if="vacation.isUpdated">{{
+                  vacation.approval_user ? vacation.approval_user : 'Under approving'
+                }}</span>
+                <span class="mx-2" v-else>{{
+                  vacation.approval_user.email ? vacation.approval_user.email : 'Under approving'
+                }}</span>
+              </p>
+            </v-col>
+          </v-row>
 
-            <b> From</b>
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              color="primar'"
-              item-color="primary"
-              base-color="primary"
-              variant="outlined"
-              hide-details="auto"
-              label="From"
-              v-model="startDate"
-              :readonly="readOnly"
-              type="date"
-            >
-            </v-text-field>
-          </v-col>
-
-          <v-col cols="2">
-            <v-icon>mdi-calendar</v-icon>
-
-            <b> To</b>
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              color="primar'"
-              item-color="primary"
-              base-color="primary"
-              variant="outlined"
-              hide-details="auto"
-              label="To"
-              v-model="endDate"
-              :readonly="readOnly"
-              type="date"
-              :rules="[validateEndDate]"
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col cols="2">
-            <v-icon>mdi-navigation</v-icon>
-
-            <b> Reason</b>
-          </v-col>
-          <v-col cols="4">
-            <v-autocomplete
-              color="primary"
-              item-color="primary"
-              base-color="primary"
-              variant="outlined"
-              v-model="leaveReason"
-              :items="leaveReasons"
-              label="Reason"
-              return-object
-              item-title="name"
-              :readonly="readOnly"
-            >
-            </v-autocomplete>
-          </v-col>
-          <v-col cols="3">
-            <v-icon>mdi-calendar</v-icon>
-            <b> Status</b>
-          </v-col>
-          <v-col cols="3" class="text-right">
-            {{ vacation.status }}
-          </v-col>
-        </v-row>
-        <v-row class="d-flex flex-row-reverse" v-if="!readOnly">
-          <v-btn color="" class="ma-4" @click="readOnly = true">Cancel</v-btn>
-          <v-btn color="primary" class="ma-4" type="submit" :disabled="!form?.isValid">
-            Submit
-          </v-btn>
-        </v-row>
-      </v-card>
-    </v-form>
-
-    <v-row v-if="couldApprove && vacation.status == 'pending'">
-      <v-btn color="primary" class="ma-4" @click="handleApprove">Approve</v-btn>
-      <v-btn color="red" class="ma-4" @click="handleReject">Reject</v-btn>
-    </v-row>
+          <v-row>
+            <v-col cols="6">
+              <v-text-field
+                color="info"
+                item-color="info"
+                base-color="info"
+                variant="outlined"
+                hide-details="auto"
+                label="From"
+                v-model="startDate"
+                :readonly="readOnly"
+                type="date"
+              >
+              </v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field
+                color="info"
+                item-color="info"
+                base-color="info"
+                variant="outlined"
+                hide-details="auto"
+                label="To"
+                v-model="endDate"
+                :readonly="readOnly"
+                type="date"
+                :rules="[validateEndDate]"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <v-autocomplete
+                color="info"
+                item-color="info"
+                base-color="info"
+                variant="outlined"
+                v-model="leaveReason"
+                :items="leaveReasons"
+                label="Reason"
+                return-object
+                item-title="name"
+                :readonly="readOnly"
+              >
+              </v-autocomplete>
+            </v-col>
+            <v-col cols="6" class="d-flex items-center">
+              <p>
+                Status :
+                {{ vacation.status }}
+              </p>
+            </v-col>
+          </v-row>
+          <v-row class="d-flex justify-center" v-if="!readOnly">
+            <v-btn color="primary" class="my-2 mx-1" type="submit" :disabled="!form?.isValid">
+              Submit
+            </v-btn>
+            <v-btn color="info" class="my-2 mx-1" @click="readOnly = true">Cancel</v-btn>
+          </v-row>
+        </v-card>
+      </v-form>
+      <v-divider class="my-2"></v-divider>
+      <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'pending'">
+        <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
+        <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
+      </v-row>
+    </v-container>
   </v-card>
 </template>
 <script lang="ts">
