@@ -69,9 +69,13 @@ export default {
       }
     )
 
-    watch(selected, (value) => {
-      notification.execute(undefined, value)
-    })
+    watch(
+      selected,
+      (value) => {
+        notification.execute(undefined, value)
+      },
+      { immediate: true }
+    )
 
     function getSections(data: any) {
       if (data.type === 'vacations')

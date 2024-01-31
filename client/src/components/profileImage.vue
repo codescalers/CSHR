@@ -9,8 +9,8 @@
     </div>
 
     <div v-else>
-      <v-avatar :color="user.image" size="50" class="d-flex mx-auto user-profile-logo">
-        <span class="text-h5 text-uppercase">{{ avatar }}</span>
+      <v-avatar :color="user.image" size="40" class="d-flex mx-auto user-profile-logo">
+        <span class="text-h6 text-uppercase">{{ avatar }}</span>
       </v-avatar>
     </div>
   </router-link>
@@ -56,3 +56,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.user-profile-logo {
+  cursor: pointer;
+}
+</style>
