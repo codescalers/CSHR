@@ -47,7 +47,7 @@ export abstract class ApiClientBase {
   }
 
   protected static assertUser() {
-    if (!ApiClientBase.USER) {
+    if (!ApiClientBase.USER.value) {
       panic(`Expected to login before using this route.`)
     }
   }
