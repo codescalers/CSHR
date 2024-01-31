@@ -62,7 +62,9 @@ export default {
     const $api = useApi()
     const form = ref()
     const startDate = ref<Date>(props.dates.startStr)
-    const endDate = ref<Date>(props.dates.endStr)
+    const endDate = ref<any>(new Date(props.dates.endStr))
+    endDate.value.setDate(endDate.value.getDate() - 1);
+    endDate.value = endDate.value.toISOString().split('T')[0];
     const user = ApiClientBase.user
     const leaveReason = ref<Api.LeaveReason>()
     const actualDays = useAsyncState($api.vacations.calculate.list({
