@@ -112,32 +112,32 @@ export default {
     const form = ref()
     const disabled = ref<boolean>(true)
     const user = ApiClientBase.user
-    const leaveReasons = ref<Api.LeaveReason[]>([
-      {
-        name: 'Public Holidays',
-        reason: 'public_holiday'
-      },
-      {
-        name: 'Emergency Leaves',
-        reason: 'emergency_leaves'
-      },
-      {
-        name: 'Sick Leaves',
-        reason: 'sick_leaves'
-      },
-      {
-        name: 'Annual Leaves',
-        reason: 'annual_leaves'
-      },
-      {
-        name: 'Unpaid',
-        reason: 'unpaid'
-      },
-      {
-        name: 'Compensation',
-        reason: 'compensation'
+    const leaveReasons = ref<Api.LeaveReason[]>([])
+
+    const balance = useAsyncState($api.vacations.getVacationBalance({ "user_ids": user.value?.fullUser.id }), null, {
+      onSuccess(data: any) {
+        leaveReasons.value = [{
+          name: `Emergency Leaves  ${data[0].emergency_leaves.reserved} / ${data[0].emergency_leaves.all}`,
+          reason: "emergency_leaves",
+        }, {
+          name: `Sick Leaves  ${data[0].sick_leaves.reserved} / ∞`,
+          reason: "sick_leaves",
+        },
+        {
+          name: `Annual Leaves  ${data[0].annual_leaves.reserved} / ${data[0].annual_leaves.all}`,
+          reason: "annual_leaves",
+        },
+        {
+          name: `Unpaid ${data[0].unpaid.reserved} / ∞`,
+          reason: "unpaid",
+        },
+        {
+          name: `Compensation  ${data[0].compensation.reserved} / ∞`,
+          reason: "compensation",
+        },]
+
       }
-    ])
+    })
     const couldUpdate = computed(() => {
       if (user.value) {
         if (props.vacation.status == 'pending') {

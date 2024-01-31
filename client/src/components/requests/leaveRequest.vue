@@ -58,7 +58,6 @@ export default {
     'create-event': (item: any) => item,
   },
   setup(props, ctx) {
-    // const state = useState()
     const $api = useApi()
     const form = ref()
     const startDate = ref<Date>(props.dates.startStr)
