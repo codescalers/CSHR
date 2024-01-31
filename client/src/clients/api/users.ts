@@ -23,16 +23,16 @@ export class UsersApi extends ApiClientBase {
   }
 
   list(query?: any) {
-      return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
+    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
   }
   getuser(id: number, options: Api.UnwrapOptions<any, any> = {}) {
-    return this.unwrap(this.$http.get<Api.Returns.Profile>(this.getUrl(`/${id}`)), {
+    return this.unwrap(() => this.$http.get<Api.Returns.Profile>(this.getUrl(`/${id}`)), {
       transform: (d) => d.results,
       ...options
     })
   }
   read(id: number) {
-    return this.unwrap(this.$http.get<Api.Returns.MsgRes<Api.User>>(this.getUrl(`/${id}`)), {
+    return this.unwrap(() => this.$http.get<Api.Returns.MsgRes<Api.User>>(this.getUrl(`/${id}`)), {
       transform: (d) => d.results
     })
   }
@@ -50,26 +50,26 @@ class UsersAdminApi extends ApiClientBase {
   }
 
   list(query?: Api.Inputs.List) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
+    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
       transform: (d) => d.results
     })
   }
 
   read(id: number) {
-    return this.unwrap(this.$http.get<Api.Returns.MsgRes<Api.User>>(this.getUrl(`/${id}`)), {
+    return this.unwrap(() => this.$http.get<Api.Returns.MsgRes<Api.User>>(this.getUrl(`/${id}`)), {
       transform: (d) => d.results
     })
   }
 
   update(id: number, input: Api.Inputs.UsersAdminUpdate) {
     return this.unwrap(
-      this.$http.put<Api.Returns.MsgRes<Api.AdminUser>>(this.getUrl(`/${id}`), input),
+      () => this.$http.put<Api.Returns.MsgRes<Api.AdminUser>>(this.getUrl(`/${id}`), input),
       { transform: (d) => d.results }
     )
   }
 
   delete(id: number) {
-    return this.unwrap(this.$http.delete<void>(this.getUrl(`/${id}`)))
+    return this.unwrap(() => this.$http.delete<void>(this.getUrl(`/${id}`)))
   }
 }
 
@@ -77,7 +77,7 @@ class UsersAdminofficeUsersApi extends ApiClientBase {
   protected readonly path = '/office_users'
 
   list() {
-    return this.unwrap(this.$http.get(this.getUrl()), { transform: (d) => d.results })
+    return this.unwrap(() => this.$http.get(this.getUrl()), { transform: (d) => d.results })
   }
 }
 
@@ -91,7 +91,7 @@ class UsersSetActiveApi extends ApiClientBase {
   protected readonly path = '/set_active'
 
   update(input: Api.Inputs.UsersActive) {
-    return this.unwrap(this.$http.put<any>(this.getUrl(), input))
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(), input))
   }
 }
 
@@ -99,7 +99,7 @@ class UsersSetInActiveApi extends ApiClientBase {
   protected readonly path = '/set_inactive'
 
   update(input: Api.Inputs.UsersActive) {
-    return this.unwrap(this.$http.put<any>(this.getUrl(), input))
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(), input))
   }
 }
 
@@ -107,11 +107,13 @@ class UsersSkillsApi extends ApiClientBase {
   protected readonly path = '/skills'
 
   list(query?: Api.Inputs.List) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.Skill>>(this.getUrl('', query)))
+    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.Skill>>(this.getUrl('', query)))
   }
 
   create(input: Api.Inputs.UserSkills) {
-    return this.unwrap(this.$http.post<Api.Inputs.UserSkills>(this.getUrl('/add_skill'), input))
+    return this.unwrap(() =>
+      this.$http.post<Api.Inputs.UserSkills>(this.getUrl('/add_skill'), input)
+    )
   }
 }
 
@@ -127,7 +129,7 @@ class UsersTeamApi extends ApiClientBase {
   }
 
   list(query?: Api.Inputs.List) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
+    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
       transform: (d) => d.results
     })
   }
@@ -137,8 +139,11 @@ class UsersTeamSupervisorsApi extends ApiClientBase {
   protected readonly path = '/supervisors'
 
   async list(query?: Api.Inputs.List) {
-    return await this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
-      transform: (d) => d.results
-    })
+    return await this.unwrap(
+      () => this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)),
+      {
+        transform: (d) => d.results
+      }
+    )
   }
 }

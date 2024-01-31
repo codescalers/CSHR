@@ -1,17 +1,6 @@
-import { useState } from '@/store'
-import { isValidToken } from '@/utils'
-import { type App, inject, computed } from 'vue'
+import { type App, inject } from 'vue'
 
 export const $globals_key = Symbol('key:$globals')
-const state = useState()
-
-export const isAuthenticated = computed(() => {
-  return state.access_token.value && isValidToken(state.access_token.value) ? true : false
-})
-
-export const isAdmin = computed(() => {
-  return state.user.value?.value && state.user.value.value.user_type === 'Admin' ? true : false
-})
 
 export interface $Globals {
   app: App<Element>

@@ -117,9 +117,9 @@
 import type { Api } from '@/types'
 import { computed, ref } from 'vue'
 
-import { useState } from '@/store'
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
+import { ApiClientBase } from '@/clients/api/base'
 
 export default {
   name: 'vacationCard',
@@ -141,7 +141,7 @@ export default {
       reason: props.vacation.reason
     })
     const form = ref()
-    const state = useState()
+    const user = ApiClientBase.user
     const readOnly = ref<boolean>(true)
     const leaveReasons = ref<Api.LeaveReason[]>([
       {
@@ -170,17 +170,14 @@ export default {
       }
     ])
     const couldUpdate = computed(() => {
-      if (state.user.value) {
+      if (user.value) {
         if (props.vacation.status == 'pending') {
-          if (
-            props.vacation.isUpdated &&
-            state.user.value.value.id == props.vacation.applying_user
-          ) {
+          if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user) {
             return true
           }
           if (
             !props.vacation.isUpdated &&
-            state.user.value.value.id == props.vacation.applying_user.id
+            user.value.fullUser.id == props.vacation.applying_user.id
           ) {
             return true
           }
@@ -191,17 +188,17 @@ export default {
     })
 
     const couldApprove = computed(() => {
-      if (state.user.value) {
+      if (user.value) {
         if (
-          state.user.value.value.user_type === 'Admin' ||
-          state.user.value.value.user_type === 'Supervisor'
+          user.value.fullUser.user_type === 'Admin' ||
+          user.value.fullUser.user_type === 'Supervisor'
         ) {
-          if (props.vacation.user.id == state.user.value.value.id) {
+          if (props.vacation.user.id == user.value.fullUser.id) {
             return true
           }
           if (
-            props.vacation.user.reporting_to.includes(state.user.value.value.id) &&
-            props.vacation.user.location.name === state.user.value.value.location.name
+            props.vacation.user.reporting_to.includes(user.value.fullUser.id) &&
+            props.vacation.user.location.name === user.value.fullUser.location.name
           ) {
             return true
           }
@@ -281,7 +278,6 @@ export default {
       leaveReasons,
       readOnly,
       form,
-      state,
       couldApprove,
       couldUpdate,
       validateEndDate,
