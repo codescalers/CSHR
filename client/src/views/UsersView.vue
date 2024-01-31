@@ -4,16 +4,8 @@
 
     <v-row>
       <v-col class="d-flex flex-wrap justify-center">
-        <v-col
-          v-for="user of users.state.value"
-          :key="user?.id"
-          xl="4"
-          lg="6"
-          md="12"
-          sm="12"
-          cols="12"
-          class="px-5 py-5"
-        >
+        <v-col v-for="user of users.state.value" :key="user?.id" xl="4" lg="6" md="12" sm="12" cols="12"
+          class="px-5 py-5">
           <div class="mt-1 text-center py-0 w-100">
             <router-link class="routerLink" :to="{ name: 'profile', query: { id: user.id } }">
               <UserCard :user="user" />
@@ -72,9 +64,15 @@ export default {
             const user = users.find((u) => u.location.id === id)
             return { id: user?.location.id ?? 0, country: user?.location.country ?? '' }
           })
+          isFirstLoad = false
         }
-
-        isFirstLoad = false
+        else {
+          users.forEach((user: Api.User) => {
+            if (!offices.value.some(office => office.id === user.location.id)) {
+              offices.value.push({ id: user?.location.id ?? 0, country: user?.location.country ?? '' });
+            }
+          })
+        }
         return users
       },
       [],
