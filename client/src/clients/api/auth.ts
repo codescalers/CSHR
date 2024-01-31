@@ -7,18 +7,14 @@ export class AuthApi extends ApiClientBase {
 
   async login(input: Api.Inputs.Login) {
     const user = await this.unwrap(
-      this.$http.post<Api.Returns.Login>(this.getUrl('/login'), input),
+      () => this.$http.post<Api.Returns.Login>(this.getUrl('/login'), input),
       { transform: (d) => d.results }
     )
 
-    console.log({ user })
-
     ApiClientBase.login(user as any)
-
     const fullUser = await ApiClientBase.$api.myprofile.getUser()
 
     const data = { ...user, fullUser }
-
     ApiClientBase.login(data)
 
     return data
@@ -26,7 +22,7 @@ export class AuthApi extends ApiClientBase {
 
   register(input: Api.Inputs.Register) {
     ApiClientBase.assertUser()
-    return this.unwrap(this.$http.post<Api.Returns.Register>(this.getUrl('/signup'), input), {
+    return this.unwrap(() => this.$http.post<Api.Returns.Register>(this.getUrl('/signup'), input), {
       transform: (d) => d.results
     })
   }
@@ -43,7 +39,7 @@ export class AuthApi extends ApiClientBase {
 
   async changePassword(input: Api.Inputs.ChangePassword) {
     ApiClientBase.assertUser()
-    return this.unwrap(this.$http.put(this.getUrl('/change-password'), input))
+    return this.unwrap(() => this.$http.put(this.getUrl('/change-password'), input))
   }
 
   logout() {

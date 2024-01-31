@@ -29,27 +29,18 @@ export abstract class ApiClientBase {
     this.$http = options.$http
   }
 
-  // protected static $router = useRouter()
   protected static login(user: Api.LoginUser) {
     localStorage.setItem(ApiClientBase.USER_KEY, btoa(JSON.stringify(user)))
     ApiClientBase.USER.value = user
-    console.log('login', { user })
-
-    // const state = useState()
-    // const { access_token, refresh_token } = state
-    // access_token.value = user.access_token
-    // refresh_token.value = user.refresh_token
-    // useStorage('access_token', access_token.value, localStorage, { mergeDefaults: true })
-    // useStorage('refresh_token', refresh_token.value, localStorage, { mergeDefaults: true })
   }
 
   protected static refresh(res: Api.Returns.Refresh) {
     this.assertUser()
-    ApiClientBase.USER.value = {
+    ApiClientBase.login({
       ...ApiClientBase.USER.value!,
       access_token: res.access,
       refresh_token: res.refresh
-    }
+    })
   }
 
   protected static logout() {
@@ -83,25 +74,31 @@ export abstract class ApiClientBase {
   }
 
   protected async unwrap<T, R = T>(
-    req$: Promise<AxiosResponse<T>>,
+    req$: () => Promise<AxiosResponse<T>>,
     options: Api.UnwrapOptions<T, R> = {}
   ) {
-    const [res, err] = await resolve(req$)
+    const user = ApiClientBase.user.value
+    if (user && !isValidToken(user.access_token)) {
+      await resolve(ApiClientBase.$api.auth.refresh({ refresh: user.refresh_token }))
+    }
 
-    // TODO: fix refresh token
-    // const user = ApiClientBase.USER
-    // const access_token = localStorage.getItem('access_token')
-    // const refresh_token = localStorage.getItem('refresh_token')
-    // if (
-    //   user?.access_token &&
-    //   user?.refresh_token &&
-    //   !isValidToken(access_token) &&
-    //   isValidToken(refresh_token)
-    // ) {
-    //   await ApiClientBase.$api.auth.refresh({ refresh: refresh_token })
-    // }
+    const req = await resolve(req$())
+    let res = req[0]
+    let err = req[1]
 
-    // check if error indicate the token needs to be refreshed
+    const { status, data = {} } = err?.response || {}
+
+    if (status === 401 && data.code === 'token_not_valid' && user) {
+      const [data, err2] = await resolve(
+        ApiClientBase.$api.auth.refresh({ refresh: user.refresh_token })
+      )
+
+      if (data === true && !err2) {
+        const req = await resolve(req$())
+        res = req[0]
+        err = req[1]
+      }
+    }
 
     if (
       (res.config.method === 'post' || res.config.method === 'put') &&
@@ -120,10 +117,6 @@ export abstract class ApiClientBase {
         type: 'error',
         description: options.normalizeError?.(err, res) ?? ApiClientBase.normalizeError(err) ?? err
       })
-
-      // if (err.response.status == 401) {
-      //   ApiClientBase.$router.push('/login')
-      // }
 
       panic(err)
     }

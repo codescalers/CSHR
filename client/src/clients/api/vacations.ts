@@ -31,22 +31,25 @@ export class VacationsApi extends ApiClientBase {
   async getVacationBalance(query?: any) {
     ApiClientBase.assertUser()
     const userBalance = await this.unwrap(
-      this.$http.get<Api.Returns.Balance>(this.getUrl('/balance', query)),
+      () => this.$http.get<Api.Returns.Balance>(this.getUrl('/balance', query)),
       { transform: (d) => d.results }
     )
     return userBalance
   }
+
   async list(query?: any) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.Vacation>>(this.getUrl('', query)), {
-      transform: (d) => d.results
-    })
+    return this.unwrap(
+      () => this.$http.get<Api.Returns.List<Api.Vacation>>(this.getUrl('', query)),
+      {
+        transform: (d) => d.results
+      }
+    )
   }
-  // async list() {}
 
   async create(input: Api.Inputs.Leave) {
     ApiClientBase.assertUser()
     const vacation = await this.unwrap(
-      this.$http.post<Api.Returns.LeaveRequest>(this.getUrl(''), input),
+      () => this.$http.post<Api.Returns.LeaveRequest>(this.getUrl(''), input),
       { transform: (d) => d.results }
     )
 
@@ -54,9 +57,8 @@ export class VacationsApi extends ApiClientBase {
   }
   async read(id: number) {}
 
- 
   async delete(id: number) {
-    return this.unwrap(this.$http.delete<any>(this.getUrl(`/${id}`)), {
+    return this.unwrap(() => this.$http.delete<any>(this.getUrl(`/${id}`)), {
       transform: (d) => d.results
     })
   }
@@ -66,19 +68,19 @@ class VacationsApproveApi extends ApiClientBase {
   protected readonly path = '/approve'
 
   async update(id: any) {
-    return this.unwrap(this.$http.put<any>(this.getUrl(`/${id}`)), {
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/${id}`)), {
       transform: (d) => d.results
     })
-  }}
+  }
+}
 
 class VacationsRejectApi extends ApiClientBase {
   protected readonly path = '/reject'
 
   async read(id: number) {}
-  
 
   async update(id: number) {
-    return this.unwrap(this.$http.put<any>(this.getUrl(`/${id}`)), {
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/${id}`)), {
       transform: (d) => d.results
     })
   }
@@ -96,11 +98,13 @@ class VacationsBalanceApi extends ApiClientBase {
   }
 
   async list(query: Api.Inputs.UserId) {
-    return this.unwrap(this.$http.get(this.getUrl('', query)), { transform: (d) => d.results })
+    return this.unwrap(() => this.$http.get(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
   }
 
   async update(query: Api.Inputs.UserId, input: Api.Inputs.Vacation) {
-    return this.unwrap(this.$http.put(this.getUrl('', query), input), {
+    return this.unwrap(() => this.$http.put(this.getUrl('', query), input), {
       transform: (d) => d.results
     })
   }
@@ -111,7 +115,7 @@ class VacationsBalanceAdjustmentApi extends ApiClientBase {
 
   async update(input: Api.Inputs.BalanceAdjustment) {
     ApiClientBase.assertUser()
-    return await this.unwrap(this.$http.put(this.getUrl(), input), {
+    return await this.unwrap(() => this.$http.put(this.getUrl(), input), {
       transform: (d) => d.results
     })
   }
@@ -120,14 +124,11 @@ class VacationsBalanceAdjustmentApi extends ApiClientBase {
 class VacationsCalculateApi extends ApiClientBase {
   protected readonly path = '/calculate'
 
-
-
   async list(query: Api.Inputs.ActualDays) {
     ApiClientBase.assertUser()
-    const calculation = await this.unwrap(
-      this.$http.get<any>(this.getUrl('', query)),
-      { transform: (d) => d.results }
-    )
+    const calculation = await this.unwrap(() => this.$http.get<any>(this.getUrl('', query)), {
+      transform: (d) => d.results
+    })
     return calculation
   }
 }
@@ -146,7 +147,7 @@ class VacationsEditApi extends ApiClientBase {
   async update(id: number, input: Api.Inputs.Leave) {
     ApiClientBase.assertUser()
     const vacation = await this.unwrap(
-      this.$http.put<Api.Returns.LeaveRequest>(this.getUrl(`/${id}`), input),
+      () => this.$http.put<Api.Returns.LeaveRequest>(this.getUrl(`/${id}`), input),
       { transform: (d) => d.results }
     )
 
@@ -163,7 +164,7 @@ class VacationsGetAdminBalanceApi extends ApiClientBase {
   }
   async list() {
     ApiClientBase.assertUser()
-    return await this.unwrap(this.$http.get(this.getUrl()), {
+    return await this.unwrap(() => this.$http.get(this.getUrl()), {
       transform: (d) => d.results
     })
   }
@@ -174,7 +175,7 @@ class VacationsPostAdminBalanceApi extends ApiClientBase {
 
   async create(input: Api.Inputs.Vacations) {
     ApiClientBase.assertUser()
-    return await this.unwrap(this.$http.post(this.getUrl(), input), {
+    return await this.unwrap(() => this.$http.post(this.getUrl(), input), {
       transform: (d) => d.results
     })
   }
@@ -184,9 +185,11 @@ class VacationsUserApi extends ApiClientBase {
   protected readonly path = '/user'
 
   async list(query?: any) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.Vacation>>(this.getUrl('', query)), {
-      transform: (d) => d.results
-    })
+    return this.unwrap(
+      () => this.$http.get<Api.Returns.List<Api.Vacation>>(this.getUrl('', query)),
+      {
+        transform: (d) => d.results
+      }
+    )
   }
-
 }

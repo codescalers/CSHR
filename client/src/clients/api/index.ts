@@ -84,7 +84,7 @@ export class ApiClient extends ApiClientBase {
     return this.$http.interceptors.request.use((req) => {
       const user = ApiClientBase.user.value
 
-      if (user) {
+      if (user && user.access_token) {
         req.headers.set('Authorization', 'Bearer ' + user.access_token)
       }
       return req

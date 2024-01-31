@@ -81,11 +81,7 @@ export default defineComponent({
     const router = useRouter()
 
     const { isLoading, execute } = useAsyncState(
-      () => {
-        console.log('here??')
-
-        return $api.auth.login({ email: email.value, password: password.value })
-      },
+      () => $api.auth.login({ email: email.value, password: password.value }),
       null,
       {
         immediate: false,
