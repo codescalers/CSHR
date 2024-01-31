@@ -37,7 +37,7 @@ export default {
     officeFilters
   },
   setup() {
-    const offices = ref<Country[]>([])
+    const offices = useAsyncState($api.office.list(),[],{ immediate: true })
     const $route = useRoute()
     let isFirstLoad = true
     const page = ref(1)
@@ -58,20 +58,6 @@ export default {
 
     const users = useAsyncState(
       async (users: Api.User[]) => {
-        if (isFirstLoad) {
-          offices.value = Array.from(new Set(users.map((user) => user.location.id))).map((id) => {
-            const user = users.find((u) => u.location.id === id)
-            return { id: user?.location.id ?? 0, country: user?.location.country ?? '' }
-          })
-          isFirstLoad = false
-        }
-        else {
-          users.forEach((user: Api.User) => {
-            if (!offices.value.some(office => office.id === user.location.id)) {
-              offices.value.push({ id: user?.location.id ?? 0, country: user?.location.country ?? '' });
-            }
-          })
-        }
         return users
       },
       [],
@@ -108,7 +94,8 @@ export default {
               if (data?.count) {
                 count.value = Math.ceil(data?.count / 10)
               }
-              users.execute(undefined, data?.results || [])}
+              users.execute(undefined, data?.results || [])
+            }
           }
         )
       }

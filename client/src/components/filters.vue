@@ -14,7 +14,7 @@
         </v-col>
         <v-col cols="12" sm="12" md="10" class="pa-2 align-self-start">
           <div>
-            <v-autocomplete clearable v-model="office" :items="offices" label="Office"
+            <v-autocomplete clearable v-model="office" :items="offices.state.value" label="Office"
               @update:model-value="handleOfficeChange" return-object item-title="country">
             </v-autocomplete>
           </div>
@@ -25,32 +25,34 @@
 </template>
 
 <script lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-import type { Country } from '@/types'
+import type { Api } from '@/types'
 
 export default {
   name: 'officeFilters',
   props: ['offices'],
 
-  setup() {
+  setup(props) {
     const $router = useRouter()
-    const office = ref<Country>()
+    const office = ref<Api.Inputs.Office>()
+    const $route = useRoute()
+
 
     const handleOfficeChange = () => {
-
-      if (office.value) {
-        $router.push({ path: '/users', query: { location_id: office.value.id } })
-
-      }
+      $router.push({ path: '/users', query: { location_id: office.value?.id } })
     }
 
-    onMounted(async () => {
-      if (!office.value) {
-        $router.push({ path: '/users', query: { location_id: "" } })
-      }
-    })
+
+    watch(
+      () => props.offices.state.value,
+      async (newValue) => {
+        if ($route.query.location_id && props.offices.state.value) {
+          office.value = props.offices.state.value.find((office: any) => office.id === Number($route.query.location_id));
+        }
+      },
+    );
     return {
       office,
       handleOfficeChange
