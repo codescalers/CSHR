@@ -47,8 +47,9 @@ from cshr.utils.email_messages_templates import (
 )
 
 # from cshr.celery.send_email import send_email_for_request
-from cshr.celery.send_email import send_email_for_reply
+from cshr.celery.send_email import send_email_for_reply, send_email_for_request
 from cshr.models.vacations import (
+    REASON_CHOICES,
     OfficeVacationBalance,
     PublicHoliday,
     Vacation,
@@ -56,7 +57,9 @@ from cshr.models.vacations import (
 )
 from cshr.services.vacations import get_vacations_by_user
 from cshr.utils.redis_functions import (
+    get_redis_conf,
     notification_commented,
+    ping_redis,
     set_notification_request_redis,
     set_notification_reply_redis,
 )
@@ -243,12 +246,27 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                     message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
                 )
 
+            applying_user = request.user
             # Check balance.
             v = StanderdVacationBalance()
+            v.check(applying_user)
+
             reason: str = serializer.validated_data.get("reason")
-            applying_user = request.user
             user_reason_balance = applying_user.vacationbalance
             vacation_days = v.get_actual_days(applying_user, start_date, end_date)
+
+            if reason == REASON_CHOICES.PUBLIC_HOLIDAYS:
+                return CustomResponse.bad_request(
+                    message=f"You have sent an invalid reason {reason}",
+                    error={
+                        "message": "This field should be one of the follwing reasons",
+                        "reasons": [
+                            reason
+                            for reason in REASON_CHOICES
+                            if reason != REASON_CHOICES.PUBLIC_HOLIDAYS
+                        ],
+                    },
+                )
 
             curr_balance = getattr(user_reason_balance, reason)
 
@@ -277,15 +295,30 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 actual_days=vacation_days,
             )
 
-            # get_vacation_request_email_template(
+            # msg = get_vacation_request_email_template(
             #     request.user, serializer.data, saved.id
             # )
 
+            redis_conf = get_redis_conf()
+            try:
+                ping_redis()
+            except:
+                return CustomResponse.bad_request(
+                    message="Connection Refused",
+                    error={
+                        "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
+                        "values": {
+                            "host": redis_conf.get("host"),
+                            "port": redis_conf.get("port"),
+                        },
+                    },
+                )
             set_notification_request_redis(serializer.data)
 
-            # send_email_for_request(request.user.id, msg, "Vacation request")
+            # sent = send_email_for_request(request.user.id, msg, "Vacation request")
             # if not sent:
             #     return CustomResponse.bad_request(message="Error in sending email, can not sent email with this request.")
+
             response_date: Dict = send_vacation_to_calendar(saved)
             return CustomResponse.success(
                 status_code=201,
@@ -465,8 +498,24 @@ class VacationsAcceptApiView(GenericAPIView):
 
         vacation.save()
         event_id = id
+        redis_conf = get_redis_conf()
+        try:
+            ping_redis()
+        except:
+            return CustomResponse.bad_request(
+                message="Connection Refused",
+                error={
+                    "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
+                    "values": {
+                        "host": redis_conf.get("host"),
+                        "port": redis_conf.get("port"),
+                    },
+                },
+            )
         bool1 = set_notification_reply_redis(vacation, "accepted", event_id)
+
         msg = get_vacation_reply_email_template(current_user, vacation, event_id)
+
         bool2 = send_email_for_reply.delay(
             current_user.id, vacation.applying_user.id, msg, "Vacation reply"
         )
@@ -522,6 +571,19 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         vacation.save()
 
         event_id = id
+
+        redis_conf = get_redis_conf()
+        try:
+            ping_redis()
+        except:
+            return CustomResponse.bad_request(
+                message="Connection Refused",
+                error={
+                    "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
+                    "values": {"host": redis_conf.get('host'), "port": redis_conf.get('port')},
+                },
+            )
+
         bool1 = set_notification_reply_redis(vacation, "rejected", event_id)
         msg = get_vacation_reply_email_template(current_user, vacation, event_id)
         bool2 = send_email_for_reply.delay(
@@ -555,6 +617,19 @@ class VacationCommentsAPIView(GenericAPIView):
             "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
         }
         update_vacation_change_log(vacation, comment)
+
+        redis_conf = get_redis_conf()
+        try:
+            ping_redis()
+        except:
+            return CustomResponse.bad_request(
+                message="Connection Refused",
+                error={
+                    "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
+                    "values": {"host": redis_conf.get('host'), "port": redis_conf.get('port')},
+                },
+            )
+
         notification_commented(vacation, request.user, "commented", id)
         return CustomResponse.success(
             data=comment, status_code=202, message="vacation comment added"

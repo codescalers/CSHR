@@ -130,3 +130,16 @@ def get_notifications(user: User):
             redis_instance.delete(key)
         notifications.append(dval)
     return notifications
+
+
+def ping_redis():
+    try:
+        redis_instance.ping()
+    except:
+        raise redis.ConnectionError(
+            "Redis is not running, please make sure that you run the redis server on the provided values."
+        )
+
+
+def get_redis_conf() -> Dict[str, str]:
+    return {"host": R_HOST, "port": R_PORT}
