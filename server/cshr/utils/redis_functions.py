@@ -147,7 +147,7 @@ def get_redis_conf() -> Dict[str, str]:
     return {"host": R_HOST, "port": R_PORT}
 
 def http_ensure_redis_error():
-    CustomResponse.bad_request(
+    return CustomResponse.bad_request(
         message="Connection Refused",
         error={
             "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
