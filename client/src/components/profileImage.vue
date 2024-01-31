@@ -20,7 +20,7 @@
       <img
         :src="imageSrc + user.image"
         class="user-profile-image rounded-circle"
-        style="width: 60px; height: 60px"
+        style="width: 55px; height: 55px"
       />
     </div>
 

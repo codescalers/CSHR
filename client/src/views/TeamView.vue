@@ -2,7 +2,7 @@
   <v-container class="pa-6 mx-auto">
     <div v-if="supervisors && supervisors.length > 0">
       <div class="my-6">
-        <h3 class="font-weight-medium my-6">Team Lead</h3>
+        <h2 class="font-weight-medium my-6">Team Lead</h2>
         <v-divider></v-divider>
       </div>
       <v-row>
