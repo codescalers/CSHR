@@ -23,19 +23,19 @@ RUN apt-get -y update && \
     apt-get -y install wget sudo netcat redis vim python3.8 python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /server_dir
+WORKDIR /server
 
 RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download/v0.2.5/zinit && \
   chmod +x /sbin/zinit && pip install poetry && poetry --version
 
 RUN mkdir -p /etc/zinit/
 
-COPY ./server /server_dir
+COPY ./server /server
 COPY ./docker/scripts/backend/zinit /etc/zinit
-COPY ./docker/scripts/backend/*.sh /server_dir/scripts/
+COPY ./docker/scripts/backend/*.sh /server/scripts/
 COPY ./config /config/
 
-RUN chmod +x /server_dir/scripts/*.sh
+RUN chmod +x /server/scripts/*.sh
 
 EXPOSE 8000
 ENTRYPOINT  ["zinit", "init"]

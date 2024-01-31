@@ -41,7 +41,7 @@ export module Api {
     applying_user: number | any
     approval_user: number
     user?: Api.User
-    isUpdated? : boolean
+    isUpdated?: boolean
   }
 
   export interface LeaveReason {
@@ -259,10 +259,10 @@ export module Api {
     className: string
     eventName: string
     vacation?: any
-    meeting? :any
+    meeting?: any
     event?: any
     holidays?: any
-    users?:any
+    users?: any
     date: any
     len?: number
   }

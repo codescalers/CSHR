@@ -1,6 +1,6 @@
 """This file will containes everything related to User model."""
 from django.contrib.auth.hashers import check_password
-from django.db.models import Q
+from django.db.models import Q, F
 from typing import List, Union
 from cshr.models.office import Office
 
@@ -84,9 +84,11 @@ def get_all_of_users(options=None) -> User:
     """Return all users"""
     if options:
         return User.objects.filter(location__id=options["location"]["id"]).order_by(
-            "-is_active"
+            "first_name", F("is_active").desc(nulls_last=True)
         )
-    return User.objects.all().order_by("-is_active")
+    return User.objects.all().order_by(
+        "first_name", F("is_active").desc(nulls_last=True)
+    )
 
 
 def get_admin_office_users(admin: User) -> User:

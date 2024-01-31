@@ -23,9 +23,7 @@ export class UsersApi extends ApiClientBase {
   }
 
   list(query?: any) {
-    return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
-      transform: (d) => d.results
-    })
+      return this.unwrap(this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
   }
   getuser(id: number, options: Api.UnwrapOptions<any, any> = {}) {
     return this.unwrap(this.$http.get<Api.Returns.Profile>(this.getUrl(`/${id}`)), {
@@ -93,7 +91,7 @@ class UsersSetActiveApi extends ApiClientBase {
   protected readonly path = '/set_active'
 
   update(input: Api.Inputs.UsersActive) {
-    return this.unwrap(this.$http.put<Api.Inputs.UsersActive>(this.getUrl(), input))
+    return this.unwrap(this.$http.put<any>(this.getUrl(), input))
   }
 }
 
@@ -101,7 +99,7 @@ class UsersSetInActiveApi extends ApiClientBase {
   protected readonly path = '/set_inactive'
 
   update(input: Api.Inputs.UsersActive) {
-    return this.unwrap(this.$http.put<Api.Inputs.UsersActive>(this.getUrl(), input))
+    return this.unwrap(this.$http.put<any>(this.getUrl(), input))
   }
 }
 
