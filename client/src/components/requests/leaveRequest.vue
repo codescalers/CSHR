@@ -1,7 +1,6 @@
 
 <template>
   <v-form ref="form" @submit.prevent="createLeave()">
-
     <v-alert density="compact" class="pa-5 my-5" type="warning">
       {{ actualDays.state.value === 0 ? "Actual vacation days requested is zero, Selected days might include weekends or public holidays" : "Actual vacation days requested are " + actualDays.state.value +" days" }}
     </v-alert>
@@ -49,7 +48,8 @@ import { useApi } from '@/hooks'
 import type { Api } from '@/types';
 import { useAsyncState } from '@vueuse/core';
 import { computed, ref } from 'vue';
-import { useState } from '@/store'
+// import { useState } from '@/store'
+import { ApiClientBase } from '@/clients/api/base';
 
 export default {
   name: "leaveRequest",
@@ -58,26 +58,25 @@ export default {
     'create-event': (item: any) => item,
   },
   setup(props, ctx) {
-    const state = useState()
+    // const state = useState()
     const $api = useApi()
     const form = ref()
     const startDate = ref<Date>(props.dates.startStr)
     const endDate = ref<Date>(props.dates.endStr)
+    const user = ApiClientBase.user
     const leaveReason = ref<Api.LeaveReason>()
     const actualDays = useAsyncState($api.vacations.calculate.list({
       start_date: startDate.value,
       end_date: endDate.value,
-    }
-    ), [])
+    }), [])
 
     const isValid = computed(() => {
       let val = leaveReason.value ? true : false;
       return val;
     });
-    const leaveReasons = ref<Api.LeaveReason[]>([
-    ])
+    const leaveReasons = ref<Api.LeaveReason[]>([])
 
-    const balance = useAsyncState($api.vacations.getVacationBalance({ "user_ids": state.user.value.value.id }), null, {
+    const balance = useAsyncState($api.vacations.getVacationBalance({ "user_ids": user.value?.fullUser.id }), null, {
       onSuccess(data: any) {
         leaveReasons.value = [{
           name: `Emergency Leaves  ${data[0].emergency_leaves.reserved} / ${data[0].emergency_leaves.all}`,
@@ -127,6 +126,7 @@ export default {
       form,
       isValid,
       actualDays,
+      user,
       createLeave,
     };
   },

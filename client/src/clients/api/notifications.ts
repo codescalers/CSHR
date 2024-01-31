@@ -6,14 +6,14 @@ export class NotificationsApi extends ApiClientBase {
 
   list() {
     ApiClientBase.assertUser()
-    return this.unwrap(this.$http.get<{ results: Api.Returns.Notification[] }>(this.path), {
+    return this.unwrap(() => this.$http.get<{ results: Api.Returns.Notification[] }>(this.path), {
       transform: (d) => d.results
     })
   }
 
   async read(type: string, id: number) {
     ApiClientBase.assertUser()
-    const notification = await this.unwrap(this.$http.get(`${type}/${id}`), {
+    const notification = await this.unwrap(() => this.$http.get(`${type}/${id}`), {
       transform: (d) => d.results
     })
 
