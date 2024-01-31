@@ -1,28 +1,26 @@
 <template>
   <v-card elevation="0">
     <v-card-title class="bg-graytitle">
-    <div class="d-flex flex-row-reverse">
-      <v-icon  size="small" class="me-2" @click.stop="$emit('close-dialog', false)"> mdi-close </v-icon>
-    </div>
-  </v-card-title>
+      <div class="d-flex flex-row-reverse">
+        <v-icon size="small" class="me-2" @click.stop="$emit('close-dialog', false)">
+          mdi-close
+        </v-icon>
+      </div>
+    </v-card-title>
     <div class="d-flex expired" v-if="holiday.expired">Expired</div>
     <v-container class="pa-4">
-    <!-- <v-card-title class="text-center my-2">
-      <h2 :class="`${holiday.expired ? 'text-error' : ''}`">{{ holiday.location.country }}</h2>
-    </v-card-title>
-    <v-divider></v-divider> -->
-    <v-card elevation="0" class="mt-2">
-      <v-row class="pa-2 text-center">
-        <p class="pa-5">
-          <b>{{ holiday.holiday_date }}</b> is a public holiday in
-          <b class="text-error">{{ holiday.location.country }}</b
-          >, We hope you and your familys have a peaceful and enjoyable holiday. Please be aware that
-          our office in <b class="text-error">{{ holiday.location.country }}</b
-          >, will be closed on this date. Thank you!
-        </p>
-      </v-row>
-    </v-card>
-  </v-container>
+      <v-card elevation="0" class="mt-2">
+        <v-row class="pa-2 text-center">
+          <p class="pa-5">
+            <b>{{ holiday.holiday_date }}</b> is a public holiday in
+            <b class="text-error">{{ holiday.location.country }}</b
+            >, We hope you and your familys have a peaceful and enjoyable holiday. Please be aware
+            that our office in <b class="text-error">{{ holiday.location.country }}</b
+            >, will be closed on this date. Thank you!
+          </p>
+        </v-row>
+      </v-card>
+    </v-container>
   </v-card>
 </template>
 <script lang="ts">
