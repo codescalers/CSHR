@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import type { Api, Country } from '@/types'
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { $api } from '@/clients'
 import UserCard from '@/components/userCard.vue'
 import officeFilters from '@/components/filters.vue'
@@ -108,12 +108,13 @@ export default {
               if (data?.count) {
                 count.value = Math.ceil(data?.count / 10)
               }
-              users.execute(undefined, data?.results || [])
-            }
+              users.execute(undefined, data?.results || [])}
           }
         )
       }
     )
+
+
 
     return {
       users,
