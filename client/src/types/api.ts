@@ -366,6 +366,7 @@ export module Api {
     }
 
     export type Office = {
+      id?: number 
       name: string
       country: string
       weekend: string

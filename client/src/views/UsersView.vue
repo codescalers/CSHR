@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import type { Api, Country } from '@/types'
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { $api } from '@/clients'
 import UserCard from '@/components/userCard.vue'
 import officeFilters from '@/components/filters.vue'
@@ -50,21 +50,26 @@ export default {
     officeFilters
   },
   setup() {
-    const offices = ref<Country[]>([])
+    const offices = useAsyncState($api.office.list(), [], { immediate: true })
     const $route = useRoute()
     let isFirstLoad = true
     const page = ref(1)
     const count = ref<number>(0)
+
+    function setCount(data: any) {
+      if (data?.count) {
+        count.value = Math.ceil(data?.count / 10)
+      } else {
+        count.value = 0
+      }
+    }
 
     useAsyncState(
       $api.users.list({ location_id: $route.query.location_id, page: page.value }),
       undefined,
       {
         onSuccess(data) {
-          if (data?.count) {
-            count.value = data.count / 10
-            count.value = Math.ceil(data.count / 10)
-          }
+          setCount(data)
           users.execute(undefined, data?.results || [])
         }
       }
@@ -72,14 +77,6 @@ export default {
 
     const users = useAsyncState(
       async (users: Api.User[]) => {
-        if (isFirstLoad) {
-          offices.value = Array.from(new Set(users.map((user) => user.location.id))).map((id) => {
-            const user = users.find((u) => u.location.id === id)
-            return { id: user?.location.id ?? 0, country: user?.location.country ?? '' }
-          })
-        }
-
-        isFirstLoad = false
         return users
       },
       [],
@@ -95,6 +92,7 @@ export default {
           undefined,
           {
             onSuccess(data) {
+              setCount(data)
               users.execute(undefined, data?.results || [])
             }
           }
@@ -110,12 +108,15 @@ export default {
           undefined,
           {
             onSuccess(data) {
+              setCount(data)
               users.execute(undefined, data?.results || [])
             }
           }
         )
       }
     )
+
+
 
     return {
       users,
