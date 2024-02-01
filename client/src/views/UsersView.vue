@@ -43,16 +43,20 @@ export default {
     const page = ref(1)
     const count = ref<number>(0)
 
+    function setCount(data: any) {
+      if (data?.count) {
+        count.value = Math.ceil(data?.count / 10)
+      } else {
+        count.value = 0
+      }
+    }
+
     useAsyncState(
       $api.users.list({ location_id: $route.query.location_id, page: page.value }),
       undefined,
       {
         onSuccess(data) {
-          if (data?.count) {
-                  count.value = Math.ceil(data?.count / 10)
-              } else {
-                count.value = 0
-              }
+          setCount(data)
           users.execute(undefined, data?.results || [])
         }
       }
@@ -75,11 +79,7 @@ export default {
           undefined,
           {
             onSuccess(data) {
-              if (data?.count) {
-                  count.value = Math.ceil(data?.count / 10)
-              } else {
-                count.value = 0
-              }
+              setCount(data)
               users.execute(undefined, data?.results || [])
             }
           }
@@ -95,11 +95,7 @@ export default {
           undefined,
           {
             onSuccess(data) {
-              if (data?.count) {
-                  count.value = Math.ceil(data?.count / 10)
-              } else {
-                count.value = 0
-              }
+              setCount(data)
               users.execute(undefined, data?.results || [])
             }
           }
