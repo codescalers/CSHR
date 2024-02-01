@@ -6,18 +6,20 @@
         <v-divider></v-divider>
       </div>
       <v-row>
-        <v-col v-for="(person, index) in supervisors" :key="index" cols="12" md="6" lg="6">
-          <v-card class="elevation-4 my-4">
+        <v-col v-for="(person, index) in supervisors" :key="index" cols="12">
+          <v-card class="elevation-4 my-4 pa-3 border bg-graytitle">
             <v-img
               v-if="person.image.startsWith('/media')"
               :src="person.image"
               height="200"
               class="grey lighten-2"
             ></v-img>
-            <v-card-title class="text-h6 font-weight-bold">{{ person.full_name }}</v-card-title>
-            <v-card-subtitle class="text-body-1">{{ person.job_title }}</v-card-subtitle>
-            <v-card-text>
-              <v-list dense>
+            <v-card-title class="text-h6 ml-4 font-weight-bold">{{
+              person.full_name
+            }}</v-card-title>
+            <v-card-subtitle class="text-body-1 ml-4">{{ person.job_title }}</v-card-subtitle>
+            <v-card-text class="py-1">
+              <v-list dense class="d-flex bg-graytitle">
                 <v-list-item>
                   <v-list-item-content>
                     <v-list-item-title class="text-body-2"
