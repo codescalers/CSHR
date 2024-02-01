@@ -57,7 +57,7 @@
       </template>
 
       <VList>
-        <VListItem prepend-icon="mdi-account" title="Your Profile" to="/profile" />
+        <VListItem prepend-icon="mdi-account" title="Your Profile" @click="$router.push('/profile')"/>
         <VListItem
           prepend-icon="mdi-logout"
           title="Logout"
