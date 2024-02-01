@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="font-weight-bold bg-primary">Public Information</v-card-title>
+    <v-card-title class="font-weight-medium bg-primary">Public Information</v-card-title>
     <v-list class="custom-list">
       <v-row class="ma-1 bordered" v-for="header in mappedData" :key="header.key">
         <v-col cols="4" class="ma-0 pa-0">
@@ -53,33 +53,30 @@ export default {
       'joining_at'
     ]
 
-        const mappedData = computed(() => {
-            return profileInfoHeaders.map((header, index) => {
-                return { key: header, value: profileInfodata[index] };
-            });
-        });
-        const getUserInfo = (dataKey: any) => {
-            if (props.user) {
-                country.value = props.user.location?.name;
-            }
-            if (props.user && props.user[dataKey]) {
-                return props.user[dataKey];
-            }
-            return '--';
-        };
-
-
-        return {
-            country,
-            mappedData,
-            profileInfoHeaders,
-            profileInfodata,
-            getUserInfo,
-        }
+    const mappedData = computed(() => {
+      return profileInfoHeaders.map((header, index) => {
+        return { key: header, value: profileInfodata[index] }
+      })
+    })
+    const getUserInfo = (dataKey: any) => {
+      if (props.user) {
+        country.value = props.user.location?.name
+      }
+      if (props.user && props.user[dataKey]) {
+        return props.user[dataKey]
+      }
+      return '--'
     }
 
+    return {
+      country,
+      mappedData,
+      profileInfoHeaders,
+      profileInfodata,
+      getUserInfo
+    }
   }
-
+}
 </script>
 
 <style scoped>
@@ -89,6 +86,6 @@ export default {
 }
 
 .bordered {
-  border-bottom: 0.1px solid #8a8a8a !important;
+  border-bottom: 0.1px solid #3c3c3c !important;
 }
 </style>

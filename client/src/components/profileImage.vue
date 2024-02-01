@@ -20,7 +20,7 @@
       <img
         :src="imageSrc + user.image"
         class="user-profile-image rounded-circle"
-        style="width: 70px; height: 70px"
+        style="width: 55px; height: 55px"
       />
     </div>
 
@@ -58,7 +58,7 @@ export default {
 </script>
 
 <style scoped>
-.user-profile-logo{
+.user-profile-logo {
   cursor: pointer;
 }
 </style>
