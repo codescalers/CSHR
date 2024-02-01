@@ -1,6 +1,9 @@
 <template>
-  <v-container>
-    <h1 class="my-6">All Notifications</h1>
+  <v-container class="pa-6 mx-auto">
+    <div class="my-6">
+      <h2 class="font-weight-medium my-3">All Notifications</h2>
+      <v-divider></v-divider>
+    </div>
     <v-data-table :headers="headers" :loading="loading" :items="notifications">
       <template v-slot:loading>
         <v-skeleton-loader type="table-row@5"></v-skeleton-loader>
@@ -12,10 +15,11 @@
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon class="me-2" @click="selectedNotification = item" icon="mdi-eye" />
-        <NotificationDetailsDialog route-query="notification-view" v-model="selectedNotification" />
       </template>
     </v-data-table>
   </v-container>
+
+  <NotificationDetailsDialog route-query="notification-view" v-model="selectedNotification" />
 </template>
 
 <script lang="ts">

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="ma-5">
-      <v-col cols="12" sm="12" md="3" class="pa-2 border rounded ma-2 align-self-start">
+      <v-col cols="12" sm="12" md="3" class="pa-2 rounded ma-2 align-self-start">
         <UserCard :loading="user.isLoading" :user="user.state.value" />
       </v-col>
       <v-col cols="12" sm="12" md="8" class="pa-2 border rounded position-relative ma-2">
