@@ -52,7 +52,7 @@ class LoginByTokenApiView(TokenObtainPairView):
             user = get_user_by_email(user_email)
             if not user.is_active:
                 return CustomResponse.unauthorized(
-                    message="Incorrect old password. Please ensure that the password provided is accurate."
+                    message="You don't have permission to perform this action."
                 )
             return CustomResponse.success(
                 data=serializer.custom_token(data=serializer.data),
@@ -90,6 +90,6 @@ class ChangePasswordView(GenericAPIView):
                 return CustomResponse.success(message="Success updated password")
             return CustomResponse.unauthorized()
         return CustomResponse.bad_request(
-            message="Please make sure that you entered a valid data",
+            message="Incorrect password. Please ensure that the password provided is accurate.",
             error=serializer.errors,
         )
