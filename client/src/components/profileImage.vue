@@ -4,7 +4,7 @@
       <img
         :src="imageSrc + user.image"
         class="user-profile-image rounded-circle"
-        style="width: 70px; height: 70px"
+        :style="{ width: width || '70px', height: width || '70px', objectFit: 'cover' }"
       />
     </div>
 
@@ -20,7 +20,7 @@
       <img
         :src="imageSrc + user.image"
         class="user-profile-image rounded-circle"
-        style="width: 55px; height: 55px"
+        :style="{ width: width || '70px', height: width || '70px', objectFit: 'cover' }"
       />
     </div>
 
@@ -37,7 +37,7 @@ import { computed } from 'vue'
 
 export default {
   name: 'profileImage',
-  props: ['user', 'withLink'],
+  props: ['user', 'withLink', 'width'],
 
   setup(props) {
     const imageSrc = window.env.SERVER_DOMAIN_NAME_API.replace('api', '')
