@@ -2,7 +2,7 @@
   <v-card class="pa-4">
     <div class="d-flex my-2">
       <v-card-title class="font-weight-bold mb-3"> {{ $props.title }} </v-card-title>
-  
+
       <v-card-subtitle class="mt-2">
         <v-chip :color="getStatusColor($props.status)">
           {{ $props.status }}
@@ -16,7 +16,12 @@
           <v-card-title class="card-title bg-primary white--text">{{ section.title }}</v-card-title>
 
           <v-list class="custom-list">
-            <v-row v-for="detail in section.details" :key="detail.label" class="ma-1 bordered" no-gutters>
+            <v-row
+              v-for="detail in section.details"
+              :key="detail.label"
+              class="ma-1 bordered"
+              no-gutters
+            >
               <v-col cols="3">
                 <v-list-item>
                   <v-list-item-content class="ma-0">
@@ -37,8 +42,8 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-card-actions>
-      <v-btn color="primary" @click="closeDialog()">Close</v-btn>
+    <v-card-actions class="d-flex justify-end">
+      <v-btn color="info" variant="flat" @click="closeDialog()">Close</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -88,7 +93,7 @@ export default {
 </script>
 
 <style scoped>
-.card-title{
+.card-title {
   font-size: 1rem !important;
   line-height: 1.5rem !important;
 }

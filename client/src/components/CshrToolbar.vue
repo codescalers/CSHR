@@ -47,6 +47,7 @@
         <div class="d-flex justify-center align-center mx-2">
           <VProgressCircular indeterminate v-if="user.isLoading.value" />
           <profileImage
+            width="55px"
             v-else-if="user.state.value"
             :with-link="false"
             :user="user.state.value"

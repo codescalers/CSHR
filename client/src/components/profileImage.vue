@@ -4,7 +4,7 @@
       <img
         :src="imageSrc + user.image"
         class="user-profile-image rounded-circle"
-        style="width: 70px; height: 70px"
+        :style="{ width: width || '70px', height: width || '70px', objectFit: 'cover' }"
       />
     </div>
 
@@ -20,12 +20,16 @@
       <img
         :src="imageSrc + user.image"
         class="user-profile-image rounded-circle"
-        style="width: 55px; height: 55px"
+        :style="{ width: width || '70px', height: width || '70px', objectFit: 'cover' }"
       />
     </div>
 
     <div v-else>
-      <v-avatar :color="user.image" size="50" class="d-flex mx-auto user-profile-logo">
+      <v-avatar
+        :color="user.image"
+        class="d-flex mx-auto user-profile-logo"
+        :style="{ width: width || '70px', height: width || '70px', objectFit: 'cover' }"
+      >
         <span class="text-h5 text-uppercase">{{ avatar }}</span>
       </v-avatar>
     </div>
@@ -37,7 +41,7 @@ import { computed } from 'vue'
 
 export default {
   name: 'profileImage',
-  props: ['user', 'withLink'],
+  props: ['user', 'withLink', 'width'],
 
   setup(props) {
     const imageSrc = window.env.SERVER_DOMAIN_NAME_API.replace('api', '')
