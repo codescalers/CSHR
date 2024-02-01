@@ -70,7 +70,6 @@ export default {
       () => $route.query.location_id,
       async (newValue) => {
         page.value = 1
-        console.log(count.value)
         useAsyncState(
           $api.users.list({ location_id: $route.query.location_id, page: page.value }),
           undefined,
