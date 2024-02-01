@@ -56,3 +56,8 @@ export const requiredStringRules = [
   (v: string) => !!v || 'This field is required.'
 ]
 export const requiredRules = [(v: string) => !!v || 'This field is required.']
+export const vacationRules = [
+  (v: string) => !!v || 'This field is required.',
+  (v: string) => +v >= 0 || 'The minimum allowed value is 0. ',
+  (v: string) => +v <= 80 || 'The maximum allowed value is 80. '
+]

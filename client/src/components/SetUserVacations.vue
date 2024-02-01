@@ -23,19 +23,19 @@
             v-model="vacation.annual_leaves"
             label="Annual Leaves"
             type="number"
-            :rules="requiredRules"
+            :rules="vacationRules"
           ></v-text-field>
           <v-text-field
             v-model="vacation.leave_excuses"
             label="Leave Excuses"
             type="number"
-            :rules="requiredRules"
+            :rules="vacationRules"
           ></v-text-field>
           <v-text-field
             v-model="vacation.emergency_leaves"
             label="Emergency Leaves"
             type="number"
-            :rules="requiredRules"
+            :rules="vacationRules"
           ></v-text-field>
           <v-btn
             color="primary"
@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { $api } from '@/clients'
-import { requiredRules, requiredStringRules } from '@/utils'
+import { requiredRules, requiredStringRules, vacationRules } from '@/utils'
 import { onMounted, ref, watchEffect } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
@@ -120,6 +120,7 @@ export default {
       vacation,
       requiredStringRules,
       requiredRules,
+      vacationRules,
       isLoading,
       execute
     }
