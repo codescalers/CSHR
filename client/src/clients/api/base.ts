@@ -98,6 +98,7 @@ export abstract class ApiClientBase {
     }
 
     if (
+      res &&
       (res.config.method === 'post' || res.config.method === 'put') &&
       typeof res.data === 'object' &&
       'message' in (res.data || {}) &&
