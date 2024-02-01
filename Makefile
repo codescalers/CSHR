@@ -33,13 +33,13 @@ endif
 
 docker-logs:
 ifeq ($(service), frontend)
-	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs frontend
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs -f frontend
 else ifeq ($(service), backend)
-	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs backend
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs -f backend
 else ifeq ($(service), postgres)
-	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs postgres
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs -f postgres
 else
-	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs -f
 endif
 
 install:
