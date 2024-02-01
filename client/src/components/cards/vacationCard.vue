@@ -32,6 +32,12 @@
                 }}</span>
               </p>
             </v-col>
+            <v-col cols="6" class="d-flex items-center">
+              <p>
+                Status :
+                {{ vacation.status }}
+              </p>
+            </v-col>
 
           </v-row>
 
@@ -53,12 +59,7 @@
                 :items="leaveReasons" label="Reason" return-object item-title="name" :readonly="!couldUpdate">
               </v-autocomplete>
             </v-col>
-            <v-col cols="6" class="d-flex items-center">
-              <p>
-                Status :
-                {{ vacation.status }}
-              </p>
-            </v-col>
+        
           </v-row>
 
         </v-card>
