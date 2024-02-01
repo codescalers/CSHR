@@ -25,7 +25,11 @@
     </div>
 
     <div v-else>
-      <v-avatar :color="user.image" size="50" class="d-flex mx-auto user-profile-logo">
+      <v-avatar
+        :color="user.image"
+        class="d-flex mx-auto user-profile-logo"
+        :style="{ width: width || '70px', height: width || '70px', objectFit: 'cover' }"
+      >
         <span class="text-h5 text-uppercase">{{ avatar }}</span>
       </v-avatar>
     </div>
