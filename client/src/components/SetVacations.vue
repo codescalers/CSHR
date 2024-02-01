@@ -20,19 +20,19 @@
             v-model="office_balance.annual_leaves"
             type="number"
             label="Annual Leaves"
-            :rules="requiredRules"
+            :rules="vacationRules"
           ></v-text-field>
           <v-text-field
             v-model="office_balance.leave_excuses"
             type="number"
             label="Leave Excuses"
-            :rules="requiredRules"
+            :rules="vacationRules"
           ></v-text-field>
           <v-text-field
             v-model="office_balance.emergency_leaves"
             type="number"
             label="Emergency Leaves"
-            :rules="requiredRules"
+            :rules="vacationRules"
           ></v-text-field>
           <v-text-field
             v-model="formattedDates"
@@ -74,7 +74,7 @@
 import { $api } from '@/clients'
 import type { Api } from '@/types'
 import { computed, onMounted, ref } from 'vue'
-import { requiredRules } from '@/utils'
+import { requiredRules, vacationRules } from '@/utils'
 import { formatDate } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
 
@@ -150,6 +150,7 @@ export default {
       selectedDates,
       requiredRules,
       isLoading,
+      vacationRules,
       toggleDatePicker,
       execute
     }

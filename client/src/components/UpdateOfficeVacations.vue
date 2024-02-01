@@ -27,7 +27,7 @@
             v-model="vacation.value"
             label="Vacation Type"
             type="text"
-            :rules="requiredStringRules"
+            :rules="vacationRules"
           ></v-text-field>
           <v-btn
             color="primary"
@@ -46,7 +46,7 @@
 <script lang="ts">
 import { $api } from '@/clients'
 import { ref } from 'vue'
-import { requiredStringRules } from '@/utils'
+import { vacationRules } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
 
@@ -94,7 +94,7 @@ export default {
       reasons,
       selectedReason,
       user,
-      requiredStringRules,
+      vacationRules,
       isLoading,
       execute
     }
