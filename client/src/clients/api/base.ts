@@ -60,14 +60,12 @@ export abstract class ApiClientBase {
   }
 
   private static normalizeError(err: AxiosError<any>): string {
-    const responseData = err.response?.data
-    const errorMessage = responseData?.message ?? err.message
-
-    const errorDetails = Object.entries(responseData?.error || {})
-      .map(([_, value]) => `${value}`)
-      .join('. ')
-
-    return `${errorMessage}${errorDetails ? `. ${capitalize(errorDetails)}` : ''}`
+    return (
+      err.response?.data?.error?.message ||
+      err.response?.data?.detail ||
+      err.response?.data.message ||
+      err.message
+    )
   }
 
   protected async unwrap<T, R = T>(

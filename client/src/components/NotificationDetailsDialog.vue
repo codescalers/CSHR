@@ -59,7 +59,10 @@ export default {
         return undefined
       },
       undefined,
-      { immediate: false }
+      {
+        immediate: false,
+        onError: closeDialog
+      }
     )
 
     watch(
