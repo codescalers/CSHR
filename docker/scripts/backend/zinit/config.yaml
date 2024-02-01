@@ -1,2 +1,2 @@
-exec: sh -c "/bin/bash server_dir/scripts/config.sh"
+exec: sh -c "/bin/bash server/scripts/config.sh"
 oneshot: true

@@ -8,7 +8,7 @@
 # -----------------------------------------------------------
 # ###########################################################
 
-# exec: sh -c "cd server_dir; poetry run python3 manage.py create locations"
+# exec: sh -c "cd server; poetry run python3 manage.py create locations"
 # after:
 #   - migrate
 # oneshot: true

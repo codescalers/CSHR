@@ -58,7 +58,7 @@ services:
       - redis_db
       - postgres_db
     volumes:
-      - backend_media:/server_dir/mediafiles/profile_image
+      - backend_media:/server/mediafiles/profile_image
     networks:
       - cshr-network
 

@@ -1,4 +1,4 @@
-exec: sh -c "/bin/bash server_dir/scripts/backend.sh"
+exec: sh -c "/bin/bash server/scripts/backend.sh"
 after:
   - config
 oneshot: true
