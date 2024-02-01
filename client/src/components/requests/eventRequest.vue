@@ -111,9 +111,11 @@ export default {
   setup(props, ctx) {
     const $api = useApi()
     const startDate = ref<string>(props.dates.startStr)
-    const endDate = ref<string>(props.dates.endStr)
-    const name = ref<string>('')
-    const description = ref<string>('')
+    const endDate = ref<any>(new Date(props.dates.endStr))
+    endDate.value.setDate(endDate.value.getDate() - 1);
+    endDate.value = endDate.value.toISOString().split('T')[0];    
+    const name = ref<string>("")
+    const description = ref<string>("")
     const form = ref()
     const eventStart = ref()
     const eventEnd = ref()

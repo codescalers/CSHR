@@ -7,7 +7,6 @@
         </v-icon>
       </div>
     </v-card-title>
-    <div class="d-flex expired" v-if="holiday.expired">Expired</div>
     <v-container class="pa-4">
       <v-card elevation="0" class="mt-2">
         <v-row class="pa-2 text-center">

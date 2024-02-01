@@ -1,5 +1,9 @@
 <template>
   <v-form ref="form" @submit.prevent="createLeave()">
+    <v-alert density="compact" class="pa-5 my-5" type="warning">
+      {{ actualDays.state.value === 0 ? "Actual vacation days requested is zero, Selected days might include weekends or public holidays" : "Actual vacation days requested are " + actualDays.state.value +" days" }}
+    </v-alert>
+
     <div class="mt-3">
       <v-text-field
         color="info"
@@ -49,15 +53,16 @@
       </v-autocomplete>
     </div>
     <v-row class="pa-4 d-flex justify-end">
-      <v-btn color="primary" type="Submit" :disabled="!form?.isValid || !isValid"> Submit </v-btn>
+      <v-btn color="primary" type="Submit" :disabled="!form?.isValid || !isValid || actualDays.state.value === 0"> Submit </v-btn>
     </v-row>
   </v-form>
 </template>
 <script lang="ts">
 import { useApi } from '@/hooks'
-import type { Api } from '@/types'
-import { useAsyncState } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import type { Api } from '@/types';
+import { useAsyncState } from '@vueuse/core';
+import { computed, ref } from 'vue';
+import { ApiClientBase } from '@/clients/api/base';
 
 export default {
   name: 'leaveRequest',
@@ -69,53 +74,51 @@ export default {
     const $api = useApi()
     const form = ref()
     const startDate = ref<Date>(props.dates.startStr)
-    const endDate = ref<Date>(props.dates.endStr)
+    const endDate = ref<any>(new Date(props.dates.endStr))
+    endDate.value.setDate(endDate.value.getDate() - 1);
+    endDate.value = endDate.value.toISOString().split('T')[0];
+    const user = ApiClientBase.user
     const leaveReason = ref<Api.LeaveReason>()
+    const actualDays = useAsyncState($api.vacations.calculate.list({
+      start_date: startDate.value,
+      end_date: endDate.value,
+    }), [])
 
     const isValid = computed(() => {
-      let val = leaveReason.value ? true : false
-      return val
-    })
+      let val = leaveReason.value ? true : false;
+      return val;
+    });
+    const leaveReasons = ref<Api.LeaveReason[]>([])
 
-    const leaveReasons = ref<Api.LeaveReason[]>([
-      {
-        name: 'Public Holidays',
-        reason: 'public_holidays'
-      },
-      {
-        name: 'Emergency Leaves',
-        reason: 'emergency_leaves'
-      },
-      {
-        name: 'Sick Leaves',
-        reason: 'sick_leaves'
-      },
-      {
-        name: 'Annual Leaves',
-        reason: 'annual_leaves'
-      },
-      {
-        name: 'Unpaid',
-        reason: 'unpaid'
-      },
-      {
-        name: 'Compensation',
-        reason: 'compensation'
+    const balance = useAsyncState($api.vacations.getVacationBalance({ "user_ids": user.value?.fullUser.id }), null, {
+      onSuccess(data: any) {
+        leaveReasons.value = [{
+          name: `Emergency Leaves  ${data[0].emergency_leaves.reserved} / ${data[0].emergency_leaves.all}`,
+          reason: "emergency_leaves",
+        }, {
+          name: `Sick Leaves  ${data[0].sick_leaves.reserved} / ∞`,
+          reason: "sick_leaves",
+        },
+        {
+          name: `Annual Leaves  ${data[0].annual_leaves.reserved} / ${data[0].annual_leaves.all}`,
+          reason: "annual_leaves",
+        },
+        {
+          name: `Unpaid ${data[0].unpaid.reserved} / ∞`,
+          reason: "unpaid",
+        },
+        {
+          name: `Compensation  ${data[0].compensation.reserved} / ∞`,
+          reason: "compensation",
+        },]
+
       }
-    ])
-
-    async function calculateActualDays() {
-      return await $api.vacations.calculate.list({
-        start_date: startDate.value,
-        end_date: endDate.value
-      })
-    }
+    })
 
     async function createLeave() {
       if (leaveReason.value) {
-        calculateActualDays()
-        useAsyncState(
-          $api.vacations.create({
+        useAsyncState($api.vacations.create(
+          {
             reason: leaveReason.value.reason,
             from_date: startDate.value,
             end_date: endDate.value
@@ -137,8 +140,10 @@ export default {
       leaveReason,
       form,
       isValid,
-      createLeave
-    }
-  }
-}
+      actualDays,
+      user,
+      createLeave,
+    };
+  },
+};
 </script>
