@@ -52,7 +52,7 @@ class LoginByTokenApiView(TokenObtainPairView):
             user = get_user_by_email(user_email)
             if not user.is_active:
                 return CustomResponse.unauthorized(
-                    message="You don't have permission to perform this action."
+                    message="Incorrect old password. Please ensure that the password provided is accurate."
                 )
             return CustomResponse.success(
                 data=serializer.custom_token(data=serializer.data),
