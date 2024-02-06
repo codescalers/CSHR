@@ -5,55 +5,22 @@
     </v-alert>
 
     <div class="mt-3">
-      <v-text-field
-        color="info"
-        item-color="info"
-        base-color="info"
-        variant="outlined"
-        hide-details="auto"
-        label="From"
-        v-model="startDate"
-        :readonly="true"
-      >
-        <template v-slot:append>
-          <v-icon color="">mdi-calendar</v-icon>
-        </template>
-      </v-text-field>
+      <v-text-field ref="startDateField" color="info" item-color="info" base-color="info" variant="outlined"
+        hide-details="auto" label="From" v-model="startDate" type="date" :rules="[validateDates]"></v-text-field>
     </div>
 
     <div class="mt-3">
-      <v-text-field
-        color="info"
-        item-color="info"
-        base-color="info"
-        :readonly="true"
-        variant="outlined"
-        v-model="endDate"
-        hide-details="auto"
-        label="To"
-      >
-        <template v-slot:append>
-          <v-icon color="">mdi-calendar</v-icon>
-        </template>
-      </v-text-field>
+      <v-text-field ref="endDateField" color="info" item-color="info" base-color="info" variant="outlined"
+        hide-details="auto" label="To" v-model="endDate" type="date" :rules="[validateDates]"></v-text-field>
     </div>
-
     <div class="mt-3">
-      <v-autocomplete
-        color="info"
-        item-color="info"
-        base-color="info"
-        variant="outlined"
-        v-model="leaveReason"
-        :items="leaveReasons"
-        label="Reason"
-        return-object
-        item-title="name"
-      >
+      <v-autocomplete color="info" item-color="info" base-color="info" variant="outlined" v-model="leaveReason"
+        :items="leaveReasons" label="Reason" return-object item-title="name">
       </v-autocomplete>
     </div>
     <v-row class="pa-4 d-flex justify-end">
-      <v-btn color="primary" type="Submit" :disabled="!form?.isValid || !isValid || actualDays.state.value === 0"> Submit </v-btn>
+      <v-btn color="primary" type="Submit" :disabled="!form?.isValid || !isValid || actualDays.state.value === 0"> Submit
+      </v-btn>
     </v-row>
   </v-form>
 </template>
@@ -61,7 +28,7 @@
 import { useApi } from '@/hooks'
 import type { Api } from '@/types';
 import { useAsyncState } from '@vueuse/core';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { ApiClientBase } from '@/clients/api/base';
 
 export default {
@@ -73,16 +40,25 @@ export default {
   setup(props, ctx) {
     const $api = useApi()
     const form = ref()
+    const startDateField = ref()
+    const endDateField = ref()
     const startDate = ref<Date>(props.dates.startStr)
     const endDate = ref<any>(new Date(props.dates.endStr))
     endDate.value.setDate(endDate.value.getDate() - 1);
     endDate.value = endDate.value.toISOString().split('T')[0];
     const user = ApiClientBase.user
     const leaveReason = ref<Api.LeaveReason>()
-    const actualDays = useAsyncState($api.vacations.calculate.list({
-      start_date: startDate.value,
-      end_date: endDate.value,
-    }), [])
+
+    const actualDays = useAsyncState(
+      async () => {
+        return $api.vacations.calculate.list({
+          start_date: startDate.value,
+          end_date: endDate.value,
+        })
+      },
+      undefined,
+
+    )
 
     const isValid = computed(() => {
       let val = leaveReason.value ? true : false;
@@ -115,6 +91,27 @@ export default {
       }
     })
 
+
+    watch(
+      () => [startDate.value, endDate.value],
+      async () => {
+        setTimeout(async () => {
+          console.log(startDateField.value.validate(), "hereeee")
+
+          startDateField.value.validate();
+          endDateField.value.validate();
+          actualDays.execute();
+        }, 200);
+      },
+    );
+
+    const validateDates = (value: string | null): string | boolean => {
+      if (!startDate.value) return 'Please select start date.';
+      if (!endDate.value) return 'Please select end date.';
+      if (endDate.value <= startDate.value) return 'End date must be after start date.';
+      return true;
+    };
+
     async function createLeave() {
       if (leaveReason.value) {
         useAsyncState($api.vacations.create(
@@ -142,7 +139,10 @@ export default {
       isValid,
       actualDays,
       user,
+      startDateField,
+      endDateField,
       createLeave,
+      validateDates,
     };
   },
 };
