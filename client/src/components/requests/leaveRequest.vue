@@ -96,8 +96,6 @@ export default {
       () => [startDate.value, endDate.value],
       async () => {
         setTimeout(async () => {
-          console.log(startDateField.value.validate(), "hereeee")
-
           startDateField.value.validate();
           endDateField.value.validate();
           actualDays.execute();
