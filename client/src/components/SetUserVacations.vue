@@ -18,7 +18,21 @@
             label="User"
             return-object
             :rules="requiredRules"
-          ></v-select>
+          >
+          <template #append-item v-if="next !== null">
+              <VContainer>
+                <VBtn
+                  @click="() => {return page++, listUsers()}"
+                  block
+                  color="secondary"
+                  variant="tonal"
+                  prepend-icon="mdi-reload"
+                >
+                  Load More Users
+                </VBtn>
+              </VContainer>
+            </template>
+          </v-select>
           <v-text-field
             v-model="vacation.annual_leaves"
             label="Annual Leaves"
@@ -67,6 +81,8 @@ export default {
     const users = ref([])
     const selectedUser = ref()
     const userVacations = ref()
+    const page = ref(1)
+    const next = ref(null)
     const vacation = ref({
       annual_leaves: 0,
       leave_excuses: 0,
@@ -92,9 +108,15 @@ export default {
       }
     })
 
+    async function listUsers(){
+      const res = await $api.users.admin.office_users.list({page: page.value})
+      next.value = res.next
+      return res.results
+    }
+
     onMounted(async () => {
-      try {
-        officeUsers.value = await $api.users.admin.office_users.list()
+      try {   
+        officeUsers.value = await listUsers()
         users.value = officeUsers.value?.map((user: any) => ({ id: user.id, name: user.full_name }))
         selectedUser.value = users.value[0]
       } catch (error) {
@@ -114,6 +136,8 @@ export default {
       form,
       user,
       users,
+      page,
+      next,
       selectedUser,
       officeUsers,
       userVacations,
@@ -122,6 +146,7 @@ export default {
       requiredRules,
       vacationRules,
       isLoading,
+      listUsers,
       execute
     }
   }

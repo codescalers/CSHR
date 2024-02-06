@@ -76,8 +76,8 @@ class UsersAdminApi extends ApiClientBase {
 class UsersAdminofficeUsersApi extends ApiClientBase {
   protected readonly path = '/office_users'
 
-  list() {
-    return this.unwrap(() => this.$http.get(this.getUrl()), { transform: (d) => d.results })
+  list(query?: Api.Inputs.List) {
+    return this.unwrap(() => this.$http.get(this.getUrl('', query)))
   }
 }
 
