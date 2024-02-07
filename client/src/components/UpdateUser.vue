@@ -3,8 +3,19 @@
     <v-form ref="form" @submit.prevent>
       <v-row class="justify-center align-center">
         <v-col cols="12">
-          <v-select v-model="selectedUser" :items="officeUsers" label="User" item-title="full_name" item-value="id"
-            return-object density="comfortable" :rules="requiredRules"></v-select>
+
+          <v-select v-model="selectedUser" :items="officeUsers" item-title="full_name" item-value="id" label="User"
+            return-object density="comfortable" :rules="requiredRules">
+
+            <template #append-item v-if="count > 1">
+              <VContainer>
+                <VBtn @click="() => { return page++, listUsers() }" block color="secondary" variant="tonal"
+                  prepend-icon="mdi-reload">
+                  Load More Users
+                </VBtn>
+              </VContainer>
+            </template>
+          </v-select>
           <v-select v-model="reporting_to" :items="supervisors" item-title="full_name" item-value="id" label="Team Lead"
             return-object density="comfortable"></v-select>
         </v-col>
@@ -117,10 +128,22 @@ export default {
     const supervisors = ref([])
     const image = ref()
     const imageUrl = ref()
-    const officeUsers = ref([])
     const selectedUser = ref()
     const reporting_to = ref()
     const userIsActive = ref<boolean>(selectedUser.value?.is_active)
+    const officeUsers = ref()
+    const page = ref(1)
+    const count = ref(0)
+    async function listUsers() {
+      const res = await $api.users.admin.office_users.list({ page: page.value })
+      if (res.count) {
+        count.value = Math.ceil(res.count / 10)
+      } else {
+        count.value = 0
+      }
+      return res.results
+    }
+
 
     onMounted(async () => {
       try {
@@ -128,7 +151,7 @@ export default {
           id: office.id,
           name: office.name
         }))
-        officeUsers.value = await $api.users.admin.office_users.list()
+        officeUsers.value = await listUsers()
         selectedUser.value = officeUsers.value[0]
         reporting_to.value = selectedUser.value.reporting_to[0]
         supervisors.value = ((await $api.users.admin.list()) as any).filter(
@@ -169,7 +192,7 @@ export default {
           await $api.users.set_inactive.update({ user_id: selectedUser.value.id })
         } else {
           selectedUser.value.is_active = userIsActive.value = true
-           await $api.users.set_active.update({ user_id: selectedUser.value.id })
+          await $api.users.set_active.update({ user_id: selectedUser.value.id })
         }
         isLoading.value = false
 
@@ -182,9 +205,9 @@ export default {
       async () => {
         await $api.myprofile.update(selectedUser.value.id, {
           ...selectedUser.value,
-          image: imageUrl.value || null,
+          image: imageUrl.value ? imageUrl.value : null,
           location: selectedUser.value.location.id,
-          filename: image.value[0].name,
+          filename: image.value ? image.value[0].name : null,
           reporting_to: reporting_to.value ? [reporting_to.value.id] : []
         })
       },
@@ -222,6 +245,9 @@ export default {
       execute,
       toggleDatePicker,
       activateUser,
+      count,
+      page,
+      listUsers,
       chooseImage
     }
   }
