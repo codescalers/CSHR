@@ -1,6 +1,6 @@
 <template>
   <v-form ref="form" @submit.prevent="createLeave()">
-    <v-alert density="compact" class="pa-5 my-5" type="warning">
+    <v-alert v-if="form?.isValid && isValid" density="compact" class="pa-5 my-5" type="warning">
       {{ actualDays.state.value === 0 ? "Actual vacation days requested is zero, Selected days might include weekends or public holidays" : "Actual vacation days requested are " + actualDays.state.value +" days" }}
     </v-alert>
 
@@ -28,7 +28,7 @@
 import { useApi } from '@/hooks'
 import type { Api } from '@/types';
 import { useAsyncState } from '@vueuse/core';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { ApiClientBase } from '@/clients/api/base';
 
 export default {
@@ -106,9 +106,15 @@ export default {
     const validateDates = (value: string | null): string | boolean => {
       if (!startDate.value) return 'Please select start date.';
       if (!endDate.value) return 'Please select end date.';
-      if (endDate.value <= startDate.value) return 'End date must be after start date.';
+      if (endDate.value < startDate.value) return 'End date must be after start date.';
       return true;
     };
+
+    onMounted(() => {
+      startDateField.value.validate();
+      endDateField.value.validate();
+
+    })
 
     async function createLeave() {
       if (leaveReason.value) {
