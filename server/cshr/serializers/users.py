@@ -370,6 +370,7 @@ class TeamSerializer(ModelSerializer):
             "address",
             "location",
             "is_active",
+            "telegram_link",
         ]
 
     def get_image(self, obj):
