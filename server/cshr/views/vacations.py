@@ -44,6 +44,7 @@ from cshr.utils.update_change_log import (
 from cshr.utils.email_messages_templates import (
     # get_vacation_request_email_template,
     get_vacation_reply_email_template,
+    get_vacation_request_email_template,
 )
 
 # from cshr.celery.send_email import send_email_for_request
@@ -295,9 +296,9 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 actual_days=vacation_days,
             )
 
-            # msg = get_vacation_request_email_template(
-            #     request.user, serializer.data, saved.id
-            # )
+            msg = get_vacation_request_email_template(
+                request.user, serializer.data, saved.id
+            )
 
             try:
                 ping_redis()
@@ -306,9 +307,9 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             set_notification_request_redis(serializer.data)
 
-            # sent = send_email_for_request(request.user.id, msg, "Vacation request")
-            # if not sent:
-            #     return CustomResponse.bad_request(message="Error in sending email, can not sent email with this request.")
+            sent = send_email_for_request(request.user.id, msg, "Vacation request")
+            if not sent:
+                return CustomResponse.bad_request(message="Error in sending email, can not sent email with this request.")
 
             response_date: Dict = send_vacation_to_calendar(saved)
             return CustomResponse.success(
@@ -489,6 +490,7 @@ class VacationsAcceptApiView(GenericAPIView):
 
         vacation.save()
         event_id = id
+
         try:
             ping_redis()
         except:
