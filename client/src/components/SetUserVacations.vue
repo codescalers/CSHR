@@ -3,62 +3,29 @@
     <v-form ref="form" @submit.prevent>
       <v-row class="justify-center align-center">
         <v-col cols="12">
-          <v-text-field
-            v-model="user!.fullUser.location.name"
-            label="Office"
-            type="text"
-            :rules="requiredStringRules"
-            disabled
-          ></v-text-field>
-          <v-select
-            v-model="selectedUser"
-            :items="users"
-            item-title="name"
-            item-value="id"
-            label="User"
-            return-object
-            :rules="requiredRules"
-          >
-          <template #append-item v-if="next !== null">
+          <v-text-field v-model="user!.fullUser.location.name" label="Office" type="text" :rules="requiredStringRules"
+            disabled></v-text-field>
+
+          <v-select v-model="selectedUser" :items="users" item-title="name" item-value="id" label="User" return-object
+            :rules="requiredRules">
+
+            <template #append-item v-if="count > 1">
               <VContainer>
-                <VBtn
-                  @click="() => {return page++, listUsers()}"
-                  block
-                  color="secondary"
-                  variant="tonal"
-                  prepend-icon="mdi-reload"
-                >
+                <VBtn @click="() => { return page++, listUsers() }" block color="secondary" variant="tonal"
+                  prepend-icon="mdi-reload">
                   Load More Users
                 </VBtn>
               </VContainer>
             </template>
           </v-select>
-          <v-text-field
-            v-model="vacation.annual_leaves"
-            label="Annual Leaves"
-            type="number"
-            :rules="vacationRules"
-          ></v-text-field>
-          <v-text-field
-            v-model="vacation.leave_excuses"
-            label="Leave Excuses"
-            type="number"
-            :rules="vacationRules"
-          ></v-text-field>
-          <v-text-field
-            v-model="vacation.emergency_leaves"
-            label="Emergency Leaves"
-            type="number"
-            :rules="vacationRules"
-          ></v-text-field>
-          <v-btn
-            color="primary"
-            type="submit"
-            :disabled="!form?.isValid"
-            :loading="isLoading"
-            @click="execute"
-            >Set Vacations</v-btn
-          >
+          <v-text-field v-model="vacation.annual_leaves" label="Annual Leaves" type="number"
+            :rules="vacationRules"></v-text-field>
+          <v-text-field v-model="vacation.leave_excuses" label="Leave Excuses" type="number"
+            :rules="vacationRules"></v-text-field>
+          <v-text-field v-model="vacation.emergency_leaves" label="Emergency Leaves" type="number"
+            :rules="vacationRules"></v-text-field>
+          <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading="isLoading" @click="execute">Set
+            Vacations</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -82,7 +49,7 @@ export default {
     const selectedUser = ref()
     const userVacations = ref()
     const page = ref(1)
-    const next = ref(null)
+    const count = ref(0)
     const vacation = ref({
       annual_leaves: 0,
       leave_excuses: 0,
@@ -108,14 +75,18 @@ export default {
       }
     })
 
-    async function listUsers(){
-      const res = await $api.users.admin.office_users.list({page: page.value})
-      next.value = res.next
+    async function listUsers() {
+      const res = await $api.users.admin.office_users.list({ page: page.value })
+      if (res.count) {
+        count.value = Math.ceil(res.count / 10)
+      } else {
+        count.value = 0
+      }
       return res.results
     }
 
     onMounted(async () => {
-      try {   
+      try {
         officeUsers.value = await listUsers()
         users.value = officeUsers.value?.map((user: any) => ({ id: user.id, name: user.full_name }))
         selectedUser.value = users.value[0]
@@ -137,7 +108,7 @@ export default {
       user,
       users,
       page,
-      next,
+      count,
       selectedUser,
       officeUsers,
       userVacations,
