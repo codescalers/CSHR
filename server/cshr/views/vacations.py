@@ -31,7 +31,6 @@ from cshr.services.vacations import (
     get_vacation_by_id,
     get_all_vacations,
     send_vacation_to_calendar,
-    update_user_actual_balance,
 )
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
@@ -102,22 +101,6 @@ class VacationBalanceAdjustmentApiView(GenericAPIView):
             v: StanderdVacationBalance = StanderdVacationBalance()
             for user in users_in_office:
                 v.check(user)
-
-            reason = serializer.validated_data.get("reason")
-            add_value = serializer.validated_data.get("value")
-
-            balances = VacationBalance.objects.filter(user__in=users_in_office)
-            for obj in balances:
-                if hasattr(obj, reason):
-                    old_value = obj.actual_balance.get(reason)
-                    obj.actual_balance[reason] = old_value + add_value
-                    # setattr(obj, reason, old_value + add_value)
-                    obj.save()
-                else:
-                    return CustomResponse.bad_request(
-                        message="Unknown reason.",
-                        data=serializer.data,
-                    )
 
             return CustomResponse.success(
                 message="Successfully updated balance values.",
@@ -714,8 +697,6 @@ class UserVacationBalanceApiView(GenericAPIView):
                 balance.save()
 
                 v.check(balance.user)
-                user_balance = get_balance_by_user(balance.user)
-                update_user_actual_balance(user_balance)
 
             return CustomResponse.success(
                 message="Successfully updated user balance",

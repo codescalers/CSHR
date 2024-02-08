@@ -20,40 +20,37 @@ class StanderdVacationBalance:
         self.file_path = os.path.join(f"{self.abspath}/vacation_balance.json")
 
     def check(self, user) -> VacationBalance:
-        try:
-            balance = VacationBalance.objects.get(user=user)
-            for field in balance._meta.fields:
-                actual_value: int = getattr(balance, field.name)
-                if (
-                    type(actual_value) is dict
-                    and len(actual_value) > 0
-                    and field.name != "actual_balance"
-                ):
-                    for k, v in actual_value.items():
-                        balance_attr: int = getattr(balance, k)
-                        if balance_attr + v < 365:
-                            setattr(balance, k, balance_attr + v)
-            return balance
-        except VacationBalance.DoesNotExist:
+        balance = VacationBalance.objects.filter(user=user)
+        if(len(balance) == 0):
             return self.create_new_balance(user)
+        balance = balance[0]
+        return balance
+            
 
     def create_new_balance_values(self, user: User) -> Dict:
         # this help to divide to get the total days based on joining date
         month: int = 12 - user.created_at.month
-        balance = OfficeVacationBalance.objects.get(
+        office_balance = OfficeVacationBalance.objects.filter(
             year=datetime.datetime.now().year, location=user.location
         )
 
-        annual_leaves: int = round(balance.annual_leaves / 12 * month)
-        leave_excuses: int = round(balance.leave_excuses / 12 * month)
-        emergency_leaves: int = round(balance.emergency_leaves / 12 * month)
+        if(len(office_balance) == 0):
+            office_balance = OfficeVacationBalance.objects.create(
+                year=datetime.datetime.now().year, location=user.location
+            )
+        else:
+            office_balance = office_balance[0]
+
+        annual_leaves: int = round(office_balance.annual_leaves / 12 * month)
+        leave_excuses: int = round(office_balance.leave_excuses / 12 * month)
+        emergency_leaves: int = round(office_balance.emergency_leaves / 12 * month)
         calculated_values = {
             "annual_leaves": annual_leaves,
             "leave_excuses": leave_excuses,
             "emergency_leaves": emergency_leaves,
-            "sick_leaves": balance.sick_leaves,
-            "unpaid": balance.unpaid,
-            "compensation": balance.compensation,
+            "sick_leaves": office_balance.sick_leaves,
+            "unpaid": office_balance.unpaid,
+            "compensation": office_balance.compensation,
         }
         return calculated_values
 
@@ -73,7 +70,7 @@ class StanderdVacationBalance:
             emergency_leaves=values["emergency_leaves"],
             leave_excuses=values["leave_excuses"],
             unpaid=values["unpaid"],
-            actual_balance=values,
+            office_vacation_balance = OfficeVacationBalance.objects.get(location__id = user.location.id)
         )
 
         return balance
