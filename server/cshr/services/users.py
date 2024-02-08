@@ -4,7 +4,8 @@ from django.db.models import Q, F
 from typing import List, Union
 from cshr.models.office import Office
 
-from cshr.models.users import User, UserSkills
+from cshr.models.users import USER_TYPE, User, UserSkills
+from django.db.models.query import QuerySet
 
 
 def get_user_by_id(id: str) -> User:
@@ -128,3 +129,7 @@ def get_all_skills():
 def filter_users_by_birthdates(month: int, day: int) -> List[User]:
     """Filter all users by birthdates"""
     return User.objects.filter(birthday__month=month, birthday__day=day)
+
+def get_supervisors() -> QuerySet[User]:
+    """Return all supervisors users"""
+    return User.objects.filter(user_type=USER_TYPE.SUPERVISOR)

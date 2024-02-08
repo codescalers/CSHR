@@ -83,20 +83,3 @@ class OfficeApiView(ListAPIView, GenericAPIView):
                 error=serializer.errors, message="Office failed to update"
             )
         return CustomResponse.not_found(message="Office not found to update")
-
-
-class OfficeSupervisorsApiView(ListAPIView, GenericAPIView):
-    """method to get all Company properties"""
-
-    serializer_class = GeneralUserSerializer
-    permission_class = [IsAdmin | IsSupervisor]
-
-    def get_queryset(self) -> Response:
-        office_id = self.kwargs.get("id")
-        office = get_office_by_id(office_id)
-
-        if office is None:
-            return []
-
-        query_set = get_office_supervisors(office)
-        return query_set
