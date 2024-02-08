@@ -193,15 +193,16 @@ CSRF_TRUSTED_ORIGINS = [f'https://{config("SERVER_DOMAIN_NAME")}']
 
 # email config
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "sgbackend.SendGridBackend"
 SENDGRID_API_KEY = config('SENDGRID_API_KEY')
-SENDGRID_SANDBOX_MODE_IN_DEBUG = True
 
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
-EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# SENDGRID_SANDBOX_MODE_IN_DEBUG = True
+
+# EMAIL_HOST = 'smtp.sendgrid.net'
+# EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
+# EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
 
 # EMAIL_HOST = config("EMAIL_HOST")
 # EMAIL_PORT = 587
