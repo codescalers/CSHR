@@ -24,11 +24,6 @@ export class OfficeApi extends ApiClientBase {
       transform: (d) => d.results
     })
   }
-
-  async listSupervisor(id: number, query?: Api.Inputs.List) {
-    ApiClientBase.assertUser()
-    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.User>>(this.getUrl(`/${id}/supervisor`, query)))
-  }
   async update(id: number) {}
 
   async delete(id: number) {}

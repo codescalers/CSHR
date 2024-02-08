@@ -58,10 +58,6 @@
               </VContainer>
             </template>
           </v-select>
-
-          <!-- <v-select v-model="selectedSupervisor" :items="supervisors" item-title="full_name" item-value="id"
-            label="Team Lead" return-object density="comfortable"></v-select> -->
-
         </v-col>
         <v-col cols="12">
           <v-file-input v-model="imageInput" label="Image" variant="filled" accept="image/*" :show-size="1024"
@@ -136,8 +132,6 @@ export default {
     const imageUrl = ref()
     const supervisorPage = ref(1)
     const supervisorCount = ref(0)
-    const loggedUser = ApiClientBase.user
-    const officeId = ref()
     const user = computed(() => ({
       first_name: first_name.value,
       last_name: last_name.value,
@@ -160,15 +154,11 @@ export default {
 
 
     async function listSupervisors() {
-      const res = await $api.users.admin.list({ page: supervisorPage.value })
-      // const res = await $api.office.listSupervisor(officeId.value,{ page: supervisorPage.value })
-
+      const res = await $api.users.supervisors.list({ page: supervisorPage.value })
       if (res.count) {
         supervisorCount.value = Math.ceil(res.count / 10)
         res.results.forEach((user: any) => {
-          // if( user.user_type === 'Supervisor'){
           supervisors.value.push(user)
-          // }
         })
       } else {
         supervisorCount.value = 0
@@ -193,32 +183,7 @@ export default {
         }))
 
         location.value = offices.value[0]
-        officeId.value = loggedUser.value?.fullUser.location.id
         await listSupervisors()
-
-        // const res = await $api.users.admin.list({ page: supervisorPage.value })
-
-        // if (res.count > 10) {
-        //   supervisorCount.value = Math.ceil(res.count / 10)
-
-        //   for (let i = 1; i <= supervisorCount.value - 1; i++) {
-        //     const res = await $api.users.admin.list({ page: supervisorPage.value++ })
-        //     if (res.results) {
-        //       let supervisorsArr: []
-        //       supervisorsArr = (res.results as any).filter(
-        //         (supervisor: any) => supervisor.user_type === 'Supervisor'
-        //       )
-        //       for (let supervisor of supervisorsArr) {
-        //         supervisors.value.push(supervisor)
-        //       }
-        //     }
-        //   }
-        // } else {
-        //   supervisors.value = (res.results as any).filter(
-        //     (supervisor: any) => supervisor.user_type === 'Supervisor'
-        //   )
-        // }
-
         selectedSupervisor.value = supervisors.value[0]
       } catch (error) {
         console.error(error);

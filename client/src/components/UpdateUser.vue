@@ -16,8 +16,6 @@
               </VContainer>
             </template>
           </v-select>
-
-
           <v-select v-model="reporting_to" :items="supervisors" item-title="full_name" item-value="id" label="Team Lead"
             return-object density="comfortable" :rules="requiredRules">
 
@@ -141,9 +139,6 @@ export default {
     const offices = ref([])
     const supervisors = ref<any[]>([])
     const image = ref()
-    const user = ApiClientBase.user
-    const officeId = ref()
-
     const imageUrl = ref()
     const selectedUser = ref()
     const reporting_to = ref()
@@ -185,15 +180,11 @@ export default {
     }
 
     async function listSupervisors() {
-      const res = await $api.users.admin.list({ page: supervisorPage.value })
-      // const res = await $api.office.listSupervisor(officeId.value,{ page: supervisorPage.value })
-
+      const res = await $api.users.supervisors.list({ page: supervisorPage.value })
       if (res.count) {
         supervisorCount.value = Math.ceil(res.count / 10)
         res.results.forEach((user: any) => {
-          // if( user.user_type === 'Supervisor'){
           supervisors.value.push(user)
-          // }
         })
       } else {
         supervisorCount.value = 0
@@ -208,13 +199,10 @@ export default {
           id: office.id,
           name: office.name
         }))
-        officeId.value = user.value?.fullUser.location.id
         await listUsers()
         selectedUser.value = officeUsers.value[0]
-        reporting_to.value = selectedUser.value.reporting_to[0]
         await listSupervisors()
-
-
+        reporting_to.value = selectedUser.value?.reporting_to[0]
 
       } catch (error) {
         console.error(error)
@@ -254,7 +242,6 @@ export default {
           await $api.users.set_active.update({ user_id: selectedUser.value.id })
         }
         isLoading.value = false
-
       },
       null,
       { immediate: false }
