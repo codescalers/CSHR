@@ -289,17 +289,6 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                     message=f"You have an additional pending request that deducts {sum(pinding_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
                 )
 
-            saved = serializer.save(
-                type=TYPE_CHOICES.VACATIONS,
-                status=STATUS_CHOICES.PENDING,
-                applying_user=applying_user,
-                actual_days=vacation_days,
-            )
-
-            msg = get_vacation_request_email_template(
-                request.user, serializer.data, saved.id
-            )
-
             try:
                 ping_redis()
             except:
@@ -307,9 +296,16 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             set_notification_request_redis(serializer.data)
 
-            sent = send_email_for_request(request.user.id, msg, "Vacation request")
-            if not sent:
-                return CustomResponse.bad_request(message="Error in sending email, can not sent email with this request.")
+            # sent = send_email_for_request(request.user.id)
+            # if not sent:
+                # return CustomResponse.bad_request(message="Error in sending email, can not sent email with this request.")
+
+            saved = serializer.save(
+                type=TYPE_CHOICES.VACATIONS,
+                status=STATUS_CHOICES.PENDING,
+                applying_user=applying_user,
+                actual_days=vacation_days,
+            )
 
             response_date: Dict = send_vacation_to_calendar(saved)
             return CustomResponse.success(

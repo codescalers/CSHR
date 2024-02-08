@@ -2,6 +2,8 @@ from array import array
 from django.conf import settings
 from celery import Celery
 from celery.schedules import crontab
+from django.core.mail import EmailMultiAlternatives
+
 import datetime
 from django.core.mail import send_mail
 from celery import shared_task
@@ -172,8 +174,7 @@ def send_quarter_evaluation_email():
 
 
 @shared_task()
-def send_email_for_request(user_id, msg, mail_title) -> Response:
-    from django.core.mail import send_mail
+def send_email_for_request(user_id) -> Response:
     from cshr.models.users import User
     from cshr.utils.send_email import get_email_recievers
     from cshr.services.users import get_user_by_id
@@ -181,16 +182,42 @@ def send_email_for_request(user_id, msg, mail_title) -> Response:
 
     check_email_configuration()
     user: User = get_user_by_id(user_id)
+
     if user is None:
         return False
+
     recievers: array[str] = get_email_recievers(user)
+    mail = EmailMultiAlternatives(
+        subject="Vacation Request Notification",
+        from_email="Codescalers HR <no-replay.hr@codescalers.com>",
+        to=recievers,
+          headers={"Reply-To": "hr@codescalers.com"}
+    )
+    mail.categories = [
+        'work',
+        'urgent',
+    ]
+    mail.attach_alternative(
+        f"""
+            <p>I trust this message finds you and your family in good health.</p>
+            <p>I wanted to bring to your attention that { user.full_name } has recently submitted a vacation request. To review and manage this notification, please log in to your CSHR account and check your <a href='https://hr.threefold.tech/notifications/' target='_blank'>notifications</a>.</p>
+            <p>Thank you for your attention to this matter.</p>
+            <p>Best regards,</p>
+            <hr/>
+            <strong>
+                <small>Codescalers HR Mail System</small>
+                <br/>
+                <small>Note: This email was sent via the Codescalers HR email system. Please refrain from replying to this email.</small>
+            </strong>
+        """,
+        "text/html"
+    )
+
     try:
-        send_mail(
-            mail_title, msg, settings.EMAIL_HOST_USER, recievers, fail_silently=False
-        )
+        mail.send()
+        return True
     except Exception:
         return False
-    return True
 
 
 @shared_task()

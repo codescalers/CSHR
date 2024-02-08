@@ -787,6 +787,17 @@ files = [
 ]
 
 [[package]]
+name = "python-http-client"
+version = "3.3.7"
+description = "HTTP REST client, simplified for Python"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "python_http_client-3.3.7-py3-none-any.whl", hash = "sha256:ad371d2bbedc6ea15c26179c6222a78bc9308d272435ddf1d5c84f068f249a36"},
+    {file = "python_http_client-3.3.7.tar.gz", hash = "sha256:bf841ee45262747e00dec7ee9971dfb8c7d83083f5713596488d67739170cea0"},
+]
+
+[[package]]
 name = "pytz"
 version = "2023.3.post1"
 description = "World timezone definitions, modern and historical"
@@ -873,6 +884,33 @@ async-timeout = {version = ">=4.0.2", markers = "python_full_version <= \"3.11.2
 [package.extras]
 hiredis = ["hiredis (>=1.0.0)"]
 ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"]
+
+[[package]]
+name = "sendgrid"
+version = "3.6.5"
+description = "SendGrid library for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "sendgrid-3.6.5-py2.py3-none-any.whl", hash = "sha256:9fba62068dd13922004b6a1676e21c6435709aaf7c2b978cdf1206e3d2196c60"},
+    {file = "sendgrid-3.6.5.tar.gz", hash = "sha256:d1af52f8cbb900bf79e28aa08102a503f5e26489c7b9f1d9750758a4b27c84d1"},
+]
+
+[package.dependencies]
+python-http-client = ">=2.1.1"
+
+[[package]]
+name = "sendgrid-django"
+version = "4.2.0"
+description = "SendGrid Backend for Django"
+optional = false
+python-versions = "*"
+files = [
+    {file = "sendgrid-django-4.2.0.tar.gz", hash = "sha256:fef60ba37d588e5e1c4dcbb3b8b7f8c16920e3e89432de357f6abd6157c4f5f4"},
+]
+
+[package.dependencies]
+sendgrid = ">=3.5,<4"
 
 [[package]]
 name = "six"
@@ -984,4 +1022,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "1846cbdc0ba2a5c660a1a93ce76ad1bfe182345a2d86fb1dc53090929cfb1d7b"
+content-hash = "6566e2cf50fd1083a9080f9e8de6a53d6efbc8e7b708bf54c29b5e1b0112aa6a"
