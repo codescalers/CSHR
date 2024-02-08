@@ -46,8 +46,21 @@
           <v-select v-model="location" :items="offices" label="Office" item-title="name" item-value="id" return-object
             density="comfortable" :rules="requiredRules"></v-select>
 
-          <v-select v-model="selectedSupervisor" :items="supervisors" item-title="full_name" item-value="id"
-            label="Team Lead" return-object density="comfortable"></v-select>
+            <v-select v-model="selectedSupervisor" :items="supervisors" item-title="full_name" item-value="id" label="Team Lead"
+            return-object density="comfortable" :rules="requiredRules">
+
+            <template #append-item v-if="reloadMoreSupervisor">
+              <VContainer>
+                <VBtn @click="() => { return supervisorPage++, supervisorCount--, listSupervisors() }" block
+                  color="secondary" variant="tonal" prepend-icon="mdi-reload">
+                  Load More Team Leads
+                </VBtn>
+              </VContainer>
+            </template>
+          </v-select>
+
+          <!-- <v-select v-model="selectedSupervisor" :items="supervisors" item-title="full_name" item-value="id"
+            label="Team Lead" return-object density="comfortable"></v-select> -->
 
         </v-col>
         <v-col cols="12">
@@ -81,6 +94,7 @@ import {
 } from '@/utils'
 import { formatDate } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
+import { ApiClientBase } from '@/clients/api/base'
 
 export default {
   name: 'AddUser',
@@ -116,13 +130,14 @@ export default {
     const job_title = ref('')
     const address = ref('')
     const social_insurance_number = ref('')
-    const supervisors = ref([])
+    const supervisors = ref<any[]>([])
     const selectedSupervisor = ref()
     const imageInput = ref()
     const imageUrl = ref()
     const supervisorPage = ref(1)
     const supervisorCount = ref(0)
-
+    const loggedUser = ApiClientBase.user
+    const officeId = ref()
     const user = computed(() => ({
       first_name: first_name.value,
       last_name: last_name.value,
@@ -143,6 +158,33 @@ export default {
       image: imageUrl.value
     }))
 
+
+    async function listSupervisors() {
+      const res = await $api.users.admin.list({ page: supervisorPage.value })
+      // const res = await $api.office.listSupervisor(officeId.value,{ page: supervisorPage.value })
+
+      if (res.count) {
+        supervisorCount.value = Math.ceil(res.count / 10)
+        res.results.forEach((user: any) => {
+          // if( user.user_type === 'Supervisor'){
+          supervisors.value.push(user)
+          // }
+        })
+      } else {
+        supervisorCount.value = 0
+      }
+
+      return supervisors.value
+    }
+    const reloadMoreSupervisor = computed(() => {
+      if (supervisorPage.value === supervisorCount.value) {
+        return false
+      }
+      if (supervisorCount.value > 1) {
+        return true
+      }
+      return false;
+    });
     onMounted(async () => {
       try {
         offices.value = (await $api.office.list()).map((office: any) => ({
@@ -151,28 +193,31 @@ export default {
         }))
 
         location.value = offices.value[0]
-        const res = await $api.users.admin.list({ page: supervisorPage.value })
+        officeId.value = loggedUser.value?.fullUser.location.id
+        await listSupervisors()
 
-        if (res.count > 10) {
-          supervisorCount.value = Math.ceil(res.count / 10)
+        // const res = await $api.users.admin.list({ page: supervisorPage.value })
 
-          for (let i = 1; i <= supervisorCount.value - 1; i++) {
-            const res = await $api.users.admin.list({ page: supervisorPage.value++ })
-            if (res.results) {
-              let supervisorsArr: []
-              supervisorsArr = (res.results as any).filter(
-                (supervisor: any) => supervisor.user_type === 'Supervisor'
-              )
-              for (let supervisor of supervisorsArr) {
-                supervisors.value.push(supervisor)
-              }
-            }
-          }
-        } else {
-          supervisors.value = (res.results as any).filter(
-            (supervisor: any) => supervisor.user_type === 'Supervisor'
-          )
-        }
+        // if (res.count > 10) {
+        //   supervisorCount.value = Math.ceil(res.count / 10)
+
+        //   for (let i = 1; i <= supervisorCount.value - 1; i++) {
+        //     const res = await $api.users.admin.list({ page: supervisorPage.value++ })
+        //     if (res.results) {
+        //       let supervisorsArr: []
+        //       supervisorsArr = (res.results as any).filter(
+        //         (supervisor: any) => supervisor.user_type === 'Supervisor'
+        //       )
+        //       for (let supervisor of supervisorsArr) {
+        //         supervisors.value.push(supervisor)
+        //       }
+        //     }
+        //   }
+        // } else {
+        //   supervisors.value = (res.results as any).filter(
+        //     (supervisor: any) => supervisor.user_type === 'Supervisor'
+        //   )
+        // }
 
         selectedSupervisor.value = supervisors.value[0]
       } catch (error) {
@@ -249,6 +294,10 @@ export default {
       requiredStringRules,
       requiredRules,
       isLoading,
+      supervisorCount,
+      supervisorPage,
+      reloadMoreSupervisor,
+      listSupervisors,
       toggleDatePicker,
       chooseImage,
       execute
