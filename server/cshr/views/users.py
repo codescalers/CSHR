@@ -26,6 +26,7 @@ from cshr.services.users import (
     filter_users_by_birthdates,
     get_admin_office_users,
     get_all_skills,
+    get_supervisors,
     get_user_by_id,
     get_or_create_skill_by_name,
     get_all_of_users,
@@ -64,7 +65,7 @@ class TeamAPIView(ListAPIView):
         return query_set
 
 
-class SupervisorsAPIView(ListAPIView):
+class TeamSupervisorsAPIView(ListAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = TeamSerializer
 
@@ -366,3 +367,13 @@ class GetUsersBirthDatesAPIView(GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="Users founded successfully."
         )
+
+class SupervisorsAPIView(ListAPIView, GenericAPIView):
+    """method to get all Company properties"""
+
+    serializer_class = GeneralUserSerializer
+    permission_class = [IsAdmin | IsSupervisor]
+
+    def get_queryset(self) -> Response:
+        query_set = get_supervisors()
+        return query_set
