@@ -134,6 +134,8 @@ export default {
     const officeUsers = ref()
     const page = ref(1)
     const count = ref(0)
+    const supervisorPage = ref(1)
+    const supervisorCount = ref(0)
     async function listUsers() {
       const res = await $api.users.admin.office_users.list({ page: page.value })
       if (res.count) {
@@ -144,7 +146,6 @@ export default {
       return res.results
     }
 
-
     onMounted(async () => {
       try {
         offices.value = (await $api.office.list()).map((office: any) => ({
@@ -154,9 +155,28 @@ export default {
         officeUsers.value = await listUsers()
         selectedUser.value = officeUsers.value[0]
         reporting_to.value = selectedUser.value.reporting_to[0]
-        supervisors.value = ((await $api.users.admin.list()) as any).filter(
-          (supervisor: any) => supervisor.user_type === 'Supervisor'
-        )
+        const res = await $api.users.admin.list({ page: supervisorPage.value })
+        if (res.count > 10) {
+          supervisorCount.value = Math.ceil(res.count / 10)
+          for (let i = 1; i <= supervisorCount.value - 1; i++) {
+            const res = await $api.users.admin.list({ page: supervisorPage.value++ })
+            if (res.results) {
+
+              let supervisorsArr: []
+              supervisorsArr = (res.results as any).filter(
+                (supervisor: any) => supervisor.user_type === 'Supervisor'
+              )
+              for (let supervisor of supervisorsArr) {
+                supervisors.value.push(supervisor)
+              }
+            }
+          }
+        } else {
+          supervisors.value = (res.results as any).filter(
+            (supervisor: any) => supervisor.user_type === 'Supervisor'
+          )
+        }
+
       } catch (error) {
         console.error(error)
       }
@@ -203,6 +223,7 @@ export default {
 
     const { execute, isLoading } = useAsyncState(
       async () => {
+        selectedUser.value.user_type = selectedUser.value.user_type === "Team Lead" ? "Supervisor" : selectedUser.value.user_type
         await $api.myprofile.update(selectedUser.value.id, {
           ...selectedUser.value,
           image: imageUrl.value ? imageUrl.value : null,
