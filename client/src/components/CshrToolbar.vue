@@ -85,6 +85,12 @@ export default {
   setup() {
     const $api = useApi()
     const user = useAsyncState(() => $api.myprofile.getUser(), null)
+    setTimeout(() => {
+      if(!user.state.value){
+        window.location.href = "/login"
+      }
+    }, 1000)
+
     const notifications = useAsyncState(() => $api.notifications.list(), [])
     const selectedNotification = ref<Api.Returns.Notification>()
 

@@ -77,8 +77,8 @@ export default {
     const headers = [
       { title: 'Name', sortable: false, key: 'full_name' },
       { title: 'Email', key: 'email' },
-      { title: 'Phone', key: 'phone' },
-      { title: 'Position', key: 'position' },
+      { title: 'Phone', key: 'mobile_number' },
+      { title: 'Position', key: 'job_title' },
       { title: 'Telegram', key: 'telegram_link' },
       { title: 'Department', key: 'team' }
     ] as any[]

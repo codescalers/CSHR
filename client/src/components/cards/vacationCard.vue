@@ -147,16 +147,17 @@ export default {
     })
 
     const couldApprove = computed(() => {
+      
       if (user.value) {
         if (
           user.value.fullUser.user_type === 'Admin' ||
           user.value.fullUser.user_type === 'Supervisor'
-        ) {
+          ) {
           if (props.vacation.user.id == user.value.fullUser.id) {
             return true
           }
           if (
-            props.vacation.user.reporting_to.includes(user.value.fullUser.id) &&
+            props.vacation.user.reporting_to[0].id === props.vacation.user?.id &&
             props.vacation.user.location.name === user.value.fullUser.location.name
           ) {
             return true

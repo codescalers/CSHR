@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import { computed, ref } from 'vue'
-import { onMounted } from 'vue'
 
 export default {
   name: 'personalInformation',
