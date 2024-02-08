@@ -92,20 +92,6 @@ def filter_user_vacations(user: User) -> Vacation:
     return Vacation.objects.filter(applying_user=user).order_by("created_at")
 
 
-def update_user_actual_balance(user_balance: VacationBalance) -> VacationBalance:
-    """Update user actual balance field with the current balance."""
-    user_balance.actual_balance = {
-        "annual_leaves": user_balance.annual_leaves,
-        "sick_leaves": user_balance.sick_leaves,
-        "compensation": 100,
-        "unpaid": 100,
-        "emergency_leaves": user_balance.emergency_leaves,
-        "leave_excuses": user_balance.leave_excuses,
-    }
-    user_balance.save()
-    return user_balance
-
-
 def send_vacation_to_calendar(vacation: Vacation) -> Dict[str, Any]:
     from cshr.services.landing_page import (
         LandingPageClassNameEnum,

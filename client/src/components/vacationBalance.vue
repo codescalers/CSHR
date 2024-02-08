@@ -28,7 +28,7 @@ export default {
   name: 'vacationBalance',
   props: ['balance'],
 
-  setup(props) {
+  setup() {
     const vacationInfoHeaders = ['Annuals', 'Emergencies', 'Excuses']
 
     return {
