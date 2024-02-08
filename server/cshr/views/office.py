@@ -2,6 +2,7 @@ from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from cshr.models.office import Office
+from cshr.serializers.users import GeneralUserSerializer
 from ..serializers.office import OfficeSerializer
 from ..api.response import CustomResponse
 from cshr.api.permission import (
@@ -11,7 +12,7 @@ from cshr.api.permission import (
     UserIsAuthenticated,
     CustomPermissions,
 )
-from cshr.services.office import get_office_by_id
+from cshr.services.office import get_office_by_id, get_office_supervisors
 
 
 class BaseOfficeApiView(ListAPIView, GenericAPIView):
@@ -82,3 +83,20 @@ class OfficeApiView(ListAPIView, GenericAPIView):
                 error=serializer.errors, message="Office failed to update"
             )
         return CustomResponse.not_found(message="Office not found to update")
+
+
+class OfficeSupervisorsApiView(ListAPIView, GenericAPIView):
+    """method to get all Company properties"""
+
+    serializer_class = GeneralUserSerializer
+    permission_class = [IsAdmin | IsSupervisor]
+
+    def get_queryset(self) -> Response:
+        office_id = self.kwargs.get("id")
+        office = get_office_by_id(office_id)
+
+        if office is None:
+            return []
+
+        query_set = get_office_supervisors(office)
+        return query_set

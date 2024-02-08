@@ -23,8 +23,6 @@ class BaseCompanyPropertiesApiView(ListAPIView, GenericAPIView):
 
         return query_set
 
-    """method to create a new Company properties"""
-
     def post(self, request: Request) -> Response:
         """Method to create a new Company properties"""
         serializer = self.get_serializer(data=request.data)
