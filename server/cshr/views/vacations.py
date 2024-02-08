@@ -485,7 +485,7 @@ class VacationsAcceptApiView(GenericAPIView):
 
         if bool1 and bool2:
             return CustomResponse.success(
-                message="Vacation request accepted", status_code=202
+                message="Vacation request accepted", status_code=202, data=VacationsUpdateSerializer(vacation).data
             )
         else:
             return CustomResponse.not_found(
@@ -652,7 +652,6 @@ class UserVacationBalanceApiView(GenericAPIView):
         users: User = get_users_by_id(user_ids)
 
         v: StanderdVacationBalance = StanderdVacationBalance()
-
         balances = []
 
         for user in users:
