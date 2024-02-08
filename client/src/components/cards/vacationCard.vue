@@ -157,7 +157,7 @@ export default {
             return true
           }
           if (
-            props.vacation.user.reporting_to[0].id === props.vacation.user.id &&
+            props.vacation.user.reporting_to[0].id === props.vacation.user?.id &&
             props.vacation.user.location.name === user.value.fullUser.location.name
           ) {
             return true
