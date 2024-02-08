@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-layout>
-      <v-navigation-drawer v-if="$route.path != '/login'" theme="dark" permanent>
+      <v-navigation-drawer v-if="$route.path != '/login'" theme="dark" permanent temporary>
         <router-link to="/">
           <v-img :src="logo" max-width="110" class="ml-3 mt-5 mb-4"></v-img>
         </router-link>
@@ -126,5 +126,8 @@ export default {
   font-size: 0.875rem;
   color: var(--link-color);
   cursor: pointer;
+}
+.router-link-active{
+  background-color: #47a2ff;
 }
 </style>
