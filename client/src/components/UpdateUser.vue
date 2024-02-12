@@ -3,10 +3,32 @@
     <v-form ref="form" @submit.prevent>
       <v-row class="justify-center align-center">
         <v-col cols="12">
-          <v-select v-model="selectedUser" :items="officeUsers" label="User" item-title="full_name" item-value="id"
-            return-object density="comfortable" :rules="requiredRules"></v-select>
+
+          <v-select v-model="selectedUser" :items="officeUsers" item-title="full_name" item-value="id" label="User"
+            return-object density="comfortable" :rules="requiredRules">
+
+            <template #append-item v-if="reloadMore">
+              <VContainer>
+                <VBtn @click="() => { return page++, count--, listUsers() }" block color="secondary" variant="tonal"
+                  prepend-icon="mdi-reload">
+                  Load More Users
+                </VBtn>
+              </VContainer>
+            </template>
+          </v-select>
           <v-select v-model="reporting_to" :items="supervisors" item-title="full_name" item-value="id" label="Team Lead"
-            return-object density="comfortable"></v-select>
+            return-object density="comfortable" :rules="requiredRules">
+
+            <template #append-item v-if="reloadMoreSupervisor">
+              <VContainer>
+                <VBtn @click="() => { return supervisorPage++, supervisorCount--, listSupervisors() }" block
+                  color="secondary" variant="tonal" prepend-icon="mdi-reload">
+                  Load More Team Leads
+                </VBtn>
+              </VContainer>
+            </template>
+          </v-select>
+
         </v-col>
         <v-col cols="6" v-if="selectedUser">
           <v-text-field v-model="selectedUser.first_name" label="First Name" density="comfortable"
@@ -80,7 +102,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { $api } from '@/clients'
 import {
   nameRules,
@@ -95,6 +117,7 @@ import {
   formatDate
 } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
+import { ApiClientBase } from '@/clients/api/base'
 
 export default {
   name: 'UpdateUser',
@@ -114,13 +137,61 @@ export default {
     const birthdayDate = ref(new Date())
     const joiningDate = ref(new Date())
     const offices = ref([])
-    const supervisors = ref([])
+    const supervisors = ref<any[]>([])
     const image = ref()
     const imageUrl = ref()
-    const officeUsers = ref([])
     const selectedUser = ref()
     const reporting_to = ref()
     const userIsActive = ref<boolean>(selectedUser.value?.is_active)
+    const officeUsers = ref<any[]>([]);
+    const page = ref(1)
+    const count = ref(0)
+    const supervisorPage = ref(1)
+    const supervisorCount = ref(0)
+    const reloadMore = computed(() => {
+      if (page.value === count.value) {
+        return false
+      }
+      if (count.value > 1) {
+        return true
+      }
+      return false;
+    });
+    const reloadMoreSupervisor = computed(() => {
+      if (supervisorPage.value === supervisorCount.value) {
+        return false
+      }
+      if (supervisorCount.value > 1) {
+        return true
+      }
+      return false;
+    });
+    async function listUsers() {
+      const res = await $api.users.admin.office_users.list({ page: page.value })
+      if (res.count) {
+        count.value = Math.ceil(res.count / 10)
+      } else {
+        count.value = 0
+      }
+      res.results.forEach((user: any) => {
+        officeUsers.value.push(user)
+      })
+      return officeUsers.value
+    }
+
+    async function listSupervisors() {
+      const res = await $api.users.supervisors.list({ page: supervisorPage.value })
+      if (res.count) {
+        supervisorCount.value = Math.ceil(res.count / 10)
+        res.results.forEach((user: any) => {
+          supervisors.value.push(user)
+        })
+      } else {
+        supervisorCount.value = 0
+      }
+
+      return supervisors.value
+    }
 
     onMounted(async () => {
       try {
@@ -128,12 +199,11 @@ export default {
           id: office.id,
           name: office.name
         }))
-        officeUsers.value = await $api.users.admin.office_users.list()
+        await listUsers()
         selectedUser.value = officeUsers.value[0]
-        reporting_to.value = selectedUser.value.reporting_to[0]
-        supervisors.value = ((await $api.users.admin.list()) as any).filter(
-          (supervisor: any) => supervisor.user_type === 'Supervisor'
-        )
+        await listSupervisors()
+        reporting_to.value = selectedUser.value?.reporting_to[0]
+
       } catch (error) {
         console.error(error)
       }
@@ -169,10 +239,9 @@ export default {
           await $api.users.set_inactive.update({ user_id: selectedUser.value.id })
         } else {
           selectedUser.value.is_active = userIsActive.value = true
-           await $api.users.set_active.update({ user_id: selectedUser.value.id })
+          await $api.users.set_active.update({ user_id: selectedUser.value.id })
         }
         isLoading.value = false
-
       },
       null,
       { immediate: false }
@@ -180,11 +249,12 @@ export default {
 
     const { execute, isLoading } = useAsyncState(
       async () => {
+        selectedUser.value.user_type = selectedUser.value.user_type === "Team Lead" ? "Supervisor" : selectedUser.value.user_type
         await $api.myprofile.update(selectedUser.value.id, {
           ...selectedUser.value,
-          image: imageUrl.value || null,
+          image: imageUrl.value ? imageUrl.value : null,
           location: selectedUser.value.location.id,
-          filename: image.value[0].name,
+          filename: image.value ? image.value[0].name : null,
           reporting_to: reporting_to.value ? [reporting_to.value.id] : []
         })
       },
@@ -213,6 +283,8 @@ export default {
       mobileRules,
       jobRules,
       addressRules,
+      supervisorPage,
+      supervisorCount,
       socialInsuranceRules,
       telegramRules,
       requiredStringRules,
@@ -221,7 +293,13 @@ export default {
       userIsActive,
       execute,
       toggleDatePicker,
+      listSupervisors,
       activateUser,
+      count,
+      page,
+      reloadMore,
+      reloadMoreSupervisor,
+      listUsers,
       chooseImage
     }
   }

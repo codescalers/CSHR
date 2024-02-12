@@ -10,6 +10,7 @@ export class UsersApi extends ApiClientBase {
   readonly set_inactive: UsersSetInActiveApi
   readonly skills: UsersSkillsApi
   readonly team: UsersTeamApi
+  readonly supervisors: UsersSupervisorsApi
 
   constructor(options: Api.ClientOptions) {
     super(options)
@@ -20,6 +21,7 @@ export class UsersApi extends ApiClientBase {
     this.set_inactive = new UsersSetInActiveApi(options, this.path)
     this.skills = new UsersSkillsApi(options, this.path)
     this.team = new UsersTeamApi(options, this.path)
+    this.supervisors = new UsersSupervisorsApi(options, this.path)
   }
 
   list(query?: any) {
@@ -50,9 +52,7 @@ class UsersAdminApi extends ApiClientBase {
   }
 
   list(query?: Api.Inputs.List) {
-    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
-      transform: (d) => d.results
-    })
+    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
   }
 
   read(id: number) {
@@ -76,8 +76,8 @@ class UsersAdminApi extends ApiClientBase {
 class UsersAdminofficeUsersApi extends ApiClientBase {
   protected readonly path = '/office_users'
 
-  list() {
-    return this.unwrap(() => this.$http.get(this.getUrl()), { transform: (d) => d.results })
+  list(query?: Api.Inputs.List) {
+    return this.unwrap(() => this.$http.get(this.getUrl('', query)))
   }
 }
 
@@ -114,6 +114,15 @@ class UsersSkillsApi extends ApiClientBase {
     return this.unwrap(() =>
       this.$http.post<Api.Inputs.UserSkills>(this.getUrl('/add_skill'), input)
     )
+  }
+}
+
+class UsersSupervisorsApi extends ApiClientBase {
+  protected readonly path = '/supervisors'
+
+  async list( query?: Api.Inputs.List) {
+    ApiClientBase.assertUser()
+    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.User>>(this.getUrl("", query)))
   }
 }
 
