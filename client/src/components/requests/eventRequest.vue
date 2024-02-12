@@ -1,93 +1,35 @@
 <template>
   <v-form ref="form" @submit.prevent="createEvent()">
     <div class="mt-3">
-      <v-text-field
-        color="info"
-        item-color="info"
-        base-color="info"
-        variant="outlined"
-        hide-details="auto"
-        label="Start Date"
-        v-model="startDate"
-        :readonly="true"
-      >
-        <template v-slot:append>
-          <v-icon color="info">mdi-calendar</v-icon>
-        </template>
+      <v-text-field ref="startDateField" color="info" item-color="info" base-color="info" variant="outlined"
+        hide-details="auto" label="From" v-model="startDate" type="date" :rules="[validateDates]"></v-text-field>
+    </div>
+
+    <div class="mt-3">
+      <v-text-field ref="endDateField" color="info" item-color="info" base-color="info" variant="outlined"
+        hide-details="auto" label="To" v-model="endDate" type="date" :rules="[validateDates]"></v-text-field>
+    </div>
+
+    <div class="mt-3">
+      <v-text-field item-color="info" base-color="info" color="info" variant="outlined" label="Event Name" v-model="name"
+        hide-details="auto" :rules="fieldRequired">
+      </v-text-field>
+    </div>
+    <div class="mt-3">
+      <v-text-field item-color="info" base-color="info" color="info" variant="outlined" label="Description"
+        v-model="description" hide-details="auto" :rules="fieldRequired">
       </v-text-field>
     </div>
 
     <div class="mt-3">
-      <v-text-field
-        color="info"
-        item-color="info"
-        base-color="info"
-        :readonly="true"
-        variant="outlined"
-        v-model="endDate"
-        hide-details="auto"
-        label="End Date"
-      >
-        <template v-slot:append>
-          <v-icon color="info">mdi-calendar</v-icon>
-        </template>
+      <v-text-field item-color="info" base-color="info" color="info" variant="outlined" label="Event Start Time"
+        v-model="eventStart" hide-details="auto" :rules="fieldRequired" type="time">
       </v-text-field>
     </div>
 
     <div class="mt-3">
-      <v-text-field
-        item-color="info"
-        base-color="info"
-        color="info"
-        variant="outlined"
-        label="Event Name"
-        v-model="name"
-        hide-details="auto"
-        :rules="fieldRequired"
-      >
-      </v-text-field>
-    </div>
-    <div class="mt-3">
-      <v-text-field
-        item-color="info"
-        base-color="info"
-        color="info"
-        variant="outlined"
-        label="Description"
-        v-model="description"
-        hide-details="auto"
-        :rules="fieldRequired"
-      >
-      </v-text-field>
-    </div>
-
-    <div class="mt-3">
-      <v-text-field
-        item-color="info"
-        base-color="info"
-        color="info"
-        variant="outlined"
-        label="Event Start Time"
-        v-model="eventStart"
-        hide-details="auto"
-        :rules="fieldRequired"
-        type="time"
-      >
-      </v-text-field>
-    </div>
-
-    <div class="mt-3">
-      <v-text-field
-        item-color="info"
-        base-color="info"
-        color="info"
-        variant="outlined"
-        label="Event End Time"
-        v-model="eventEnd"
-        hide-details="auto"
-        :rules="fieldRequired"
-        type="time"
-      >
+      <v-text-field item-color="info" base-color="info" color="info" variant="outlined" label="Event End Time"
+        v-model="eventEnd" hide-details="auto" :rules="fieldRequired" type="time">
       </v-text-field>
     </div>
 
@@ -97,7 +39,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { fieldRequired } from '@/utils'
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
@@ -113,13 +55,32 @@ export default {
     const startDate = ref<string>(props.dates.startStr)
     const endDate = ref<any>(new Date(props.dates.endStr))
     endDate.value.setDate(endDate.value.getDate() - 1);
-    endDate.value = endDate.value.toISOString().split('T')[0];    
+    endDate.value = endDate.value.toISOString().split('T')[0];
     const name = ref<string>("")
     const description = ref<string>("")
     const form = ref()
     const eventStart = ref()
     const eventEnd = ref()
+    const startDateField = ref()
+    const endDateField = ref()
 
+    watch(
+      () => [startDate.value, endDate.value],
+      async () => {
+        setTimeout(async () => {
+          startDateField.value.validate();
+          endDateField.value.validate();
+        }, 200);
+      },
+    );
+
+
+    const validateDates = (value: string | null): string | boolean => {
+      if (!startDate.value) return 'Please select start date.';
+      if (!endDate.value) return 'Please select end date.';
+      if (endDate.value <= startDate.value) return 'End date must be after start date.';
+      return true;
+    };
     const from_date = computed(() => {
       let val = new Date(startDate.value)
       if (eventStart.value) {
@@ -165,7 +126,9 @@ export default {
       fieldRequired,
       eventStart,
       eventEnd,
-
+      startDateField,
+      endDateField,
+      validateDates,
       createEvent
     }
   }

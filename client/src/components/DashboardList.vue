@@ -1,8 +1,7 @@
 <template>
-  <v-list>
+  <v-list active-class="v-list-item__overlay">
     <v-list-item
       v-for="item in items"
-      active-class="v-list-item__overlay"
       :key="item.id"
       @click="$emit('item-selected', item)"
     >
@@ -27,3 +26,16 @@ export default {
   }
 }
 </script>
+
+<style>
+.v-list-item__overlay{
+  background-color: #47a2ff !important;
+}
+.v-list-item:hover > .v-list-item__overlay{
+  background-color: #47a2ff !important;
+
+}
+.v-list-item--variant-text .v-list-item__overlay {
+  background-color: #47a2ff !important;
+}
+</style>
