@@ -5,13 +5,12 @@
         <v-col cols="12">
           <v-text-field v-model="user!.fullUser.location.name" label="Office" type="text" :rules="requiredStringRules"
             disabled></v-text-field>
+          <v-select v-model="selectedUser" :items="officeUsers" item-title="full_name" item-value="id" label="User"
+            return-object density="comfortable" :rules="requiredRules">
 
-          <v-select v-model="selectedUser" :items="users" item-title="name" item-value="id" label="User" return-object
-            :rules="requiredRules">
-
-            <template #append-item v-if="count > 1">
+            <template #append-item v-if="reloadMore">
               <VContainer>
-                <VBtn @click="() => { return page++, listUsers() }" block color="secondary" variant="tonal"
+                <VBtn @click="() => { return page++, count--, listUsers() }" block color="secondary" variant="tonal"
                   prepend-icon="mdi-reload">
                   Load More Users
                 </VBtn>
@@ -35,7 +34,7 @@
 <script lang="ts">
 import { $api } from '@/clients'
 import { requiredRules, requiredStringRules, vacationRules } from '@/utils'
-import { onMounted, ref, watchEffect } from 'vue'
+import { onMounted, ref, watchEffect, computed } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
 
@@ -44,8 +43,7 @@ export default {
   setup() {
     const form = ref()
     const user = ApiClientBase.user
-    const officeUsers = ref()
-    const users = ref([])
+    const officeUsers = ref<any[]>([]);
     const selectedUser = ref()
     const userVacations = ref()
     const page = ref(1)
@@ -55,6 +53,16 @@ export default {
       leave_excuses: 0,
       emergency_leaves: 0
     })
+
+    const reloadMore = computed(() => {
+      if (page.value === count.value) {
+        return false
+      }
+      if (count.value > 1) {
+        return true
+      }
+      return false;
+    });
 
     watchEffect(async () => {
       try {
@@ -74,7 +82,6 @@ export default {
         console.error(error)
       }
     })
-
     async function listUsers() {
       const res = await $api.users.admin.office_users.list({ page: page.value })
       if (res.count) {
@@ -82,14 +89,16 @@ export default {
       } else {
         count.value = 0
       }
-      return res.results
+      res.results.forEach((user: any) => {
+        officeUsers.value.push(user)
+      })
+      return officeUsers.value
     }
 
     onMounted(async () => {
       try {
-        officeUsers.value = await listUsers()
-        users.value = officeUsers.value?.map((user: any) => ({ id: user.id, name: user.full_name }))
-        selectedUser.value = users.value[0]
+        await listUsers()
+        selectedUser.value = officeUsers.value[0]
       } catch (error) {
         console.error(error)
       }
@@ -106,7 +115,6 @@ export default {
     return {
       form,
       user,
-      users,
       page,
       count,
       selectedUser,
@@ -117,6 +125,7 @@ export default {
       requiredRules,
       vacationRules,
       isLoading,
+      reloadMore,
       listUsers,
       execute
     }
