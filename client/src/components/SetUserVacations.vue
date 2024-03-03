@@ -7,17 +7,43 @@
     <v-form ref="form" @submit.prevent>
       <v-row class="justify-center align-center">
         <v-col cols="12">
-          <v-text-field v-model="user!.fullUser.location.name" label="Office" type="text" :rules="requiredStringRules"
-            disabled></v-text-field>
-          <v-select multiple v-model="selectedUsers" :items="officeUsers" item-title="full_name" item-value="id"
-            label="User" return-object density="comfortable" :rules="requiredRules">
+          <v-text-field
+            v-model="user!.fullUser.location.name"
+            label="Office"
+            type="text"
+            :rules="requiredStringRules"
+            disabled
+          ></v-text-field>
+          <v-select
+            multiple
+            v-model="selectedUsers"
+            :items="officeUsers"
+            item-title="full_name"
+            item-value="id"
+            label="User"
+            return-object
+            density="comfortable"
+            :rules="requiredRules"
+          >
+            <template v-slot:prepend-item>
+              <v-list-item title="Select All Users" @click="toggleSelectedUsers">
+                <template v-slot:prepend>
+                  <v-checkbox-btn
+                    :color="selectedSomeUsers ? 'indigo-darken-2' : undefined"
+                    :indeterminate="selectedSomeUsers && !selectedAllUsers"
+                    :model-value="selectedAllUsers"
+                  ></v-checkbox-btn>
+                </template>
+              </v-list-item>
+            </template>
+
             <template v-slot:selection="selectedUsers">
               <v-tooltip theme="dark" location="bottom">
                 <template #default>
                   <v-card class="pa-2">
                     <h3 class="pa-2">Vacation Balances</h3>
                     <v-card>
-                      <div class="reason">
+                      <div class="reason mb-2">
                         <div class="d-flex">
                           <div class="dot" />
                           <h4 class="mb-2">Annual Leaves</h4>
@@ -31,7 +57,7 @@
                           </v-chip>
                         </p>
                       </div>
-                      <div class="reason">
+                      <div class="reason mb-2">
                         <div class="d-flex">
                           <div class="dot" />
                           <h4 class="mb-2">Emergency Leaves</h4>
@@ -45,7 +71,7 @@
                           </v-chip>
                         </p>
                       </div>
-                      <div class="reason">
+                      <div class="reason mb-2">
                         <div class="d-flex">
                           <div class="dot" />
                           <h4 class="mb-2">Excuses Leaves</h4>
@@ -65,9 +91,13 @@
 
                 <template v-slot:activator="{ props }">
                   <div class="ml-4 mr-2 mt-2">
-                    <profile-image @mouseenter="setUserBalanceValues(selectedUsers.item.value)" v-bind="props"
-                      class="mb-3" :width="'45px'"
-                      :user="officeUsers.filter((user) => user.id === selectedUsers.item.value)[0]" />
+                    <profile-image
+                      @mouseenter="setUserBalanceValues(selectedUsers.item.value)"
+                      v-bind="props"
+                      class="mb-3"
+                      :width="'45px'"
+                      :user="officeUsers.filter((user) => user.id === selectedUsers.item.value)[0]"
+                    />
                   </div>
                   {{ selectedUsers.item.title }}
                 </template>
@@ -76,23 +106,48 @@
 
             <template #append-item v-if="reloadMore">
               <VContainer>
-                <VBtn @click="() => {
-              return page++, count--, listUsers()
-            }
-            " block color="secondary" variant="tonal" prepend-icon="mdi-reload">
+                <VBtn
+                  @click="
+                    () => {
+                      return page++, count--, listUsers()
+                    }
+                  "
+                  block
+                  color="secondary"
+                  variant="tonal"
+                  prepend-icon="mdi-reload"
+                >
                   Load More Users
                 </VBtn>
               </VContainer>
             </template>
           </v-select>
-          <v-text-field v-model="vacation.annual_leaves" label="Annual Leaves" type="number"
-            :rules="vacationRules"></v-text-field>
-          <v-text-field v-model="vacation.leave_excuses" label="Leave Excuses" type="number"
-            :rules="vacationRules"></v-text-field>
-          <v-text-field v-model="vacation.emergency_leaves" label="Emergency Leaves" type="number"
-            :rules="vacationRules"></v-text-field>
-          <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading="isLoading" @click="execute">Set
-            Vacations</v-btn>
+          <v-text-field
+            v-model="vacation.annual_leaves"
+            label="Annual Leaves"
+            type="number"
+            :rules="vacationRules"
+          ></v-text-field>
+          <v-text-field
+            v-model="vacation.leave_excuses"
+            label="Leave Excuses"
+            type="number"
+            :rules="vacationRules"
+          ></v-text-field>
+          <v-text-field
+            v-model="vacation.emergency_leaves"
+            label="Emergency Leaves"
+            type="number"
+            :rules="vacationRules"
+          ></v-text-field>
+          <v-btn
+            color="primary"
+            type="submit"
+            :disabled="!form?.isValid"
+            :loading="isLoading"
+            @click="execute"
+            >Set Vacations</v-btn
+          >
         </v-col>
       </v-row>
     </v-form>
@@ -110,6 +165,24 @@ import { type Api } from '@/types/api'
 
 export default {
   name: 'SetUserVacations',
+  computed: {
+    selectedSomeUsers(){
+      return this.selectedUsers.length > 0
+    },
+    selectedAllUsers(){
+      return this.selectedUsers.length === this.officeUsers.length
+    }
+  },
+  methods: {
+    toggleSelectedUsers(){
+      if (this.selectedAllUsers) {
+        this.selectedUsers = []
+      } else {
+        this.selectedUsers = this.officeUsers.slice()
+      }
+    }
+  },
+
   setup() {
     const form = ref()
     const user = ApiClientBase.user
@@ -118,7 +191,7 @@ export default {
     const userVacations = ref()
     const page = ref(1)
     const count = ref(0)
-    const vacation = ref({
+    const vacation = ref<any>({
       annual_leaves: 0,
       leave_excuses: 0,
       emergency_leaves: 0
@@ -132,24 +205,26 @@ export default {
       }
       return false
     })
+
     function getSelectedUsersIds(): number[] {
       let userIds: any[] = []
       if (selectedUsers.value) {
         selectedUsers.value.forEach((user) => {
           userIds.push(user.id)
-          // selectedUsers.value.join(','),
         })
       }
       return userIds
     }
 
     function setUserBalanceValues(userID: number) {
-      const userBalance: Api.BalanceVacation = userVacations.value.find((balance: Api.BalanceVacation) => balance.user!.id === userID)
-      console.log("userBalance", userBalance.annual_leaves.reserved);
-
-      vacation.value.annual_leaves = userBalance.annual_leaves as unknown as number
-      vacation.value.leave_excuses = userBalance.leave_excuses as unknown as number
-      vacation.value.emergency_leaves = userBalance.emergency_leaves as unknown as number
+      const userBalance: Api.BalanceVacation = userVacations.value.find(
+        (balance: Api.BalanceVacation) => balance.user!.id === userID
+      )
+      if(vacation.value){
+        vacation.value.annual_leaves = userBalance.annual_leaves as unknown as number
+        vacation.value.leave_excuses = userBalance.leave_excuses as unknown as number
+        vacation.value.emergency_leaves = userBalance.emergency_leaves as unknown as number
+      }
     }
 
     async function getUserBalance() {
@@ -197,6 +272,7 @@ export default {
           { user_ids: getSelectedUsersIds().join(',') },
           vacation.value
         )
+        await getUserBalance()
       },
       null,
       { immediate: false }
