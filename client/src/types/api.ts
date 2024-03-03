@@ -125,6 +125,7 @@ export module Api {
       reserved: number
       all: string
     }
+    user?: User,
   }
   export interface AdminUser extends Omit<'User', 'is_active'> {
     user_company_properties: 'string'
@@ -346,7 +347,7 @@ export module Api {
 
     export type UsersActive = { user_id: number }
 
-    export type UserId = { user_ids: number }
+    export type UserId = { user_ids: string }
 
     export type UserSkills = { skills: string[] }
 
