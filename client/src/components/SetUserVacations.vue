@@ -185,15 +185,15 @@ import { type Api } from '@/types/api'
 export default {
   name: 'SetUserVacations',
   computed: {
-    selectedSomeUsers(){
+    selectedSomeUsers() {
       return this.selectedUsers.length > 0
     },
-    selectedAllUsers(){
+    selectedAllUsers() {
       return this.selectedUsers.length === this.officeUsers.length
     }
   },
   methods: {
-    toggleSelectedUsers(){
+    toggleSelectedUsers() {
       if (this.selectedAllUsers) {
         this.selectedUsers = []
       } else {
@@ -218,10 +218,10 @@ export default {
     })
 
     const userBalance = ref({
-      annual_leaves: { all: "", reserved: 0 },
-      leave_excuses: { all: "", reserved: 0 },
-      emergency_leaves: { all: "", reserved: 0 },
-      compensation: { all: "", reserved: 0 },
+      annual_leaves: { all: '', reserved: 0 },
+      leave_excuses: { all: '', reserved: 0 },
+      emergency_leaves: { all: '', reserved: 0 },
+      compensation: { all: '', reserved: 0 }
     })
 
     const reloadMore = computed(() => {
@@ -249,7 +249,7 @@ export default {
         (balance: Api.BalanceVacation) => balance.user!.id === userID
       )
 
-      if(userVacations.value){
+      if (userVacations.value) {
         userBalance.value.annual_leaves = _userBalance.annual_leaves
         userBalance.value.leave_excuses = _userBalance.leave_excuses
         userBalance.value.emergency_leaves = _userBalance.emergency_leaves
@@ -263,8 +263,9 @@ export default {
           user_ids: getSelectedUsersIds().join(',')
         })
         userVacations.value = result
-        if(userVacations.value.length === 1){
-          const { annual_leaves, leave_excuses, emergency_leaves, compensation } = userVacations.value[0]        
+        if (userVacations.value.length === 1) {
+          const { annual_leaves, leave_excuses, emergency_leaves, compensation } =
+            userVacations.value[0]
           inputBalance.value.annual_leaves = annual_leaves.reserved
           inputBalance.value.leave_excuses = leave_excuses.reserved
           inputBalance.value.emergency_leaves = emergency_leaves.reserved
