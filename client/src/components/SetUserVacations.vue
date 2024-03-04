@@ -43,21 +43,23 @@
                   <v-card class="pa-2">
                     <h3 class="pa-2">Vacation Balances</h3>
                     <v-card>
-                      <div class="reason mb-2">
-                        <div class="d-flex">
-                          <div class="dot" />
-                          <h4 class="mb-2">Annual Leaves</h4>
+                      <template v-for="balance in userBalance" :key="balance">
+                        <div class="reason mb-2">
+                          <div class="d-flex">
+                            <div class="dot" />
+                            <h4 class="mb-2">{{ balance.title }}</h4>
+                          </div>
+                          <p class="ml-5">
+                            <v-chip class="mr-3" color="green">
+                              All: {{ balance.all }}
+                            </v-chip>
+                            <v-chip class="mr-3" color="yellow">
+                              Reserved: {{ balance.reserved }}
+                            </v-chip>
+                          </p>
                         </div>
-                        <p class="ml-5">
-                          <v-chip class="mr-3" color="green">
-                            All: {{ userBalance.annual_leaves.all }}
-                          </v-chip>
-                          <v-chip class="mr-3" color="yellow">
-                            Reserved: {{ userBalance.annual_leaves.reserved }}
-                          </v-chip>
-                        </p>
-                      </div>
-                      <div class="reason mb-2">
+                      </template>
+                      <!-- <div class="reason mb-2">
                         <div class="d-flex">
                           <div class="dot" />
                           <h4 class="mb-2">Emergency Leaves</h4>
@@ -98,7 +100,7 @@
                             Reserved: {{ userBalance.compensation.reserved }}
                           </v-chip>
                         </p>
-                      </div>
+                      </div> -->
                     </v-card>
                   </v-card>
                 </template>
@@ -219,10 +221,10 @@ export default {
     })
 
     const userBalance = ref({
-      annual_leaves: { all: '', reserved: 0 },
-      leave_excuses: { all: '', reserved: 0 },
-      emergency_leaves: { all: '', reserved: 0 },
-      compensation: { all: '', reserved: 0 }
+      annual_leaves: { all: '', reserved: 0, title: 'Annual Leaves' },
+      leave_excuses: { all: '', reserved: 0, title: 'Excuses Leaves' },
+      emergency_leaves: { all: '', reserved: 0, title: 'Emergency Leaves' },
+      compensation: { all: '', reserved: 0, title: 'Compensations' }
     })
 
     const reloadMore = computed(() => {
@@ -275,10 +277,14 @@ export default {
       )
 
       if (userVacations.value) {
-        userBalance.value.annual_leaves = _userBalance.annual_leaves
-        userBalance.value.leave_excuses = _userBalance.leave_excuses
-        userBalance.value.emergency_leaves = _userBalance.emergency_leaves
-        userBalance.value.compensation = _userBalance.compensation
+        userBalance.value.annual_leaves.all = _userBalance.annual_leaves.all
+        userBalance.value.annual_leaves.reserved = _userBalance.annual_leaves.reserved
+        userBalance.value.leave_excuses.all = _userBalance.leave_excuses.all
+        userBalance.value.leave_excuses.reserved = _userBalance.leave_excuses.reserved
+        userBalance.value.emergency_leaves.all = _userBalance.emergency_leaves.all
+        userBalance.value.emergency_leaves.reserved = _userBalance.emergency_leaves.reserved
+        userBalance.value.compensation.all = _userBalance.compensation.all
+        userBalance.value.compensation.reserved = _userBalance.compensation.reserved
       }
     }
 
