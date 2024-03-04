@@ -59,48 +59,6 @@
                           </p>
                         </div>
                       </template>
-                      <!-- <div class="reason mb-2">
-                        <div class="d-flex">
-                          <div class="dot" />
-                          <h4 class="mb-2">Emergency Leaves</h4>
-                        </div>
-                        <p class="ml-5">
-                          <v-chip class="mr-3" color="green">
-                            All: {{ userBalance.emergency_leaves.all }}
-                          </v-chip>
-                          <v-chip class="mr-3" color="yellow">
-                            Reserved: {{ userBalance.emergency_leaves.reserved }}
-                          </v-chip>
-                        </p>
-                      </div>
-                      <div class="reason mb-2">
-                        <div class="d-flex">
-                          <div class="dot" />
-                          <h4 class="mb-2">Excuses Leaves</h4>
-                        </div>
-                        <p class="ml-5">
-                          <v-chip class="mr-3" color="green">
-                            All: {{ userBalance.leave_excuses.all }}
-                          </v-chip>
-                          <v-chip class="mr-3" color="yellow">
-                            Reserved: {{ userBalance.leave_excuses.reserved }}
-                          </v-chip>
-                        </p>
-                      </div>
-                      <div class="reason mb-2">
-                        <div class="d-flex">
-                          <div class="dot" />
-                          <h4 class="mb-2">Compensations</h4>
-                        </div>
-                        <p class="ml-5">
-                          <v-chip class="mr-3" color="green">
-                            All: {{ userBalance.compensation.all }}
-                          </v-chip>
-                          <v-chip class="mr-3" color="yellow">
-                            Reserved: {{ userBalance.compensation.reserved }}
-                          </v-chip>
-                        </p>
-                      </div> -->
                     </v-card>
                   </v-card>
                 </template>
