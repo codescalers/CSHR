@@ -50,10 +50,10 @@
                         </div>
                         <p class="ml-5">
                           <v-chip class="mr-3" color="green">
-                            All: {{ vacation.annual_leaves.all }}
+                            All: {{ userBalance.annual_leaves.all }}
                           </v-chip>
                           <v-chip class="mr-3" color="yellow">
-                            Reserved: {{ vacation.annual_leaves.reserved }}
+                            Reserved: {{ userBalance.annual_leaves.reserved }}
                           </v-chip>
                         </p>
                       </div>
@@ -64,10 +64,10 @@
                         </div>
                         <p class="ml-5">
                           <v-chip class="mr-3" color="green">
-                            All: {{ vacation.emergency_leaves.all }}
+                            All: {{ userBalance.emergency_leaves.all }}
                           </v-chip>
                           <v-chip class="mr-3" color="yellow">
-                            Reserved: {{ vacation.emergency_leaves.reserved }}
+                            Reserved: {{ userBalance.emergency_leaves.reserved }}
                           </v-chip>
                         </p>
                       </div>
@@ -78,10 +78,24 @@
                         </div>
                         <p class="ml-5">
                           <v-chip class="mr-3" color="green">
-                            All: {{ vacation.leave_excuses.all }}
+                            All: {{ userBalance.leave_excuses.all }}
                           </v-chip>
                           <v-chip class="mr-3" color="yellow">
-                            Reserved: {{ vacation.leave_excuses.reserved }}
+                            Reserved: {{ userBalance.leave_excuses.reserved }}
+                          </v-chip>
+                        </p>
+                      </div>
+                      <div class="reason mb-2">
+                        <div class="d-flex">
+                          <div class="dot" />
+                          <h4 class="mb-2">Compensation</h4>
+                        </div>
+                        <p class="ml-5">
+                          <v-chip class="mr-3" color="green">
+                            All: {{ userBalance.compensation.all }}
+                          </v-chip>
+                          <v-chip class="mr-3" color="yellow">
+                            Reserved: {{ userBalance.compensation.reserved }}
                           </v-chip>
                         </p>
                       </div>
@@ -123,22 +137,27 @@
             </template>
           </v-select>
           <v-text-field
-            v-model="vacation.annual_leaves"
+            v-model="inputBalance.annual_leaves"
             label="Annual Leaves"
             type="number"
             :rules="vacationRules"
           ></v-text-field>
           <v-text-field
-            v-model="vacation.leave_excuses"
+            v-model="inputBalance.leave_excuses"
             label="Leave Excuses"
             type="number"
             :rules="vacationRules"
           ></v-text-field>
           <v-text-field
-            v-model="vacation.emergency_leaves"
+            v-model="inputBalance.emergency_leaves"
             label="Emergency Leaves"
             type="number"
             :rules="vacationRules"
+          ></v-text-field>
+          <v-text-field
+            v-model="inputBalance.compensation"
+            label="Compensation"
+            type="number"
           ></v-text-field>
           <v-btn
             color="primary"
@@ -191,11 +210,20 @@ export default {
     const userVacations = ref()
     const page = ref(1)
     const count = ref(0)
-    const vacation = ref<any>({
+    const inputBalance = ref({
       annual_leaves: 0,
       leave_excuses: 0,
-      emergency_leaves: 0
+      emergency_leaves: 0,
+      compensation: 0
     })
+
+    const userBalance = ref({
+      annual_leaves: { all: "", reserved: 0 },
+      leave_excuses: { all: "", reserved: 0 },
+      emergency_leaves: { all: "", reserved: 0 },
+      compensation: { all: "", reserved: 0 },
+    })
+
     const reloadMore = computed(() => {
       if (page.value === count.value) {
         return false
@@ -217,13 +245,15 @@ export default {
     }
 
     function setUserBalanceValues(userID: number) {
-      const userBalance: Api.BalanceVacation = userVacations.value.find(
+      const _userBalance: Api.BalanceVacation = userVacations.value.find(
         (balance: Api.BalanceVacation) => balance.user!.id === userID
       )
-      if(vacation.value){
-        vacation.value.annual_leaves = userBalance.annual_leaves as unknown as number
-        vacation.value.leave_excuses = userBalance.leave_excuses as unknown as number
-        vacation.value.emergency_leaves = userBalance.emergency_leaves as unknown as number
+
+      if(userVacations.value){
+        userBalance.value.annual_leaves = _userBalance.annual_leaves
+        userBalance.value.leave_excuses = _userBalance.leave_excuses
+        userBalance.value.emergency_leaves = _userBalance.emergency_leaves
+        userBalance.value.compensation = _userBalance.compensation
       }
     }
 
@@ -233,6 +263,17 @@ export default {
           user_ids: getSelectedUsersIds().join(',')
         })
         userVacations.value = result
+        if(userVacations.value.length === 1){
+          const { annual_leaves, leave_excuses, emergency_leaves, compensation } = userVacations.value[0]        
+          inputBalance.value.annual_leaves = annual_leaves.reserved
+          inputBalance.value.leave_excuses = leave_excuses.reserved
+          inputBalance.value.emergency_leaves = emergency_leaves.reserved
+          inputBalance.value.compensation = compensation.reserved
+        } else {
+          inputBalance.value.annual_leaves = 0
+          inputBalance.value.leave_excuses = 0
+          inputBalance.value.emergency_leaves = 0
+        }
         setUserBalanceValues(selectedUsers.value[0].id)
       }
     }
@@ -270,7 +311,7 @@ export default {
       async () => {
         await $api.vacations.balance.update(
           { user_ids: getSelectedUsersIds().join(',') },
-          vacation.value
+          inputBalance.value
         )
         await getUserBalance()
       },
@@ -285,7 +326,7 @@ export default {
       selectedUsers,
       officeUsers,
       userVacations,
-      vacation,
+      inputBalance,
       requiredStringRules,
       requiredRules,
       vacationRules,
@@ -293,7 +334,8 @@ export default {
       reloadMore,
       listUsers,
       execute,
-      setUserBalanceValues
+      setUserBalanceValues,
+      userBalance
     }
   },
   components: { ProfileImage }
