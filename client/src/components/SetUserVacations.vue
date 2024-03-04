@@ -88,7 +88,7 @@
                       <div class="reason mb-2">
                         <div class="d-flex">
                           <div class="dot" />
-                          <h4 class="mb-2">Compensation</h4>
+                          <h4 class="mb-2">Compensations</h4>
                         </div>
                         <p class="ml-5">
                           <v-chip class="mr-3" color="green">
@@ -140,24 +140,25 @@
             v-model="inputBalance.annual_leaves"
             label="Annual Leaves"
             type="number"
-            :rules="vacationRules"
+            :rules="[...vacationRules, ...checkAnnualBalanceRule]"
           ></v-text-field>
           <v-text-field
             v-model="inputBalance.leave_excuses"
             label="Leave Excuses"
             type="number"
-            :rules="vacationRules"
+            :rules="[...vacationRules, ...checkExcusesBalanceRule]"
           ></v-text-field>
           <v-text-field
             v-model="inputBalance.emergency_leaves"
             label="Emergency Leaves"
             type="number"
-            :rules="vacationRules"
-          ></v-text-field>
-          <v-text-field
+            :rules="[...vacationRules, ...checkEmergencyBalanceRule]"
+            ></v-text-field>
+            <v-text-field
             v-model="inputBalance.compensation"
             label="Compensation"
             type="number"
+            :rules="checkCompensationsBalanceRule"
           ></v-text-field>
           <v-btn
             color="primary"
@@ -233,6 +234,30 @@ export default {
       }
       return false
     })
+
+    const checkAnnualBalanceRule = [
+      (v: string) =>
+        +v <= +userBalance.value.annual_leaves.all ||
+        `The actual annual value cannot be smaller than the reserved annual value, the actual value is ${userBalance.value.annual_leaves.all}.`
+    ]
+
+    const checkEmergencyBalanceRule = [
+      (v: string) =>
+        +v <= +userBalance.value.emergency_leaves.all ||
+        `The actual emergency value cannot be smaller than the reserved emergency value, the actual value is ${userBalance.value.emergency_leaves.all}.`
+    ]
+
+    const checkExcusesBalanceRule = [
+      (v: string) =>
+        +v <= +userBalance.value.leave_excuses.all ||
+        `The actual excuses value cannot be smaller than the reserved excuses value, the actual value is ${userBalance.value.leave_excuses.all}.`
+    ]
+
+    const checkCompensationsBalanceRule = [
+      (v: string) =>
+        +v <= +userBalance.value.compensation.all ||
+        `The actual compensation value cannot be smaller than the reserved compensation value, the actual value is ${userBalance.value.compensation.all}.`
+    ]
 
     function getSelectedUsersIds(): number[] {
       let userIds: any[] = []
@@ -336,7 +361,11 @@ export default {
       listUsers,
       execute,
       setUserBalanceValues,
-      userBalance
+      userBalance,
+      checkAnnualBalanceRule,
+      checkEmergencyBalanceRule,
+      checkExcusesBalanceRule,
+      checkCompensationsBalanceRule,
     }
   },
   components: { ProfileImage }
