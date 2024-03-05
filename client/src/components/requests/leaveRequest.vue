@@ -197,20 +197,19 @@ export default {
     async function createLeave() {
       if (leaveReason.value) {
         if (selectedOption.value === 'anotherUser') {
-          // useAsyncState($api.vacations.create(
-          //   {
-          //     id: selectedUser.value.id,
-          //     reason: leaveReason.value.reason,
-          //     from_date: startDate.value,
-          //     end_date: endDate.value
-          //   }),
-          //   undefined,
-          //   {
-          //     onSuccess(data) {
-          //       ctx.emit('create-event', data)
-          //     }
-          //   }
-          // )
+          useAsyncState(
+            $api.vacations.admin.create(selectedUser.value.id, {
+              reason: leaveReason.value.reason,
+              from_date: startDate.value,
+              end_date: endDate.value,
+            }),
+            null,
+            {
+              onSuccess(data) {
+                ctx.emit('create-event', data)
+              }
+            }
+          )
 
         }
         else {
