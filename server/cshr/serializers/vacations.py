@@ -239,3 +239,8 @@ class VacationBalanceAdjustmentSerializer(serializers.Serializer):
     officeId = serializers.IntegerField()
     value = serializers.IntegerField()
     reason = serializers.CharField()
+
+class AdminApplyVacationForUserSerializer(serializers.Serializer):
+    reason = serializers.CharField()
+    from_date = serializers.DateField()
+    end_date = serializers.DateField()

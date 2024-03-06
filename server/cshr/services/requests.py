@@ -3,18 +3,18 @@ from cshr.models.official_documents import OffcialDocument
 from cshr.serializers.official_documents import OffcialDocumentSerializer
 from cshr.models.users import USER_TYPE, User
 from cshr.services.hr_letters import (
-    filter_hr_letter_by_pinding_status,
+    filter_hr_letter_by_pending_status,
     get_hr_letter_by_user,
 )
 from cshr.services.official_documents import (
-    filter_all_official_docs_by_pinding_status,
+    filter_all_official_docs_by_pending_status,
 )
 from cshr.services.vacations import (
     filter_user_vacations,
     filter_vacations_by_pending_status,
 )
 from cshr.services.compensation import (
-    filter_all_compensations_by_pinding_status,
+    filter_all_compensations_by_pending_status,
     get_compensations_by_user,
 )
 from typing import List, Dict
@@ -42,14 +42,14 @@ def requests_format_response(user: User) -> Dict:
         official_docs: List[OffcialDocument] = []
     elif user.user_type == USER_TYPE.ADMIN:
         hr_letters: List[HrLetters] = LandingPageHrLetterSerializer(
-            filter_hr_letter_by_pinding_status(), many=True
+            filter_hr_letter_by_pending_status(), many=True
         ).data
         vacations: List[Vacation] = []
         official_docs: List[OffcialDocument] = OffcialDocumentSerializer(
-            filter_all_official_docs_by_pinding_status(), many=True
+            filter_all_official_docs_by_pending_status(), many=True
         ).data
         compensations: List[Compensation] = LandingPageCompensationSerializer(
-            filter_all_compensations_by_pinding_status(), many=True
+            filter_all_compensations_by_pending_status(), many=True
         ).data
     else:
         # ==> USER_TYPE.SUPERVISOR

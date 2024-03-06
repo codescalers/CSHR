@@ -104,7 +104,7 @@ class StanderdVacationBalance:
                 if vacation.status == STATUS_CHOICES.PENDING:
                     new_value: int = curr_balance - vacation_days
                     return self.update_user_balance(applying_user, reason, new_value)
-                return f"The vacation status is not pinding, it's {vacation.status}."
+                return f"The vacation status is not pending, it's {vacation.status}."
             return f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
         return "Unknown reason."
 
