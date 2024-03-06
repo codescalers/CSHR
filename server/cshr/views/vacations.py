@@ -218,14 +218,14 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             end_date = serializer.validated_data.get("end_date")
             applying_user = request.user
 
-            # Check if there are pinding vacations in the same day.
-            pinding_requests = Vacation.objects.filter(
+            # Check if there are pending vacations in the same day.
+            pending_requests = Vacation.objects.filter(
                 from_date__day=start_date.day,
                 end_date__day=end_date.day,
                 status=STATUS_CHOICES.PENDING,
                 applying_user=applying_user
             )
-            if len(pinding_requests) > 0:
+            if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
                     message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
                 )
@@ -253,13 +253,13 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             curr_balance = getattr(user_reason_balance, reason)
 
-            pinding_vacations = Vacation.objects.filter(
+            pending_vacations = Vacation.objects.filter(
                 status=STATUS_CHOICES.PENDING,
                 applying_user=applying_user,
                 reason=reason,
             ).values_list("actual_days", flat=True)
 
-            chcked_balance = curr_balance - sum(pinding_vacations)
+            chcked_balance = curr_balance - sum(pending_vacations)
 
             if curr_balance < vacation_days:
                 return CustomResponse.bad_request(
@@ -268,7 +268,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             if chcked_balance < vacation_days:
                 return CustomResponse.bad_request(
-                    message=f"You have an additional pending request that deducts {sum(pinding_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                    message=f"You have an additional pending request that deducts {sum(pending_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
                 )
 
             saved = serializer.save(
@@ -367,13 +367,13 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             start_date = serializer.validated_data.get("from_date")
             end_date = serializer.validated_data.get("end_date")
 
-            # Check if there are pinding vacations in the same day
-            pinding_requests = Vacation.objects.filter(
+            # Check if there are pending vacations in the same day
+            pending_requests = Vacation.objects.filter(
                 from_date__day=start_date.day,
                 end_date__day=end_date.day,
                 status=STATUS_CHOICES.PENDING,
             )
-            if len(pinding_requests) > 0:
+            if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
                     message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
                 )
@@ -387,13 +387,13 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
             curr_balance = getattr(user_reason_balance, reason)
 
-            pinding_vacations = Vacation.objects.filter(
+            pending_vacations = Vacation.objects.filter(
                 status=STATUS_CHOICES.PENDING,
                 applying_user=applying_user,
                 reason=reason,
             ).values_list("actual_days", flat=True)
 
-            chcked_balance = curr_balance - sum(pinding_vacations)
+            chcked_balance = curr_balance - sum(pending_vacations)
 
             if curr_balance < vacation_days:
                 return CustomResponse.bad_request(
@@ -402,7 +402,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
             if chcked_balance < vacation_days:
                 return CustomResponse.bad_request(
-                    message=f"You have an additional pending request that deducts {sum(pinding_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                    message=f"You have an additional pending request that deducts {sum(pending_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
                 )
 
             serializer.save()
@@ -518,7 +518,7 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
 
         if vacation.status != STATUS_CHOICES.PENDING:
             return CustomResponse.bad_request(
-                message=f"The vacation status is not pinding, it's {vacation.status}."
+                message=f"The vacation status is not pending, it's {vacation.status}."
             )
 
         current_user: User = get_user_by_id(request.user.id)
@@ -790,15 +790,15 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
             from_date = serializer.validated_data.get('from_date')
             end_date = serializer.validated_data.get('end_date')
 
-            # Check if there are pinding vacations in the same day
-            pinding_requests = Vacation.objects.filter(
+            # Check if there are pending vacations in the same day
+            pending_requests = Vacation.objects.filter(
                 applying_user=applying_user,
                 from_date__day=from_date.day,
                 end_date__day=end_date.day,
                 status=STATUS_CHOICES.PENDING,
             )
 
-            if len(pinding_requests) > 0:
+            if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
                     message="The selected user has another request with the same dates and pending status. Please review their previous request before submitting a new one."
                 )
@@ -825,13 +825,13 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
 
             curr_balance = getattr(user_reason_balance, reason)
 
-            pinding_vacations = Vacation.objects.filter(
+            pending_vacations = Vacation.objects.filter(
                 status=STATUS_CHOICES.PENDING,
                 applying_user=applying_user,
                 reason=reason,
             ).values_list("actual_days", flat=True)
 
-            chcked_balance = curr_balance - sum(pinding_vacations)
+            chcked_balance = curr_balance - sum(pending_vacations)
 
             if curr_balance < vacation_days:
                 return CustomResponse.bad_request(
@@ -840,7 +840,7 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
 
             if chcked_balance < vacation_days:
                 return CustomResponse.bad_request(
-                    message=f"The user have an additional pending request that deducts {sum(pinding_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                    message=f"The user have an additional pending request that deducts {sum(pending_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
                 )
 
             saved_vacation = Vacation.objects.create(
