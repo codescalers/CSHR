@@ -9,7 +9,7 @@
 
             <template #append-item v-if="reloadMore">
               <VContainer>
-                <VBtn @click="() => { return page++, count--, listUsers() }" block color="secondary" variant="tonal"
+                <VBtn @click="() => { return page++, count--,  concatUsers()}" block color="secondary" variant="tonal"
                   prepend-icon="mdi-reload">
                   Load More Users
                 </VBtn>
@@ -114,7 +114,8 @@ import {
   telegramRules,
   requiredStringRules,
   requiredRules,
-  formatDate
+  formatDate,
+  listUsers
 } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
@@ -166,18 +167,6 @@ export default {
       }
       return false;
     });
-    async function listUsers() {
-      const res = await $api.users.admin.office_users.list({ page: page.value })
-      if (res.count) {
-        count.value = Math.ceil(res.count / 10)
-      } else {
-        count.value = 0
-      }
-      res.results.forEach((user: any) => {
-        officeUsers.value.push(user)
-      })
-      return officeUsers.value
-    }
 
     async function listSupervisors() {
       const res = await $api.users.supervisors.list({ page: supervisorPage.value })
@@ -193,13 +182,21 @@ export default {
       return supervisors.value
     }
 
+    async function concatUsers() {
+      const { page: currentPage, count: currentCount, users: newUsers } = await listUsers($api, page.value, count.value);
+
+      page.value = currentPage;
+      count.value = currentCount;
+      officeUsers.value = officeUsers.value.concat(newUsers);
+    }
+
     onMounted(async () => {
       try {
         offices.value = (await $api.office.list()).map((office: any) => ({
           id: office.id,
           name: office.name
-        }))
-        await listUsers()
+        }));
+        await concatUsers()
         selectedUser.value = officeUsers.value[0]
         await listSupervisors()
         reporting_to.value = selectedUser.value?.reporting_to[0]
@@ -299,7 +296,7 @@ export default {
       page,
       reloadMore,
       reloadMoreSupervisor,
-      listUsers,
+      concatUsers,
       chooseImage
     }
   }

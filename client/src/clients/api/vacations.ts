@@ -12,6 +12,7 @@ export class VacationsApi extends ApiClientBase {
   readonly edit: VacationsEditApi
   readonly get_admin_balance: VacationsGetAdminBalanceApi
   readonly post_admin_balance: VacationsPostAdminBalanceApi
+  readonly admin: VacationsAdmin
   readonly user: VacationsUserApi
 
   constructor(options: Api.ClientOptions) {
@@ -25,6 +26,7 @@ export class VacationsApi extends ApiClientBase {
     this.edit = new VacationsEditApi(options, this.path)
     this.get_admin_balance = new VacationsGetAdminBalanceApi(options, this.path)
     this.post_admin_balance = new VacationsPostAdminBalanceApi(options, this.path)
+    this.admin= new VacationsAdmin(options, this.path)
     this.user = new VacationsUserApi(options, this.path)
   }
 
@@ -168,6 +170,21 @@ class VacationsGetAdminBalanceApi extends ApiClientBase {
     })
   }
 }
+class VacationsAdmin extends ApiClientBase {
+  protected readonly path = '/admin'
+
+
+  async create(id: number, input: Api.Inputs.Leave) {
+    ApiClientBase.assertUser()
+    const vacation = await this.unwrap(
+      () => this.$http.post<Api.Returns.LeaveRequest>(this.getUrl(`/${id}`), input),
+      { transform: (d) => d.results }
+    )
+
+    return vacation
+  }
+}
+
 
 class VacationsPostAdminBalanceApi extends ApiClientBase {
   protected readonly path = '/post-admin-balance'

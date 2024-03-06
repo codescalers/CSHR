@@ -101,7 +101,7 @@ class CompensationApiView(ListAPIView, GenericAPIView):
             return CustomResponse.not_found(message="Compensation not found")
         if compensation.status != STATUS_CHOICES.PENDING:
             return CustomResponse.bad_request(
-                message="You can only delete requests with pinding status."
+                message="You can only delete requests with pending status."
             )
         if compensation.applying_user != request.user:
             return CustomResponse.unauthorized()

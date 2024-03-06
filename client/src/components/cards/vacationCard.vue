@@ -13,6 +13,7 @@
         <b color="primary">{{ vacation.end_date }} </b> vacation
 
       </p>
+
       <v-form ref="form" @submit.prevent="updateVacation()">
 
         <v-row class="d-flex justify-center my-2" v-if="couldUpdate">
@@ -157,7 +158,7 @@ export default {
             return true
           }
           if (
-            props.vacation.user.reporting_to[0].id === props.vacation.user?.id &&
+            props.vacation.user.reporting_to[0]?.id === props.vacation.user?.id &&
             props.vacation.user.location.name === user.value.fullUser.location.name
           ) {
             return true

@@ -3,6 +3,25 @@
     <v-alert v-if="form?.isValid && isValid" density="compact" class="pa-5 my-5" type="warning">
       {{ actualDays.state.value === 0 ? "Actual vacation days requested is zero, Selected days might include weekends or public holidays" : "Actual vacation days requested are " + actualDays.state.value +" days" }}
     </v-alert>
+    <div class="mt-3" v-if="user?.fullUser.user_type === 'Admin'"> <v-radio-group inline v-model="selectedOption">
+        <v-radio label="For yourself" value="me"></v-radio>
+        <v-radio label="For Another User" value="anotheruser"></v-radio>
+      </v-radio-group> </div>
+    <div class="mt-3" v-if="selectedOption === 'anotheruser'">
+      <v-autocomplete color="info" item-color="info" base-color="info" variant="outlined" v-model="selectedUser"
+        :items="officeUsers" item-title="full_name" item-value="id" label="User" return-object :rules="requiredRules">
+
+        <template #append-item v-if="reloadMore">
+          <VContainer>
+            <VBtn @click="() => { return page++, count--, concatUsers() }" block color="secondary" variant="tonal"
+              prepend-icon="mdi-reload">
+              Load More Users
+            </VBtn>
+          </VContainer>
+        </template>
+      </v-autocomplete>
+
+    </div>
 
     <div class="mt-3">
       <v-text-field ref="startDateField" color="info" item-color="info" base-color="info" variant="outlined"
@@ -26,7 +45,8 @@
 </template>
 <script lang="ts">
 import { useApi } from '@/hooks'
-import type { Api } from '@/types';
+import { Selection, type Api } from '@/types';
+import { requiredRules, listUsers } from '@/utils'
 import { useAsyncState } from '@vueuse/core';
 import { computed, onMounted, ref, watch } from 'vue';
 import { ApiClientBase } from '@/clients/api/base';
@@ -40,6 +60,11 @@ export default {
   setup(props, ctx) {
     const $api = useApi()
     const form = ref()
+    const officeUsers = ref<any[]>([]);
+    const selectedUser = ref()
+    const selectedOption = ref<Selection>(Selection.ME)
+    const page = ref(1)
+    const count = ref(0)
     const startDateField = ref()
     const endDateField = ref()
     const startDate = ref<Date>(props.dates.startStr)
@@ -47,8 +72,9 @@ export default {
     endDate.value.setDate(endDate.value.getDate() - 1);
     endDate.value = endDate.value.toISOString().split('T')[0];
     const user = ApiClientBase.user
+    const userId = ref<number | undefined>()
     const leaveReason = ref<Api.LeaveReason>()
-
+    const leaveReasons = ref<Api.LeaveReason[]>([])
     const actualDays = useAsyncState(
       async () => {
         return $api.vacations.calculate.list({
@@ -64,9 +90,9 @@ export default {
       let val = leaveReason.value ? true : false;
       return val;
     });
-    const leaveReasons = ref<Api.LeaveReason[]>([])
 
-    const balance = useAsyncState($api.vacations.getVacationBalance({ "user_ids": user.value?.fullUser.id }), null, {
+    const balance = useAsyncState(() => $api.vacations.getVacationBalance({ "user_ids": userId.value }), null, {
+      immediate: false,
       onSuccess(data: any) {
         leaveReasons.value = [{
           name: `Emergency Leaves  ${data[0].emergency_leaves.reserved} / ${data[0].emergency_leaves.all}`,
@@ -91,6 +117,33 @@ export default {
       }
     })
 
+    watch(
+      () => [selectedOption.value],
+      () => {
+        if (selectedOption.value === Selection.ANOTHERUSER) {
+          selectedUser.value = officeUsers.value[0]
+        } else {
+          selectedUser.value = undefined
+          userId.value = user.value?.fullUser.id
+          balance.execute()
+
+        }
+
+      },
+    );
+
+    watch(
+      () => [selectedUser.value],
+      async () => {
+        if (selectedUser.value) {
+          userId.value = selectedUser.value.id
+          balance.execute()
+        }
+      },
+    );
+
+
+
 
     watch(
       () => [startDate.value, endDate.value],
@@ -110,27 +163,64 @@ export default {
       return true;
     };
 
-    onMounted(() => {
+    async function concatUsers() {
+      const { page: currentPage, count: currentCount, users: newUsers } = await listUsers($api, page.value, count.value);
+
+      page.value = currentPage;
+      count.value = currentCount;
+      officeUsers.value = officeUsers.value.concat(newUsers);
+    }
+    onMounted(async () => {
+
       startDateField.value.validate();
       endDateField.value.validate();
-
+      userId.value = user.value?.fullUser.id
+      balance.execute()
+      concatUsers()
     })
+    const reloadMore = computed(() => {
+      if (page.value === count.value) {
+        return false
+      }
+      if (count.value > 1) {
+        return true
+      }
+      return false;
+    });
 
     async function createLeave() {
       if (leaveReason.value) {
-        useAsyncState($api.vacations.create(
-          {
-            reason: leaveReason.value.reason,
-            from_date: startDate.value,
-            end_date: endDate.value
-          }),
-          undefined,
-          {
-            onSuccess(data) {
-              ctx.emit('create-event', data)
+        if (selectedOption.value === Selection.ANOTHERUSER) {
+          useAsyncState(
+            $api.vacations.admin.create(selectedUser.value.id, {
+              reason: leaveReason.value.reason,
+              from_date: startDate.value,
+              end_date: endDate.value,
+            }),
+            null,
+            {
+              onSuccess(data) {
+                ctx.emit('create-event', data)
+              }
             }
-          }
-        )
+          )
+
+        }
+        else {
+          useAsyncState($api.vacations.create(
+            {
+              reason: leaveReason.value.reason,
+              from_date: startDate.value,
+              end_date: endDate.value
+            }),
+            undefined,
+            {
+              onSuccess(data) {
+                ctx.emit('create-event', data)
+              }
+            }
+          )
+        }
       }
     }
 
@@ -145,6 +235,14 @@ export default {
       user,
       startDateField,
       endDateField,
+      requiredRules,
+      reloadMore,
+      selectedUser,
+      officeUsers,
+      page,
+      count,
+      selectedOption,
+      concatUsers,
       createLeave,
       validateDates,
     };

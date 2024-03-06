@@ -80,17 +80,8 @@
 
             <template #append-item v-if="reloadMore">
               <VContainer>
-                <VBtn
-                  @click="
-                    () => {
-                      return page++, count--, listUsers()
-                    }
-                  "
-                  block
-                  color="secondary"
-                  variant="tonal"
-                  prepend-icon="mdi-reload"
-                >
+                <VBtn @click="() => { return page++, count--, concatUsers() }" block color="secondary" variant="tonal"
+                  prepend-icon="mdi-reload">
                   Load More Users
                 </VBtn>
               </VContainer>
@@ -136,7 +127,7 @@
 
 <script lang="ts">
 import { $api } from '@/clients'
-import { requiredRules, requiredStringRules, vacationRules } from '@/utils'
+import { listUsers, requiredRules, requiredStringRules, vacationRules } from '@/utils'
 import { onMounted, ref, watchEffect, computed } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
@@ -276,21 +267,18 @@ export default {
       }
     })
 
-    async function listUsers() {
-      const res = await $api.users.admin.office_users.list({ page: page.value })
-      if (res.count) {
-        count.value = Math.ceil(res.count / 10)
-      } else {
-        count.value = 0
-      }
-      res.results.forEach((user: any) => {
-        officeUsers.value.push(user)
-      })
-      return officeUsers.value
+    async function concatUsers() {
+      const { page: currentPage, count: currentCount, users: newUsers } = await listUsers($api, page.value, count.value);
+
+      page.value = currentPage;
+      count.value = currentCount;
+      officeUsers.value = officeUsers.value.concat(newUsers);
     }
+
+
     onMounted(async () => {
       try {
-        await listUsers()
+        await concatUsers()
         selectedUsers.value.push(officeUsers.value[0])
         await getUserBalance()
       } catch (error) {
@@ -322,7 +310,7 @@ export default {
       vacationRules,
       isLoading,
       reloadMore,
-      listUsers,
+      concatUsers,
       execute,
       setUserBalanceValues,
       userBalance,
