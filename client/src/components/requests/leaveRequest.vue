@@ -5,15 +5,15 @@
     </v-alert>
     <div class="mt-3" v-if="user?.fullUser.user_type === 'Admin'"> <v-radio-group inline v-model="selectedOption">
         <v-radio label="For yourself" value="me"></v-radio>
-        <v-radio label="For Another User" value="anotherUser"></v-radio>
+        <v-radio label="For Another User" value="anotheruser"></v-radio>
       </v-radio-group> </div>
-    <div class="mt-3" v-if="selectedOption === 'anotherUser'">
+    <div class="mt-3" v-if="selectedOption === 'anotheruser'">
       <v-autocomplete color="info" item-color="info" base-color="info" variant="outlined" v-model="selectedUser"
         :items="officeUsers" item-title="full_name" item-value="id" label="User" return-object :rules="requiredRules">
 
         <template #append-item v-if="reloadMore">
           <VContainer>
-            <VBtn @click="() => { return page++, count--, listUsers() }" block color="secondary" variant="tonal"
+            <VBtn @click="() => { return page++, count--, concatUsers() }" block color="secondary" variant="tonal"
               prepend-icon="mdi-reload">
               Load More Users
             </VBtn>
@@ -45,8 +45,8 @@
 </template>
 <script lang="ts">
 import { useApi } from '@/hooks'
-import type { Api } from '@/types';
-import { requiredRules } from '@/utils'
+import { Selection, type Api } from '@/types';
+import { requiredRules, listUsers } from '@/utils'
 import { useAsyncState } from '@vueuse/core';
 import { computed, onMounted, ref, watch } from 'vue';
 import { ApiClientBase } from '@/clients/api/base';
@@ -62,7 +62,7 @@ export default {
     const form = ref()
     const officeUsers = ref<any[]>([]);
     const selectedUser = ref()
-    const selectedOption = ref("me")
+    const selectedOption = ref<Selection>(Selection.ME)
     const page = ref(1)
     const count = ref(0)
     const startDateField = ref()
@@ -72,7 +72,7 @@ export default {
     endDate.value.setDate(endDate.value.getDate() - 1);
     endDate.value = endDate.value.toISOString().split('T')[0];
     const user = ApiClientBase.user
-    const id = ref<number | undefined>()
+    const userId = ref<number | undefined>()
     const leaveReason = ref<Api.LeaveReason>()
     const leaveReasons = ref<Api.LeaveReason[]>([])
     const actualDays = useAsyncState(
@@ -85,25 +85,13 @@ export default {
       undefined,
 
     )
-    async function listUsers() {
-      const res = await $api.users.admin.office_users.list({ page: page.value })
-      if (res.count) {
-        count.value = Math.ceil(res.count / 10)
-      } else {
-        count.value = 0
-      }
-      res.results.forEach((user: any) => {
-        officeUsers.value.push(user)
-      })
-      return officeUsers.value
-    }
 
     const isValid = computed(() => {
       let val = leaveReason.value ? true : false;
       return val;
     });
 
-    const balance = useAsyncState(() => $api.vacations.getVacationBalance({ "user_ids": id.value }), null, {
+    const balance = useAsyncState(() => $api.vacations.getVacationBalance({ "user_ids": userId.value }), null, {
       immediate: false,
       onSuccess(data: any) {
         leaveReasons.value = [{
@@ -132,11 +120,11 @@ export default {
     watch(
       () => [selectedOption.value],
       () => {
-        if (selectedOption.value === "anotherUser") {
+        if (selectedOption.value === Selection.ANOTHERUSER) {
           selectedUser.value = officeUsers.value[0]
         } else {
           selectedUser.value = undefined
-          id.value = user.value?.fullUser.id
+          userId.value = user.value?.fullUser.id
           balance.execute()
 
         }
@@ -148,7 +136,7 @@ export default {
       () => [selectedUser.value],
       async () => {
         if (selectedUser.value) {
-          id.value = selectedUser.value.id
+          userId.value = selectedUser.value.id
           balance.execute()
         }
       },
@@ -175,14 +163,20 @@ export default {
       return true;
     };
 
+    async function concatUsers() {
+      const { page: currentPage, count: currentCount, users: newUsers } = await listUsers($api, page.value, count.value);
+
+      page.value = currentPage;
+      count.value = currentCount;
+      officeUsers.value = officeUsers.value.concat(newUsers);
+    }
     onMounted(async () => {
 
       startDateField.value.validate();
       endDateField.value.validate();
-      id.value = user.value?.fullUser.id
+      userId.value = user.value?.fullUser.id
       balance.execute()
-      await listUsers()
-
+      concatUsers()
     })
     const reloadMore = computed(() => {
       if (page.value === count.value) {
@@ -196,7 +190,7 @@ export default {
 
     async function createLeave() {
       if (leaveReason.value) {
-        if (selectedOption.value === 'anotherUser') {
+        if (selectedOption.value === Selection.ANOTHERUSER) {
           useAsyncState(
             $api.vacations.admin.create(selectedUser.value.id, {
               reason: leaveReason.value.reason,
@@ -248,7 +242,7 @@ export default {
       page,
       count,
       selectedOption,
-      listUsers,
+      concatUsers,
       createLeave,
       validateDates,
     };

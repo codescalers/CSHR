@@ -10,7 +10,7 @@
 
             <template #append-item v-if="reloadMore">
               <VContainer>
-                <VBtn @click="() => { return page++, count--, listUsers() }" block color="secondary" variant="tonal"
+                <VBtn @click="() => { return page++, count--, concatUsers() }" block color="secondary" variant="tonal"
                   prepend-icon="mdi-reload">
                   Load More Users
                 </VBtn>
@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { $api } from '@/clients'
-import { requiredRules, requiredStringRules, vacationRules } from '@/utils'
+import { listUsers, requiredRules, requiredStringRules, vacationRules } from '@/utils'
 import { onMounted, ref, watchEffect, computed } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
@@ -82,22 +82,19 @@ export default {
         console.error(error)
       }
     })
-    async function listUsers() {
-      const res = await $api.users.admin.office_users.list({ page: page.value })
-      if (res.count) {
-        count.value = Math.ceil(res.count / 10)
-      } else {
-        count.value = 0
-      }
-      res.results.forEach((user: any) => {
-        officeUsers.value.push(user)
-      })
-      return officeUsers.value
+
+    async function concatUsers() {
+      const { page: currentPage, count: currentCount, users: newUsers } = await listUsers($api, page.value, count.value);
+
+      page.value = currentPage;
+      count.value = currentCount;
+      officeUsers.value = officeUsers.value.concat(newUsers);
     }
+
 
     onMounted(async () => {
       try {
-        await listUsers()
+        await concatUsers()
         selectedUser.value = officeUsers.value[0]
       } catch (error) {
         console.error(error)
@@ -126,7 +123,7 @@ export default {
       vacationRules,
       isLoading,
       reloadMore,
-      listUsers,
+      concatUsers,
       execute
     }
   }

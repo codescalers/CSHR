@@ -2,6 +2,7 @@ import moment from 'moment'
 
 import type { Api } from "@/types"
 import type { JWTokenObject } from "@/types"
+import type { ApiClient } from '@/clients/api'
 
 export async function resolve<T>(promise: Promise<T>): Promise<[T, any]> {
   try {
@@ -162,4 +163,20 @@ export function decodeAccessToken(token: string): JWTokenObject {
 export function isValidToken(token: string): boolean {
   const decodedToken = decodeAccessToken(token);
   return Date.now() < decodedToken.exp * 1000;
+}
+
+export async function listUsers($api: ApiClient, page: number, count: number): Promise<{ page: number, count: number,  users: any[]}> {
+  
+    const res = await $api.users.admin.office_users.list({ page });
+    let users: any[] = [];
+    if (res.count) {
+      count = Math.ceil(res.count / 10)
+    } else {
+      count = 0
+    }
+    res.results.forEach((user: any) => {
+      users.push(user)
+    })
+    return { page, count, users };
+
 }
