@@ -861,9 +861,6 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
             except:
                 return http_ensure_redis_error()
 
-            # set_notification_request_redis(serializer.data)
-            response_data: Dict = send_vacation_to_calendar(saved_vacation)
-
             # Update the balance
             balance = v.check_and_update_balance(
                 applying_user=saved_vacation.applying_user,
@@ -881,5 +878,7 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
             saved_vacation.approval_user = admin
             saved_vacation.save()
 
+            # set_notification_request_redis(serializer.data)
+            response_data: Dict = send_vacation_to_calendar(saved_vacation)
             return CustomResponse.success(message=message, data=response_data)
         return CustomResponse.bad_request(message="Please make sure that you entered a valid data.", error=serializer.errors)
