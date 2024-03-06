@@ -681,18 +681,17 @@ class UserVacationBalanceApiView(GenericAPIView):
         balances = filter_balances_by_users(users)
 
         # Set default values
-        request.data["compensation"] = 365
         request.data["sick_leaves"] = 365
         request.data["unpaid"] = 365
 
         try:
             for balance in balances:
-                balance.compensation = 365
                 balance.sick_leaves = 365
                 balance.unpaid = 365
                 balance.annual_leaves = int(request.data.get("annual_leaves"))
                 balance.emergency_leaves = int(request.data.get("emergency_leaves"))
                 balance.leave_excuses = int(request.data.get("leave_excuses"))
+                balance.compensation = int(request.data.get("compensation"))
                 balance.save()
 
                 v.check(balance.user)

@@ -19,6 +19,10 @@
         {{ balance ? balance[0]?.leave_excuses.reserved : '--' }} /
         {{ balance ? balance[0]?.leave_excuses.all : '--' }}
       </v-col>
+      <v-col>
+        {{ balance ? balance[0]?.compensation.reserved : '--' }} /
+        {{ balance ? balance[0]?.compensation.all : '--' }}
+      </v-col>
     </v-row>
   </v-card>
 </template>
@@ -29,7 +33,7 @@ export default {
   props: ['balance'],
 
   setup() {
-    const vacationInfoHeaders = ['Annuals', 'Emergencies', 'Excuses']
+    const vacationInfoHeaders = ['Annuals', 'Emergencies', 'Excuses', 'Compensation']
 
     return {
       vacationInfoHeaders
