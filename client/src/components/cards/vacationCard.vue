@@ -16,8 +16,8 @@
 
       <v-form ref="form" @submit.prevent="updateVacation()">
 
-        <v-row class="d-flex justify-center my-2" v-if="couldUpdate">
-          <v-btn color="primary" class="mx-1 my-2" :disabled="!form?.isValid || disabled">Update</v-btn>
+        <v-row class="d-flex justify-center my-2" v-if="couldUpdate" >
+          <v-btn color="primary" v-if=" vacation.status == 'pending'" class="mx-1 my-2" :disabled="!form?.isValid || disabled">Update</v-btn>
           <v-btn color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
         </v-row>
         <v-divider class="my-2"></v-divider>
@@ -131,7 +131,6 @@ export default {
     })
     const couldUpdate = computed(() => {
       if (user.value) {
-        if (props.vacation.status == 'pending') {
           if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user) {
             return true
           }
@@ -143,7 +142,6 @@ export default {
           }
           return false
         }
-      }
       return false
     })
 
