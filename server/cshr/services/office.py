@@ -8,7 +8,7 @@ from cshr.models.users import User, USER_TYPE
 
 
 def get_office_by_id(id: str) -> Office:
-    if not id.isdigit():
+    if not str(id).isdigit():
         return None
     try:
         return Office.objects.get(id=int(id))
