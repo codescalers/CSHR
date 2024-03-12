@@ -332,6 +332,7 @@ class BaseUserSerializer(ModelSerializer):
             "job_title",
             "user_certificates",
             "is_active",
+            "telegram_link",
             "location"
         ]
     
