@@ -34,7 +34,10 @@ class StanderdVacationBalance:
         if self.user is None or self.user.location.id is None:
             return None
 
-        month: int = 12 - self.user.created_at.month
+        month: int = 12
+        if self.user.joining_at.month > 1:
+            month: int = 12 - self.user.joining_at.month
+
         office_balance = OfficeVacationBalance.objects.get_or_create(
             year=datetime.datetime.now().year, location=self.user.location
         )[0]

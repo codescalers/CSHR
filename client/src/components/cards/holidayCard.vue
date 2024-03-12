@@ -13,7 +13,7 @@
           <p class="pa-5">
             <b>{{ holiday.holiday_date }}</b> is a public holiday in
             <b class="text-error">{{ holiday.location.country }}</b
-            >, We hope you and your familys have a peaceful and enjoyable holiday. Please be aware
+            >, We hope you and your families have a peaceful and enjoyable holiday. Please be aware
             that our office in <b class="text-error">{{ holiday.location.country }}</b
             >, will be closed on this date. Thank you!
           </p>

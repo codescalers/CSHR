@@ -38,12 +38,12 @@ export const addressRules = [
   (v: string) =>
     (v && v.length >= 3 && v.length <= 50) || 'Address must be between 3 and 50 characters.'
 ]
-export const socialInsuranceRules = [
-  (v: string) => typeof v === 'string' || 'Social Number must be a string.',
-  (v: string) => !!v || 'Social Number is required.',
-  (v: string) =>
-    (v && v.length >= 3 && v.length <= 50) || 'Social Number must be between 3 and 50 characters.'
-]
+// export const socialInsuranceRules = [
+//   (v: string) => typeof v === 'string' || 'Social Number must be a string.',
+//   (v: string) => !!v || 'Social Number is required.',
+//   (v: string) =>
+//     (v && v.length >= 3 && v.length <= 50) || 'Social Number must be between 3 and 50 characters.'
+// ]
 export const telegramRules = [
   (v: string) => typeof v === 'string' || 'Telegram must be a string.',
   (v: string) => !!v || 'Telegram is required.',

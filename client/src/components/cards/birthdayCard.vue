@@ -34,8 +34,10 @@
           <span class="mx-2 font-weight-regular">{{ birthday.team ? birthday.team : '--' }}</span>
         </v-col>
         <v-col cols="4">
-          <b>Email :</b>
-          <span class="mx-2 font-weight-regular">{{ birthday.email }}</span>
+          <b>Telegram :</b>
+          <span class="mx-2 font-weight-regular">
+            <a class="text-primary text-decoration-none" target="_blank" :href="`https://t.me/${birthday.telegram_link.replace('@', '')}/`">{{ birthday.telegram_link }}</a>
+          </span>
         </v-col>
       </v-row>
     </v-card>

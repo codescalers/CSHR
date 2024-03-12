@@ -45,7 +45,7 @@
           <v-text-field v-model="selectedUser.address" label="Address" density="comfortable"
             :rules="addressRules"></v-text-field>
           <v-text-field v-model="selectedUser.social_insurance_number" label="Social Insurance Number" type="number"
-            density="comfortable" :rules="socialInsuranceRules"></v-text-field>
+            density="comfortable"></v-text-field>
         </v-col>
         <v-col cols="6" v-if="selectedUser">
           <v-text-field v-model="selectedUser.telegram_link" label="Telegram" density="comfortable"
@@ -110,7 +110,6 @@ import {
   mobileRules,
   jobRules,
   addressRules,
-  socialInsuranceRules,
   telegramRules,
   requiredStringRules,
   requiredRules,
@@ -282,7 +281,6 @@ export default {
       addressRules,
       supervisorPage,
       supervisorCount,
-      socialInsuranceRules,
       telegramRules,
       requiredStringRules,
       requiredRules,
