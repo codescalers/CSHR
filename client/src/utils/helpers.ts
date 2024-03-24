@@ -69,6 +69,7 @@ export function normalizeEvent(e: Api.Inputs.Event): any {
   const dates = handelDates(e.from_date, e.end_date)
 
   return {
+    type: e.type,
     title: 'Event',
     classNames: ['cshr-event'],
     color: '#47a2ff',
@@ -83,7 +84,8 @@ export function normalizeVacation(v: Api.Vacation) {
   const dates = handelDates(v.from_date, v.end_date)
 
   return {
-    title: `${v.user!.full_name}'s Vacation`,
+    type: v.type,
+    title: `${v.applying_user_full_name}'s Vacation`,
     color: '#fcd091',
     start: dates.start,
     end: dates.end,
@@ -97,6 +99,7 @@ export function normalizeHoliday(h: Api.Holiday) {
   const dates = handelDates(h.holiday_date, h.holiday_date)
 
   return {
+    type: h.type,
     title: `Public Holiday`,
     color: '#5effb4',
     start: dates.start,
@@ -107,9 +110,10 @@ export function normalizeHoliday(h: Api.Holiday) {
   }
 }
 export function normalizedBirthday(u: Api.User) {
-  const dates = handelDates(u.birthday, u.birthday)
+  const dates = handelDates(u.date, u.date)
 
   return {
+    type: u.type,
     title: `Birthday`,
     color: '#e0adf0',
     start: dates.start,
@@ -125,6 +129,7 @@ export function normalizeMeeting(m: Api.Meetings): any {
   const dates = handelDates(m.date, m.date)
 
   return {
+    type: m.type,
     title: 'Meeting',
     color: '#efeaea',
     start: dates.start,
@@ -168,7 +173,7 @@ export function isValidToken(token: string): boolean {
 export async function listUsers($api: ApiClient, page: number, count: number): Promise<{ page: number, count: number,  users: any[]}> {
   
     const res = await $api.users.admin.office_users.list({ page });
-    let users: any[] = [];
+    const users: any[] = [];
     if (res.count) {
       count = Math.ceil(res.count / 10)
     } else {

@@ -40,7 +40,7 @@ export module Api {
     actual_days: number
     applying_user: number | any
     approval_user: number
-    user?: Api.User
+    applying_user_full_name?: string;
     isUpdated?: boolean
   }
 
@@ -53,6 +53,7 @@ export module Api {
 
   export interface Salary {}
   export interface Meetings {
+    type: string;
     id: number
     invited_users: any[]
     date: any
@@ -71,6 +72,7 @@ export module Api {
     location: string
   }
   export interface User {
+    type: string;
     id: number
     first_name: string
     last_name: string
@@ -243,6 +245,7 @@ export module Api {
     }
   }
   export interface Holiday {
+    type: string
     id: number
     location: {
       id: number
@@ -256,7 +259,7 @@ export module Api {
 
   export interface Home {
     id: number
-    title: string
+    type: string
     className: string
     eventName: string
     vacation?: any
@@ -270,6 +273,7 @@ export module Api {
 
   export module Inputs {
     export interface Event {
+      type: string
       name: string
       description: string
       from_date: any
