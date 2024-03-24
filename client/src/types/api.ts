@@ -86,6 +86,7 @@ export module Api {
     mobile_number: string
     reporting_to: number[]
     birthday: string
+    date: string
     location: {
       id: number
       name: string

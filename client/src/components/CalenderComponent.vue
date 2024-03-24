@@ -76,11 +76,13 @@ const loadEvents = async () => {
     [],
     {
       onSuccess(data) {
+        console.log("data", data);
+        
         for (const event of data) {
           updateEventCalendarType(event)
         }
         filteredEvents.value = [...homeEvents.value]
-        console.log(filteredEvents.value.length);
+        console.log(filteredEvents.value);
       }
     }
   )
