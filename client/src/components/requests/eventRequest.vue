@@ -34,7 +34,7 @@
     </div>
 
     <v-row class="mt-3 pa-4 d-flex justify-end">
-      <v-btn color="primary" type="submit" :disabled="!form?.isValid"> Submit </v-btn>
+      <v-btn color="primary" type="submit" :disabled="!form?.isValid || requesting" :loading="requesting"> Submit </v-btn>
     </v-row>
   </v-form>
 </template>
@@ -63,6 +63,7 @@ export default {
     const eventEnd = ref()
     const startDateField = ref()
     const endDateField = ref()
+    const requesting = ref<boolean>(false)
 
     watch(
       () => [startDate.value, endDate.value],
@@ -101,7 +102,8 @@ export default {
     })
 
     async function createEvent() {
-      useAsyncState(
+      requesting.value = true;
+      await useAsyncState(
         $api.event.create({
           name: name.value,
           description: description.value,
@@ -115,6 +117,7 @@ export default {
           }
         }
       )
+      requesting.value = false;
     }
 
     return {
@@ -126,6 +129,7 @@ export default {
       fieldRequired,
       eventStart,
       eventEnd,
+      requesting,
       startDateField,
       endDateField,
       validateDates,

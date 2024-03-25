@@ -282,7 +282,6 @@ export module Api {
 
   export module Inputs {
     export interface Event {
-      type: string
       name: string
       description: string
       from_date: any

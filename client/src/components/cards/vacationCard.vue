@@ -164,6 +164,7 @@ export default {
             return true
           }
           if (
+            props.vacation.applying_user.reporting_to &&
             props.vacation.applying_user.reporting_to[0]?.id === props.vacation.applying_user?.id &&
             props.vacation.applying_user.location.name === user.value.fullUser.location.name
           ) {
@@ -231,7 +232,7 @@ export default {
     async function updateVacation() {
       const actualDays = await calculateActualDays()
 
-      useAsyncState(
+      await useAsyncState(
         $api.vacations.edit.update(props.vacation.id, {
           reason: leaveReason.value.reason,
           from_date: startDate.value,

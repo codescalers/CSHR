@@ -330,8 +330,8 @@ class VacationsHelpersApiView(ListAPIView, GenericAPIView):
         vacation = get_vacation_by_id(id=id)
         if vacation is not None:
             vacation.delete()
-            return CustomResponse.success(message="Hr Letter deleted", status_code=204)
-        return CustomResponse.not_found(message="Hr Letter not found", status_code=404)
+            return CustomResponse.success(message="The vacation has been deleted successfully.", status_code=204)
+        return CustomResponse.not_found(message="The vacation is not found.", status_code=404)
 
 
 class VacationUserApiView(ListAPIView, GenericAPIView):

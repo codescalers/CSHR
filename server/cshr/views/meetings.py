@@ -12,7 +12,7 @@ from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from cshr.api.response import CustomResponse
-from cshr.utils.wrappers import wrap_event_request
+from cshr.utils.wrappers import wrap_meeting_request
 
 
 class BaseMeetingsApiView(ListAPIView, GenericAPIView):
@@ -34,7 +34,7 @@ class BaseMeetingsApiView(ListAPIView, GenericAPIView):
 
             event = serializer.save(host_user=current_user, invited_users=[])
 
-            response_date: Dict = wrap_event_request(event)
+            response_date: Dict = wrap_meeting_request(event)
             return CustomResponse.success(
                 data=response_date,
                 message="meeting is created successfully",

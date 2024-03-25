@@ -47,7 +47,7 @@ def wrap_event_request(event: Event) -> EventSerializer : # type: ignore
 """
 Wrap the event request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
 """
-def wrap_holiday_request(holiday: PublicHoliday) -> EventSerializer : # type: ignore
+def wrap_holiday_request(holiday: PublicHoliday) -> PublicHolidaySerializer : # type: ignore
   holiday_data = PublicHolidaySerializer(holiday).data
   holiday_data["type"] = LandingPageTypeEnum.PUBLIC_HOLIDAY.value
   return holiday_data

@@ -1,13 +1,13 @@
 <template>
   <v-row class="justify-center py-4">
     <v-col cols="2">
+      <v-checkbox v-model="filters.vacation" color="#fcd091" label="Vacations" />
+    </v-col>
+    <v-col cols="2">
       <v-checkbox v-model="filters.meeting" color="#efeaea" label="Meetings" />
     </v-col>
     <v-col cols="2">
       <v-checkbox v-model="filters.event" color="#47a2ff" label="Events" />
-    </v-col>
-    <v-col cols="2">
-      <v-checkbox v-model="filters.vacation" color="#fcd091" label="Vacations" />
     </v-col>
     <v-col cols="2">
       <v-checkbox v-model="filters.holiday" color="#5effb4" label="Holidays" />
@@ -34,7 +34,7 @@
   </div>
 
   <!-- Dialogs -->
-
+  <!-- Create new event dialog -->
   <v-dialog
     v-if="selectedEventType.isNewEvent"
     :routeQuery="dates?.startStr"
@@ -42,15 +42,88 @@
     @click:outside="closeDialog(CalendarEventSelection.NewEvent)"
   >
     <v-card>
-      <calenderRequest
+      <calender-request
         :dates="dates"
         @close-dialog="closeDialog(CalendarEventSelection.NewEvent)"
-        @create-vacation="createVacation(dates?.startStr, $event)"
-        />
-        <!-- @create-event="createEvent(dates?.startStr, $event)" -->
-        <!-- @create-meeting="createMeeting(dates?.startStr, $event)" -->
+        @create-vacation="createVacation($event)"
+        @create-meeting="createMeeting($event)"
+        @create-event="createEvent($event)"
+      />
     </v-card>
   </v-dialog>
+
+  <!-- View meeting dialog -->
+  <v-dialog
+    v-if="selectedEventType.isViewRequest && selectedEventType.isMeeting && selectedEvent"
+    :routeQuery="selectedEvent.id"
+    :modelValue="selectedEventType.isMeeting"
+  >
+    <v-card>
+      <meeting-card
+        :meeting="selectedEvent"
+        @close-dialog="closeDialog(CalendarEventSelection.Meeting)"
+      />
+    </v-card>
+  </v-dialog>
+
+  <!-- View holiday dialog -->
+  <v-dialog
+    v-if="selectedEventType.isViewRequest && selectedEventType.isHoliday && selectedEvent"
+    :routeQuery="selectedEvent.id"
+    :modelValue="selectedEventType.isHoliday"
+  >
+    <v-card>
+      <holiday-card
+        :holiday="selectedEvent"
+        @close-dialog="closeDialog(CalendarEventSelection.PublicHoliday)"
+      />
+    </v-card>
+  </v-dialog>
+
+  <!-- View holiday dialog -->
+  <v-dialog
+    v-if="selectedEventType.isViewRequest && selectedEventType.isBirthday && selectedEvent"
+    :routeQuery="selectedEvent.id"
+    :modelValue="selectedEventType.isBirthday"
+  >
+    <v-card>
+      <birthday-card
+        :birthday="selectedEvent"
+        @close-dialog="closeDialog(CalendarEventSelection.Birthday)"
+      />
+    </v-card>
+  </v-dialog>
+
+  <!-- View event dialog -->
+  <v-dialog
+    v-if="selectedEventType.isViewRequest && selectedEventType.isEvent && selectedEvent"
+    :routeQuery="selectedEvent.id"
+    :modelValue="selectedEventType.isEvent"
+  >
+    <v-card>
+      <event-card
+        :event="selectedEvent"
+        @close-dialog="closeDialog(CalendarEventSelection.Event)"
+      />
+    </v-card>
+  </v-dialog>
+
+  <!-- View vacation dialog -->
+  <v-dialog
+    v-if="selectedEventType.isViewRequest && selectedEventType.isVacation && selectedEvent"
+    :routeQuery="selectedEvent"
+    :modelValue="selectedEventType.isVacation"
+  >
+  <v-card>
+    <vacation-card
+      :vacation="(selectedEvent as Api.Vacation)"
+      @close-dialog="closeDialog(CalendarEventSelection.Vacation)"
+      @status-vacation="updateVacationStatus($event)"
+      @update-vacation="updateVacation($event)"
+      @delete-vacation="deleteVacation()"
+    />
+  </v-card>
+</v-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -59,7 +132,11 @@ import { type CalendarApi, type CalendarOptions } from '@fullcalendar/core'
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
 import calenderRequest from '@/components/calenderRequest.vue'
-
+import meetingCard from '@/components/cards/meetingCard.vue'
+import holidayCard from '@/components/cards/holidayCard.vue'
+import birthdayCard from '@/components/cards/birthdayCard.vue'
+import vacationCard from '@/components/cards/vacationCard.vue'
+import eventCard from '@/components/cards/eventCard.vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -93,7 +170,8 @@ const selectedEventType = reactive({
   isVacation: false,
   isHoliday: false,
   isBirthday: false,
-  isNewEvent: false
+  isNewEvent: false,
+  isViewRequest: false
 })
 
 const meetings = ref<Api.Meeting[]>([])
@@ -103,7 +181,7 @@ const holidays = ref<Api.Holiday[]>([])
 const birthdays = ref<Api.User[]>([])
 const cached_users = new Map<number, Api.User>()
 
-const selectedEvent = ref<Api.Meeting | Api.Inputs.Event | Api.Vacation | Api.Holiday | Api.User>()
+const selectedEvent = ref<Api.Meeting | Api.Event | Api.Vacation | Api.Holiday | Api.User>()
 
 const me = ApiClientBase.user.value?.fullUser
 if (me) {
@@ -185,6 +263,7 @@ function onClick(arg: any) {
     selectedEvent.value = holidays.value.filter(
       (holiday) => holiday.id === Number(arg.event.id.replace('holiday', ''))
     )[0]
+
     openDialog(CalendarEventSelection.PublicHoliday)
   } else if (
     clickedEventTitle
@@ -211,66 +290,42 @@ function onClick(arg: any) {
     )[0]
     openDialog(CalendarEventSelection.Meeting)
   }
+  selectedEventType.isViewRequest = true
 }
 
-function openDialog(dialogType: string) {
-  console.log("Dates: ", dates.value);
-  
-  switch (dialogType) {
-    case CalendarEventSelection.Birthday:
-      selectedEventType.isBirthday = true
-      break
-    case CalendarEventSelection.Event:
-      selectedEventType.isEvent = true
-      break
-    case CalendarEventSelection.Meeting:
-      selectedEventType.isMeeting = true
-      break
-    case CalendarEventSelection.PublicHoliday:
-      selectedEventType.isHoliday = true
-      break
-    case CalendarEventSelection.Vacation:
-      selectedEventType.isVacation = true
-      break
-    case CalendarEventSelection.NewEvent:
-      selectedEventType.isNewEvent = true
-      break
-    default:
-      break
+function openDialog(dialogType: CalendarEventSelection) {
+  if (dialogType === CalendarEventSelection.Birthday) {
+    selectedEventType.isBirthday = true
+  } else if (dialogType === CalendarEventSelection.Event) {
+    selectedEventType.isEvent = true
+  } else if (dialogType === CalendarEventSelection.Meeting) {
+    selectedEventType.isMeeting = true
+  } else if (dialogType === CalendarEventSelection.PublicHoliday) {
+    selectedEventType.isHoliday = true
+  } else if (dialogType === CalendarEventSelection.Vacation) {
+    selectedEventType.isVacation = true
+  } else if (dialogType === CalendarEventSelection.NewEvent) {
+    selectedEventType.isNewEvent = true
   }
 }
 
-function closeDialog(dialogType: string) {
-  switch (dialogType) {
-    case CalendarEventSelection.Birthday:
-      selectedEventType.isBirthday = false
-      break
-    case CalendarEventSelection.Event:
-      selectedEventType.isEvent = false
-      break
-    case CalendarEventSelection.Meeting:
-      selectedEventType.isMeeting = false
-      break
-    case CalendarEventSelection.PublicHoliday:
-      selectedEventType.isHoliday = false
-      break
-    case CalendarEventSelection.Vacation:
-      selectedEventType.isVacation = false
-      break
-    case CalendarEventSelection.NewEvent:
-      selectedEventType.isNewEvent = false
-      break
-    default:
-      selectedEventType.isNewEvent = false
-      break
+function closeDialog(dialogType: CalendarEventSelection) {
+  if (dialogType === CalendarEventSelection.Birthday) {
+    selectedEventType.isBirthday = false
+  } else if (dialogType === CalendarEventSelection.Event) {
+    selectedEventType.isEvent = false
+  } else if (dialogType === CalendarEventSelection.Meeting) {
+    selectedEventType.isMeeting = false
+  } else if (dialogType === CalendarEventSelection.PublicHoliday) {
+    selectedEventType.isHoliday = false
+  } else if (dialogType === CalendarEventSelection.Vacation) {
+    selectedEventType.isVacation = false
+  } else if (dialogType === CalendarEventSelection.NewEvent) {
+    selectedEventType.isNewEvent = false
   }
 }
 
-async function createVacation(id: number, data: any) {
-  const vacation: Api.Vacation = data.vacation;
-  console.log("data: ", data);
-  
-
+async function createVacation(vacation: Api.Vacation) {
   if (cached_users.has(vacation.applying_user.id)) {
     vacation.applying_user = cached_users.get(vacation.applying_user.id)
   } else {
@@ -280,13 +335,63 @@ async function createVacation(id: number, data: any) {
   }
 
   vacations.value.push(vacation)
-  filteredEvents.value.push(vacation)
-  selectedEventType.isNewEvent = false
-  // return closeDialog(CalendarEventSelection.Vacation)
+  const vacationEvent = normalizeVacation(vacation) as any
+  filteredEvents.value.push(vacationEvent)
+  closeDialog(CalendarEventSelection.NewEvent)
 }
 
-function createMeeting() {}
-function createEvent() {}
+async function createMeeting(meeting: Api.Meeting) {
+  meetings.value.push(meeting)
+  const meetingEvent = normalizeMeeting(meeting) as any
+  filteredEvents.value.push(meetingEvent)
+  closeDialog(CalendarEventSelection.NewEvent)
+}
+
+async function createEvent(event: Api.Event) {
+  events.value.push(event)
+  const eventData = normalizeEvent(event) as any
+  filteredEvents.value.push(eventData)
+  closeDialog(CalendarEventSelection.NewEvent)
+}
+
+async function updateVacationStatus(data: string) {
+  const vacationIndex = vacations.value.findIndex((vacation) => vacation.id === selectedEvent.value!.id)
+  if (vacationIndex !== -1) {
+    if (data === 'Approve') {
+      vacations.value[vacationIndex].status = 'approved'
+    } else;
+    if (data === 'Reject') {
+      vacations.value[vacationIndex].status = 'rejected'
+    }
+  }
+  closeDialog(CalendarEventSelection.Vacation)
+}
+
+async function updateVacation(vacation: Api.Vacation) {
+  console.log("Vacation: ", vacation);
+  
+  vacations.value = vacations.value.filter((vacation) => vacation.id !== selectedEvent.value?.id)
+
+  if (cached_users.has(vacation.applying_user.id)) {
+    vacation.applying_user = cached_users.get(vacation.applying_user.id)
+  } else {
+    const user = await $api.users.getuser(vacation.applying_user.id, {
+      disableNotify: true
+    })
+    cached_users.set(vacation.applying_user.id, user)
+    vacation.applying_user = user
+  }
+
+  vacation.isUpdated = true
+  vacations.value.push(vacation)
+  closeDialog(CalendarEventSelection.Vacation)
+}
+
+async function deleteVacation() {
+  vacations.value = vacations.value.filter((vacation) => vacation.id !== selectedEvent.value?.id)  
+  filteredEvents.value = filteredEvents.value.filter(event => event.id.toString() !== `vacation${selectedEvent.value?.id}`)
+  closeDialog(CalendarEventSelection.Vacation)
+}
 
 const options = reactive<CalendarOptions>({
   plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
