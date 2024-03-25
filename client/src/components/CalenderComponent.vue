@@ -19,7 +19,6 @@
   <v-divider class="d-flex mx-auto" style="width: 90%"></v-divider>
 
   <div class="ma-7 px-7">
-    {{ isLoading }}
     <div class="loading-container d-flex align-center justify-center my-5" v-if="isLoading">
       <v-alert density="compact" class="pa-5" type="info" text="Events are loading..."></v-alert>
     </div>
@@ -32,31 +31,54 @@
       }"
     >
     </FullCalendar>
-
   </div>
+
+  <!-- Dialogs -->
+
+  <v-dialog
+    v-if="selectedEventType.isNewEvent"
+    :routeQuery="dates?.startStr"
+    :modelValue="selectedEventType.isNewEvent"
+    @click:outside="closeDialog(CalendarEventSelection.NewEvent)"
+  >
+    <v-card>
+      <calenderRequest
+        :dates="dates"
+        @close-dialog="closeDialog(CalendarEventSelection.NewEvent)"
+        @create-vacation="createVacation(dates?.startStr, $event)"
+        />
+        <!-- @create-event="createEvent(dates?.startStr, $event)" -->
+        <!-- @create-meeting="createMeeting(dates?.startStr, $event)" -->
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref, watch } from 'vue'
-import { type CalendarOptions } from '@fullcalendar/core'
+import { type CalendarApi, type CalendarOptions } from '@fullcalendar/core'
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
+import calenderRequest from '@/components/calenderRequest.vue'
 
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
-import type { Api } from '@/types'
+import { CalendarEventSelection, type Api } from '@/types'
 import { normalizeEvent, normalizeVacation } from '@/utils/helpers'
 import { normalizedBirthday, normalizeHoliday, normalizeMeeting } from '@/utils'
+import { ApiClientBase } from '@/clients/api/base'
 
 const homeEvents = ref<Api.Home[]>([])
 const filteredEvents = ref<Api.Home[]>([])
 
 const currentDate = ref<Date>(new Date())
+const calendar = ref<CalendarApi>()
 const isLoading = ref<boolean>(false)
 const $api = useApi()
+const dates = ref<any>()
+
 const filters = reactive({
   meeting: true,
   event: true,
@@ -65,9 +87,32 @@ const filters = reactive({
   birthday: true
 })
 
+const selectedEventType = reactive({
+  isMeeting: false,
+  isEvent: false,
+  isVacation: false,
+  isHoliday: false,
+  isBirthday: false,
+  isNewEvent: false
+})
+
+const meetings = ref<Api.Meeting[]>([])
+const events = ref<Api.Event[]>([])
+const vacations = ref<Api.Vacation[]>([])
+const holidays = ref<Api.Holiday[]>([])
+const birthdays = ref<Api.User[]>([])
+const cached_users = new Map<number, Api.User>()
+
+const selectedEvent = ref<Api.Meeting | Api.Inputs.Event | Api.Vacation | Api.Holiday | Api.User>()
+
+const me = ApiClientBase.user.value?.fullUser
+if (me) {
+  cached_users.set(me.id, me)
+}
+
 const loadEvents = async () => {
   isLoading.value = true
-  useAsyncState(
+  await useAsyncState(
     () =>
       $api.home.list({
         month: currentDate.value.getMonth() + 1,
@@ -76,13 +121,10 @@ const loadEvents = async () => {
     [],
     {
       onSuccess(data) {
-        console.log("data", data);
-        
         for (const event of data) {
           updateEventCalendarType(event)
         }
         filteredEvents.value = [...homeEvents.value]
-        console.log(filteredEvents.value);
       }
     }
   )
@@ -93,40 +135,158 @@ const updateEventCalendarType = (event: any) => {
   if (event.type === 'vacation') {
     const vacationEvent = normalizeVacation(event) as any
     homeEvents.value.push(vacationEvent)
+    vacations.value.push(event)
   } else if (event.type === 'holiday') {
     const publicHoliday = normalizeHoliday(event) as any
     homeEvents.value.push(publicHoliday)
+    holidays.value.push(event)
   } else if (event.type === 'meeting') {
     const meeting = normalizeMeeting(event) as any
     homeEvents.value.push(meeting)
+    meetings.value.push(event)
   } else if (event.type === 'birthday') {
     const birthday = normalizedBirthday(event) as any
     homeEvents.value.push(birthday)
+    birthdays.value.push(event)
   } else if (event.type === 'event') {
     const _event = normalizeEvent(event) as any
     homeEvents.value.push(_event)
+    events.value.push(event)
   }
 
   filteredEvents.value = [...homeEvents.value]
 }
 
-const filterEvents = () => {  
-  console.log("events.value len 1", homeEvents.value.length);
-  filteredEvents.value = homeEvents.value.filter(event => {
+const filterEvents = () => {
+  filteredEvents.value = homeEvents.value.filter((event) => {
     return (
       (event.type === 'meeting' && filters.meeting) ||
       (event.type === 'event' && filters.event) ||
       (event.type === 'vacation' && filters.vacation) ||
       (event.type === 'holiday' && filters.holiday) ||
       (event.type === 'birthday' && filters.birthday)
-    );
-  });
-  console.log("filteredEvents", filteredEvents.value.length);
+    )
+  })
 }
 
+function onSelect(arg: any) {
+  calendar.value = arg.view.calendar
+  dates.value = arg
+  openDialog(CalendarEventSelection.NewEvent)
+}
 
-function onSelect() {}
-function onClick() {}
+function onClick(arg: any) {
+  selectedEvent.value = undefined
+  calendar.value = arg.view.calendar
+  const clickedEventTitle = arg.event.title as string
+
+  // We use a normalized event ID to avoid duplication. It's created by concatenating 'holiday', 'birthday', 'event', 'meeting', and 'vacation' with the event ID.
+  if (clickedEventTitle === CalendarEventSelection.PublicHoliday) {
+    selectedEvent.value = holidays.value.filter(
+      (holiday) => holiday.id === Number(arg.event.id.replace('holiday', ''))
+    )[0]
+    openDialog(CalendarEventSelection.PublicHoliday)
+  } else if (
+    clickedEventTitle
+      .toLocaleLowerCase()
+      .includes(CalendarEventSelection.Vacation.toLocaleLowerCase())
+  ) {
+    selectedEvent.value = vacations.value.filter(
+      (vacation) => vacation.id === Number(arg.event.id.replace('vacation', ''))
+    )[0]
+    openDialog(CalendarEventSelection.Vacation)
+  } else if (clickedEventTitle === CalendarEventSelection.Birthday) {
+    selectedEvent.value = birthdays.value.filter(
+      (birthday) => birthday.id === Number(arg.event.id.replace('birthday', ''))
+    )[0]
+    openDialog(CalendarEventSelection.Birthday)
+  } else if (clickedEventTitle === CalendarEventSelection.Event) {
+    selectedEvent.value = events.value.filter(
+      (event) => event.id === Number(arg.event.id.replace('event', ''))
+    )[0]
+    openDialog(CalendarEventSelection.Event)
+  } else if (clickedEventTitle === CalendarEventSelection.Meeting) {
+    selectedEvent.value = meetings.value.filter(
+      (meeting) => meeting.id === Number(arg.event.id.replace('meeting', ''))
+    )[0]
+    openDialog(CalendarEventSelection.Meeting)
+  }
+}
+
+function openDialog(dialogType: string) {
+  console.log("Dates: ", dates.value);
+  
+  switch (dialogType) {
+    case CalendarEventSelection.Birthday:
+      selectedEventType.isBirthday = true
+      break
+    case CalendarEventSelection.Event:
+      selectedEventType.isEvent = true
+      break
+    case CalendarEventSelection.Meeting:
+      selectedEventType.isMeeting = true
+      break
+    case CalendarEventSelection.PublicHoliday:
+      selectedEventType.isHoliday = true
+      break
+    case CalendarEventSelection.Vacation:
+      selectedEventType.isVacation = true
+      break
+    case CalendarEventSelection.NewEvent:
+      selectedEventType.isNewEvent = true
+      break
+    default:
+      break
+  }
+}
+
+function closeDialog(dialogType: string) {
+  switch (dialogType) {
+    case CalendarEventSelection.Birthday:
+      selectedEventType.isBirthday = false
+      break
+    case CalendarEventSelection.Event:
+      selectedEventType.isEvent = false
+      break
+    case CalendarEventSelection.Meeting:
+      selectedEventType.isMeeting = false
+      break
+    case CalendarEventSelection.PublicHoliday:
+      selectedEventType.isHoliday = false
+      break
+    case CalendarEventSelection.Vacation:
+      selectedEventType.isVacation = false
+      break
+    case CalendarEventSelection.NewEvent:
+      selectedEventType.isNewEvent = false
+      break
+    default:
+      selectedEventType.isNewEvent = false
+      break
+  }
+}
+
+async function createVacation(id: number, data: any) {
+  const vacation: Api.Vacation = data.vacation;
+  console.log("data: ", data);
+  
+
+  if (cached_users.has(vacation.applying_user.id)) {
+    vacation.applying_user = cached_users.get(vacation.applying_user.id)
+  } else {
+    const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true })
+    cached_users.set(vacation.applying_user.id, user)
+    vacation.applying_user = user
+  }
+
+  vacations.value.push(vacation)
+  filteredEvents.value.push(vacation)
+  selectedEventType.isNewEvent = false
+  // return closeDialog(CalendarEventSelection.Vacation)
+}
+
+function createMeeting() {}
+function createEvent() {}
 
 const options = reactive<CalendarOptions>({
   plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
@@ -179,9 +339,14 @@ button {
   text-transform: capitalize !important;
 }
 
+.fc-daygrid-event-harness {
+  cursor: pointer;
+}
+
 .fc-event-title {
   font-weight: 500;
   color: #131313 !important;
+  cursor: pointer;
 }
 
 .fc-popover {

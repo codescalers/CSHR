@@ -65,7 +65,7 @@ export function handelDates(start: any, end: any): any {
 }
 
 
-export function normalizeEvent(e: Api.Inputs.Event): any {
+export function normalizeEvent(e: Api.Event): any {
   const dates = handelDates(e.from_date, e.end_date)
 
   return {
@@ -76,7 +76,7 @@ export function normalizeEvent(e: Api.Inputs.Event): any {
     start: dates.start,
     end: dates.end,
     backgroundColor: '#47a2ff',
-    id: e.type + e.name,
+    id: e.type + e.id.toString(),
     allDay: true
   }
 }
@@ -125,7 +125,7 @@ export function normalizedBirthday(u: Api.User) {
 }
 
 
-export function normalizeMeeting(m: Api.Meetings): any {
+export function normalizeMeeting(m: Api.Meeting): any {
   const dates = handelDates(m.date, m.date)
 
   return {
@@ -135,7 +135,7 @@ export function normalizeMeeting(m: Api.Meetings): any {
     start: dates.start,
     end: dates.end,
     backgroundColor: '#efeaea',
-    id: m.type + m.id,
+    id: m.type + m.id.toString(),
     allDay: true
   }
 }

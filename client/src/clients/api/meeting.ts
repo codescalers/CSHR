@@ -14,7 +14,7 @@ export class MeetingApi extends ApiClientBase {
 
   list(query?: any) {
     return this.unwrap(
-      () => this.$http.get<Api.Returns.List<Api.Meetings>>(this.getUrl('', query)),
+      () => this.$http.get<Api.Returns.List<Api.Meeting>>(this.getUrl('', query)),
       {
         transform: (d) => d.results
       }

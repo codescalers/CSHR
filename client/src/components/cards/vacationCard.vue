@@ -29,7 +29,7 @@
               <p>
                 Applying User :
                 <span color="warning" class="mx-2">{{
-                  vacation.user.full_name
+                  vacation.applying_user.full_name
                 }}</span>
               </p>
             </v-col>
@@ -80,10 +80,16 @@ import { computed, ref, watch } from 'vue';
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
+import type { PropType } from 'vue';
 
 export default {
   name: 'vacationCard',
-  props: ['vacation'],
+  props: {
+    vacation: {
+      type: Object as PropType<Api.Vacation>,
+      required: true,
+    }
+  },
   emits: {
     'close-dialog': (item: Boolean) => item,
     'update-vacation': (item: any) => item,
@@ -154,12 +160,12 @@ export default {
           user.value.fullUser.user_type === 'Admin' ||
           user.value.fullUser.user_type === 'Supervisor'
           ) {
-          if (props.vacation.user.id == user.value.fullUser.id) {
+          if (props.vacation.applying_user.id == user.value.fullUser.id) {
             return true
           }
           if (
-            props.vacation.user.reporting_to[0]?.id === props.vacation.user?.id &&
-            props.vacation.user.location.name === user.value.fullUser.location.name
+            props.vacation.applying_user.reporting_to[0]?.id === props.vacation.applying_user?.id &&
+            props.vacation.applying_user.location.name === user.value.fullUser.location.name
           ) {
             return true
           }

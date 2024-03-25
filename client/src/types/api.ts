@@ -52,7 +52,7 @@ export module Api {
   export interface Certificate {}
 
   export interface Salary {}
-  export interface Meetings {
+  export interface Meeting {
     type: string;
     id: number
     invited_users: any[]
@@ -70,6 +70,14 @@ export module Api {
       user_certificates: any[]
     }
     location: string
+  }
+  export interface Event {
+    id: number
+    name: string
+    type: string;
+    description: string;
+    from_date: string;
+    end_date: string;
   }
   export interface User {
     type: string;
@@ -146,7 +154,7 @@ export module Api {
     export type Meeting = MsgRes<Meeting>
 
     export type Profile = MsgRes<User>
-    export type AllMeetings = MsgRes<Meetings>
+    export type AllMeetings = MsgRes<Meeting>
 
     export type Login = MsgRes<{
       id: number

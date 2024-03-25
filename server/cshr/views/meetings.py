@@ -7,12 +7,12 @@ from cshr.services.meetings import (
     filter_meetings_by_day,
     get_all_meetings,
     get_meeting_by_id,
-    send_meeting_to_calendar,
 )
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from cshr.api.response import CustomResponse
+from cshr.utils.wrappers import wrap_event_request
 
 
 class BaseMeetingsApiView(ListAPIView, GenericAPIView):
@@ -31,8 +31,10 @@ class BaseMeetingsApiView(ListAPIView, GenericAPIView):
                 return CustomResponse.bad_request(
                     message='Ensure that the "host_user" field is included in the payload.'
                 )
-            saved = serializer.save(host_user=current_user, invited_users=[])
-            response_date: Dict = send_meeting_to_calendar(saved)
+
+            event = serializer.save(host_user=current_user, invited_users=[])
+
+            response_date: Dict = wrap_event_request(event)
             return CustomResponse.success(
                 data=response_date,
                 message="meeting is created successfully",
