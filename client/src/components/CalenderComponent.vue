@@ -42,69 +42,41 @@
     @click:outside="closeDialog(CalendarEventSelection.NewEvent)"
   >
     <v-card>
-      <calender-request
-        :dates="dates"
-        @close-dialog="closeDialog(CalendarEventSelection.NewEvent)"
-        @create-vacation="createVacation($event)"
-        @create-meeting="createMeeting($event)"
-        @create-event="createEvent($event)"
-      />
+      <calender-request :dates="dates" @close-dialog="closeDialog(CalendarEventSelection.NewEvent)"
+        @create-vacation="createVacation($event)" @create-meeting="createMeeting($event)"
+        @create-event="createEvent($event)" />
     </v-card>
   </v-dialog>
 
   <!-- View meeting dialog -->
-  <v-dialog
-    v-if="selectedEventType.isViewRequest && selectedEventType.isMeeting && selectedEvent"
-    :routeQuery="selectedEvent.id"
-    :modelValue="selectedEventType.isMeeting"
-  >
+  <v-dialog v-if="selectedEventType.isViewRequest && selectedEventType.isMeeting && selectedEvent"
+    :routeQuery="selectedEvent.id" :modelValue="selectedEventType.isMeeting">
     <v-card>
-      <meeting-card
-        :meeting="selectedEvent"
-        @close-dialog="closeDialog(CalendarEventSelection.Meeting)"
-      />
+      <meeting-card :meeting="selectedEvent" @close-dialog="closeDialog(CalendarEventSelection.Meeting)" />
     </v-card>
   </v-dialog>
 
   <!-- View holiday dialog -->
-  <v-dialog
-    v-if="selectedEventType.isViewRequest && selectedEventType.isHoliday && selectedEvent"
-    :routeQuery="selectedEvent.id"
-    :modelValue="selectedEventType.isHoliday"
-  >
+  <v-dialog v-if="selectedEventType.isViewRequest && selectedEventType.isHoliday && selectedEvent"
+    :routeQuery="selectedEvent.id" :modelValue="selectedEventType.isHoliday">
     <v-card>
-      <holiday-card
-        :holiday="selectedEvent"
-        @close-dialog="closeDialog(CalendarEventSelection.PublicHoliday)"
-      />
+      <holiday-card :holiday="selectedEvent" @close-dialog="closeDialog(CalendarEventSelection.PublicHoliday)" />
     </v-card>
   </v-dialog>
 
   <!-- View holiday dialog -->
-  <v-dialog
-    v-if="selectedEventType.isViewRequest && selectedEventType.isBirthday && selectedEvent"
-    :routeQuery="selectedEvent.id"
-    :modelValue="selectedEventType.isBirthday"
-  >
+  <v-dialog v-if="selectedEventType.isViewRequest && selectedEventType.isBirthday && selectedEvent"
+    :routeQuery="selectedEvent.id" :modelValue="selectedEventType.isBirthday">
     <v-card>
-      <birthday-card
-        :birthday="selectedEvent"
-        @close-dialog="closeDialog(CalendarEventSelection.Birthday)"
-      />
+      <birthday-card :birthday="selectedEvent" @close-dialog="closeDialog(CalendarEventSelection.Birthday)" />
     </v-card>
   </v-dialog>
 
   <!-- View event dialog -->
-  <v-dialog
-    v-if="selectedEventType.isViewRequest && selectedEventType.isEvent && selectedEvent"
-    :routeQuery="selectedEvent.id"
-    :modelValue="selectedEventType.isEvent"
-  >
+  <v-dialog v-if="selectedEventType.isViewRequest && selectedEventType.isEvent && selectedEvent"
+    :routeQuery="selectedEvent.id" :modelValue="selectedEventType.isEvent">
     <v-card>
-      <event-card
-        :event="selectedEvent"
-        @close-dialog="closeDialog(CalendarEventSelection.Event)"
-      />
+      <event-card :event="selectedEvent" @close-dialog="closeDialog(CalendarEventSelection.Event)" />
     </v-card>
   </v-dialog>
 
@@ -114,16 +86,15 @@
     :routeQuery="selectedEvent"
     :modelValue="selectedEventType.isVacation"
   >
-  <v-card>
-    <vacation-card
+    <v-card>
+      <vacation-card
       :vacation="(selectedEvent as Api.Vacation)"
-      @close-dialog="closeDialog(CalendarEventSelection.Vacation)"
-      @status-vacation="updateVacationStatus($event)"
-      @update-vacation="updateVacation($event)"
-      @delete-vacation="deleteVacation()"
-    />
-  </v-card>
-</v-dialog>
+        @close-dialog="closeDialog(CalendarEventSelection.Vacation)"
+        @status-vacation="updateVacationStatus($event)"
+        @update-vacation="updateVacation($event)"
+        @delete-vacation="deleteVacation()" />
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -369,30 +340,22 @@ async function updateVacationStatus(data: string) {
 
 async function updateVacation(vacation: Api.Vacation) {
   vacations.value = vacations.value.filter((vacation) => vacation.id !== selectedEvent.value?.id)
+  filteredEvents.value = filteredEvents.value.filter(event => event.id.toString() !== `vacation${selectedEvent.value?.id}`)
 
-  const user = await $api.users.getuser(vacation.applying_user, { disableNotify: true })
-  // vacation.applying_user = user
-  //     vacation.isUpdated = true
-  //     vacations.value.push(vacation)
-  //     closeDialog(CalendarEventSelection.Vacation)
-
-  // if (cached_users.has(vacation.applying_user)) {
-  //   vacation.applying_user = cached_users.get(vacation.applying_user.id)
-  //   console.log(vacation.applying_user)
-  // } 
-
-  // else {
-  //   const user = await $api.users.getuser(vacation.applying_user, {
-  //     disableNotify: true
-  //   })
-  //   cached_users.set(vacation.applying_user.id, user)
-  //   vacation.applying_user = user
-  // }
-
-  // vacation.isUpdated = true
-  // vacations.value.push(vacation)
-  // closeDialog(CalendarEventSelection.Vacation)
+  if (cached_users.has(vacation.applying_user)) {
+    vacation.applying_user = cached_users.get(vacation.applying_user)
+  } else {
+    const user = await $api.users.getuser(vacation.applying_user, { disableNotify: true })
+    cached_users.set(vacation.applying_user, user)
+    vacation.applying_user = user
+  }
+  vacation.type="vacation"
+  vacations.value.push(vacation)
+  const vacationEvent = normalizeVacation(vacation) as any
+  filteredEvents.value.push(vacationEvent)
+  closeDialog(CalendarEventSelection.Vacation)
 }
+
 
 async function deleteVacation() {
   vacations.value = vacations.value.filter((vacation) => vacation.id !== selectedEvent.value?.id)  

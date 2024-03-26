@@ -85,7 +85,7 @@ export function normalizeVacation(v: Api.Vacation) {
 
   return {
     type: v.type,
-    title: `${v.applying_user_full_name}'s Vacation`,
+    title: `${v.applying_user_full_name ? v.applying_user_full_name : v.applying_user.full_name }'s Vacation`,
     color: '#fcd091',
     start: dates.start,
     end: dates.end,
