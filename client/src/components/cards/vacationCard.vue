@@ -17,7 +17,7 @@
       <v-form ref="form" @submit.prevent="updateVacation()">
 
         <v-row class="d-flex justify-center my-2" v-if="couldUpdate">
-          <v-btn color="primary" class="mx-1 my-2" :disabled="!form?.isValid || disabled">Update</v-btn>
+          <v-btn color="primary" class="mx-1 my-2" type="submit" :disabled="!form?.isValid || disabled">Update</v-btn>
           <v-btn color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
         </v-row>
         <v-divider class="my-2"></v-divider>

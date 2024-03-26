@@ -368,23 +368,30 @@ async function updateVacationStatus(data: string) {
 }
 
 async function updateVacation(vacation: Api.Vacation) {
-  console.log("Vacation: ", vacation);
-  
   vacations.value = vacations.value.filter((vacation) => vacation.id !== selectedEvent.value?.id)
 
-  if (cached_users.has(vacation.applying_user.id)) {
-    vacation.applying_user = cached_users.get(vacation.applying_user.id)
-  } else {
-    const user = await $api.users.getuser(vacation.applying_user.id, {
-      disableNotify: true
-    })
-    cached_users.set(vacation.applying_user.id, user)
-    vacation.applying_user = user
-  }
+  const user = await $api.users.getuser(vacation.applying_user, { disableNotify: true })
+  // vacation.applying_user = user
+  //     vacation.isUpdated = true
+  //     vacations.value.push(vacation)
+  //     closeDialog(CalendarEventSelection.Vacation)
 
-  vacation.isUpdated = true
-  vacations.value.push(vacation)
-  closeDialog(CalendarEventSelection.Vacation)
+  // if (cached_users.has(vacation.applying_user)) {
+  //   vacation.applying_user = cached_users.get(vacation.applying_user.id)
+  //   console.log(vacation.applying_user)
+  // } 
+
+  // else {
+  //   const user = await $api.users.getuser(vacation.applying_user, {
+  //     disableNotify: true
+  //   })
+  //   cached_users.set(vacation.applying_user.id, user)
+  //   vacation.applying_user = user
+  // }
+
+  // vacation.isUpdated = true
+  // vacations.value.push(vacation)
+  // closeDialog(CalendarEventSelection.Vacation)
 }
 
 async function deleteVacation() {
