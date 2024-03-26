@@ -138,6 +138,7 @@ export default {
     const couldUpdate = computed(() => {
       if (user.value) {
         if (props.vacation.status == 'pending') {
+          // could update if user signed in is the same user applied for vacation
           if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user) {
             return true
           }
@@ -156,13 +157,17 @@ export default {
     const couldApprove = computed(() => {
       
       if (user.value) {
+        // only admins or supervisors could approve vacation
         if (
           user.value.fullUser.user_type === 'Admin' ||
           user.value.fullUser.user_type === 'Supervisor'
           ) {
+          // Could approve if user signed in is the same user applied for vacation
           if (props.vacation.applying_user.id == user.value.fullUser.id) {
             return true
           }
+          // Could approve if applying user reports to the supervisor or admin logged in 
+          // and works from the same office
           if (
             props.vacation.applying_user.reporting_to &&
             props.vacation.applying_user.reporting_to[0]?.id === props.vacation.applying_user?.id &&
