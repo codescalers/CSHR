@@ -62,7 +62,7 @@ def get_user_type_by_id(id: str) -> User:
         return None
 
 
-def filter_users_by_berithday_month(month: str) -> User:
+def filter_users_by_birth_month(month: str) -> User:
     """Filter users based on birthdayes."""
     users: List[User] = User.objects.filter(birthday__month=month)
     return users
@@ -102,7 +102,7 @@ def get_admin_office_users(admin: User) -> User:
     )
 
 
-def get_or_create_skill_by_name(name: str) -> UserSkills or bool:
+def get_or_create_skill_by_name(name: str) -> UserSkills or bool: # type: ignore
     """Return a skill by name"""
     return UserSkills.objects.get_or_create(name=name.lower())
 

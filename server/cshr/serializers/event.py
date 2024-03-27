@@ -10,6 +10,7 @@ class EventSerializer(ModelSerializer):
         fields = [
             # "people",
             # "custom_people",
+            "id",
             "name",
             "description",
             # "location",

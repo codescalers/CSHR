@@ -17,7 +17,7 @@
       <v-form ref="form" @submit.prevent="updateVacation()">
 
         <v-row class="d-flex justify-center my-2" v-if="couldUpdate">
-          <v-btn color="primary" class="mx-1 my-2" :disabled="!form?.isValid || disabled">Update</v-btn>
+          <v-btn color="primary" class="mx-1 my-2" type="submit" :disabled="!form?.isValid || disabled">Update</v-btn>
           <v-btn color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
         </v-row>
         <v-divider class="my-2"></v-divider>
@@ -29,7 +29,7 @@
               <p>
                 Applying User :
                 <span color="warning" class="mx-2">{{
-                  vacation.user.full_name
+                  vacation.applying_user.full_name
                 }}</span>
               </p>
             </v-col>
@@ -80,10 +80,16 @@ import { computed, ref, watch } from 'vue';
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
+import type { PropType } from 'vue';
 
 export default {
   name: 'vacationCard',
-  props: ['vacation'],
+  props: {
+    vacation: {
+      type: Object as PropType<Api.Vacation>,
+      required: true,
+    }
+  },
   emits: {
     'close-dialog': (item: Boolean) => item,
     'update-vacation': (item: any) => item,
@@ -132,6 +138,7 @@ export default {
     const couldUpdate = computed(() => {
       if (user.value) {
         if (props.vacation.status == 'pending') {
+          // could update if user signed in is the same user applied for vacation
           if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user) {
             return true
           }
@@ -150,16 +157,21 @@ export default {
     const couldApprove = computed(() => {
       
       if (user.value) {
+        // only admins or supervisors could approve vacation
         if (
           user.value.fullUser.user_type === 'Admin' ||
           user.value.fullUser.user_type === 'Supervisor'
           ) {
-          if (props.vacation.user.id == user.value.fullUser.id) {
+          // Could approve if user signed in is the same user applied for vacation
+          if (props.vacation.applying_user.id == user.value.fullUser.id) {
             return true
           }
+          // Could approve if applying user reports to the supervisor or admin logged in 
+          // and works from the same office
           if (
-            props.vacation.user.reporting_to[0]?.id === props.vacation.user?.id &&
-            props.vacation.user.location.name === user.value.fullUser.location.name
+            props.vacation.applying_user.reporting_to &&
+            props.vacation.applying_user.reporting_to[0]?.id === props.vacation.applying_user?.id &&
+            props.vacation.applying_user.location.name === user.value.fullUser.location.name
           ) {
             return true
           }
@@ -225,7 +237,7 @@ export default {
     async function updateVacation() {
       const actualDays = await calculateActualDays()
 
-      useAsyncState(
+      await useAsyncState(
         $api.vacations.edit.update(props.vacation.id, {
           reason: leaveReason.value.reason,
           from_date: startDate.value,
