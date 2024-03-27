@@ -4,10 +4,10 @@ from rest_framework.response import Response
 from ..serializers.training_courses import TrainingCoursesSerializer
 from ..api.response import CustomResponse
 
-from server.cshr.models.users import User
-from server.cshr.api.permission import UserIsAuthenticated
-from server.cshr.services.users import get_user_by_id
-from server.cshr.services.training_courses import (
+from cshr.models.users import User
+from cshr.api.permission import UserIsAuthenticated
+from cshr.services.users import get_user_by_id
+from cshr.services.training_courses import (
     get_all_training_courses,
     get_training_courses_by_id,
 )

@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from ..models.office import Office
 from rest_framework import status
-from server.cshr.models.users import User
+from cshr.models.users import User
 
 
 def createTmp():

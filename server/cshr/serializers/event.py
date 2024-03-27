@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from server.cshr.models.event import Event
+from cshr.models.event import Event
 
 
 class EventSerializer(ModelSerializer):
@@ -10,6 +10,7 @@ class EventSerializer(ModelSerializer):
         fields = [
             # "people",
             # "custom_people",
+            "id",
             "name",
             "description",
             # "location",

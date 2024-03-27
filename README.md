@@ -53,6 +53,33 @@ When in development mode, use the following Makefile commands:
 - **Server:** Implemented using Django.
 - **Notification Service:** Requires a running Redis server for notification functionality.
 
+## Installation Process
+
+To facilitate the installation process, this project utilizes the `poetry` package manager for `Python` and `pnpm` for `Node.js`. Follow the steps outlined below for a seamless installation:
+
+1. Install Poetry:
+Execute the following command to install Poetry for Python:
+
+```sh
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+2. Install Pnpm:
+To install `pnpm` globally for Node.js, run the following command:
+
+```sh
+npm i -g pnpm
+```
+
+After installing these packages you can now install the required packages by executing:
+3. Install project Packages
+
+```sh
+make install
+```
+
+By following these steps, you ensure the proper setup of the required package managers for this project.
+
 ## Project Configuration
 
 After executing
@@ -62,3 +89,40 @@ make install && make migrate
 ```
 
 Please refer to [.env.template](./config/.env.template) for all required values. Ensure all values are populated in the `.env` file within the [config](./config/) directory.
+
+## Runing the project using Docker and Docker Compose
+
+To run the full project with all instances, follow these steps:
+
+1. Set Environment Variables
+
+Create a `.env` file beside the [config](./config/) directory and set the necessary environment variables. Refer to the previous section for sample environment variable configurations.
+
+2. Execute Docker Compose
+
+Run the following command to start the Docker containers and please make sure that you are on the root of the project:
+
+```sh
+# --> To run all services
+
+└─(✹)──> docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up --build -d 
+
+# --> To stop all services
+└─(✹)──> docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down 
+
+```
+
+Also, you can excute the command using Make:
+
+- make docker-up **To run all services**
+- make docker-down **To stop all services**
+
+After executing the command, you should see a confirmation similar to the following:
+
+3. Verify Successful Deployment
+
+This indicates that the Docker containers are being created and the services are starting up.
+
+- ![docker-compose-deployments](docs/images/docker-compose-deployments.png)
+
+You can also take a look at [configuration.md](docs/configuration.md)

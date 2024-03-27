@@ -1,10 +1,10 @@
 """This file contains everything related to the landing page functionalty."""
 from rest_framework.generics import GenericAPIView
-from server.cshr.api.permission import UserIsAuthenticated
-from server.cshr.api.response import CustomResponse
+from cshr.api.permission import UserIsAuthenticated
+from cshr.api.response import CustomResponse
 from typing import Any
 
-from server.cshr.services.landing_page import landing_page_calendar_functionality
+from cshr.services.landing_page import landing_page_calendar_functionality
 
 
 class LandingPageApiView(GenericAPIView):

@@ -1,4 +1,0 @@
-exec: sh -c "/usr/sbin/sshd -D"
-# test: ps aux | grep "[s]shd"
-after:
-  - ssh-init

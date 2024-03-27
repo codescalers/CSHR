@@ -1,36 +1,38 @@
-from server.cshr.serializers.hr_letters import (
+from cshr.serializers.hr_letters import (
     HrLetterSerializer,
     LandingPageHrLetterSerializer,
     UserDocumentsSerializer,
 )
-from server.cshr.serializers.hr_letters import HrLetterUpdateSerializer
-from server.cshr.models.users import User
-from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.api.permission import (
+from cshr.serializers.hr_letters import HrLetterUpdateSerializer
+from cshr.models.users import User
+from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
+from cshr.api.permission import (
     IsAdmin,
     UserIsAuthenticated,
     IsSupervisor,
 )
-from server.cshr.services.users import get_user_by_id
-from server.cshr.services.hr_letters import (
+from cshr.services.users import get_user_by_id
+from cshr.services.hr_letters import (
     filter_all_docs_based_on_user,
     get_all_hrLetters,
     get_hrLetter_by_id,
 )
-from server.cshr.services.hr_letters import get_hr_letter_by_user
+from cshr.services.hr_letters import get_hr_letter_by_user
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.celery.send_email import send_email_for_reply, send_email_for_request
-from server.cshr.utils.email_messages_templates import (
+from cshr.celery.send_email import send_email_for_reply, send_email_for_request
+from cshr.utils.email_messages_templates import (
     get_hr_letter_request_email_template,
 )
-from server.cshr.utils.email_messages_templates import (
+from cshr.utils.email_messages_templates import (
     get_hr_letter_reply_email_template,
 )
 
-from server.cshr.api.response import CustomResponse
-from server.cshr.utils.redis_functions import (
+from cshr.api.response import CustomResponse
+from cshr.utils.redis_functions import (
+    http_ensure_redis_error,
+    ping_redis,
     set_notification_request_redis,
     set_notification_reply_redis,
 )
@@ -61,6 +63,12 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
             msg = get_hr_letter_request_email_template(
                 current_user, serializer.data, saved.id
             )
+
+            try:
+                ping_redis()
+            except:
+                return http_ensure_redis_error()
+
             bool1 = set_notification_request_redis(serializer.data)
             bool2 = send_email_for_request.delay(
                 current_user.id, msg, "Hr Letter request"
@@ -199,6 +207,12 @@ class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
         hr_letter.approval_user = current_user
         hr_letter.status = STATUS_CHOICES.APPROVED
         hr_letter.save()
+
+        try:
+            ping_redis()
+        except:
+            return http_ensure_redis_error()
+
         bool1 = set_notification_reply_redis(hr_letter, "accepted", hr_letter.id)
         msg = get_hr_letter_reply_email_template(current_user, hr_letter, hr_letter.id)
         bool2 = send_email_for_reply.delay(

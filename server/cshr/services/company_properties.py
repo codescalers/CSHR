@@ -1,4 +1,4 @@
-from server.cshr.models.company_properties import CompanyProperties
+from cshr.models.company_properties import CompanyProperties
 
 
 def get_company_properties_by_id(id: str) -> CompanyProperties:

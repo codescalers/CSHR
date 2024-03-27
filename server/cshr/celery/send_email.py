@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from celery import shared_task
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework.response import Response
-from server.components import config
+from components import config
 
 REDIS_HOST: str = None
 try:
@@ -46,9 +46,9 @@ mail_title = "Probation period update"
 
 @app.task(name="send_email")
 def send_email():
-    from server.cshr.models.users import USER_TYPE
+    from cshr.models.users import USER_TYPE
 
-    from server.cshr.models.users import User
+    from cshr.models.users import User
 
     date_since_month_and_a_half = datetime.datetime.now() - datetime.timedelta(45)
     date_since_three_months = datetime.datetime.now() - datetime.timedelta(90)
@@ -132,8 +132,8 @@ def send_email():
 
 @app.task(name="send_quarter_evaluation_email")
 def send_quarter_evaluation_email():
-    from server.cshr.models.users import USER_TYPE
-    from server.cshr.models.users import User
+    from cshr.models.users import USER_TYPE
+    from cshr.models.users import User
 
     supervisors = User.objects.filter(user_type=USER_TYPE.SUPERVISOR)
     supervisors_emails = []
@@ -151,8 +151,8 @@ def send_quarter_evaluation_email():
 
 # @app.task(name="user_old_balance_format")
 # def user_old_balance_format():
-#     from server.cshr.models.users import User
-#     from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
+#     from cshr.models.users import User
+#     from cshr.utils.vacation_balance_helper import StanderdVacationBalance
 
 #     users = User.objects.all()
 #     v = StanderdVacationBalance()
@@ -162,8 +162,8 @@ def send_quarter_evaluation_email():
 
 # @app.task(name="user_resetting_old_balance")
 # def user_resetting_old_balance():
-#     from server.cshr.models.users import User
-#     from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
+#     from cshr.models.users import User
+#     from cshr.utils.vacation_balance_helper import StanderdVacationBalance
 
 #     users = User.objects.all()
 #     v = StanderdVacationBalance()
@@ -174,10 +174,10 @@ def send_quarter_evaluation_email():
 @shared_task()
 def send_email_for_request(user_id, msg, mail_title) -> Response:
     from django.core.mail import send_mail
-    from server.cshr.models.users import User
-    from server.cshr.utils.send_email import get_email_recievers
-    from server.cshr.services.users import get_user_by_id
-    from server.cshr.utils.send_email import check_email_configuration
+    from cshr.models.users import User
+    from cshr.utils.send_email import get_email_recievers
+    from cshr.services.users import get_user_by_id
+    from cshr.utils.send_email import check_email_configuration
 
     check_email_configuration()
     user: User = get_user_by_id(user_id)
@@ -198,10 +198,10 @@ def send_email_for_reply(
     approving_user_id, applying_user_id, msg, mail_title
 ) -> Response:
     from django.core.mail import send_mail
-    from server.cshr.models.users import User
-    from server.cshr.utils.send_email import get_email_recievers
-    from server.cshr.services.users import get_user_by_id
-    from server.cshr.utils.send_email import check_email_configuration
+    from cshr.models.users import User
+    from cshr.utils.send_email import get_email_recievers
+    from cshr.services.users import get_user_by_id
+    from cshr.utils.send_email import check_email_configuration
 
     check_email_configuration()
     approving_user: User = get_user_by_id(approving_user_id)

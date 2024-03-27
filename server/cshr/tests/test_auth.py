@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
-from server.cshr.models.users import User
-from server.cshr.models.office import Office
+from cshr.models.users import User
+from cshr.models.office import Office
 from django.contrib.auth.hashers import make_password
 
 

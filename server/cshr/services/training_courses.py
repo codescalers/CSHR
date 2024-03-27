@@ -1,4 +1,4 @@
-from server.cshr.models.training_courses import TrainingCourses
+from cshr.models.training_courses import TrainingCourses
 
 
 def get_training_courses_by_id(id: str) -> TrainingCourses:

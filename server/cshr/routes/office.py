@@ -1,7 +1,7 @@
 from django.urls import path
 
 
-from server.cshr.views.office import OfficeApiView, BaseOfficeApiView
+from cshr.views.office import OfficeApiView, BaseOfficeApiView
 
 urlpatterns = [
     path("", BaseOfficeApiView.as_view()),

@@ -1,5 +1,5 @@
 from django.urls import path
-from server.cshr.views.auth import (
+from cshr.views.auth import (
     RegisterApiView,
     LoginByTokenApiView,
     MyTokenRefreshView,

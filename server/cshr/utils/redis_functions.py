@@ -1,13 +1,15 @@
 from typing import Dict
 from django.utils.dateparse import parse_datetime
 from django.core.exceptions import ImproperlyConfigured
-from server.cshr.models.requests import TYPE_CHOICES, Requests
-from server.cshr.models.users import USER_TYPE, User
-from server.cshr.serializers.users import BaseUserSerializer, TeamSerializer
-from server.cshr.services.users import get_user_by_id
-from server.components import config
+from cshr.models.requests import TYPE_CHOICES, Requests
+from cshr.models.users import USER_TYPE, User
+from cshr.serializers.users import BaseUserSerializer, TeamSerializer
+from cshr.services.users import get_user_by_id
+from components import config
 import redis
 import json
+
+from cshr.api.response import CustomResponse
 
 
 try:
@@ -21,7 +23,7 @@ redis_instance = redis.StrictRedis(host=R_HOST, port=R_PORT, db=0)
 def set_notification_request_redis(data: Dict) -> bool:
     """this function set requests notifications"""
     applying_user = None
-    if type(data["applying_user"]) is not int and data.get("applying_user").get("id"):
+    if type(data.get("applying_user")) is not int and data.get("applying_user").get("id"):
         applying_user = data["applying_user"]["id"]
     else:
         applying_user = data["applying_user"]
@@ -130,3 +132,25 @@ def get_notifications(user: User):
             redis_instance.delete(key)
         notifications.append(dval)
     return notifications
+
+
+def ping_redis():
+    try:
+        redis_instance.ping()
+    except:
+        raise redis.ConnectionError(
+            "Redis is not running, please make sure that you run the redis server on the provided values."
+        )
+
+
+def get_redis_conf() -> Dict[str, str]:
+    return {"host": R_HOST, "port": R_PORT}
+
+def http_ensure_redis_error():
+    return CustomResponse.bad_request(
+        message="Connection Refused",
+        error={
+            "message": "Redis is not running, please make sure that you run the Redis server on the provided values",
+            "values": {"host": R_HOST, "port": R_PORT},
+        },
+    )

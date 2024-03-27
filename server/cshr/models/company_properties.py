@@ -1,5 +1,5 @@
 from django.db import models
-from server.cshr.models.users import User
+from cshr.models.users import User
 
 
 class CompanyProperties(models.Model):

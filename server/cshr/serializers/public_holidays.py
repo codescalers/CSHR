@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from server.cshr.models.vacations import PublicHoliday
-from server.cshr.serializers.office import OfficeSerializer
+from cshr.models.vacations import PublicHoliday
+from cshr.serializers.office import OfficeSerializer
 
 
 class PublicHolidaySerializer(ModelSerializer):

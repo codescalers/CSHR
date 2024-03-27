@@ -1,6 +1,6 @@
 import datetime
 from typing import List, Dict, Any
-from server.cshr.models.office import WEEKEND_DAYS, Office
+from cshr.models.office import WEEKEND_DAYS, Office
 from django.contrib.auth.hashers import make_password
 
 locations: List[Dict[str, Any]] = [
@@ -31,7 +31,7 @@ def create_locations():
 
 
 def create_vacation_balance():
-    from server.cshr.models.vacations import OfficeVacationBalance
+    from cshr.models.vacations import OfficeVacationBalance
 
     for location in locations:
         OfficeVacationBalance.objects.create(
@@ -44,7 +44,7 @@ def create_vacation_balance():
 
 
 def create_users():
-    from server.cshr.models.users import User, TEAM, USER_TYPE, GENDER_TYPE
+    from cshr.models.users import User, TEAM, USER_TYPE, GENDER_TYPE
 
     users: List[Dict[str, Any]] = [
         {

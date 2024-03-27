@@ -1,6 +1,6 @@
-from server.cshr.models.hr_letters import HrLetters, UserDocuments
-from server.cshr.models.requests import STATUS_CHOICES
-from server.cshr.models.users import User
+from cshr.models.hr_letters import HrLetters, UserDocuments
+from cshr.models.requests import STATUS_CHOICES
+from cshr.models.users import User
 
 
 def get_hrLetter_by_id(id: str) -> HrLetters:
@@ -26,5 +26,5 @@ def filter_all_docs_based_on_user(user: User):
     return UserDocuments.objects.filter(user=user)
 
 
-def filter_hr_letter_by_pinding_status():
+def filter_hr_letter_by_pending_status():
     return HrLetters.objects.filter(status=STATUS_CHOICES.PENDING)

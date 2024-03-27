@@ -2,18 +2,18 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from server.cshr.api.permission import IsAdmin, UserIsAuthenticated
+from cshr.api.permission import IsAdmin, UserIsAuthenticated
 from django.contrib.auth.hashers import check_password, make_password
 
 
-from server.cshr.serializers.auth import (
+from cshr.serializers.auth import (
     ChangePasswordSerializer,
     RegisterSerializer,
     MyTokenObtainPairSerializer,
     MyTokenRefreshSerializer,
 )
-from server.cshr.api.response import CustomResponse
-from server.cshr.services.users import get_user_by_email
+from cshr.api.response import CustomResponse
+from cshr.services.users import get_user_by_email
 
 
 class RegisterApiView(GenericAPIView):
@@ -88,8 +88,8 @@ class ChangePasswordView(GenericAPIView):
                 request.user.password = new_password
                 request.user.save()
                 return CustomResponse.success(message="Success updated password")
-            return CustomResponse.unauthorized()
+            return CustomResponse.unauthorized(message="Incorrect password. Please ensure that the password provided is accurate.")
         return CustomResponse.bad_request(
-            message="Please make sure that you entered a valid data",
+            message="Please make sure that you entered a valid data.",
             error=serializer.errors,
         )

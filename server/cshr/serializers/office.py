@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from server.cshr.models.office import Office
+from cshr.models.office import Office
 
 
 class OfficeSerializer(ModelSerializer):

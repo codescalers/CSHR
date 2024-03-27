@@ -1,8 +1,8 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from server.cshr.models.users import User
+from cshr.models.users import User
 
-from server.cshr.models.company_properties import CompanyProperties
+from cshr.models.company_properties import CompanyProperties
 
 
 class CompanyPropertiesSerializer(ModelSerializer):
@@ -17,6 +17,6 @@ class CompanyPropertiesSerializer(ModelSerializer):
         fields = ["name", "image_of", "user_obj"]
 
     def get_user_obj(self, obj: CompanyProperties) -> User:
-        from server.cshr.serializers.users import TeamSerializer
+        from cshr.serializers.users import TeamSerializer
 
         return TeamSerializer(obj.user).data

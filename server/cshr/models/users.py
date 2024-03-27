@@ -5,10 +5,10 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Anonym
 
 from typing import Any, Union
 
-from server.cshr.models.abstracts import TimeStamp
-from server.cshr.models.office import Office
-from server.cshr.utils.dummy_data import create_locations
-from server.cshr.utils.generate import generate_random_color
+from cshr.models.abstracts import TimeStamp
+from cshr.models.office import Office
+from cshr.utils.generate import generate_random_color
+from cshr.utils.dummy_data import create_locations
 
 
 class TEAM(models.TextChoices):
@@ -101,7 +101,7 @@ class User(AbstractBaseUser, TimeStamp):
     skills = models.ManyToManyField(UserSkills, related_name="skills", blank=True)
     user_type = models.CharField(max_length=20, choices=USER_TYPE.choices)
     gender = models.CharField(max_length=20, choices=GENDER_TYPE.choices)
-    social_insurance_number = models.CharField(max_length=45)
+    social_insurance_number = models.CharField(max_length=45, null=True, blank=True)
     address = models.CharField(max_length=150)
     job_title = models.CharField(max_length=150)
     USERNAME_FIELD = "email"

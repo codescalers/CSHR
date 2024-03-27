@@ -2,9 +2,9 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.api.permission import IsAdmin, IsSupervisor, IsUser
-from server.cshr.api.response import CustomResponse
-from server.cshr.services.requests import requests_format_response
+from cshr.api.permission import IsAdmin, IsSupervisor, IsUser
+from cshr.api.response import CustomResponse
+from cshr.services.requests import requests_format_response
 from typing import Dict
 
 

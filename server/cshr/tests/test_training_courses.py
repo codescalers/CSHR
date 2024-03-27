@@ -1,9 +1,9 @@
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
-from server.cshr.models.users import User
-from server.cshr.models.office import Office
-from server.cshr.models.training_courses import TrainingCourses
+from cshr.models.users import User
+from cshr.models.office import Office
+from cshr.models.training_courses import TrainingCourses
 from django.contrib.auth.hashers import make_password
 
 client = APIClient()

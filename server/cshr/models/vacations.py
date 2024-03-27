@@ -1,10 +1,10 @@
 from django.db import models
-from server.cshr.models.abstracts import TimeStamp
-from server.cshr.models.office import Office
+from cshr.models.abstracts import TimeStamp
+from cshr.models.office import Office
 
-from server.cshr.models.users import User
+from cshr.models.users import User
 
-from server.cshr.models.requests import Requests
+from cshr.models.requests import Requests
 import datetime
 
 
@@ -37,7 +37,6 @@ class Vacation(Requests):
     end_date = models.DateField()
     change_log = models.JSONField(default=list)
     actual_days = models.IntegerField(default=0)
-    # taked_from_old_balance = models.BooleanField(default=False)
 
     def ___str__(self):
         return self.reason
@@ -53,9 +52,7 @@ class VacationBalance(models.Model):
     annual_leaves = models.IntegerField()
     emergency_leaves = models.IntegerField()
     leave_excuses = models.IntegerField()
-    actual_balance = models.JSONField(default=dict, null=True)
-    # date = models.DateField(auto_now=True)
-    # old_balance = models.JSONField(default=dict, null=True)
+    office_vacation_balance = models.ForeignKey("OfficeVacationBalance", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.user.email)

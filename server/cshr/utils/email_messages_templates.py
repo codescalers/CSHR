@@ -1,5 +1,5 @@
-from server.cshr.models.official_documents import OffcialDocument
-from server.cshr.models.users import User
+from cshr.models.official_documents import OffcialDocument
+from cshr.models.users import User
 
 
 def get_vacation_request_email_template(user: User, data, url) -> str:

@@ -2,9 +2,9 @@ from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
 )
-from server.cshr.models.hr_letters import HrLetters, UserDocuments
-from server.cshr.serializers.Image_upload import Base64ImageField
-from server.cshr.serializers.users import BaseUserSerializer
+from cshr.models.hr_letters import HrLetters, UserDocuments
+from cshr.serializers.Image_upload import Base64ImageField
+from cshr.serializers.users import BaseUserSerializer
 
 
 class HrLetterSerializer(ModelSerializer):

@@ -1,5 +1,5 @@
 from django.urls import path
-from server.cshr.views.hr_letters import (
+from cshr.views.hr_letters import (
     HrLetterApiView,
     HrLetterUpdateApiView,
     BaseHrLetterApiView,

@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import server.cshr.utils.generate
+import cshr.utils.generate
 
 
 class Migration(migrations.Migration):
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 (
                     "background_color",
                     models.CharField(
-                        default=server.cshr.utils.generate.generate_random_color,
+                        default=cshr.utils.generate.generate_random_color,
                         max_length=10,
                     ),
                 ),

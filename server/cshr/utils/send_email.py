@@ -1,8 +1,8 @@
-from server.cshr.models.users import User
-from server.cshr.models.users import USER_TYPE
+from cshr.models.users import User
+from cshr.models.users import USER_TYPE
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from server.cshr.services.users import get_user_by_id
+from cshr.services.users import get_user_by_id
 
 
 def get_admins_emails():

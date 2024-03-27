@@ -2,16 +2,16 @@ from typing import List
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.models.users import User, UserSkills
-from server.cshr.api.permission import (
+from cshr.models.users import User, UserSkills
+from cshr.api.permission import (
     IsAdmin,
     IsSupervisor,
     UserIsAuthenticated,
 )
-from server.cshr.services.office import get_office_by_id
-from server.cshr.utils.validations import Validator
-from server.cshr.api.response import CustomResponse
-from server.cshr.serializers.users import (
+from cshr.services.office import get_office_by_id
+from cshr.utils.validations import Validator
+from cshr.api.response import CustomResponse
+from cshr.serializers.users import (
     ActiveUserSerializer,
     BaseUserSerializer,
     GeneralUserSerializer,
@@ -22,17 +22,18 @@ from server.cshr.serializers.users import (
     UpdateUserSerializer,
     UserSkillsSerializer,
 )
-from server.cshr.services.users import (
+from cshr.services.users import (
     filter_users_by_birthdates,
     get_admin_office_users,
     get_all_skills,
+    get_supervisors,
     get_user_by_id,
     get_or_create_skill_by_name,
     get_all_of_users,
     get_user_team_leads,
     get_user_team_members,
 )
-from server.cshr.serializers.users import TeamSerializer
+from cshr.serializers.users import TeamSerializer
 
 
 class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):
@@ -64,7 +65,7 @@ class TeamAPIView(ListAPIView):
         return query_set
 
 
-class SupervisorsAPIView(ListAPIView):
+class TeamSupervisorsAPIView(ListAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = TeamSerializer
 
@@ -273,13 +274,14 @@ class UpdateUserProfileUserAPIView(GenericAPIView):
         if user is None:
             return CustomResponse.not_found(status_code=404, message="User not found")
         remove_image: bool = request.data.get("remove_image")
+        filename: str = request.data.get("filename")
         if request.data.get("image") == "":
             request.data["image"] = user.image if user.image else None
 
         serializer = self.get_serializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             office = get_office_by_id(request.data.get("location"))
-            serializer.save(
+            user: User = serializer.save(
                 team=request.data.get("team"),
                 gender=request.data.get("gender"),
                 location=office,
@@ -288,6 +290,10 @@ class UpdateUserProfileUserAPIView(GenericAPIView):
             )
             if remove_image:
                 user.image.delete()
+                user.save()
+            else:
+                dir = user.image.name.split("/")[0]
+                user.image = f"{dir}/{filename}"
                 user.save()
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="User updated"
@@ -361,3 +367,13 @@ class GetUsersBirthDatesAPIView(GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="Users founded successfully."
         )
+
+class SupervisorsAPIView(ListAPIView, GenericAPIView):
+    """method to get all Company properties"""
+
+    serializer_class = GeneralUserSerializer
+    permission_class = [IsAdmin | IsSupervisor]
+
+    def get_queryset(self) -> Response:
+        query_set = get_supervisors()
+        return query_set

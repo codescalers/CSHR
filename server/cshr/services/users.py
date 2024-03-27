@@ -1,10 +1,11 @@
 """This file will containes everything related to User model."""
 from django.contrib.auth.hashers import check_password
-from django.db.models import Q
+from django.db.models import Q, F
 from typing import List, Union
-from server.cshr.models.office import Office
+from cshr.models.office import Office
 
-from server.cshr.models.users import User, UserSkills
+from cshr.models.users import USER_TYPE, User, UserSkills
+from django.db.models.query import QuerySet
 
 
 def get_user_by_id(id: str) -> User:
@@ -61,7 +62,7 @@ def get_user_type_by_id(id: str) -> User:
         return None
 
 
-def filter_users_by_berithday_month(month: str) -> User:
+def filter_users_by_birth_month(month: str) -> User:
     """Filter users based on birthdayes."""
     users: List[User] = User.objects.filter(birthday__month=month)
     return users
@@ -84,9 +85,11 @@ def get_all_of_users(options=None) -> User:
     """Return all users"""
     if options:
         return User.objects.filter(location__id=options["location"]["id"]).order_by(
-            "-is_active"
+            "first_name", F("is_active").desc(nulls_last=True)
         )
-    return User.objects.all().order_by("-is_active")
+    return User.objects.all().order_by(
+        "first_name", F("is_active").desc(nulls_last=True)
+    )
 
 
 def get_admin_office_users(admin: User) -> User:
@@ -99,7 +102,7 @@ def get_admin_office_users(admin: User) -> User:
     )
 
 
-def get_or_create_skill_by_name(name: str) -> UserSkills or bool:
+def get_or_create_skill_by_name(name: str) -> UserSkills or bool: # type: ignore
     """Return a skill by name"""
     return UserSkills.objects.get_or_create(name=name.lower())
 
@@ -126,3 +129,7 @@ def get_all_skills():
 def filter_users_by_birthdates(month: int, day: int) -> List[User]:
     """Filter all users by birthdates"""
     return User.objects.filter(birthday__month=month, birthday__day=day)
+
+def get_supervisors() -> QuerySet[User]:
+    """Return all supervisors users"""
+    return User.objects.filter(user_type=USER_TYPE.SUPERVISOR)

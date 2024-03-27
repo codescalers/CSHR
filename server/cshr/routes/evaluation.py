@@ -1,8 +1,8 @@
 from django.urls import path
 
 
-from server.cshr.views.evaluation import UserEvaluationsAPIView, EvaluationsAPIView
-from server.cshr.views.evaluation import (
+from cshr.views.evaluation import UserEvaluationsAPIView, EvaluationsAPIView
+from cshr.views.evaluation import (
     BaseUserEvaluationsAPIView,
     BaseEvaluationsAPIView,
 )

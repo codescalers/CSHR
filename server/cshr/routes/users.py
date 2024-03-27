@@ -1,7 +1,7 @@
 from django.urls import path
 
 
-from server.cshr.views.users import (
+from cshr.views.users import (
     AdminUserAPIView,
     BaseAdminUserAPIView,
     GeneralUserAPIView,
@@ -13,6 +13,7 @@ from server.cshr.views.users import (
     BaseSupervisorUserAPIView,
     UserSkillsAPIView,
     TeamAPIView,
+    TeamSupervisorsAPIView,
     SupervisorsAPIView,
     PostUserSkillsAPIView,
     GetUsersBirthDatesAPIView,
@@ -30,7 +31,8 @@ urlpatterns = [
     path("admin/office_users/", GetUsersInAdminOfficeAPIView.as_view()),
     path("team/", TeamAPIView.as_view()),
     path("birthdates/", GetUsersBirthDatesAPIView.as_view()),
-    path("team/supervisors/", SupervisorsAPIView.as_view()),
+    path("team/supervisors/", TeamSupervisorsAPIView.as_view()),
+    path("supervisors/", SupervisorsAPIView.as_view()),
     path("supervisor/<str:id>/", SupervisorUserAPIView.as_view()),
     path("admin/<str:id>/", AdminUserAPIView.as_view()),
     path("<str:id>/", GeneralUserAPIView.as_view()),

@@ -1,5 +1,5 @@
 from django.urls import path
-from server.cshr.views.landing_page import LandingPageApiView
+from cshr.views.landing_page import LandingPageApiView
 
 
 urlpatterns = [

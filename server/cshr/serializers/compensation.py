@@ -2,8 +2,8 @@ from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
 )
-from server.cshr.models.compensation import Compensation
-from server.cshr.serializers.users import BaseUserSerializer, TeamSerializer
+from cshr.models.compensation import Compensation
+from cshr.serializers.users import BaseUserSerializer, TeamSerializer
 
 
 class CompensationSerializer(ModelSerializer):

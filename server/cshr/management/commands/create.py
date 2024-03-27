@@ -1,10 +1,10 @@
 from django.core.management.base import BaseCommand
-from server.cshr.utils.dummy_data import (
+from cshr.utils.dummy_data import (
     create_locations,
     create_users,
     create_vacation_balance,
 )
-from server.components import config
+from components import config
 from enum import Enum
 
 

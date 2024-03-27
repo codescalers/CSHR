@@ -1,17 +1,17 @@
 from typing import Dict, List
-from server.cshr.models.event import Event
-from server.cshr.serializers.event import EventOnDaySerializer, EventSerializer
-from server.cshr.api.permission import UserIsAuthenticated
-from server.cshr.services.event import (
+from cshr.models.event import Event
+from cshr.serializers.event import EventOnDaySerializer, EventSerializer
+from cshr.api.permission import UserIsAuthenticated
+from cshr.services.event import (
     filter_events_by_day,
     get_all_events,
     get_event_by_id,
-    send_event_to_calendar,
 )
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.api.response import CustomResponse
+from cshr.api.response import CustomResponse
+from cshr.utils.wrappers import wrap_event_request
 
 
 class BaseEventsAPIView(ListAPIView, GenericAPIView):
@@ -23,7 +23,7 @@ class BaseEventsAPIView(ListAPIView, GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             saved = serializer.save()
-            response_date: Dict = send_event_to_calendar(saved)
+            response_date: Dict = wrap_event_request(saved)
             return CustomResponse.success(
                 data=response_date,
                 message="event is created successfully",
