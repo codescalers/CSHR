@@ -137,10 +137,8 @@ class UsersTeamApi extends ApiClientBase {
     this.supervisors = new UsersTeamSupervisorsApi(options, prePath + this.path)
   }
 
-  list(query?: Api.Inputs.List) {
-    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)), {
-      transform: (d) => d.results
-    })
+  list(query?: any) {
+      return this.unwrap(() => this.$http.get<Api.Returns.List<Api.User>>(this.getUrl('', query)))
   }
 }
 
