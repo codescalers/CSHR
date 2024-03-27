@@ -205,10 +205,14 @@ export default {
       }
     })
 
-    watch([birthdayDate, joiningDate], ([newBirthdayDate, newJoiningDate]) => {
-      if (newBirthdayDate) selectedUser.value.birthday = formatDate(newBirthdayDate)
+    watch([ joiningDate], ([ newJoiningDate]) => {
       if (newJoiningDate) selectedUser.value.joining_at = formatDate(newJoiningDate)
     })
+
+    watch([birthdayDate], ([newBirthdayDate,]) => {
+      if (newBirthdayDate) selectedUser.value.birthday = formatDate(newBirthdayDate)
+    })
+
 
     const birthdayPicker = ref(false)
     const joiningDatePicker = ref(false)
