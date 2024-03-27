@@ -44,7 +44,6 @@
       <v-divider></v-divider>
     </div>
 
-    {{ team }}
     <v-data-table :headers="headers" :loading="loading" :items="team" class="mb-6">
       <template v-slot:loading>
         <v-skeleton-loader type="table-row@5"></v-skeleton-loader>
@@ -62,9 +61,7 @@
 
 <script lang="ts">
 import { $api } from '@/clients'
-import type { Api } from '@/types'
-import { useAsyncState } from '@vueuse/core'
-import { watch } from 'vue'
+import {  watch } from 'vue'
 import { onMounted, ref } from 'vue'
 
 export default {
@@ -84,98 +81,45 @@ export default {
     const count = ref<number>(0)
     const team = ref<any[]>([]);
 
-    function setCount(data: any) {
-      if (data?.count) {
-        count.value = Math.ceil(data?.count / 10)
-      } else {
-        count.value = 0
-      }
-    }
-
 
     function displayValue(value: any) {
       return value ?? '-'
     }
 
-    const x = useAsyncState(
-      $api.users.team.list({ page: page.value }),
-      undefined
-      ,
-      {
-        onSuccess(data) {
-          console.log("xxx", { data })
+    async function listTeam(page: number, count: number): Promise<{ page: number, count: number, team: any[] }> {
 
-
-          setCount(data)
-
-          data?.results.forEach((user: Api.User) => {
-            team.value.push(user)
-          })
-        }
+      const res = await $api.users.team.list({ page });
+      let team: any[] = [];
+      if (res.count) {
+        count = Math.ceil(res.count / 10)
+      } else {
+        count = 0
       }
-    )
-    //   c
-    // const team = useAsyncState(
-    //   async (team: Api.User[]) => {
-    //     console.log("team", { team })
-    //     return team
-    //   },
-    //   [],
-    //   { immediate: false }
-    // )
-    //      async function listTeam( page: number, count: number): Promise<{ page: number, count: number,  team: any[]}> {
+      res.results.forEach((user: any) => {
+        team.push(user)
+      })
+      return { page, count, team };
 
-    // const res = await   $api.users.team.list({ page });
-    // let team: any[] = [];
-    // if (res.count) {
-    //   count = Math.ceil(res.count / 10)
-    // } else {
-    //   count = 0
-    // }
-    // res.results.forEach((user: any) => {
-    //   team.push(user)
-    // })
-    // return { page, count, team };
+    }
 
-    // }
-
-    //     async function concatTeam() {
-    //       const { page: currentPage, count: currentCount, team: teamUsers } = await listTeam( page.value, count.value);
-    //       page.value = currentPage;
-    //       count.value = currentCount;
-    //       team.value = team.value.concat(teamUsers);
-    //     }
-    // watch(
-    //   () => count.value,
-    //   async (newValue) => {
-    //     if (page.value !== count.value) {
-    //     page.value++, count.value--, concatTeam()
-
-    //     }
-    // page.value++
-    // x.execute()
-
-    // console.log("newValue",count.value)
-    // useAsyncState(
-    //   $api.users.list({ location_id: $route.query.location_id, page: page.value }),
-    //   undefined,
-    //   {
-    //     onSuccess(data) {
-    //       setCount(data)
-    //       users.execute(undefined, data?.results || [])
-    //     }
-    //   }
-    // )
-    //   }
-    // )
+    async function concatTeam() {
+      const { page: currentPage, count: currentCount, team: teamUsers } = await listTeam(page.value, count.value);
+      page.value = currentPage + 1;
+      count.value = currentCount - 1;
+      team.value = team.value.concat(teamUsers);
+    }
+    watch(
+      () => count.value,
+      async (newValue) => {
+        if (page.value !== count.value && count.value >= 1) {
+          concatTeam();
+        }
+      })
 
     onMounted(async () => {
       try {
-
-        // team.value = await $api.users.team.list({ page: 2 })
-        // console.log(team.value)
         supervisors.value = await $api.users.team.supervisors.list()
-        // concatTeam()
+        concatTeam()
         loading.value = false
       } catch (error) {
         console.error(error)
