@@ -18,7 +18,7 @@ from rest_framework import serializers
 class VacationsSerializer(ModelSerializer):
     class Meta:
         model = Vacation
-        fields = "__all__"
+        fields = ["id", "reason", "from_date", "end_date", "applying_user", "approval_user", "type", "status", "created_at" ]
         read_only_fields = ("applying_user", "approval_user", "type", "status")
 
 

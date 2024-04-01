@@ -19,43 +19,43 @@ class LandingPageTypeEnum(Enum):
   EVENT = "event"
 
 
-"""
-Wrap the vacation request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
-"""
 def wrap_vacation_request(vacation: Vacation) -> LandingPageVacationsSerializer : # type: ignore
+  """
+    Wrap the vacation request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
+  """
   vacation_data = LandingPageVacationsSerializer(vacation).data
   vacation_data["type"] = LandingPageTypeEnum.VACATION.value
   vacation_data["applying_user_full_name"] = vacation.applying_user.full_name
   return vacation_data
 
-"""
-Wrap the meeting request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
-"""
 def wrap_meeting_request(meeting: Meetings) -> MeetingsSerializer : # type: ignore
+  """
+    Wrap the meeting request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
+  """
   meeting_data = MeetingsSerializer(meeting).data
   meeting_data["type"] = LandingPageTypeEnum.MEETING.value
   return meeting_data
 
-"""
-Wrap the event request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
-"""
 def wrap_event_request(event: Event) -> EventSerializer : # type: ignore
+  """
+    Wrap the event request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
+  """
   event_data = EventSerializer(event).data
   event_data["type"] = LandingPageTypeEnum.EVENT.value
   return event_data
 
-"""
-Wrap the event request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
-"""
 def wrap_holiday_request(holiday: PublicHoliday) -> PublicHolidaySerializer : # type: ignore
+  """
+    Wrap the event request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
+  """
   holiday_data = PublicHolidaySerializer(holiday).data
   holiday_data["type"] = LandingPageTypeEnum.PUBLIC_HOLIDAY.value
   return holiday_data
 
-"""
-Wrap the birthday request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
-"""
 def wrap_birthday_event(birthday: User) -> BaseUserSerializer : # type: ignore
+  """
+    Wrap the birthday request with [type: string] field, to be ready to be sent to the calendar as the `type` field is required there.
+  """
   today = datetime.datetime.now()
   birthday_data = BaseUserSerializer(birthday).data
   birthday_data["type"] = LandingPageTypeEnum.BIRTHDAY.value
