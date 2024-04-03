@@ -298,8 +298,8 @@ export default {
           await useAsyncState(
             $api.vacations.create({
               reason: leaveReason.value.reason,
-              from_date: startDate.value,
-              end_date: endDate.value
+              from_date: from_date.value,
+              end_date: end_date.value
             }),
             undefined,
             {
