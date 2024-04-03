@@ -44,13 +44,7 @@ export const addressRules = [
 //   (v: string) =>
 //     (v && v.length >= 3 && v.length <= 50) || 'Social Number must be between 3 and 50 characters.'
 // ]
-export const telegramRules = [
-  (v: string) => typeof v === 'string' || 'Telegram must be a string.',
-  (v: string) => !!v || 'Telegram is required.',
-  (v: string) => /^@([A-Za-z0-9_]{1,255})$/.test(v) || 'Telegram handle is not valid.',
-  (v: string) =>
-    (v && v.length >= 3 && v.length <= 50) || 'Telegram must be between 3 and 50 characters.'
-]
+
 export const requiredStringRules = [
   (v: string) => typeof v === 'string' || 'This field must be a string.',
   (v: string) => !!v || 'This field is required.'

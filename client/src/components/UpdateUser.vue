@@ -49,7 +49,7 @@
         </v-col>
         <v-col cols="6" v-if="selectedUser">
           <v-text-field v-model="selectedUser.telegram_link" label="Telegram" density="comfortable"
-            :rules="telegramRules"></v-text-field>
+            :rules="requiredRules"></v-text-field>
 
           <v-text-field v-model="selectedUser.birthday" label="Birthday" density="comfortable"
             :rules="requiredStringRules" @click="toggleDatePicker('birthdayPicker')" readonly>
@@ -110,7 +110,6 @@ import {
   mobileRules,
   jobRules,
   addressRules,
-  telegramRules,
   requiredStringRules,
   requiredRules,
   formatDate,
@@ -285,7 +284,6 @@ export default {
       addressRules,
       supervisorPage,
       supervisorCount,
-      telegramRules,
       requiredStringRules,
       requiredRules,
       isLoading,
