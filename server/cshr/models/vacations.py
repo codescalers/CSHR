@@ -33,10 +33,12 @@ class Vacation(Requests):
         choices=REASON_CHOICES.choices,
         default=REASON_CHOICES.ANNUAL_LEAVES,
     )
-    from_date = models.DateField()
-    end_date = models.DateField()
+
+    from_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
     change_log = models.JSONField(default=list)
-    actual_days = models.IntegerField(default=0)
+    actual_days = models.FloatField(default=0)
 
     def ___str__(self):
         return self.reason
