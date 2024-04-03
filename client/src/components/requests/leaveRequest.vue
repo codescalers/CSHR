@@ -4,7 +4,8 @@
       {{
         actualDays.state.value === 0
         ? 'Actual vacation days requested is zero, Selected days might include weekends or public holidays'
-        : 'Actual vacation days requested are ' + actualDays.state.value + ' days'
+        : actualDays.state.value === 1 && days < 1 && days > 0 ? 'Actual vacation days requested are ' + days + ' days'
+          : 'Actual vacation days requested are ' + actualDays.state.value + ' days'
       }}
     </v-alert>
     <div class="mt-3" v-if="user?.fullUser.user_type === 'Admin'">
@@ -47,19 +48,13 @@
 
     <div class="mt-3">
       <v-text-field ref="excuseStartField" item-color="info" base-color="info" color="info" variant="outlined"
-        label="Vacation Start Time" v-model="excuseStart" hide-details="auto" type="time" :rules="[validateTimes]">
+        label="Vacation Start Time" v-model="excuseStart" hide-details="auto" type="time" :rules="[validateTimes]" :readonly="startDate !== endDate">
       </v-text-field>
     </div>
 
     <div class="mt-3">
       <v-text-field ref="excuseEndField" item-color="info" base-color="info" color="info" variant="outlined"
-        label="Vacation End Time" v-model="excuseEnd" hide-details="auto" type="time" :rules="[validateTimes]">
-      </v-text-field>
-    </div>
-
-    <div class="mt-3">
-      <v-text-field item-color="info" base-color="info" color="info" variant="outlined" label="Days" v-model="days"
-        hide-details="auto" :rules="fieldRequired" type="number">
+        label="Vacation End Time" v-model="excuseEnd" hide-details="auto" type="time" :rules="[validateTimes]" :readonly="startDate !== endDate">
       </v-text-field>
     </div>
     <v-row class="mt-3 pa-4 d-flex justify-end">
@@ -95,10 +90,8 @@ export default {
     const count = ref(0)
     const startDateField = ref()
     const endDateField = ref()
-
     const excuseStartField = ref()
     const excuseEndField = ref()
-
     const startDate = ref<Date>(props.dates.startStr)
     const endDate = ref<any>(new Date(props.dates.endStr))
     endDate.value.setDate(endDate.value.getDate() - 1)
@@ -109,7 +102,8 @@ export default {
     const leaveReasons = ref<Api.LeaveReason[]>([])
     const requesting = ref<boolean>(false)
     const excuseStart = ref('08:00')
-    const excuseEnd = ref('17:00')
+    const excuseEnd = ref('16:00')
+    const CORE_HOURS = 8;
     const days = ref()
 
     const from_date = computed(() => {
@@ -130,7 +124,6 @@ export default {
 
       return val.toISOString()
     })
-
 
     const actualDays = useAsyncState(async () => {
       return $api.vacations.calculate.list({
@@ -209,6 +202,11 @@ export default {
         setTimeout(async () => {
           startDateField.value.validate()
           endDateField.value.validate()
+          if (startDate.value !== endDate.value) {
+            days.value = 0;
+            excuseStart.value = '08:00'
+            excuseEnd.value = '16:00'
+          }
           actualDays.execute()
         }, 200)
       }
@@ -220,10 +218,12 @@ export default {
         setTimeout(async () => {
           excuseStartField.value.validate()
           excuseEndField.value.validate()
+          if (startDate.value === endDate.value) {
+            days.value = calculateTimes()
+          }
         }, 200)
       }
     )
-
     const validateDates = (value: string | null): string | boolean => {
       if (!startDate.value) return 'Please select start date.'
       if (!endDate.value) return 'Please select end date.'
@@ -231,13 +231,11 @@ export default {
       return true
     }
 
-
     const validateTimes = (value: string | null): string | boolean => {
       if (!excuseEnd.value) return 'Please select end time.'
       if (excuseEnd.value < excuseStart.value) return 'End time must be after start time.'
       return true
     }
-
     async function concatUsers() {
       const {
         page: currentPage,
@@ -249,8 +247,6 @@ export default {
       count.value = currentCount
       officeUsers.value = officeUsers.value.concat(newUsers)
     }
-
-
     onMounted(async () => {
       startDateField.value.validate()
       endDateField.value.validate()
@@ -258,7 +254,6 @@ export default {
       balance.execute()
       concatUsers()
     })
-
     const reloadMore = computed(() => {
       if (page.value === count.value) {
         return false
@@ -269,6 +264,19 @@ export default {
       return false
     })
 
+    function timeStringToHours(time: string): number {
+      const [hours, minutes] = time.split(':').map(Number);
+      return hours + minutes / 60;
+    }
+
+
+    function calculateTimes() {
+      const startTimeInHours = timeStringToHours(excuseStart.value);
+      const endTimeInHours = timeStringToHours(excuseEnd.value);
+      return (endTimeInHours - startTimeInHours) / CORE_HOURS
+
+    }
+
     async function createLeave() {
       requesting.value = true
       if (leaveReason.value) {
@@ -276,8 +284,8 @@ export default {
           await useAsyncState(
             $api.vacations.admin.create(selectedUser.value.id, {
               reason: leaveReason.value.reason,
-              from_date: startDate.value,
-              end_date: endDate.value
+              from_date: from_date.value,
+              end_date: end_date.value
             }),
             null,
             {
