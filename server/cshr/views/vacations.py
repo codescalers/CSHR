@@ -45,7 +45,7 @@ from cshr.utils.email_messages_templates import (
 )
 
 # from cshr.celery.send_email import send_email_for_request
-from cshr.celery.send_email import send_email_for_reply, send_email_for_request
+from cshr.celery.send_email import send_email_for_reply
 from cshr.models.vacations import (
     REASON_CHOICES,
     OfficeVacationBalance,
@@ -167,51 +167,6 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
     def post(self, request: Request) -> Response:
         """Method to create a new vacation request"""
-        if (
-            request.data.get("end_date")
-            and type(request.data["end_date"]) is str
-            and request.data.get("from_date")
-            and type(request.data["from_date"]) is str
-        ):
-            start_date: List[str] = request.data.get("from_date").split(
-                "-"
-            )  # Year, month, day
-
-            end_date: List[str] = request.data.get("end_date").split(
-                "-"
-            )  # Year, month, day
-
-            try:
-                converted_start_date: datetime = datetime(
-                    year=int(start_date[0]),
-                    month=int(start_date[1]),
-                    day=int(start_date[2]),
-                ).date()
-            except Exception:
-                return CustomResponse.bad_request(
-                    message="Invalid start date format, it must match the following pattern 'yyyy-mm-dd'.",
-                    error=start_date,
-                )
-
-            try:
-                converted_end_date: datetime = datetime(
-                    year=int(end_date[0]), month=int(end_date[1]), day=int(end_date[2])
-                ).date()
-            except Exception:
-                return CustomResponse.bad_request(
-                    message="Invalid end date format, it must match the following pattern 'yyyy-mm-dd'.",
-                    error=start_date,
-                )
-
-            # Check if end date is lower than start date
-            if converted_end_date < converted_start_date:
-                return CustomResponse.bad_request(
-                    message="The end date must be later than the start date."
-                )
-
-            request.data["from_date"] = converted_start_date
-            request.data["end_date"] = converted_end_date
-
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             start_date = serializer.validated_data.get("from_date")
@@ -236,7 +191,20 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             reason: str = serializer.validated_data.get("reason")
             user_reason_balance = applying_user.vacationbalance
+            
             vacation_days = v.get_actual_days(applying_user, start_date, end_date)
+
+            if start_date.day == end_date.day:
+                # The request is the same day
+                start_hour = start_date.hour
+                end_hour  = end_date.hour
+                times = v.calculate_times(start_hour=start_hour, end_hour=end_hour)
+                if times < 1:
+                    if not v.is_valid_times(times=times, start_hour=start_hour, end_hour=end_hour):
+                        return CustomResponse.bad_request(
+                            message=f"You've sent an invalid times, The days should match the {times}"
+                        )
+                    vacation_days = times
 
             if reason == REASON_CHOICES.PUBLIC_HOLIDAYS:
                 return CustomResponse.bad_request(
@@ -253,6 +221,11 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             else:
                 curr_balance = getattr(user_reason_balance, reason)
 
+                if curr_balance < vacation_days:
+                    return CustomResponse.bad_request(
+                        message=f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
+                    )
+
                 pending_vacations = Vacation.objects.filter(
                     status=STATUS_CHOICES.PENDING,
                     applying_user=applying_user,
@@ -260,11 +233,6 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 ).values_list("actual_days", flat=True)
 
                 chcked_balance = curr_balance - sum(pending_vacations)
-
-                if curr_balance < vacation_days:
-                    return CustomResponse.bad_request(
-                        message=f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
-                    )
 
                 if chcked_balance < vacation_days:
                     return CustomResponse.bad_request(

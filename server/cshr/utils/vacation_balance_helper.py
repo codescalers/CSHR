@@ -42,9 +42,9 @@ class StanderdVacationBalance:
             year=datetime.datetime.now().year, location=self.user.location
         )[0]
 
-        annual_leaves: int = round(office_balance.annual_leaves / 12 * month)
-        leave_excuses: int = round(office_balance.leave_excuses / 12 * month)
-        emergency_leaves: int = round(office_balance.emergency_leaves / 12 * month)
+        annual_leaves: int = office_balance.annual_leaves / 12 * month
+        leave_excuses: int = office_balance.leave_excuses / 12 * month
+        emergency_leaves: int = office_balance.emergency_leaves / 12 * month
 
         balance: VacationBalance = VacationBalance.objects.get_or_create(
             user=self.user,
@@ -78,6 +78,17 @@ class StanderdVacationBalance:
             balance.save()
             return True
         return f"There is no filed or attrbute named {reason} inside VacationBalance model."
+
+    def calculate_times(self, start_hour: str, end_hour: str, CORE_HOURS=8) -> float:
+        """Calculate the hours with the CORE_HOURS"""
+        return (end_hour - start_hour) / CORE_HOURS
+
+    def is_valid_times(self, times: float, start_hour: str, end_hour: str,) -> bool:
+        """
+            Calculate the times and get the actual values, e.g. the start date is 11:0 AM, and the end date is 01:00 PM then the actual time should be 2 hours.
+        """
+        _times = self.calculate_times(start_hour=start_hour, end_hour=end_hour)
+        return _times == times
 
     def get_actual_days(
         self, user: User, start_date: datetime, end_date: datetime
