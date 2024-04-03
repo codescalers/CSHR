@@ -80,8 +80,10 @@
         <v-col cols="12">
           <v-file-input v-model="image" label="Image" variant="filled" accept="image/*" :show-size="1024"
             prepend-icon="mdi-camera" @input="chooseImage" density="comfortable"></v-file-input>
-          <v-img v-if="image && image.length > 0 && imageUrl" :src="imageUrl" width="200" height="200"
+              <v-img v-if="image && image.length > 0 && imageUrl" :src="imageUrl" width="200" height="200"
             class="justify-center mb-5"></v-img>
+              <v-img v-else :src="imageSrc+ selectedUser?.image" width="200" height="200"
+            ></v-img>
           <v-row>
             <v-col cols="3">
               <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading="isLoading" @click="execute">Update
@@ -116,7 +118,6 @@ import {
   listUsers
 } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
-import { ApiClientBase } from '@/clients/api/base'
 
 export default {
   name: 'UpdateUser',
@@ -139,6 +140,7 @@ export default {
     const supervisors = ref<any[]>([])
     const image = ref()
     const imageUrl = ref()
+    const imageSrc = window.env.SERVER_DOMAIN_NAME_API.replace('api', '')
     const selectedUser = ref()
     const reporting_to = ref()
     const userIsActive = ref<boolean>(selectedUser.value?.is_active)
@@ -251,7 +253,7 @@ export default {
         selectedUser.value.user_type = selectedUser.value.user_type === "Team Lead" ? "Supervisor" : selectedUser.value.user_type
         await $api.myprofile.update(selectedUser.value.id, {
           ...selectedUser.value,
-          image: imageUrl.value ? imageUrl.value : null,
+          image: imageUrl.value ? imageUrl.value : selectedUser.value.image,
           location: selectedUser.value.location.id,
           filename: image.value ? image.value[0].name : null,
           reporting_to: reporting_to.value ? [reporting_to.value.id] : []
@@ -273,6 +275,7 @@ export default {
       joiningDate,
       image,
       imageUrl,
+      imageSrc,
       supervisors,
       officeUsers,
       selectedUser,
