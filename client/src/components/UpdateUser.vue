@@ -83,7 +83,7 @@
               <v-img v-if="image && image.length > 0 && imageUrl" :src="imageUrl" width="200" height="200"
             class="justify-center mb-5"></v-img>
               <v-img v-else :src="imageSrc+ selectedUser?.image" width="200" height="200"
-            ></v-img>
+            class="justify-center mb-5"></v-img>
           <v-row>
             <v-col cols="3">
               <v-btn color="primary" type="submit" :disabled="!form?.isValid" :loading="isLoading" @click="execute">Update
