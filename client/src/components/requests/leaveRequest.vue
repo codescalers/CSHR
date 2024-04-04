@@ -165,8 +165,8 @@ export default {
               reason: 'compensation'
             },
             {
-              name: `Leave Request  ${data[0].compensation.reserved} / ∞`,
-              reason: 'leave_request'
+              name: `Leave Excuse  ${data[0].leave_excuses.reserved} / ${data[0].leave_excuses.all}`,
+              reason: 'leave_excuses'
             }
           ]
         }
