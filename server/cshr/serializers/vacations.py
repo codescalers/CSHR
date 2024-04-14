@@ -1,6 +1,7 @@
 """This file will containes all vacation serializers."""
 from rest_framework.serializers import (
     ModelSerializer,
+    DateTimeField,
     SerializerMethodField,
 )
 from cshr.models.users import User
@@ -254,5 +255,5 @@ class VacationBalanceAdjustmentSerializer(serializers.Serializer):
 
 class AdminApplyVacationForUserSerializer(serializers.Serializer):
     reason = serializers.CharField()
-    from_date = serializers.DateField()
-    end_date = serializers.DateField()
+    from_date = serializers.DateTimeField()
+    end_date = serializers.DateTimeField()
