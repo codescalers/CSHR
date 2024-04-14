@@ -273,7 +273,11 @@ export default {
     function calculateTimes() {
       const startTimeInHours = timeStringToHours(excuseStart.value);
       const endTimeInHours = timeStringToHours(excuseEnd.value);
-      return (endTimeInHours - startTimeInHours) / CORE_HOURS
+      const days = (endTimeInHours - startTimeInHours) / CORE_HOURS
+      if( days === 0.25 || days === 0.50 || days === 0.75){
+        return days   
+      }
+      return 1
 
     }
 
