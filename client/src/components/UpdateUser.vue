@@ -45,11 +45,11 @@
           <v-text-field v-model="selectedUser.address" label="Address" density="comfortable"
             :rules="addressRules"></v-text-field>
           <v-text-field v-model="selectedUser.social_insurance_number" label="Social Insurance Number" type="number"
-            density="comfortable" :rules="socialInsuranceRules"></v-text-field>
+            density="comfortable"></v-text-field>
         </v-col>
         <v-col cols="6" v-if="selectedUser">
           <v-text-field v-model="selectedUser.telegram_link" label="Telegram" density="comfortable"
-            :rules="telegramRules"></v-text-field>
+            :rules="requiredRules"></v-text-field>
 
           <v-text-field v-model="selectedUser.birthday" label="Birthday" density="comfortable"
             :rules="requiredStringRules" @click="toggleDatePicker('birthdayPicker')" readonly>
@@ -110,8 +110,6 @@ import {
   mobileRules,
   jobRules,
   addressRules,
-  socialInsuranceRules,
-  telegramRules,
   requiredStringRules,
   requiredRules,
   formatDate,
@@ -206,10 +204,14 @@ export default {
       }
     })
 
-    watch([birthdayDate, joiningDate], ([newBirthdayDate, newJoiningDate]) => {
-      if (newBirthdayDate) selectedUser.value.birthday = formatDate(newBirthdayDate)
+    watch([ joiningDate], ([ newJoiningDate]) => {
       if (newJoiningDate) selectedUser.value.joining_at = formatDate(newJoiningDate)
     })
+
+    watch([birthdayDate], ([newBirthdayDate,]) => {
+      if (newBirthdayDate) selectedUser.value.birthday = formatDate(newBirthdayDate)
+    })
+
 
     const birthdayPicker = ref(false)
     const joiningDatePicker = ref(false)
@@ -282,8 +284,6 @@ export default {
       addressRules,
       supervisorPage,
       supervisorCount,
-      socialInsuranceRules,
-      telegramRules,
       requiredStringRules,
       requiredRules,
       isLoading,

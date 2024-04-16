@@ -59,7 +59,14 @@
       </v-text-field>
     </div>
     <v-row class="mt-3 pa-4 d-flex justify-end">
-      <v-btn color="primary" type="submit" :disabled="!form?.isValid"> Submit </v-btn>
+      <v-btn
+        color="primary"
+        type="submit"
+        :disabled="!form?.isValid || requesting"
+        :loading="requesting"
+      >
+        Submit
+      </v-btn>
     </v-row>
   </v-form>
 </template>
@@ -82,6 +89,7 @@ export default {
     const location = ref<string>('')
     const form = ref()
     const meetingTime = ref()
+    const requesting = ref<boolean>(false)
 
     const meetingDateTime = computed(() => {
       let val = new Date(startDate.value)
@@ -94,7 +102,8 @@ export default {
     })
 
     async function createMeeting() {
-      useAsyncState(
+      requesting.value = true
+      await useAsyncState(
         $api.meeting.create({
           date: meetingDateTime.value,
           meeting_link: meetingLink.value,
@@ -107,6 +116,7 @@ export default {
           }
         }
       )
+      requesting.value = false
     }
 
     return {
@@ -115,6 +125,7 @@ export default {
       location,
       form,
       meetingTime,
+      requesting,
       fieldRequired,
       createMeeting
     }

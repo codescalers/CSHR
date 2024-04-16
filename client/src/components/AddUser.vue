@@ -14,11 +14,11 @@
 
           <v-text-field v-model="address" label="Address" density="comfortable" :rules="addressRules"></v-text-field>
           <v-text-field v-model="social_insurance_number" label="Social Insurance Number" type="number"
-            density="comfortable" :rules="socialInsuranceRules"></v-text-field>
+            density="comfortable"></v-text-field>
         </v-col>
         <v-col cols="6">
           <v-text-field v-model="telegram_link" label="Telegram" density="comfortable"
-            :rules="telegramRules"></v-text-field>
+            :rules="requiredRules"></v-text-field>
 
           <v-text-field v-model="birthday" label="Birthday" density="comfortable" :rules="requiredStringRules"
             @click="toggleDatePicker('birthdayPicker')" readonly>
@@ -83,14 +83,11 @@ import {
   mobileRules,
   jobRules,
   addressRules,
-  socialInsuranceRules,
-  telegramRules,
   requiredStringRules,
   requiredRules
 } from '@/utils'
 import { formatDate } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
-import { ApiClientBase } from '@/clients/api/base'
 
 export default {
   name: 'AddUser',
@@ -254,8 +251,6 @@ export default {
       mobileRules,
       jobRules,
       addressRules,
-      socialInsuranceRules,
-      telegramRules,
       requiredStringRules,
       requiredRules,
       isLoading,

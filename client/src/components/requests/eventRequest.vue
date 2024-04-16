@@ -1,13 +1,33 @@
 <template>
   <v-form ref="form" @submit.prevent="createEvent()">
     <div class="mt-3">
-      <v-text-field ref="startDateField" color="info" item-color="info" base-color="info" variant="outlined"
-        hide-details="auto" label="From" v-model="startDate" type="date" :rules="[validateDates]"></v-text-field>
+      <v-text-field
+        ref="startDateField"
+        color="info"
+        item-color="info"
+        base-color="info"
+        variant="outlined"
+        hide-details="auto"
+        label="From"
+        v-model="startDate"
+        type="date"
+        :rules="[validateDates]"
+      ></v-text-field>
     </div>
 
     <div class="mt-3">
-      <v-text-field ref="endDateField" color="info" item-color="info" base-color="info" variant="outlined"
-        hide-details="auto" label="To" v-model="endDate" type="date" :rules="[validateDates]"></v-text-field>
+      <v-text-field
+        ref="endDateField"
+        color="info"
+        item-color="info"
+        base-color="info"
+        variant="outlined"
+        hide-details="auto"
+        label="To"
+        v-model="endDate"
+        type="date"
+        :rules="[validateDates]"
+      ></v-text-field>
     </div>
 
     <div class="mt-3">
@@ -34,12 +54,19 @@
     </div>
 
     <v-row class="mt-3 pa-4 d-flex justify-end">
-      <v-btn color="primary" type="submit" :disabled="!form?.isValid"> Submit </v-btn>
+      <v-btn
+        color="primary"
+        type="submit"
+        :disabled="!form?.isValid || requesting"
+        :loading="requesting"
+      >
+        Submit
+      </v-btn>
     </v-row>
   </v-form>
 </template>
 <script lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { fieldRequired } from '@/utils'
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
@@ -63,6 +90,7 @@ export default {
     const eventEnd = ref()
     const startDateField = ref()
     const endDateField = ref()
+    const requesting = ref<boolean>(false)
 
     watch(
       () => [startDate.value, endDate.value],
@@ -76,11 +104,12 @@ export default {
 
 
     const validateDates = (value: string | null): string | boolean => {
-      if (!startDate.value) return 'Please select start date.';
-      if (!endDate.value) return 'Please select end date.';
-      if (endDate.value <= startDate.value) return 'End date must be after start date.';
-      return true;
-    };
+      if (!startDate.value) return 'Please select start date.'
+      if (!endDate.value) return 'Please select end date.'
+      if (endDate.value < startDate.value) return 'End date must be after start date.'
+      return true
+    }
+
     const from_date = computed(() => {
       let val = new Date(startDate.value)
       if (eventStart.value) {
@@ -100,8 +129,14 @@ export default {
       return val.toISOString()
     })
 
+    onMounted(async () => {
+      startDateField.value.validate()
+      endDateField.value.validate()
+     
+    })
     async function createEvent() {
-      useAsyncState(
+      requesting.value = true;
+      await useAsyncState(
         $api.event.create({
           name: name.value,
           description: description.value,
@@ -115,6 +150,7 @@ export default {
           }
         }
       )
+      requesting.value = false;
     }
 
     return {
@@ -126,6 +162,7 @@ export default {
       fieldRequired,
       eventStart,
       eventEnd,
+      requesting,
       startDateField,
       endDateField,
       validateDates,

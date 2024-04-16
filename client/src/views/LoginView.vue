@@ -10,10 +10,9 @@
             </v-card-title>
 
             <v-card-text>
-              A versatile management system with vacation request submissions and seamless
-              integration with a global calendar. Users across offices can collectively view
-              approved Vacations, Birthdates, Events, Meetings, and Holidays, providing a
-              centralized overview for the entire organization.
+              Our internal HR system manages all team requests across offices.
+              For the first version,
+              will manage vacation requests,  Birthdays, events, meetings, and public holidays so anyone in the team can have a collective overview of the entire organization calendar.
             </v-card-text>
             <v-card-subtitle class="text-white"> Powered by CodeScalers Egypt. </v-card-subtitle>
           </div>

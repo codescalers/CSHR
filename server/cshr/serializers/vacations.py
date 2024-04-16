@@ -18,7 +18,7 @@ from rest_framework import serializers
 class VacationsSerializer(ModelSerializer):
     class Meta:
         model = Vacation
-        fields = "__all__"
+        fields = ["id", "reason", "from_date", "end_date", "applying_user", "approval_user", "type", "status", "created_at" ]
         read_only_fields = ("applying_user", "approval_user", "type", "status")
 
 
@@ -36,11 +36,23 @@ class VacationsCommentsSerializer(ModelSerializer):
         fields = ""
 
 
+class CustomDateField(serializers.ReadOnlyField):
+    """
+    Custom read-only field to serialize datetime as date.
+    """
+    def to_representation(self, value):
+        return value.date() if value else None
+
+
 class LandingPageVacationsSerializer(ModelSerializer):
     """Implemented to return just custom vacation fields to landing page endpoint."""
 
     applying_user = SerializerMethodField()
     approval_user = SerializerMethodField()
+    
+    from_date = CustomDateField()  # Convert datetime to date
+    end_date = CustomDateField()   # Convert datetime to date
+
 
     class Meta:
         model = Vacation
