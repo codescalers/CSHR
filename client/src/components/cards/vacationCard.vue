@@ -15,10 +15,10 @@
       </p>
 
       <v-form ref="form" @submit.prevent="updateVacation()">
-
-        <v-row class="d-flex justify-center my-2" v-if="couldUpdate">
-          <v-btn color="primary" class="mx-1 my-2" type="submit" :disabled="!form?.isValid || disabled">Update</v-btn>
-          <v-btn color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
+        <v-row class="d-flex justify-center my-2">
+          <v-btn color="primary" v-if="couldUpdate" class="mx-1 my-2" type="submit"
+            :disabled="!form?.isValid || disabled">Update</v-btn>
+          <v-btn v-if="couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
         </v-row>
         <v-divider class="my-2"></v-divider>
 
@@ -60,7 +60,6 @@
                 :items="leaveReasons" label="Reason" return-object item-title="name" :readonly="!couldUpdate">
               </v-autocomplete>
             </v-col>
-        
           </v-row>
 
         </v-card>
@@ -154,14 +153,36 @@ export default {
       return false
     })
 
+    const couldDelete = computed(() => {
+      if (user.value) {
+
+        // Could delete if user signed in is the same user applied for vacation
+        if (props.vacation.applying_user.id == user.value.fullUser.id) {
+          return true
+        }
+        // Could delete if applying user reports  admin logged in 
+        // and works from the same office
+        
+        if (
+          user.value.fullUser.user_type ==="Admin"&&
+          props.vacation.applying_user.location.name === user.value.fullUser.location.name
+        ) {
+          return true
+        }
+        return false
+      }
+      return false
+    })
+
+
     const couldApprove = computed(() => {
-      
+
       if (user.value) {
         // only admins or supervisors could approve vacation
         if (
           user.value.fullUser.user_type === 'Admin' ||
           user.value.fullUser.user_type === 'Supervisor'
-          ) {
+        ) {
           // Could approve if user signed in is the same user applied for vacation
           if (props.vacation.applying_user.id == user.value.fullUser.id) {
             return true
@@ -262,6 +283,7 @@ export default {
       form,
       couldApprove,
       couldUpdate,
+      couldDelete,
       validateEndDate,
       updateVacation,
       handleApprove,
