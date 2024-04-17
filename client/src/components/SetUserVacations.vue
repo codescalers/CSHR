@@ -279,7 +279,9 @@ export default {
     onMounted(async () => {
       try {
         await concatUsers()
-        selectedUsers.value.push(officeUsers.value[0])
+        if(officeUsers.value.length > 0){
+          selectedUsers.value.push(officeUsers.value[0])
+        }
         await getUserBalance()
       } catch (error) {
         console.error(error)

@@ -47,7 +47,7 @@
             density="comfortable" :rules="requiredRules"></v-select>
 
             <v-select v-model="selectedSupervisor" :items="supervisors" item-title="full_name" item-value="id" label="Team Lead"
-            return-object density="comfortable" :rules="requiredRules">
+            return-object density="comfortable" >
 
             <template #append-item v-if="reloadMoreSupervisor">
               <VContainer>
