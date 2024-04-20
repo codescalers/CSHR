@@ -45,12 +45,12 @@
           <v-row>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="From" v-model="startDate" :readonly="!couldUpdate" type="date">
+                label="From" v-model="start_date" :readonly="!couldUpdate" type="date">
               </v-text-field>
             </v-col>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="To" v-model="endDate" :readonly="!couldUpdate" type="date" :rules="[validateEndDate]">
+                label="To" v-model="end_date" :readonly="!couldUpdate" type="date" :rules="[validateEndDate]">
               </v-text-field>
             </v-col>
           </v-row>
@@ -98,9 +98,13 @@ export default {
 
   setup(props, ctx) {
     const $api = useApi()
+    const startDate = ref<Date>(new Date(props.vacation.from_date));
+     const start_date=  ref(startDate.value.toISOString().split('T')[0]);
 
-    const startDate = ref<Date>(props.vacation.from_date)
-    const endDate = ref<Date>(props.vacation.end_date)
+
+    const endDate = ref<Date>(new Date(props.vacation.end_date))
+      const end_date=  ref(endDate.value.toISOString().split('T')[0]);
+
     const leaveReason = ref<Api.LeaveReason>({
       name: transformString(props.vacation.reason),
       reason: props.vacation.reason
@@ -152,6 +156,20 @@ export default {
       }
       return false
     })
+
+    const from_date = computed(() => {
+      let val = new Date(startDate.value)
+        val.setHours(8, 0, 0, 0)
+      return val.toISOString()
+    })
+    const to_date = computed(() => {
+      let val = new Date(endDate.value)
+        val.setHours(16, 0, 0, 0)
+
+      return val.toISOString()
+    })
+
+  
 
     const couldDelete = computed(() => {
       if (user.value) {
@@ -242,8 +260,8 @@ export default {
     async function calculateActualDays() {
       return useAsyncState(
         $api.vacations.calculate.list({
-          start_date: startDate.value,
-          end_date: endDate.value
+          start_date: start_date.value,
+          end_date: end_date.value
         }),
         []
       )
@@ -261,8 +279,8 @@ export default {
       await useAsyncState(
         $api.vacations.edit.update(props.vacation.id, {
           reason: leaveReason.value.reason,
-          from_date: startDate.value,
-          end_date: endDate.value,
+          from_date: from_date.value,
+          end_date: to_date.value,
           actual_days: actualDays.state.value
         }),
         null,
@@ -284,6 +302,8 @@ export default {
       couldApprove,
       couldUpdate,
       couldDelete,
+      start_date,
+      end_date,
       validateEndDate,
       updateVacation,
       handleApprove,
