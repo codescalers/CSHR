@@ -297,6 +297,19 @@ class VacationsHelpersApiView(ListAPIView, GenericAPIView):
         """method to delete a vacation request by id"""
         vacation = get_vacation_by_id(id=id)
         if vacation is not None:
+            if vacation.status == STATUS_CHOICES.APPROVED:
+                v = StanderdVacationBalance()
+                balance = v.check_and_update_balance(
+                    applying_user=vacation.applying_user,
+                    vacation=vacation,
+                    reason=vacation.reason,
+                    start_date=vacation.from_date,
+                    end_date=vacation.end_date,
+                    delete= True,
+                )
+                if balance is not True:
+                    return CustomResponse.bad_request(message=balance)
+                
             vacation.delete()
             return CustomResponse.success(message="The vacation has been deleted successfully.", status_code=204)
         return CustomResponse.not_found(message="The vacation is not found.", status_code=404)

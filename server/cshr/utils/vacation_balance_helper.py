@@ -72,7 +72,6 @@ class StanderdVacationBalance:
         new_value: the new value will adding to filed[reason]
         """
         balance: VacationBalance = VacationBalance.objects.get(user=applying_user)
-
         if hasattr(balance, reason):
             setattr(balance, reason, new_value)
             balance.save()
@@ -104,6 +103,7 @@ class StanderdVacationBalance:
         reason: str,
         start_date: datetime,
         end_date: datetime,
+        delete: bool = False,
     ):
         if reason == "public_holidays":
             return "You cannot apply for public holidays vacations, you take it automatically."
@@ -114,7 +114,12 @@ class StanderdVacationBalance:
 
         if hasattr(v, reason):
             curr_balance = getattr(v, reason)
+            if vacation.status == STATUS_CHOICES.APPROVED:
+                    if delete:
+                        new_value: int= curr_balance + vacation_days
+                    return self.update_user_balance(applying_user, reason, new_value)
             if curr_balance >= vacation_days:
+
                 if vacation.status == STATUS_CHOICES.PENDING:
                     new_value: int = curr_balance - vacation_days
                     return self.update_user_balance(applying_user, reason, new_value)

@@ -42,7 +42,7 @@ class CustomDateField(serializers.ReadOnlyField):
     Custom read-only field to serialize datetime as date.
     """
     def to_representation(self, value):
-        return value.date() if value else None
+        return value if value else None
 
 
 class LandingPageVacationsSerializer(ModelSerializer):

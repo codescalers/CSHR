@@ -48,13 +48,15 @@
 
     <div class="mt-3">
       <v-text-field ref="excuseStartField" item-color="info" base-color="info" color="info" variant="outlined"
-        label="Vacation Start Time" v-model="excuseStart" hide-details="auto" type="time" :rules="[validateTimes]" :readonly="startDate !== endDate">
+        label="Vacation Start Time" v-model="excuseStart" hide-details="auto" type="time" :rules="[validateTimes]"
+        :readonly="startDate !== endDate">
       </v-text-field>
     </div>
 
     <div class="mt-3">
       <v-text-field ref="excuseEndField" item-color="info" base-color="info" color="info" variant="outlined"
-        label="Vacation End Time" v-model="excuseEnd" hide-details="auto" type="time" :rules="[validateTimes]" :readonly="startDate !== endDate">
+        label="Vacation End Time" v-model="excuseEnd" hide-details="auto" type="time" :rules="[validateTimes]"
+        :readonly="startDate !== endDate">
       </v-text-field>
     </div>
     <v-row class="mt-3 pa-4 d-flex justify-end">
@@ -176,6 +178,7 @@ export default {
     watch(
       () => [selectedOption.value],
       () => {
+        leaveReason.value = undefined
         if (selectedOption.value === Selection.ANOTHERUSER) {
           selectedUser.value = officeUsers.value[0]
         } else {
@@ -274,8 +277,8 @@ export default {
       const startTimeInHours = timeStringToHours(excuseStart.value);
       const endTimeInHours = timeStringToHours(excuseEnd.value);
       const days = (endTimeInHours - startTimeInHours) / CORE_HOURS
-      if( days === 0.25 || days === 0.50 || days === 0.75){
-        return days   
+      if (days === 0.25 || days === 0.50 || days === 0.75) {
+        return days
       }
       return 1
 

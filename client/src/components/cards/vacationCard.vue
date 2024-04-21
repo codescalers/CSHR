@@ -9,16 +9,16 @@
     </v-card-title>
     <v-container class="pa-6">
       <p class="text-subtitle-1 text-center">
-        From <b>{{ vacation.from_date }} </b> to
-        <b color="primary">{{ vacation.end_date }} </b> vacation
+        From <b>{{ start_date }} </b> to
+        <b color="primary">{{ end_date }} </b> vacation
 
       </p>
 
       <v-form ref="form" @submit.prevent="updateVacation()">
-
-        <v-row class="d-flex justify-center my-2" v-if="couldUpdate">
-          <v-btn color="primary" class="mx-1 my-2" type="submit" :disabled="!form?.isValid || disabled">Update</v-btn>
-          <v-btn color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
+        <v-row class="d-flex justify-center my-2">
+          <v-btn color="primary" v-if="couldUpdate" class="mx-1 my-2" type="submit"
+            :disabled="!form?.isValid || disabled">Update</v-btn>
+          <v-btn v-if="couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
         </v-row>
         <v-divider class="my-2"></v-divider>
 
@@ -45,12 +45,12 @@
           <v-row>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="From" v-model="startDate" :readonly="!couldUpdate" type="date">
+                label="From" v-model="start_date" :readonly="!couldUpdate" type="date">
               </v-text-field>
             </v-col>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="To" v-model="endDate" :readonly="!couldUpdate" type="date" :rules="[validateEndDate]">
+                label="To" v-model="end_date" :readonly="!couldUpdate" type="date" :rules="[validateEndDate]">
               </v-text-field>
             </v-col>
           </v-row>
@@ -60,7 +60,6 @@
                 :items="leaveReasons" label="Reason" return-object item-title="name" :readonly="!couldUpdate">
               </v-autocomplete>
             </v-col>
-        
           </v-row>
 
         </v-card>
@@ -99,9 +98,13 @@ export default {
 
   setup(props, ctx) {
     const $api = useApi()
+    const startDate = ref<Date>(new Date(props.vacation.from_date));
+     const start_date=  ref(startDate.value.toISOString().split('T')[0]);
 
-    const startDate = ref<Date>(props.vacation.from_date)
-    const endDate = ref<Date>(props.vacation.end_date)
+
+    const endDate = ref<Date>(new Date(props.vacation.end_date))
+      const end_date=  ref(endDate.value.toISOString().split('T')[0]);
+
     const leaveReason = ref<Api.LeaveReason>({
       name: transformString(props.vacation.reason),
       reason: props.vacation.reason
@@ -154,14 +157,50 @@ export default {
       return false
     })
 
+    const from_date = computed(() => {
+      let val = new Date(startDate.value)
+        val.setHours(8, 0, 0, 0)
+      return val.toISOString()
+    })
+    const to_date = computed(() => {
+      let val = new Date(endDate.value)
+        val.setHours(16, 0, 0, 0)
+
+      return val.toISOString()
+    })
+
+  
+
+    const couldDelete = computed(() => {
+      if (user.value) {
+
+        // Could delete if user signed in is the same user applied for vacation
+        if (props.vacation.applying_user.id == user.value.fullUser.id) {
+          return true
+        }
+        // Could delete if applying user reports  admin logged in 
+        // and works from the same office
+        
+        if (
+          user.value.fullUser.user_type ==="Admin"&&
+          props.vacation.applying_user.location.name === user.value.fullUser.location.name
+        ) {
+          return true
+        }
+        return false
+      }
+      return false
+    })
+
+
     const couldApprove = computed(() => {
-      
+
       if (user.value) {
         // only admins or supervisors could approve vacation
         if (
           user.value.fullUser.user_type === 'Admin' ||
           user.value.fullUser.user_type === 'Supervisor'
-          ) {
+        ) {
           // Could approve if user signed in is the same user applied for vacation
           if (props.vacation.applying_user.id == user.value.fullUser.id) {
             return true
@@ -221,8 +260,8 @@ export default {
     async function calculateActualDays() {
       return useAsyncState(
         $api.vacations.calculate.list({
-          start_date: startDate.value,
-          end_date: endDate.value
+          start_date: start_date.value,
+          end_date: end_date.value
         }),
         []
       )
@@ -240,8 +279,8 @@ export default {
       await useAsyncState(
         $api.vacations.edit.update(props.vacation.id, {
           reason: leaveReason.value.reason,
-          from_date: startDate.value,
-          end_date: endDate.value,
+          from_date: from_date.value,
+          end_date: to_date.value,
           actual_days: actualDays.state.value
         }),
         null,
@@ -262,6 +301,9 @@ export default {
       form,
       couldApprove,
       couldUpdate,
+      couldDelete,
+      start_date,
+      end_date,
       validateEndDate,
       updateVacation,
       handleApprove,
