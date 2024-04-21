@@ -9,8 +9,8 @@
     </v-card-title>
     <v-container class="pa-6">
       <p class="text-subtitle-1 text-center">
-        From <b>{{ vacation.from_date }} </b> to
-        <b color="primary">{{ vacation.end_date }} </b> vacation
+        From <b>{{ start_date }} </b> to
+        <b color="primary">{{ end_date }} </b> vacation
 
       </p>
 
