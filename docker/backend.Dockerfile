@@ -26,7 +26,7 @@ RUN apt-get -y update && \
 WORKDIR /server
 
 RUN wget -O /sbin/zinit https://github.com/threefoldtech/zinit/releases/download/v0.2.5/zinit && \
-  chmod +x /sbin/zinit && pip install poetry && poetry --version
+  chmod +x /sbin/zinit && pip install poetry==1.8.2 && poetry --version
 
 RUN mkdir -p /etc/zinit/
 
