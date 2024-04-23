@@ -29,7 +29,7 @@ export const jobRules = [
   (v: string) => typeof v === 'string' || 'Role must be a string.',
   (v: string) => !!v || 'Role is required.',
   (v: string) =>
-    (v && v.length >= 3 && v.length <= 150) || 'Role must be between 3 and 150 characters.'
+    (v && v.length >= 2 && v.length <= 150) || 'Role must be between 2 and 150 characters.'
 ]
 
 export const addressRules = [
