@@ -255,7 +255,9 @@ export default {
       endDateField.value.validate()
       userId.value = user.value?.fullUser.id
       balance.execute()
-      concatUsers()
+      if(user.value?.fullUser.user_type === 'Admin'){
+        concatUsers()
+      }
     })
     const reloadMore = computed(() => {
       if (page.value === count.value) {
