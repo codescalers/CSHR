@@ -252,13 +252,15 @@ export default {
     const { execute, isLoading } = useAsyncState(
       async () => { 
         selectedUser.value.user_type = selectedUser.value.user_type === "Team Lead" ? "Supervisor" : selectedUser.value.user_type
-        await $api.myprofile.update(selectedUser.value.id, {
+        const data = {
           ...selectedUser.value,
           image: imageUrl.value ? imageUrl.value : null,
           location: selectedUser.value.location.id,
           filename: image.value ? image.value[0].name : null,
           reporting_to: reporting_to.value ? [reporting_to.value.id] : []
-        })
+        }
+
+        await $api.myprofile.update(selectedUser.value.id, data)
       },
       null,
       { immediate: false }

@@ -324,6 +324,7 @@ class BaseUserSerializer(ModelSerializer):
         fields = [
             "id",
             "full_name",
+            "first_name",
             "email",
             "image",
             "team",

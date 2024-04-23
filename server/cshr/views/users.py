@@ -273,9 +273,10 @@ class UpdateUserProfileUserAPIView(GenericAPIView):
         user = get_user_by_id(id)
         if user is None:
             return CustomResponse.not_found(status_code=404, message="User not found")
-        remove_image: bool = request.data.get("remove_image")
-        filename: str = request.data.get("filename")
-        if request.data.get("image") == "":
+
+        image = request.data.get("image")
+
+        if not image:
             request.data["image"] = user.image if user.image else None
 
         serializer = self.get_serializer(user, data=request.data, partial=True)
@@ -288,13 +289,7 @@ class UpdateUserProfileUserAPIView(GenericAPIView):
                 joining_at=request.data.get("joining_at"),
                 reporting_to=request.data.get("reporting_to"),
             )
-            if remove_image:
-                user.image.delete()
-                user.save()
-            else:
-                dir = user.image.name.split("/")[0]
-                user.image = f"{dir}/{filename}"
-                user.save()
+
             return CustomResponse.success(
                 data=serializer.data, status_code=202, message="User updated"
             )
