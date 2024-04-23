@@ -230,7 +230,7 @@ function onClick(arg: any) {
   const clickedEventTitle = arg.event.title as string
 
   // We use a normalized event ID to avoid duplication. It's created by concatenating 'holiday', 'birthday', 'event', 'meeting', and 'vacation' with the event ID.
-  if (clickedEventTitle === CalendarEventSelection.PublicHoliday) {
+  if (clickedEventTitle.includes(CalendarEventSelection.PublicHoliday)) {
     selectedEvent.value = holidays.value.filter(
       (holiday) => holiday.id === Number(arg.event.id.replace('holiday', ''))
     )[0]

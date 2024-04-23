@@ -97,10 +97,9 @@ export function normalizeVacation(v: Api.Vacation) {
 
 export function normalizeHoliday(h: Api.Holiday) {
   const dates = handelDates(h.holiday_date, h.holiday_date)
-
   return {
     type: h.type,
-    title: `Public Holiday`,
+    title: `Public Holiday ${h.location.country}`,
     color: '#5effb4',
     start: dates.start,
     end: dates.end,
