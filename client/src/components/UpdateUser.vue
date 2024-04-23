@@ -32,11 +32,11 @@
         </v-col>
         <v-col cols="6" v-if="selectedUser">
           <v-text-field v-model="selectedUser.first_name" label="First Name" density="comfortable"
-            :rules="nameRules"></v-text-field>
+            :rules="[...requiredRules, ...lengthRules(45)]"></v-text-field>
           <v-text-field v-model="selectedUser.last_name" label="Last Name" density="comfortable"
-            :rules="nameRules"></v-text-field>
+            :rules="[...requiredRules, ...lengthRules(45)]"></v-text-field>
           <v-text-field v-model="selectedUser.email" label="Email" type="email" density="comfortable"
-            :rules="emailRules"></v-text-field>
+            :rules="[...emailRules, ...lengthRules(45)]"></v-text-field>
           <v-text-field v-model="selectedUser.mobile_number" label="Mobile Number" type="number" density="comfortable"
             :rules="mobileRules"></v-text-field>
           <v-text-field v-model="selectedUser.job_title" label="Role" density="comfortable"
@@ -49,7 +49,7 @@
         </v-col>
         <v-col cols="6" v-if="selectedUser">
           <v-text-field v-model="selectedUser.telegram_link" label="Telegram" density="comfortable"
-            :rules="requiredRules"></v-text-field>
+            :rules="[...requiredRules, ...lengthRules(100)]"></v-text-field>
 
           <v-text-field v-model="selectedUser.birthday" label="Birthday" density="comfortable"
             :rules="requiredStringRules" @click="toggleDatePicker('birthdayPicker')" readonly>
@@ -69,7 +69,7 @@
           <v-date-picker v-model="joiningDate" v-if="joiningDatePicker"> </v-date-picker>
 
           <v-select v-model="selectedUser.team" :items="teams" label="Team" density="comfortable"
-            :rules="requiredStringRules"></v-select>
+            :rules="[...requiredStringRules, ...lengthRules(30)]"></v-select>
           <v-select v-model="selectedUser.gender" :items="genders" label="Gender" density="comfortable"
             :rules="requiredStringRules"></v-select>
           <v-select v-model="selectedUser.user_type" :items="types" label="User Type" density="comfortable"
@@ -114,6 +114,7 @@ import {
   addressRules,
   requiredStringRules,
   requiredRules,
+  lengthRules,
   formatDate,
   listUsers
 } from '@/utils'
@@ -250,6 +251,10 @@ export default {
 
     const { execute, isLoading } = useAsyncState(
       async () => {
+        console.log("image.value[0].name",image.value[0].name)
+        console.log("selectedUser.value.image",selectedUser.value.image)
+
+    
         selectedUser.value.user_type = selectedUser.value.user_type === "Team Lead" ? "Supervisor" : selectedUser.value.user_type
         await $api.myprofile.update(selectedUser.value.id, {
           ...selectedUser.value,
@@ -288,6 +293,7 @@ export default {
       supervisorPage,
       supervisorCount,
       requiredStringRules,
+      lengthRules,
       requiredRules,
       isLoading,
       userIsActive,

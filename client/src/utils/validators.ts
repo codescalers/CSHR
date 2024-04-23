@@ -29,14 +29,14 @@ export const jobRules = [
   (v: string) => typeof v === 'string' || 'Role must be a string.',
   (v: string) => !!v || 'Role is required.',
   (v: string) =>
-    (v && v.length >= 3 && v.length <= 50) || 'Role must be between 3 and 50 characters.'
+    (v && v.length >= 3 && v.length <= 150) || 'Role must be between 3 and 150 characters.'
 ]
 
 export const addressRules = [
   (v: string) => typeof v === 'string' || 'Address must be a string.',
   (v: string) => !!v || 'Address is required.',
   (v: string) =>
-    (v && v.length >= 3 && v.length <= 50) || 'Address must be between 3 and 50 characters.'
+    (v && v.length >= 3 && v.length <= 150) || 'Address must be between 3 and 150 characters.'
 ]
 // export const socialInsuranceRules = [
 //   (v: string) => typeof v === 'string' || 'Social Number must be a string.',
@@ -56,3 +56,8 @@ export const vacationRules = [
   (v: string) => +v <= 80 || 'The maximum allowed value is 80. ',
   (v: string) => /^(?!00)\d{1,2}$/.test(v)  || 'Invalid value.'
 ]
+
+export const lengthRules = (maxValue : number) => [
+  (v: string) =>
+  (v && v.length >= 3 && v.length <= maxValue) || `The maximum allowed value is ${maxValue}.`
+];
