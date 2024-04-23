@@ -318,6 +318,7 @@ class BaseUserSerializer(ModelSerializer):
     skills = SerializerMethodField()
     user_certificates = SerializerMethodField()
     location = SerializerMethodField()
+    reporting_to = SerializerMethodField()
 
     class Meta:
         model = User
@@ -334,6 +335,7 @@ class BaseUserSerializer(ModelSerializer):
             "user_certificates",
             "is_active",
             "telegram_link",
+            "reporting_to",
             "location"
         ]
     
@@ -350,7 +352,8 @@ class BaseUserSerializer(ModelSerializer):
         training_courses = get_training_courses_for_a_user(obj.id)
         return TrainingCoursesSerializer(training_courses, many=True).data
 
-
+    def get_reporting_to(self, obj):
+        return BasicUserSerializer(obj.reporting_to, many=True).data
 
 class TeamSerializer(ModelSerializer):
     """Class team serilaizer to return user team leaders and team members."""

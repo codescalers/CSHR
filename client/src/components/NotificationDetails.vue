@@ -42,15 +42,27 @@
         </v-card>
       </v-col>
     </v-row>
+
     <v-card-actions class="d-flex justify-end">
-      <v-btn color="info" variant="flat" @click="closeDialog()">Close</v-btn>
+      <v-row class="d-flex justify-end mt-3">
+        <div v-if="couldApprove && vacationStatus == 'pending'">
+          <v-btn variant="tonal" color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
+          <v-btn variant="tonal" color="error" class="ma-1" @click="handleReject">Reject</v-btn>
+          <v-spacer></v-spacer>
+        </div>
+        <v-btn color="info" class="ma-1" variant="flat" @click="closeDialog()">Close</v-btn>
+      </v-row>
     </v-card-actions>
   </v-card>
 </template>
 
 <script lang="ts">
-import { computed, type PropType } from 'vue'
+import { computed, ref, type PropType } from 'vue'
 import { getStatusColor } from '@/utils'
+import type { Api } from '@/types'
+import { ApiClientBase } from '@/clients/api/base'
+import { useAsyncState } from '@vueuse/core'
+import { $api } from '@/clients'
 
 export default {
   name: 'NotificationDetails',
@@ -71,6 +83,10 @@ export default {
       type: Array as PropType<any[]>,
       required: true
     },
+    vacation: {
+      type: Object as PropType<Api.Vacation>,
+      required: true
+    },
     onClose: {
       type: Function as PropType<() => void>,
       required: true
@@ -78,15 +94,58 @@ export default {
   },
   setup(props) {
     const color = computed(() => getStatusColor(props.status))
+    const user = ApiClientBase.user
+    const vacationStatus = ref(props.status)
 
     const closeDialog = () => {
       props.onClose()
     }
 
+    async function handleApprove() {
+      return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
+        onSuccess() {
+          vacationStatus.value = 'approved'
+        }
+      })
+    }
+
+    async function handleReject() {
+      return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
+        onSuccess() {
+          vacationStatus.value = 'rejected'
+        }
+      })
+    }
+
+    const couldApprove = computed(() => {
+      const vacation = props.vacation
+      if (user.value && vacation) {
+        // supervisor could approve vacation
+        if (
+          user.value.fullUser.user_type.toLocaleLowerCase() === 'admin' ||
+          user.value.fullUser.user_type.toLocaleLowerCase() === 'supervisor'
+        ) {
+          // Could approve if applying user reports to the logged in supervisor
+          if (
+            vacation.applying_user.reporting_to &&
+            vacation.applying_user.reporting_to[0]?.id === user.value.fullUser.id
+          ) {
+            return true
+          }
+          return false
+        }
+      }
+      return false
+    })
+
     return {
       color,
+      couldApprove,
+      vacationStatus,
       closeDialog,
-      getStatusColor
+      getStatusColor,
+      handleApprove,
+      handleReject
     }
   }
 }

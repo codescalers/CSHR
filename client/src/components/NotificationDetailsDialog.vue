@@ -23,6 +23,9 @@
       :eventId="notification.state.value.event_id"
       :sections="getSections(notification.state.value)"
       :status="notification.state.value.status"
+      :vacation="
+        notification.state.value.type === 'vacations' ? notification.state.value : undefined
+      "
       @close="closeDialog"
     />
   </VDialog>
@@ -86,8 +89,11 @@ export default {
           {
             title: 'Request Details',
             details: [
-              { label: 'From Date', value: data.from_date },
-              { label: 'End Date', value: data.end_date }
+              {
+                label: 'From Date',
+                value: `${new Date(data.from_date).toDateString()}`
+              },
+              { label: 'End Date', value: `${new Date(data.end_date).toDateString()}` }
             ]
           },
           {
@@ -100,8 +106,8 @@ export default {
           {
             title: 'Approval User',
             details: [
-              { label: 'Name', value: data.approval_user.full_name },
-              { label: 'Email', value: data.approval_user.email }
+              { label: 'Name', value: data.approval_user.full_name || '-' },
+              { label: 'Email', value: data.approval_user.email || '-' }
             ]
           }
         ]

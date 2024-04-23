@@ -196,21 +196,15 @@ export default {
     const couldApprove = computed(() => {
 
       if (user.value) {
-        // only admins or supervisors could approve vacation
+        // supervisor could approve vacation
         if (
-          user.value.fullUser.user_type === 'Admin' ||
-          user.value.fullUser.user_type === 'Supervisor'
+          user.value.fullUser.user_type.toLocaleLowerCase() === 'admin' ||
+          user.value.fullUser.user_type.toLocaleLowerCase() === 'supervisor'
         ) {
-          // Could approve if user signed in is the same user applied for vacation
-          if (props.vacation.applying_user.id == user.value.fullUser.id) {
-            return true
-          }
-          // Could approve if applying user reports to the supervisor or admin logged in 
-          // and works from the same office
+          // Could approve if applying user reports to the logged in supervisor
           if (
             props.vacation.applying_user.reporting_to &&
-            props.vacation.applying_user.reporting_to[0]?.id === props.vacation.applying_user?.id &&
-            props.vacation.applying_user.location.name === user.value.fullUser.location.name
+            props.vacation.applying_user.reporting_to[0]?.id === user.value.fullUser.id
           ) {
             return true
           }
