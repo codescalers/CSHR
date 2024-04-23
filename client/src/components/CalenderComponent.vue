@@ -245,7 +245,7 @@ function onClick(arg: any) {
       (vacation) => vacation.id === Number(arg.event.id.replace('vacation', ''))
     )[0]
     openDialog(CalendarEventSelection.Vacation)
-  } else if (clickedEventTitle === CalendarEventSelection.Birthday) {
+  } else if (clickedEventTitle.includes(CalendarEventSelection.Birthday)) {
     selectedEvent.value = birthdays.value.filter(
       (birthday) => birthday.id === Number(arg.event.id.replace('birthday', ''))
     )[0]

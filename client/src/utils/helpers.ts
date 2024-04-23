@@ -113,7 +113,7 @@ export function normalizedBirthday(u: Api.User) {
 
   return {
     type: u.type,
-    title: `Birthday`,
+    title: `${u.full_name}'s Birthday`,
     color: '#e0adf0',
     start: dates.start,
     end: dates.end,

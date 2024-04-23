@@ -252,9 +252,6 @@ export default {
     const { execute, isLoading } = useAsyncState(
       async () => { 
         selectedUser.value.user_type = selectedUser.value.user_type === "Team Lead" ? "Supervisor" : selectedUser.value.user_type
-        // const imageParts = selectedUser.value.image.split("/") as string[]
-        // const filename = imageParts[imageParts.length -1]
-        // console.log("selectedUser.value.image", filename)
         const data = {
           ...selectedUser.value,
           image: imageUrl.value ? imageUrl.value : null,
