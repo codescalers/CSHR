@@ -135,7 +135,7 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
                 location=location, holiday_date__in=public_holidays
             ).values_list("id", flat=True)
 
-            if len(public_holidays) < len(balance[0].public_holidays.all()):
+            if len(public_holidays) <= len(balance[0].public_holidays.all()):
                 deleted_holidays = []
                 for holiday in balance[0].public_holidays.all():
                     if holiday.id not in public_holidays:
