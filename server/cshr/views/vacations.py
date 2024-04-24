@@ -125,6 +125,7 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
         if serializer.is_valid():
             balance = OfficeVacationBalance.objects.filter(year=year, location=location)
             public_holidays = request.data["public_holidays"]
+
             for holiday in public_holidays:
                 PublicHoliday.objects.get_or_create(
                     location=location, holiday_date=holiday
@@ -133,6 +134,15 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
             public_holidays = PublicHoliday.objects.filter(
                 location=location, holiday_date__in=public_holidays
             ).values_list("id", flat=True)
+
+            if len(public_holidays) < len(balance[0].public_holidays.all()):
+                deleted_holidays = []
+                for holiday in balance[0].public_holidays.all():
+                    if holiday.id not in public_holidays:
+                        deleted_holidays.append(holiday)
+
+                for day in deleted_holidays:
+                    PublicHoliday.objects.get(id=day.id).delete()
 
             if len(balance) > 0:
                 balance[0].annual_leaves = serializer.validated_data.get(
@@ -157,6 +167,7 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
         return CustomResponse.bad_request(
             message="Invalid balance values.", error=serializer.errors
         )
+
 
 
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
