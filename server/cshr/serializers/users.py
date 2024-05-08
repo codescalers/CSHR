@@ -9,17 +9,17 @@ from rest_framework.serializers import (
     Serializer,
     IntegerField,
 )
-from server.cshr.models.users import User, UserSkills
-from server.cshr.serializers.Image_upload import Base64ImageField
-from server.cshr.serializers.training_courses import TrainingCoursesSerializer
-from server.cshr.serializers.company_properties import CompanyPropertiesSerializer
-from server.cshr.services.training_courses import get_training_courses_for_a_user
-from server.cshr.services.company_properties import (
+from cshr.models.users import User, UserSkills
+from cshr.serializers.Image_upload import Base64ImageField
+from cshr.serializers.training_courses import TrainingCoursesSerializer
+from cshr.serializers.company_properties import CompanyPropertiesSerializer
+from cshr.services.training_courses import get_training_courses_for_a_user
+from cshr.services.company_properties import (
     get_all_company_properties_for_a_user,
 )
-from server.cshr.services.evaluations import get_evaluations_for_a_user
-from server.cshr.serializers.userEvaluation import UserEvaluationSerializer
-from server.cshr.serializers.office import OfficeSerializer
+from cshr.services.evaluations import get_evaluations_for_a_user
+from cshr.serializers.userEvaluation import UserEvaluationSerializer
+from cshr.serializers.office import OfficeSerializer
 
 
 class ActiveUserSerializer(Serializer):
@@ -147,6 +147,7 @@ class SupervisorUserSerializer(ModelSerializer):
             "job_title",
             "address",
             "user_type",
+            "is_active",
         ]
 
     def get_user_certificates(self, obj):
@@ -211,6 +212,7 @@ class AdminUserSerializer(ModelSerializer):
             "job_title",
             "address",
             "user_type",
+            "is_active",
         ]
 
     def get_user_certificates(self, obj):
@@ -280,6 +282,7 @@ class SelfUserSerializer(ModelSerializer):
             "address",
             "user_type",
             "background_color",
+            "is_active",
         ]
 
     def get_user_certificates(self, obj):
@@ -314,12 +317,15 @@ class BaseUserSerializer(ModelSerializer):
     image = SerializerMethodField()
     skills = SerializerMethodField()
     user_certificates = SerializerMethodField()
+    location = SerializerMethodField()
+    reporting_to = SerializerMethodField()
 
     class Meta:
         model = User
         fields = [
             "id",
             "full_name",
+            "first_name",
             "email",
             "image",
             "team",
@@ -327,7 +333,14 @@ class BaseUserSerializer(ModelSerializer):
             "skills",
             "job_title",
             "user_certificates",
+            "is_active",
+            "telegram_link",
+            "reporting_to",
+            "location"
         ]
+    
+    def get_location(self, obj):
+        return OfficeSerializer(obj.location).data
 
     def get_image(self, obj):
         return obj.image.url if obj.image else obj.background_color
@@ -339,6 +352,8 @@ class BaseUserSerializer(ModelSerializer):
         training_courses = get_training_courses_for_a_user(obj.id)
         return TrainingCoursesSerializer(training_courses, many=True).data
 
+    def get_reporting_to(self, obj):
+        return BasicUserSerializer(obj.reporting_to, many=True).data
 
 class TeamSerializer(ModelSerializer):
     """Class team serilaizer to return user team leaders and team members."""
@@ -359,6 +374,8 @@ class TeamSerializer(ModelSerializer):
             "mobile_number",
             "address",
             "location",
+            "is_active",
+            "telegram_link",
         ]
 
     def get_image(self, obj):
@@ -376,6 +393,7 @@ class BasicUserSerializer(ModelSerializer):
         fields = [
             "id",
             "full_name",
+            "is_active",
         ]
 
 
@@ -427,6 +445,7 @@ class UpdateUserSerializer(ModelSerializer):
             "address",
             "user_type",
             "background_color",
+            "is_active",
         ]
 
     def get_user_certificates(self, obj):

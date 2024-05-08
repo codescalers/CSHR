@@ -1,32 +1,68 @@
 
 CMD:=poetry run
 client:=cd client
+server:=cd server
 terraform:=cd terraform
 
+help:
+	@echo "\n- Docker: To build and run a specific service, you can do that by executing 'make docker-up service=<service_name>'."
+	@echo "\n- To run a the backend project, you can do that by executing 'make runserver'."
+	@echo "\n- To run a the backend client, you can do that by executing 'make runclient'."
+
 docker-up:
-	docker-compose up --build -d
+ifeq ($(service), frontend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up frontend --build -d
+else ifeq ($(service), backend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up backend --build -d
+else ifeq ($(service), postgres)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up postgres --build -d
+else
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env up --build -d
+endif
+
+docker-down:
+ifeq ($(service), frontend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down frontend
+else ifeq ($(service), backend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down backend
+else ifeq ($(service), postgres)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down postgres
+else
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env down
+endif
+
+docker-logs:
+ifeq ($(service), frontend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs -f frontend
+else ifeq ($(service), backend)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs -f backend
+else ifeq ($(service), postgres)
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs -f postgres
+else
+	docker compose -f ./docker/docker-compose.yml --env-file=./config/.env logs -f
+endif
+
 install:
-	curl -sSL https://install.python-poetry.org | python3 -
-	poetry install
-	poetry check
-	cd client && npm i && cd ..
+	$(server) && poetry install
+	$(server) && poetry check
+	$(client) && pnpm i
 runserver:
-	$(CMD) python3 manage.py runserver
+	$(server) && $(CMD) python3 manage.py runserver
 runclient:
-	$(client) && npm i && npm run dev
+	$(client) && pnpm i && pnpm dev
 test:
-	$(CMD) python3 manage.py test
+	$(server) && $(CMD) python3 manage.py test
 lint:
-	$(CMD) black server/  --exclude=__init__.py
-	$(CMD) flake8 server/  --exclude=__init__.py
-	$(client) && npm run lint
+	$(server) && $(CMD) black .  --exclude=__init__.py
+	$(server) && $(CMD) flake8 .  --exclude=__init__.py
+	$(client) && pnpm lint
 migrate:
-	$(CMD) python3 manage.py makemigrations
-	$(CMD) python3 manage.py migrate
+	$(server) && $(CMD) python3 manage.py makemigrations
+	$(server) && $(CMD) python3 manage.py migrate
 user:
-	$(CMD) python3 manage.py createsuperuser
+	$(server) && $(CMD) python3 manage.py createsuperuser
 data:
-	$(CMD) python3 manage.py create locations users
+	$(server) && $(CMD) python3 manage.py create locations users
 deploy:
 	$(terraform) && terraform init && terraform apply -auto-approve
 destroy:

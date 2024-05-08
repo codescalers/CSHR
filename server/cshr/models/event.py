@@ -1,6 +1,6 @@
 from django.db import models
-from server.cshr.models.users import User
-from server.cshr.models.abstracts import TimeStamp
+from cshr.models.users import User
+from cshr.models.abstracts import TimeStamp
 
 
 """ database event model """

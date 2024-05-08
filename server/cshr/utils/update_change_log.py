@@ -1,5 +1,5 @@
 """This file has change_log_update function."""
-from server.cshr.models.vacations import Vacation
+from cshr.models.vacations import Vacation
 from typing import List, Dict
 
 

@@ -1,5 +1,6 @@
-from server.cshr.serializers.users import TeamSerializer
-from server.cshr.serializers.vacations import (
+from cshr.serializers.users import TeamSerializer
+from cshr.serializers.vacations import (
+    AdminApplyVacationForUserSerializer,
     PostOfficeVacationBalanceSerializer,
     GetOfficeVacationBalanceSerializer,
     CalculateBalanceSerializer,
@@ -9,57 +10,57 @@ from server.cshr.serializers.vacations import (
     VacationsSerializer,
 )
 from typing import Dict, List
-from server.cshr.serializers.vacations import (
+from cshr.serializers.vacations import (
     VacationsUpdateSerializer,
     VacationBalanceSerializer,
     UserBalanceUpdateSerializer,
 )
-from server.cshr.api.permission import (
+from cshr.api.permission import (
     IsSupervisor,
     IsUser,
     UserIsAuthenticated,
     IsAdmin,
 )
-from server.cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
-from server.cshr.models.users import USER_TYPE, User
-from server.cshr.services.office import get_office_by_id
-from server.cshr.utils.vacation_balance_helper import StanderdVacationBalance
-from server.cshr.services.users import get_user_by_id, get_users_by_id
-from server.cshr.services.vacations import (
+from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
+from cshr.models.users import USER_TYPE, User
+from cshr.services.office import get_office_by_id
+from cshr.utils.vacation_balance_helper import StanderdVacationBalance
+from cshr.services.users import get_user_by_id, get_users_by_id
+from cshr.services.vacations import (
     filter_balances_by_users,
-    get_balance_by_user,
     get_vacation_by_id,
     get_all_vacations,
-    send_vacation_to_calendar,
-    update_user_actual_balance,
 )
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from server.cshr.api.response import CustomResponse
+from cshr.api.response import CustomResponse
 from datetime import datetime
-from server.cshr.utils.update_change_log import (
+from cshr.utils.update_change_log import (
     update_vacation_change_log,
 )
-from server.cshr.utils.email_messages_templates import (
+from cshr.utils.email_messages_templates import (
     # get_vacation_request_email_template,
     get_vacation_reply_email_template,
 )
 
-# from server.cshr.celery.send_email import send_email_for_request
-from server.cshr.celery.send_email import send_email_for_reply
-from server.cshr.models.vacations import (
+# from cshr.celery.send_email import send_email_for_request
+from cshr.celery.send_email import send_email_for_reply
+from cshr.models.vacations import (
+    REASON_CHOICES,
     OfficeVacationBalance,
     PublicHoliday,
     Vacation,
-    VacationBalance,
 )
-from server.cshr.services.vacations import get_vacations_by_user
-from server.cshr.utils.redis_functions import (
+from cshr.services.vacations import get_vacations_by_user
+from cshr.utils.redis_functions import (
+    http_ensure_redis_error,
     notification_commented,
+    ping_redis,
     set_notification_request_redis,
     set_notification_reply_redis,
 )
+from cshr.utils.wrappers import wrap_vacation_request
 
 
 class GetAdminVacationBalanceApiView(GenericAPIView):
@@ -100,22 +101,6 @@ class VacationBalanceAdjustmentApiView(GenericAPIView):
             for user in users_in_office:
                 v.check(user)
 
-            reason = serializer.validated_data.get("reason")
-            add_value = serializer.validated_data.get("value")
-
-            balances = VacationBalance.objects.filter(user__in=users_in_office)
-            for obj in balances:
-                if hasattr(obj, reason):
-                    old_value = obj.actual_balance.get(reason)
-                    obj.actual_balance[reason] = old_value + add_value
-                    # setattr(obj, reason, old_value + add_value)
-                    obj.save()
-                else:
-                    return CustomResponse.bad_request(
-                        message="Unknown reason.",
-                        data=serializer.data,
-                    )
-
             return CustomResponse.success(
                 message="Successfully updated balance values.",
                 data=serializer.data,
@@ -140,6 +125,7 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
         if serializer.is_valid():
             balance = OfficeVacationBalance.objects.filter(year=year, location=location)
             public_holidays = request.data["public_holidays"]
+
             for holiday in public_holidays:
                 PublicHoliday.objects.get_or_create(
                     location=location, holiday_date=holiday
@@ -148,6 +134,15 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
             public_holidays = PublicHoliday.objects.filter(
                 location=location, holiday_date__in=public_holidays
             ).values_list("id", flat=True)
+
+            if len(public_holidays) <= len(balance[0].public_holidays.all()):
+                deleted_holidays = []
+                for holiday in balance[0].public_holidays.all():
+                    if holiday.id not in public_holidays:
+                        deleted_holidays.append(holiday)
+
+                for day in deleted_holidays:
+                    PublicHoliday.objects.get(id=day.id).delete()
 
             if len(balance) > 0:
                 balance[0].annual_leaves = serializer.validated_data.get(
@@ -174,6 +169,7 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
         )
 
 
+
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
     """Class Vacations_APIView to create a new vacation into database or get all"""
 
@@ -182,116 +178,106 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
     def post(self, request: Request) -> Response:
         """Method to create a new vacation request"""
-        if (
-            request.data.get("end_date")
-            and type(request.data["end_date"]) is str
-            and request.data.get("from_date")
-            and type(request.data["from_date"]) is str
-        ):
-            start_date: List[str] = request.data.get("from_date").split(
-                "-"
-            )  # Year, month, day
-
-            end_date: List[str] = request.data.get("end_date").split(
-                "-"
-            )  # Year, month, day
-
-            try:
-                converted_start_date: datetime = datetime(
-                    year=int(start_date[0]),
-                    month=int(start_date[1]),
-                    day=int(start_date[2]),
-                ).date()
-            except Exception:
-                return CustomResponse.bad_request(
-                    message="Invalid start date format, it must match the following pattern 'yyyy-mm-dd'.",
-                    error=start_date,
-                )
-
-            try:
-                converted_end_date: datetime = datetime(
-                    year=int(end_date[0]), month=int(end_date[1]), day=int(end_date[2])
-                ).date()
-            except Exception:
-                return CustomResponse.bad_request(
-                    message="Invalid end date format, it must match the following pattern 'yyyy-mm-dd'.",
-                    error=start_date,
-                )
-
-            # Check if end date is lower than start date
-            if converted_end_date < converted_start_date:
-                return CustomResponse.bad_request(
-                    message="The end date must be later than the start date."
-                )
-
-            request.data["from_date"] = converted_start_date
-            request.data["end_date"] = converted_end_date
-
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             start_date = serializer.validated_data.get("from_date")
             end_date = serializer.validated_data.get("end_date")
+            applying_user = request.user
 
-            # Check if there are pinding vacations in the same day
-            pinding_requests = Vacation.objects.filter(
+            # Check if there are pending vacations in the same day.
+            pending_requests = Vacation.objects.filter(
                 from_date__day=start_date.day,
                 end_date__day=end_date.day,
                 status=STATUS_CHOICES.PENDING,
+                applying_user=applying_user
             )
-            if len(pinding_requests) > 0:
+            if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
                     message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
                 )
 
             # Check balance.
             v = StanderdVacationBalance()
+            v.check(applying_user)
+
             reason: str = serializer.validated_data.get("reason")
-            applying_user = request.user
             user_reason_balance = applying_user.vacationbalance
+            
             vacation_days = v.get_actual_days(applying_user, start_date, end_date)
 
-            curr_balance = getattr(user_reason_balance, reason)
+            if start_date.day == end_date.day:
+                # The request is the same day
+                start_hour = start_date.hour
+                end_hour  = end_date.hour
+                times = v.calculate_times(start_hour=start_hour, end_hour=end_hour)
+                if times < 1:
+                    if not v.is_valid_times(times=times, start_hour=start_hour, end_hour=end_hour):
+                        return CustomResponse.bad_request(
+                            message=f"You've sent an invalid times, The days should match the {times}"
+                        )
+                    vacation_days = times
 
-            pinding_vacations = Vacation.objects.filter(
-                status=STATUS_CHOICES.PENDING,
-                applying_user=applying_user,
-                reason=reason,
-            ).values_list("actual_days", flat=True)
-
-            chcked_balance = curr_balance - sum(pinding_vacations)
-
-            if curr_balance < vacation_days:
+            if reason == REASON_CHOICES.PUBLIC_HOLIDAYS:
                 return CustomResponse.bad_request(
-                    message=f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
+                    message=f"You have sent an invalid reason {reason}",
+                    error={
+                        "message": "This field should be one of the follwing reasons",
+                        "reasons": [
+                            reason
+                            for reason in REASON_CHOICES
+                            if reason != REASON_CHOICES.PUBLIC_HOLIDAYS
+                        ],
+                    },
+                )
+            else:
+                curr_balance = getattr(user_reason_balance, reason)
+
+                if curr_balance < vacation_days:
+                    return CustomResponse.bad_request(
+                        message=f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
+                    )
+
+                pending_vacations = Vacation.objects.filter(
+                    status=STATUS_CHOICES.PENDING,
+                    applying_user=applying_user,
+                    reason=reason,
+                ).values_list("actual_days", flat=True)
+
+                chcked_balance = curr_balance - sum(pending_vacations)
+
+                if chcked_balance < vacation_days:
+                    return CustomResponse.bad_request(
+                        message=f"You have an additional pending request that deducts {sum(pending_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                    )
+
+                vacation = serializer.save(
+                    type=TYPE_CHOICES.VACATIONS,
+                    status=STATUS_CHOICES.PENDING,
+                    applying_user=applying_user,
+                    actual_days=vacation_days,
                 )
 
-            if chcked_balance < vacation_days:
-                return CustomResponse.bad_request(
-                    message=f"You have an additional pending request that deducts {sum(pinding_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                # msg = get_vacation_request_email_template(
+                #     request.user, serializer.data, vacation.id
+                # )
+
+                try:
+                    ping_redis()
+                except:
+                    return http_ensure_redis_error()
+
+                set_notification_request_redis(serializer.data)
+
+                # sent = send_email_for_request(request.user.id, msg, "Vacation request")
+                # if not sent:
+                #     return CustomResponse.bad_request(message="Error in sending email, can not sent email with this request.")
+
+                vacation_data: Dict = wrap_vacation_request(vacation)
+                return CustomResponse.success(
+                    status_code=201,
+                    message="The vacation has been posted successfully.",
+                    data=vacation_data,
                 )
-
-            saved = serializer.save(
-                type=TYPE_CHOICES.VACATIONS,
-                status=STATUS_CHOICES.PENDING,
-                applying_user=applying_user,
-                actual_days=vacation_days,
-            )
-
-            # get_vacation_request_email_template(
-            #     request.user, serializer.data, saved.id
-            # )
-
-            set_notification_request_redis(serializer.data)
-
-            # send_email_for_request(request.user.id, msg, "Vacation request")
-            # if not sent:
-            #     return CustomResponse.bad_request(message="Error in sending email, can not sent email with this request.")
-            response_date: Dict = send_vacation_to_calendar(saved)
-            return CustomResponse.success(
-                status_code=201,
-                message="The vacation has been posted successfully.",
-                data=response_date,
-            )
         return CustomResponse.bad_request(error=serializer.errors)
 
     def get_queryset(self) -> Response:
@@ -322,9 +308,22 @@ class VacationsHelpersApiView(ListAPIView, GenericAPIView):
         """method to delete a vacation request by id"""
         vacation = get_vacation_by_id(id=id)
         if vacation is not None:
+            if vacation.status == STATUS_CHOICES.APPROVED:
+                v = StanderdVacationBalance()
+                balance = v.check_and_update_balance(
+                    applying_user=vacation.applying_user,
+                    vacation=vacation,
+                    reason=vacation.reason,
+                    start_date=vacation.from_date,
+                    end_date=vacation.end_date,
+                    delete= True,
+                )
+                if balance is not True:
+                    return CustomResponse.bad_request(message=balance)
+                
             vacation.delete()
-            return CustomResponse.success(message="Hr Letter deleted", status_code=204)
-        return CustomResponse.not_found(message="Hr Letter not found", status_code=404)
+            return CustomResponse.success(message="The vacation has been deleted successfully.", status_code=204)
+        return CustomResponse.not_found(message="The vacation is not found.", status_code=404)
 
 
 class VacationUserApiView(ListAPIView, GenericAPIView):
@@ -360,13 +359,13 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             start_date = serializer.validated_data.get("from_date")
             end_date = serializer.validated_data.get("end_date")
 
-            # Check if there are pinding vacations in the same day
-            pinding_requests = Vacation.objects.filter(
+            # Check if there are pending vacations in the same day
+            pending_requests = Vacation.objects.filter(
                 from_date__day=start_date.day,
                 end_date__day=end_date.day,
                 status=STATUS_CHOICES.PENDING,
             )
-            if len(pinding_requests) > 0:
+            if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
                     message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
                 )
@@ -380,13 +379,13 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
             curr_balance = getattr(user_reason_balance, reason)
 
-            pinding_vacations = Vacation.objects.filter(
+            pending_vacations = Vacation.objects.filter(
                 status=STATUS_CHOICES.PENDING,
                 applying_user=applying_user,
                 reason=reason,
             ).values_list("actual_days", flat=True)
 
-            chcked_balance = curr_balance - sum(pinding_vacations)
+            chcked_balance = curr_balance - sum(pending_vacations)
 
             if curr_balance < vacation_days:
                 return CustomResponse.bad_request(
@@ -395,7 +394,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
             if chcked_balance < vacation_days:
                 return CustomResponse.bad_request(
-                    message=f"You have an additional pending request that deducts {sum(pinding_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                    message=f"You have an additional pending request that deducts {sum(pending_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
                 )
 
             serializer.save()
@@ -465,14 +464,20 @@ class VacationsAcceptApiView(GenericAPIView):
 
         vacation.save()
         event_id = id
+        try:
+            ping_redis()
+        except:
+            return http_ensure_redis_error()
+
         bool1 = set_notification_reply_redis(vacation, "accepted", event_id)
         msg = get_vacation_reply_email_template(current_user, vacation, event_id)
         bool2 = send_email_for_reply.delay(
             current_user.id, vacation.applying_user.id, msg, "Vacation reply"
         )
+
         if bool1 and bool2:
             return CustomResponse.success(
-                message="Vacation request accepted", status_code=202
+                message="Vacation request accepted", status_code=202, data=VacationsUpdateSerializer(vacation).data
             )
         else:
             return CustomResponse.not_found(
@@ -505,7 +510,7 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
 
         if vacation.status != STATUS_CHOICES.PENDING:
             return CustomResponse.bad_request(
-                message=f"The vacation status is not pinding, it's {vacation.status}."
+                message=f"The vacation status is not pending, it's {vacation.status}."
             )
 
         current_user: User = get_user_by_id(request.user.id)
@@ -522,6 +527,12 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         vacation.save()
 
         event_id = id
+
+        try:
+            ping_redis()
+        except:
+            return http_ensure_redis_error()
+
         bool1 = set_notification_reply_redis(vacation, "rejected", event_id)
         msg = get_vacation_reply_email_template(current_user, vacation, event_id)
         bool2 = send_email_for_reply.delay(
@@ -555,6 +566,12 @@ class VacationCommentsAPIView(GenericAPIView):
             "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
         }
         update_vacation_change_log(vacation, comment)
+
+        try:
+            ping_redis()
+        except:
+            return http_ensure_redis_error()
+
         notification_commented(vacation, request.user, "commented", id)
         return CustomResponse.success(
             data=comment, status_code=202, message="vacation comment added"
@@ -627,7 +644,6 @@ class UserVacationBalanceApiView(GenericAPIView):
         users: User = get_users_by_id(user_ids)
 
         v: StanderdVacationBalance = StanderdVacationBalance()
-
         balances = []
 
         for user in users:
@@ -657,23 +673,20 @@ class UserVacationBalanceApiView(GenericAPIView):
         balances = filter_balances_by_users(users)
 
         # Set default values
-        request.data["compensation"] = 365
         request.data["sick_leaves"] = 365
         request.data["unpaid"] = 365
 
         try:
             for balance in balances:
-                balance.compensation = 365
                 balance.sick_leaves = 365
                 balance.unpaid = 365
                 balance.annual_leaves = int(request.data.get("annual_leaves"))
                 balance.emergency_leaves = int(request.data.get("emergency_leaves"))
                 balance.leave_excuses = int(request.data.get("leave_excuses"))
+                balance.compensation = int(request.data.get("compensation"))
                 balance.save()
 
                 v.check(balance.user)
-                user_balance = get_balance_by_user(balance.user)
-                update_user_actual_balance(user_balance)
 
             return CustomResponse.success(
                 message="Successfully updated user balance",
@@ -733,3 +746,131 @@ class CalculateVacationDaysApiView(GenericAPIView):
 
         # actual_days = len(actual_days) if actual_days != None else 0
         return CustomResponse.success(message="Balance calculated.", data=actual_days)
+
+class AdminApplyVacationForUserApiView(GenericAPIView):
+    permission_classes = [ IsAdmin ]
+    serializer_class = AdminApplyVacationForUserSerializer
+
+    def post(self, request: Request, user_id: str) -> Response:
+        """
+        ## Apply for Vacation on Behalf of Another User
+        This function allows the administrator to apply for a vacation on behalf of another user, but only if they work in the same office.
+        ### Parameters:
+        - **user_id** (`int`): The ID of the user for whom the vacation is being requested.
+        - **reason** (`str`): A string describing the reason for the vacation request.
+        - **from_date** (`datetime`): The starting date of the vacation.
+        - **end_date** (`datetime`): The ending date of the vacation.
+        """
+        admin = request.user
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            applying_user = get_user_by_id(user_id)
+            if applying_user is None:
+                return CustomResponse.not_found(message="User not found.")
+
+            if applying_user.location.id != admin.location.id:
+                return CustomResponse.unauthorized(message=f"This action can only be performed by administrators who work in the {applying_user.location.name} office.")
+
+            known_reasons = [REASON_CHOICES.ANNUAL_LEAVES, REASON_CHOICES.EMERGENCY_LEAVE, REASON_CHOICES.COMPENSATION, REASON_CHOICES.LEAVE_EXCUSES, REASON_CHOICES.UNPAID, REASON_CHOICES.SICK_LEAVES]
+            reason = serializer.validated_data.get('reason')
+            if reason not in known_reasons:
+                formatted_string = ', '.join(known_reasons[:-1]) + f' and {known_reasons[-1]}'
+                return CustomResponse.bad_request(message=f"reason {reason} is not valid, the available resons are {formatted_string}")
+
+            from_date = serializer.validated_data.get('from_date')
+            end_date = serializer.validated_data.get('end_date')
+
+            # Check if there are pending vacations in the same day
+            pending_requests = Vacation.objects.filter(
+                applying_user=applying_user,
+                from_date__day=from_date.day,
+                end_date__day=end_date.day,
+                status=STATUS_CHOICES.PENDING,
+            )
+
+            if len(pending_requests) > 0:
+                return CustomResponse.bad_request(
+                    message="The selected user has another request with the same dates and pending status. Please review their previous request before submitting a new one."
+                )
+
+            # Check balance.
+            v = StanderdVacationBalance()
+            v.check(applying_user)
+
+            user_reason_balance = applying_user.vacationbalance
+            vacation_days = v.get_actual_days(applying_user, from_date, end_date)
+
+            if reason == REASON_CHOICES.PUBLIC_HOLIDAYS:
+                return CustomResponse.bad_request(
+                    message=f"You have sent an invalid reason {reason}",
+                    error={
+                        "message": "This field should be one of the follwing reasons",
+                        "reasons": [
+                            reason
+                            for reason in REASON_CHOICES
+                            if reason != REASON_CHOICES.PUBLIC_HOLIDAYS
+                        ],
+                    },
+                )
+
+            curr_balance = getattr(user_reason_balance, reason)
+
+            pending_vacations = Vacation.objects.filter(
+                status=STATUS_CHOICES.PENDING,
+                applying_user=applying_user,
+                reason=reason,
+            ).values_list("actual_days", flat=True)
+
+            chcked_balance = curr_balance - sum(pending_vacations)
+
+            if curr_balance < vacation_days:
+                return CustomResponse.bad_request(
+                    message=f"The user have only {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
+                )
+
+            if chcked_balance < vacation_days:
+                return CustomResponse.bad_request(
+                    message=f"The user have an additional pending request that deducts {sum(pending_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                )
+
+            saved_vacation = Vacation.objects.create(
+                applying_user=applying_user,
+                type=TYPE_CHOICES.VACATIONS,
+                status=STATUS_CHOICES.PENDING,
+                reason=reason,
+                from_date=from_date,
+                end_date=end_date,
+                actual_days=vacation_days
+            )
+
+            message = f"You have successfully applied for a {reason.capitalize().replace('_', ' ')} vacation for {applying_user.full_name}."
+            if reason == REASON_CHOICES.ANNUAL_LEAVES or reason == REASON_CHOICES.EMERGENCY_LEAVE:
+                message = f"You have successfully applied for an {reason.capitalize().replace('_', ' ')} vacation for {applying_user.full_name}."
+
+            try:
+                ping_redis()
+            except:
+                return http_ensure_redis_error()
+
+            # Update the balance
+            balance = v.check_and_update_balance(
+                applying_user=saved_vacation.applying_user,
+                vacation=saved_vacation,
+                reason=saved_vacation.reason,
+                start_date=saved_vacation.from_date,
+                end_date=saved_vacation.end_date,
+            )
+
+            if balance is not True:
+                return CustomResponse.bad_request(message=balance)
+
+            # Approve the vacation.
+            saved_vacation.status = STATUS_CHOICES.APPROVED
+            saved_vacation.approval_user = admin
+            saved_vacation.save()
+
+            # set_notification_request_redis(serializer.data)
+            response_data: Dict = wrap_vacation_request(saved_vacation)
+            return CustomResponse.success(message=message, data=response_data)
+        return CustomResponse.bad_request(message="Please make sure that you entered a valid data.", error=serializer.errors)

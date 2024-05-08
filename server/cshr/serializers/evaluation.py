@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from server.cshr.models.evaluations import UserEvaluations, Evaluations
+from cshr.models.evaluations import UserEvaluations, Evaluations
 
 
 class EvaluationSerializer(ModelSerializer):

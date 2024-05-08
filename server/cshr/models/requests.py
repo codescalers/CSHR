@@ -1,9 +1,9 @@
 from django.db import models
 
-from server.cshr.models.abstracts import TimeStamp
+from cshr.models.abstracts import TimeStamp
 
 
-from server.cshr.models.users import User
+from cshr.models.users import User
 
 
 class TYPE_CHOICES(models.TextChoices):
@@ -43,7 +43,7 @@ class Requests(TimeStamp):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES.choices)
 
     def __str__(self) -> str:
-        return self.type
+        return f"{self.applying_user.full_name} - {self.type} - Created at {self.created_at.date()}"
 
     class Meta:
         verbose_name = "Request"

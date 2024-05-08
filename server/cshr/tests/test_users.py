@@ -1,10 +1,10 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
-from server.cshr.models.company_properties import CompanyProperties
-from server.cshr.models.evaluations import UserEvaluations
-from server.cshr.models.training_courses import TrainingCourses
-from server.cshr.models.users import User, UserSkills
-from server.cshr.models.office import Office
+from cshr.models.company_properties import CompanyProperties
+from cshr.models.evaluations import UserEvaluations
+from cshr.models.training_courses import TrainingCourses
+from cshr.models.users import User, UserSkills
+from cshr.models.office import Office
 from django.contrib.auth.hashers import make_password
 
 

@@ -1,11 +1,9 @@
 """This file contains everything related to the Vacation model."""
-from server.cshr.models.requests import STATUS_CHOICES, Requests
-from server.cshr.models.users import User
-from server.cshr.models.vacations import Vacation, VacationBalance
+from cshr.models.requests import STATUS_CHOICES, Requests
+from cshr.models.users import User
+from cshr.models.vacations import Vacation, VacationBalance
 from django.db.models import Q
-from typing import Any, Dict, List
-
-from server.cshr.serializers.vacations import LandingPageVacationsSerializer
+from typing import List
 
 
 def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
@@ -16,12 +14,10 @@ def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
         Q(
             from_date__month=month,
             from_date__year=year,
-            status__in=[STATUS_CHOICES.PENDING, STATUS_CHOICES.APPROVED],
         )
         | Q(
             end_date__month=month,
             end_date__year=year,
-            status__in=[STATUS_CHOICES.PENDING, STATUS_CHOICES.APPROVED],
         )
     )
     return vacations
@@ -90,44 +86,3 @@ def filter_user_vacations_by_pending_status(user: User) -> Vacation:
 def filter_user_vacations(user: User) -> Vacation:
     """Return all vacations that has pending status and related to user"""
     return Vacation.objects.filter(applying_user=user).order_by("created_at")
-
-
-def update_user_actual_balance(user_balance: VacationBalance) -> VacationBalance:
-    """Update user actual balance field with the current balance."""
-    user_balance.actual_balance = {
-        "annual_leaves": user_balance.annual_leaves,
-        "sick_leaves": user_balance.sick_leaves,
-        "compensation": 100,
-        "unpaid": 100,
-        "emergency_leaves": user_balance.emergency_leaves,
-        "leave_excuses": user_balance.leave_excuses,
-    }
-    user_balance.save()
-    return user_balance
-
-
-def send_vacation_to_calendar(vacation: Vacation) -> Dict[str, Any]:
-    from server.cshr.services.landing_page import (
-        LandingPageClassNameEnum,
-        LandingPageTypeEnum,
-    )
-
-    """
-    Takes the standerd vacation, then update it with calendar values.
-        calendar pattern:
-            - {
-                "title": str(Vacation),
-                "date": date(from_date),
-                "len": int(len(end_date - from_date)),
-                "className": str(--task-warning),
-                "eventName": str(Vacation)
-            }
-    """
-    response: Dict(str, Any) = {}
-    response["title"] = LandingPageTypeEnum.VACATION.value
-    response["className"] = LandingPageClassNameEnum.VACATION.value
-    response["eventName"] = LandingPageTypeEnum.VACATION.value
-    response["vacation"] = [LandingPageVacationsSerializer(vacation).data]
-    response["len"] = (vacation.end_date - vacation.from_date).days + 1
-    response["date"] = vacation.from_date
-    return response

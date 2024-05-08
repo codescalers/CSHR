@@ -1,3 +1,0 @@
-exec: sh -c "cd client_dir/public && source ../scripts/build-env.sh && cd .."
-after:
-  - ssh-init
