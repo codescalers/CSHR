@@ -2,9 +2,11 @@
 
 To run the full project with all instances, follow these steps:
 
+- For sample environment variable configurations, please take a look at [configuration.md](./configuration.md)
+
 1. Set Environment Variables
 
-Create a `.env` file beside the [config](./config/) directory and set the necessary environment variables. Refer to the previous section for sample environment variable configurations.
+Create a `.env` file beside the [config](.././config/) directory and set the necessary environment variables. Refer to the previous section for sample environment variable configurations.
 
 2. Execute Docker Compose
 
