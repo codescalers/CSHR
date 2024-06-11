@@ -4,6 +4,12 @@ from django.apps import apps
 # Register your models here.
 
 
+class VacationAdmin(admin.ModelAdmin):
+   readonly_fields = ['created_at', 'modified_at']
+
+class RequestsAdmin(admin.ModelAdmin):
+   readonly_fields = ['created_at', 'modified_at']
+
 def autoregister(*app_list: str) -> None:
     """
     register all database models in the admin dashboard.
