@@ -10,7 +10,7 @@ export const useWSConnectionStore = defineStore('WSConnectionStore', () => {
   // Actions
   const initializeWebSocket = () => {
     if (me) {
-      WSConnection.value = new WebSocket(`ws://127.0.0.1:8000/ws/notification/${me.id}/?token=Bearer ` + localStorage.getItem("USER_ACCESS_KEY"));
+      WSConnection.value = new WebSocket(`${window.env.SERVER_DOMAIN_NAME_WS}/${me.id}/?token=Bearer ` + localStorage.getItem("USER_ACCESS_KEY"));
     }
     return WSConnection;
   };
