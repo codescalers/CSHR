@@ -1,4 +1,5 @@
 """This file will containes all user serializers."""
+
 from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
@@ -336,9 +337,9 @@ class BaseUserSerializer(ModelSerializer):
             "is_active",
             "telegram_link",
             "reporting_to",
-            "location"
+            "location",
         ]
-    
+
     def get_location(self, obj):
         return OfficeSerializer(obj.location).data
 
@@ -354,6 +355,7 @@ class BaseUserSerializer(ModelSerializer):
 
     def get_reporting_to(self, obj):
         return BasicUserSerializer(obj.reporting_to, many=True).data
+
 
 class TeamSerializer(ModelSerializer):
     """Class team serilaizer to return user team leaders and team members."""

@@ -25,7 +25,7 @@ from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from cshr.models.users import USER_TYPE, User
 from cshr.services.office import get_office_by_id
 from cshr.utils.vacation_balance_helper import StanderdVacationBalance
-from cshr.services.users import get_user_by_id, get_users_by_id
+from cshr.services.users import build_user_reporting_to_hierarchy, get_user_by_id, get_users_by_id
 from cshr.services.vacations import (
     filter_balances_by_users,
     get_vacation_by_id,
@@ -61,6 +61,7 @@ from cshr.utils.redis_functions import (
     set_notification_reply_redis,
 )
 from cshr.utils.wrappers import wrap_vacation_request
+from cshr.services.notifications import NotificationsService
 
 
 class GetAdminVacationBalanceApiView(GenericAPIView):
@@ -261,12 +262,21 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 #     request.user, serializer.data, vacation.id
                 # )
 
-                try:
-                    ping_redis()
-                except:
-                    return http_ensure_redis_error()
+                # try:
+                #     ping_redis()
+                # except:
+                #     return http_ensure_redis_error()
 
-                set_notification_request_redis(serializer.data)
+                # receivers = build_user_reporting_to_hierarchy(applying_user)
+                # receivers = User.objects.filter(id__in = receivers)
+ 
+                # notification = NotificationsService(sender=applying_user, receivers=receivers)
+                # message = notification.vacations.post_new_vacation(reason_format)
+                # notification.push(message)
+  
+                # notification.push()
+
+                # set_notification_request_redis(serializer.data)
 
                 # sent = send_email_for_request(request.user.id, msg, "Vacation request")
                 # if not sent:

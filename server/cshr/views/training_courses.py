@@ -24,7 +24,6 @@ class BaseTrainingCoursesApiView(ListAPIView, GenericAPIView):
     """method to create a new Training course"""
 
     def post(self, request: Request) -> Response:
-
         """Method to create a Training course"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():

@@ -5,7 +5,6 @@ from cshr.models.users import User
 
 
 def createTmp():
-
     """function to create tmp record"""
 
     Office.objects.create(name="testOffice", country="testCountry")

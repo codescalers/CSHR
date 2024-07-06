@@ -220,24 +220,6 @@ export module Api {
       results: T[]
     }
 
-    export interface Notification {
-      type: string
-      title: string
-      created_at: string
-      event_id: string
-      user: {
-        id: number
-        full_name: string
-        email: string
-        image: string
-        team: string
-        gender: Gender
-        skills: Skill[]
-        job_title: string
-        user_certificates: Certificate[]
-      }
-    }
-
     export interface GetAdminBalance {
       annual_leaves: number
       compensation: number

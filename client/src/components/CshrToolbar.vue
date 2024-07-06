@@ -3,40 +3,47 @@
     <VSpacer />
     <VMenu>
       <template #activator="{ props }">
-        <VBtn icon="mdi-bell-outline" size="small" v-bind="props" />
+        <VBtn icon="mdi-bell-badge-outline" size="large" v-bind="props" color="white" v-if="hasReadNotifications" />
+        <VBtn icon="mdi-bell-outline" size="large" v-bind="props" color="white" v-else />
       </template>
 
-      <VList max-width="600" min-width="100%">
-        <VListItem class="text-center" v-if="notifications.isLoading.value">
+      <VList max-width="600" min-width="100%" :height="notifications.length ? 700 : 'auto'" class="mt-1">
+        <v-toolbar color="#262b2e" class="mb-2">
+          <v-btn :disabled="!notifications.length || !hasReadNotifications" type="info" color="success" variant="tonal" class="mr-2" @click="readAllNotifications">
+            <v-icon>mdi-read</v-icon>
+            Mark all as read
+          </v-btn>
+          <v-btn :disabled="!notifications.length" type="info" color="error" variant="outlined" @click="deleteAllNotifications">
+            <v-icon>mdi-trash-can</v-icon>
+            Delete all notifications
+          </v-btn>
+        </v-toolbar>
+
+        <VListItem class="text-center" v-if="isLoading">
           <VProgressCircular indeterminate />
         </VListItem>
-        <VListItem class="text-center" v-else-if="notifications.state.value.length === 0">
+        <VListItem class="text-center" v-else-if="notifications.length === 0">
           You don't have any notification.
         </VListItem>
         <template v-else>
-          <template
-            v-for="(notification, index) in notifications.state.value"
-            :key="notification.event_id"
-          >
-            <VListItem class="pa-4" @click="selectedNotification = notification">
+          <template v-for="(notification, index) in notifications" :key="notification.id">
+            <VListItem class="pa-4 mt-1 mb-1" @click="setNotification(notification)"
+              :style="{ background: !notification.is_read ? 'rgb(37 58 86 / 43%)' : 'transparent' }">
               <VListItemTitle class="text-wrap">
+                <span class="is-not-read" v-if="!notification.is_read"></span>
                 {{ notification.title }}
               </VListItemTitle>
 
               <VListItemSubtitle>
-                {{ notification.created_at }}
+                ( {{ formatedDate(notification.created_at) }} )
               </VListItemSubtitle>
 
               <template #append>
-                <VChip
-                  :color="getStatusColor(notification.type)"
-                  :text="notification.type"
-                  class="ml-4"
-                />
+                <VChip :color="getStatusColor(notification.request.status)" :text="notification.request.type" class="ml-4" />
               </template>
             </VListItem>
 
-            <VDivider v-if="notifications.state.value.length > index + 1" />
+            <VDivider v-if="notifications.length > index + 1" />
           </template>
         </template>
       </VList>
@@ -45,56 +52,159 @@
     <VMenu>
       <template #activator="{ props }">
         <div class="d-flex justify-center align-center mx-2">
-          <VProgressCircular indeterminate v-if="user.isLoading.value" />
-          <profileImage
-            width="55px"
-            v-else-if="user.state.value"
-            :with-link="false"
-            :user="user.state.value"
-            v-bind="props"
-          />
+          <VProgressCircular indeterminate v-if="isUserLoading" />
+          <profileImage width="55px" v-else-if="user" :with-link="false" :user="user" v-bind="props" />
         </div>
       </template>
 
-      <VList>
-        <VListItem prepend-icon="mdi-account" title="Your Profile" @click="$router.push('/profile')"/>
-        <VListItem
-          prepend-icon="mdi-logout"
-          title="Logout"
-          class="text-error"
-          @click="$emit('logout')"
-        />
+      <VList class="mt-1">
+        <VListItem prepend-icon="mdi-account" title="Your Profile" @click="$router.push('/profile')" />
+        <VListItem prepend-icon="mdi-logout" title="Logout" class="text-error" @click="$emit('logout')" />
       </VList>
     </VMenu>
-    <NotificationDetailsDialog route-query="toolbar-notification" v-model="selectedNotification" />
+
+    <NotificationDetailsDialog route-query="toolbar-notification" v-model="selectedNotification"
+      @update:approve="handleApprove" @update:reject="handleReject" />
   </VToolbar>
 </template>
 
 <script lang="ts">
-import { ref } from 'vue'
-import { useAsyncState } from '@vueuse/core'
-import { useApi } from '@/hooks'
-import { getStatusColor } from '@/utils'
-import type { Api } from '@/types'
-import NotificationDetailsDialog from './NotificationDetailsDialog.vue'
-import profileImage from './profileImage.vue'
+import { computed, ref, watch } from 'vue';
+import { useAsyncState } from '@vueuse/core';
+import { useApi } from '@/hooks';
+import { formatDate, getStatusColor } from '@/utils';
+import type { notificationType } from '@/types';
+import NotificationDetailsDialog from './NotificationDetailsDialog.vue';
+import profileImage from './profileImage.vue';
+import { useNotificationStore } from '@/stores/notifications';
+import { useWSConnectionStore } from '@/stores/WSConnection';
+import { ApiClientBase } from '@/clients/api/base';
 
 export default {
   name: 'CshrToolbar',
   components: { NotificationDetailsDialog, profileImage },
   setup() {
-    const $api = useApi()
-    const user = useAsyncState(() => $api.myprofile.getUser(), null)
+    const $api = useApi();
+    const user = useAsyncState(() => $api.myprofile.getUser(), null);
+    const notificationStore = useNotificationStore();
+    const WSConnection = useWSConnectionStore();
+    WSConnection.initializeWebSocket();
+
+    const notifications = computed(() => notificationStore.notifications);
+
     setTimeout(() => {
-      if(!user.state.value){
-        window.location.href = "/login"
+      if (!user.state.value) {
+        window.location.href = '/login';
       }
-    }, 1000)
+    }, 1000);
 
-    const notifications = useAsyncState(() => $api.notifications.list(), [])
-    const selectedNotification = ref<Api.Returns.Notification>()
+    const isLoading = ref(true);
 
-    return { user, notifications, selectedNotification, getStatusColor }
-  }
-}
+    const loadNotifications = async () => {
+      const notificationData = await $api.notifications.list();
+      notificationStore.setNotifications(notificationData);
+      isLoading.value = false;
+    };
+
+    loadNotifications();
+
+    function formatedDate(date: string) {
+      const _date = new Date(date);
+      const _formatDate = formatDate(date);
+      const time = _date.toLocaleTimeString();
+      return `${_formatDate} - ${time}`;
+    }
+
+    const selectedNotification = ref<notificationType>();
+
+    const handleApprove = (value: string) => {
+      const notification = notificationStore.notifications.find(
+        (notification) => notification.id === selectedNotification.value?.id
+      );
+      if (notification) {
+        notification.request.status = value;
+        const connection = WSConnection.getWSConnection();
+        connection.value?.send(
+          JSON.stringify({
+            event: 'approve_request',
+            request_id: notification.request.id,
+          })
+        );
+      }
+    };
+
+    const handleReject = (value: string) => {
+      const notification = notificationStore.notifications.find(
+        (notification) => notification.id === selectedNotification.value?.id
+      );
+      if (notification) {
+        notification.request.status = value;
+        const connection = WSConnection.getWSConnection();
+        connection.value?.send(
+          JSON.stringify({
+            event: 'reject_request',
+            request_id: notification.request.id,
+          })
+        );
+      }
+    };
+
+    const setNotification = async (notification: notificationType) => {
+      selectedNotification.value = notification;
+      if (!selectedNotification.value.is_read) {
+        selectedNotification.value.is_read = true;
+        await $api.notifications.readNotification(
+          selectedNotification.value.id,
+          selectedNotification.value.is_read
+        );
+      }
+    };
+
+    const hasReadNotifications = computed(() => {
+      return notificationStore.notifications.some((notification) => !notification.is_read);
+    });
+
+    const readAllNotifications = async () => {
+      const me = ApiClientBase.user.value?.fullUser;
+      if (me) {
+        const notifications = await $api.notifications.readAllNotifications(me.id);
+        notificationStore.setNotifications(notifications);
+      }
+    };
+
+    const deleteAllNotifications = async () => {
+      const me = ApiClientBase.user.value?.fullUser;
+      if (me) {
+        await $api.notifications.deleteAllNotifications(me.id);
+        notificationStore.clearNotifications();
+      }
+    };
+
+    return {
+      user: user.state,
+      isUserLoading: user.isLoading,
+      notifications,
+      isLoading,
+      selectedNotification,
+      hasReadNotifications,
+      getStatusColor,
+      formatedDate,
+      handleApprove,
+      handleReject,
+      setNotification,
+      readAllNotifications,
+      deleteAllNotifications,
+    };
+  },
+};
 </script>
+
+<style scoped>
+.is-not-read {
+  padding: 5px;
+  content: '';
+  display: inline-block;
+  background-color: rgb(42, 165, 93);
+  border-radius: 50%;
+}
+</style>

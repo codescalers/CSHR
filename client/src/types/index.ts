@@ -26,3 +26,20 @@ export enum CalendarEventSelection {
   Meeting = 'Meeting',
   NewEvent = 'New Event'
 }
+
+export interface notificationType {
+  id: number;
+  body: string;
+  receivers: number[];
+  title: string;
+  created_at: string;
+  modified_at: string;
+  is_read: boolean;
+  link?: string;
+  request: {
+    id: number 
+    reason: string
+    status: string
+    type: string
+  }
+}

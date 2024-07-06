@@ -16,8 +16,9 @@
               </VContainer>
             </template>
           </v-select>
+
           <v-select v-model="reporting_to" :items="supervisors" item-title="full_name" item-value="id" label="Team Lead"
-            return-object density="comfortable" :rules="requiredRules">
+            return-object density="comfortable">
 
             <template #append-item v-if="reloadMoreSupervisor">
               <VContainer>
@@ -47,6 +48,7 @@
           <v-text-field v-model="selectedUser.social_insurance_number" label="Social Insurance Number" type="number"
             density="comfortable"></v-text-field>
         </v-col>
+
         <v-col cols="6" v-if="selectedUser">
           <v-text-field v-model="selectedUser.telegram_link" label="Telegram" density="comfortable"
             :rules="[...requiredRules, ...lengthRules(100)]"></v-text-field>
@@ -207,6 +209,10 @@ export default {
       }
     })
 
+    watch(selectedUser, () => {
+      reporting_to.value = selectedUser.value?.reporting_to[0]
+    }, { deep: true })
+
     watch([ joiningDate], ([ newJoiningDate]) => {
       if (newJoiningDate) selectedUser.value.joining_at = formatDate(newJoiningDate)
     })
@@ -233,6 +239,7 @@ export default {
         reader.readAsDataURL(input.files[0])
       }
     }
+
     const activateUser = useAsyncState(
       async () => {
         isLoading.value = true
