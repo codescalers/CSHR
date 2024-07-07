@@ -34,11 +34,13 @@ from cshr.services.users import (
     get_user_team_members,
 )
 from cshr.serializers.users import TeamSerializer
+from cshr.api.pagination import BaseGeneralUserPagination
 
 
 class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = GeneralUserSerializer
+    pagination_class = BaseGeneralUserPagination
 
     def get_queryset(self) -> Response:
         """get all users in the system for a normal user"""

@@ -36,8 +36,8 @@
 </template>
 
 <script lang="ts">
-import type { Api, Country } from '@/types'
-import { onMounted, ref, watch } from 'vue'
+import type { Api } from '@/types'
+import { ref, watch } from 'vue'
 import { $api } from '@/clients'
 import UserCard from '@/components/userCard.vue'
 import officeFilters from '@/components/filters.vue'
@@ -52,13 +52,12 @@ export default {
   setup() {
     const offices = useAsyncState($api.office.list(), [], { immediate: true })
     const $route = useRoute()
-    let isFirstLoad = true
     const page = ref(1)
     const count = ref<number>(0)
 
     function setCount(data: any) {
       if (data?.count) {
-        count.value = Math.ceil(data?.count / 10)
+        count.value = Math.ceil(data?.count / 12)
       } else {
         count.value = 0
       }
@@ -85,7 +84,7 @@ export default {
 
     watch(
       () => $route.query.location_id,
-      async (newValue) => {
+      async (_) => {
         page.value = 1
         useAsyncState(
           $api.users.list({ location_id: $route.query.location_id, page: page.value }),
@@ -102,7 +101,7 @@ export default {
 
     watch(
       () => page.value,
-      async (newValue) => {
+      async (_) => {
         useAsyncState(
           $api.users.list({ location_id: $route.query.location_id, page: page.value }),
           undefined,
@@ -115,8 +114,6 @@ export default {
         )
       }
     )
-
-
 
     return {
       users,
