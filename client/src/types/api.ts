@@ -37,6 +37,7 @@ export module Api {
     from_date: any
     end_date: any
     change_log: any[]
+    approvals: number[]
     actual_days: number
     applying_user: number | any
     approval_user: number
