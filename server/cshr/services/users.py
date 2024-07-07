@@ -9,7 +9,7 @@ from cshr.models.users import USER_TYPE, User, UserSkills
 from django.db.models.query import QuerySet
 
 
-def get_user_by_id(id: str) -> User | None:
+def get_user_by_id(id: str) -> User:
     """Return user who have the same id"""
     if id is None:
         return id
