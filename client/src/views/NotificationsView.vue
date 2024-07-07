@@ -7,11 +7,24 @@
     <v-crad>
       <v-row class="mb-2">
         <v-col class="d-flex justify-end">
-          <v-btn :disabled="!notifications.length || !hasReadNotifications" type="info" color="success" variant="tonal" class="mr-2" @click="readAllNotifications">
+          <v-btn
+            :disabled="!notifications.length || !hasReadNotifications"
+            type="info"
+            color="success"
+            variant="tonal"
+            class="mr-2"
+            @click="readAllNotifications"
+          >
             <v-icon>mdi-read</v-icon>
             Mark all as read
           </v-btn>
-          <v-btn :disabled="!notifications.length" type="info" color="error" variant="outlined" @click="deleteAllNotifications">
+          <v-btn
+            :disabled="!notifications.length"
+            type="info"
+            color="error"
+            variant="outlined"
+            @click="deleteAllNotifications"
+          >
             <v-icon>mdi-trash-can</v-icon>
             Delete all notifications
           </v-btn>
@@ -24,7 +37,7 @@
         <v-skeleton-loader type="table-row@5"></v-skeleton-loader>
       </template>
       <template v-slot:[`item.is_read`]="{ value }">
-        <v-icon 
+        <v-icon
           class="me-2"
           :icon="value ? 'mdi-checkbox-multiple-marked-circle-outline' : 'mdi-clock-outline'"
           :color="value ? 'primary' : 'warning'"
@@ -44,12 +57,18 @@
         {{ formatedDate(value) }}
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon class="me-2" @click="selectedNotification = item" icon="mdi-eye" />
+        <v-icon class="me-2" @click="setNotification(item)" icon="mdi-eye" />
       </template>
     </v-data-table>
   </v-container>
 
-  <NotificationDetailsDialog route-query="notification-view" v-model="selectedNotification" />
+  <NotificationDetailsDialog
+    route-query="notification-view"
+    v-model="selectedNotification"
+    @update:approve="handleApprove"
+    @update:reject="handleReject"
+    @set:notification="setNotification"
+  />
 </template>
 
 <script lang="ts">
@@ -60,6 +79,7 @@ import { formatDate, getStatusColor } from '@/utils'
 import NotificationDetailsDialog from '@/components/NotificationDetailsDialog.vue'
 import { useNotificationStore } from '@/stores/notifications'
 import { ApiClientBase } from '@/clients/api/base'
+import type { notificationType } from '@/types'
 
 export default {
   name: 'NotificationsView',
@@ -68,7 +88,9 @@ export default {
   },
   setup() {
     const notificationStore = useNotificationStore()
-    const notifications = computed(() => {return notificationStore.notifications})
+    const notifications = computed(() => {
+      return notificationStore.notifications
+    })
 
     function formatedDate(date: string) {
       const _date = new Date(date)
@@ -94,7 +116,7 @@ export default {
     onMounted(async () => {
       try {
         const notifications = await $api.notifications.list()
-        notificationStore.setNotifications(notifications);
+        notificationStore.setNotifications(notifications)
         loading.value = false
       } catch (error) {
         console.error(error)
@@ -109,25 +131,67 @@ export default {
       return notificationStore.notifications.some((notification) => !notification.is_read)
     })
 
+    const setNotification = async (notification: notificationType) => {
+      selectedNotification.value = notification
+      if (!selectedNotification.value.is_read) {
+        selectedNotification.value.is_read = true
+        await $api.notifications.readNotification(
+          selectedNotification.value.id,
+          selectedNotification.value.is_read
+        )
+      }
+    }
+
     async function readAllNotifications() {
       const me = ApiClientBase.user.value?.fullUser
-      if(me){
+      if (me) {
         loading.value = true
-        const notifications = await $api.notifications.readAllNotifications(me.id);
-        notificationStore.setNotifications(notifications);
+        const notifications = await $api.notifications.readAllNotifications(me.id)
+        notificationStore.setNotifications(notifications)
         loading.value = false
       }
     }
 
     async function deleteAllNotifications() {
       const me = ApiClientBase.user.value?.fullUser
-      if(me){
+      if (me) {
         loading.value = true
-        await $api.notifications.deleteAllNotifications(me.id);
-        notificationStore.setNotifications([]);
+        await $api.notifications.deleteAllNotifications(me.id)
+        notificationStore.setNotifications([])
         loading.value = false
       }
     }
+
+    const handleApprove = (value: string) => {
+      const notification = notificationStore.notifications.find(
+        (notification) => notification.id === selectedNotification.value?.id
+      )
+      if (notification) {
+        notification.request.status = value
+        window.connections.ws.value!.send(
+          JSON.stringify({
+            event: 'approve_request',
+            request_id: notification.request.id
+          })
+        )
+      }
+    }
+
+    const handleReject = (value: string) => {
+      const notification = notificationStore.notifications.find(
+        (notification) => notification.id === selectedNotification.value?.id
+      )
+      if (notification) {
+        notification.request.status = value
+        window.connections.ws.value!.send(
+          JSON.stringify({
+            event: 'reject_request',
+            request_id: notification.request.id
+          })
+        )
+      }
+    }
+
 
     return {
       headers,
@@ -142,6 +206,10 @@ export default {
       formatedDate,
       readAllNotifications,
       deleteAllNotifications,
+
+      setNotification,
+      handleApprove,
+      handleReject,
     }
   }
 }

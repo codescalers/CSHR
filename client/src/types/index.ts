@@ -1,3 +1,5 @@
+import type { Api } from './api'
+
 export * from './api'
 
 export interface Country {
@@ -41,6 +43,8 @@ export interface notificationType {
     reason: string
     status: string
     type: string
+    applying_user: Api.User;
+    approval_user: Api.User;
   }
 }
 

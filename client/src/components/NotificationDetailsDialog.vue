@@ -50,7 +50,8 @@ export default {
   emits: {
     'update:model-value': (value?: notificationType) => true || value,
     'update:approve': (value: string) => value,
-    'update:reject': (value: string) => value
+    'update:reject': (value: string) => value,
+    'set:notification': (value: notificationType) => value
   },
 
   setup(props, ctx) {
@@ -63,9 +64,10 @@ export default {
       async (selected?: string) => {
         const [type, id] = selected?.split('|') ?? []
         if (!isNaN(+id) && ['hr_letters', 'vacations'].includes(type)) {
-          const response = await $api.notifications.getNotification(+props.modelValue.id)
+          const response = await $api.notifications.getNotification(+id)
           applyingUser.value = response.request.applying_user
           approvalUser.value = response.request.approval_user
+          ctx.emit("set:notification", response)
           return response
         }
         return undefined
@@ -84,7 +86,7 @@ export default {
       () => props.modelValue,
       (notification) => {
         selected.value = notification
-          ? `${notification.request.type}|${notification.request.id}`
+          ? `${notification.request.type}|${notification.id}`
           : undefined
       }
     )

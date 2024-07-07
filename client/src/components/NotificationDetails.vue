@@ -69,7 +69,7 @@
 <script lang="ts">
 import { computed, ref, type PropType } from 'vue'
 import { getStatusColor } from '@/utils'
-import type { Api, notificationType } from '@/types'
+import type { notificationType } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
 import { useAsyncState } from '@vueuse/core'
 import { $api } from '@/clients'
@@ -87,8 +87,8 @@ export default {
       required: true
     },
     vacation: {
-      type: Object as PropType<Api.Vacation>,
-      required: true
+      type: Object as PropType<notificationType["request"]>,
+      required: false
     },
     onClose: {
       type: Function as PropType<() => void>,
@@ -105,7 +105,7 @@ export default {
     }
 
     async function handleApprove() {
-      return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
+      return useAsyncState($api.vacations.approve.update(props.vacation!.id), [], {
         onSuccess() {
           vacationStatus.value = 'approved'
           emit("update:approve", vacationStatus.value)
@@ -115,7 +115,7 @@ export default {
     }
 
     async function handleReject() {
-      return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
+      return useAsyncState($api.vacations.reject.update(props.vacation!.id), [], {
         onSuccess() {
           vacationStatus.value = 'rejected'
           emit("update:reject", vacationStatus.value)
