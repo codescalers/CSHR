@@ -18,7 +18,7 @@ class TEAM(models.TextChoices):
     Development = "Development"
     HRAndFinance = "HR & Finance"
     QA = "QA"
-    Marketing = "Marketing"
+    MarketingAndCommunications = "Marketing and Communications"
     Operations = "Operations"
     Support = "Support"
 
