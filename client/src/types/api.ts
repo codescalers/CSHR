@@ -6,7 +6,7 @@ export module Api {
    * `YYYY-MM-DD`
    */
   export type DashedDate = `${number}-${number}-${number}`
-  export type Teams = "Business Development" | "Development" | "HR & Finance" | "QA" | "Marketing" | "Operations" | "Support" // prettier-ignore
+  export type Teams = "Business Development" | "Development" | "HR & Finance" | "QA" | "Marketing and Communications" | "Operations" | "Support" // prettier-ignore
   export type Users = 'Admin' | 'User' | 'Team Lead'
   export type Gender = 'Male' | 'Female'
 

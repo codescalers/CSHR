@@ -129,7 +129,7 @@ export default {
       'Development',
       'HR & Finance',
       'QA',
-      'Marketing',
+      'Marketing and Communications',
       'Operations',
       'Support'
     ]
