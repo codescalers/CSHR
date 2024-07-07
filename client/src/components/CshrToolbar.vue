@@ -1,7 +1,7 @@
 <template>
   <VToolbar color="primary">
     <VSpacer />
-    <VMenu>
+    <VMenu v-model="menu">
       <template #activator="{ props }">
         <VBtn
           icon="mdi-bell-badge-outline"
@@ -21,22 +21,24 @@
       >
         <v-toolbar color="#262b2e" class="mb-2">
           <v-btn
-            :disabled="!notifications.length || !hasReadNotifications"
+            :disabled="!notifications.length || !hasReadNotifications || isLoadingReadDeleteAll"
             type="info"
             color="success"
             variant="tonal"
             class="mr-2"
-            @click="readAllNotifications"
+            :loading="isLoadingReadDeleteAll"
+            @click="handleReadAllNotifications"
           >
             <v-icon>mdi-read</v-icon>
             Mark all as read
           </v-btn>
           <v-btn
-            :disabled="!notifications.length"
+            :disabled="!notifications.length || isLoadingReadDeleteAll"
             type="info"
             color="error"
             variant="outlined"
-            @click="deleteAllNotifications"
+            :loading="isLoadingReadDeleteAll"
+            @click="handleDeleteAllNotifications"
           >
             <v-icon>mdi-trash-can</v-icon>
             Delete all notifications
@@ -137,6 +139,9 @@ export default {
     const $api = useApi()
     const user = useAsyncState(() => $api.myprofile.getUser(), null)
     const notificationStore = useNotificationStore()
+    const menu = ref(false)
+    const isLoading = ref(true)
+    const isLoadingReadDeleteAll = ref(false)
 
     const notifications = computed(() => notificationStore.notifications)
 
@@ -145,8 +150,6 @@ export default {
         window.location.href = '/login'
       }
     }, 1000)
-
-    const isLoading = ref(true)
 
     const loadNotifications = async () => {
       const notificationData = await $api.notifications.list()
@@ -210,20 +213,38 @@ export default {
       return notificationStore.notifications.some((notification) => !notification.is_read)
     })
 
+    const handleReadAllNotifications = async (event: Event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      await readAllNotifications()
+      menu.value = true
+    }
+
+    const handleDeleteAllNotifications = async (event: Event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      await deleteAllNotifications()
+      menu.value = true
+    }
+
     const readAllNotifications = async () => {
+      isLoadingReadDeleteAll.value = true
       const me = ApiClientBase.user.value?.fullUser
       if (me) {
         const notifications = await $api.notifications.readAllNotifications(me.id)
         notificationStore.setNotifications(notifications)
       }
+      isLoadingReadDeleteAll.value = false
     }
 
     const deleteAllNotifications = async () => {
+      isLoadingReadDeleteAll.value = true
       const me = ApiClientBase.user.value?.fullUser
       if (me) {
         await $api.notifications.deleteAllNotifications(me.id)
         notificationStore.clearNotifications()
       }
+      isLoadingReadDeleteAll.value = false
     }
 
     return {
@@ -231,6 +252,7 @@ export default {
       isUserLoading: user.isLoading,
       notifications,
       isLoading,
+      isLoadingReadDeleteAll,
       selectedNotification,
       hasReadNotifications,
       getStatusColor,
@@ -238,8 +260,9 @@ export default {
       handleApprove,
       handleReject,
       setNotification,
-      readAllNotifications,
-      deleteAllNotifications,
+      handleReadAllNotifications,
+      handleDeleteAllNotifications,
+      menu
     }
   }
 }
