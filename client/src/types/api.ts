@@ -79,6 +79,21 @@ export module Api {
     from_date: string;
     end_date: string;
   }
+  export type LocationType = {
+    id: number;
+    name: string;
+    country: string;
+    weekend: string;
+  };
+  
+  export type ReportingToType = {
+    id: number;
+    full_name: string;
+    email: string;
+    image: string;
+    team: string;
+  };
+
   export interface User {
     type: string;
     id: number
@@ -92,15 +107,10 @@ export module Api {
     telegram_link: string
     social_insurance_number: string
     mobile_number: string
-    reporting_to: number[]
+    reporting_to: ReportingToType[];
     birthday: string
     date: string
-    location: {
-      id: number
-      name: string
-      country: string
-      weekend: string
-    }
+    location: LocationType
     skills: Skill[]
     user_certificates: Certificate[]
     joining_at: string
