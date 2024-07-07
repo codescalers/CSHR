@@ -4,14 +4,14 @@ import { isValidToken, panic, resolve } from '@/utils'
 import type { Api } from '@/types'
 import type { NotifierService } from 'vue3-notifier'
 import type { ApiClient } from './index'
-import { capitalize, ref } from 'vue'
+import { ref } from 'vue'
 
 export abstract class ApiClientBase {
   public static USER_KEY = 'LOGGED_IN_USER'
   public static USER_ACCESS_KEY = 'USER_ACCESS_KEY'
   public static $api: ApiClient
   private static readonly USER = ref<Api.LoginUser | null>(null)
-  static $notifier?: NotifierService
+  protected static $notifier?: NotifierService
 
   public static get user() {
     return ApiClientBase.USER
@@ -106,7 +106,7 @@ export abstract class ApiClientBase {
     ) {
       ApiClientBase.$notifier?.notify({
         type: 'success',
-        description: (res.data as any).message
+        description: (res.data as any).message,
       })
     }
 

@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useAsyncState } from '@vueuse/core';
 import { useApi } from '@/hooks';
 import { formatDate, getStatusColor } from '@/utils';
@@ -77,7 +77,6 @@ import type { notificationType } from '@/types';
 import NotificationDetailsDialog from './NotificationDetailsDialog.vue';
 import profileImage from './profileImage.vue';
 import { useNotificationStore } from '@/stores/notifications';
-import { useWSConnectionStore } from '@/stores/WSConnection';
 import { ApiClientBase } from '@/clients/api/base';
 
 export default {
@@ -87,8 +86,6 @@ export default {
     const $api = useApi();
     const user = useAsyncState(() => $api.myprofile.getUser(), null);
     const notificationStore = useNotificationStore();
-    const WSConnection = useWSConnectionStore();
-    WSConnection.initializeWebSocket();
 
     const notifications = computed(() => notificationStore.notifications);
 
@@ -123,8 +120,7 @@ export default {
       );
       if (notification) {
         notification.request.status = value;
-        const connection = WSConnection.getWSConnection();
-        connection.value?.send(
+        window.connections.ws.value!.send(
           JSON.stringify({
             event: 'approve_request',
             request_id: notification.request.id,
@@ -139,8 +135,7 @@ export default {
       );
       if (notification) {
         notification.request.status = value;
-        const connection = WSConnection.getWSConnection();
-        connection.value?.send(
+        window.connections.ws.value!.send(
           JSON.stringify({
             event: 'reject_request',
             request_id: notification.request.id,

@@ -97,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { type CalendarApi, type CalendarOptions } from '@fullcalendar/core'
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
@@ -112,13 +112,10 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
-import { CalendarEventSelection, type Api, type notificationType } from '@/types'
+import { CalendarEventSelection, type Api } from '@/types'
 import { normalizeEvent, normalizeVacation } from '@/utils/helpers'
 import { normalizedBirthday, normalizeHoliday, normalizeMeeting } from '@/utils'
 import { ApiClientBase } from '@/clients/api/base'
-import { ApiClient } from '@/clients/api'
-import { useWSConnectionStore } from '@/stores/WSConnection'
-import { useNotificationStore } from '@/stores/notifications'
 
 const homeEvents = ref<Api.Home[]>([])
 const filteredEvents = ref<Api.Home[]>([])
@@ -157,40 +154,10 @@ const cached_users = new Map<number, Api.User>()
 const selectedEvent = ref<Api.Meeting | Api.Event | Api.Vacation | Api.Holiday | Api.User>()
 
 const me = ApiClientBase.user.value?.fullUser
-const WSConnection = useWSConnectionStore()
-WSConnection.initializeWebSocket()
-const connection = WSConnection.getWSConnection()
-const notifications = useNotificationStore()
 
 if (me) {
   cached_users.set(me.id, me)
 }
-
-onMounted(() => {
-  connection.value!.onmessage = (event) => {
-      const notification: notificationType = JSON.parse(event.data as unknown as string)
-      notifications.addNotification(notification)
-      const noti = ApiClient.$notifier?.notify(
-        {
-          title: notification.title,
-          description: notification.body,
-          type: 'success',
-        } 
-      )
-
-      setTimeout(() => {
-        noti?.destroy()
-      }, 4000)
-    };
-  
-    connection.value!.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-  
-    connection.value!.onclose = (event) => {
-      console.log('WebSocket connection closed:', event);
-    };
-});
 
 const loadEvents = async () => {
   isLoading.value = true
@@ -340,8 +307,8 @@ async function createVacation(vacation: Api.Vacation) {
 
   vacations.value.push(vacation)
 
-  if(connection.value){
-    connection.value.send(
+  if(window.connections.ws.value){
+    window.connections.ws.value!.send(
       JSON.stringify(
         {
           event: "post_new_vacation_request",
@@ -350,6 +317,7 @@ async function createVacation(vacation: Api.Vacation) {
       )
     )
   }
+
   const vacationEvent = normalizeVacation(vacation) as any
   filteredEvents.value.push(vacationEvent)
   closeDialog(CalendarEventSelection.NewEvent)

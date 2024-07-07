@@ -43,3 +43,8 @@ export interface notificationType {
     type: string
   }
 }
+
+export interface WSErrorType {
+  code: number;
+  message: string;
+} 

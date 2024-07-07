@@ -439,7 +439,8 @@ class VacationsAcceptApiView(GenericAPIView):
         )
 
         if not office_admin:
-            is_reporting_to = request.user in vacation.applying_user.reporting_to.all()
+            leaders = build_user_reporting_to_hierarchy(vacation.applying_user)
+            is_reporting_to = request.user.id in leaders
             if not is_reporting_to:
                 return CustomResponse.unauthorized(
                     message=(
@@ -509,7 +510,8 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         )
 
         if not office_admin:
-            is_reporting_to = request.user in vacation.applying_user.reporting_to.all()
+            leaders = build_user_reporting_to_hierarchy(vacation.applying_user)
+            is_reporting_to = request.user.id in leaders
             if not is_reporting_to:
                 return CustomResponse.unauthorized(
                     message=(

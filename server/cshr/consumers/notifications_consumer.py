@@ -98,17 +98,20 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
         If the user is authenticated, they are added to a group based on the room ID.
         """
-        if self.scope["user"].is_authenticated:
+        self.room_name = self.scope["url_route"]["kwargs"]["room_id"]
+        self.group_name = f"room_{self.room_name}"
+        self.error = WSErrorWrapper(code=0, message="")
+
+        if self.scope.get("user") and self.scope["user"].is_authenticated:
             self.user = self.scope["user"]
-            self.room_name = self.scope["url_route"]["kwargs"]["room_id"]
-            self.group_name = f"room_{self.room_name}"
-            self.error = WSErrorWrapper(code=0, message="")
             print(f"User {self.user} connected to {self.group_name}")
 
             await self.channel_layer.group_add(self.group_name, self.channel_name)
             await self.accept()
         else:
-            await self.disconnect(close_code="Connection closed due to: User Type Is Anonymous User.")
+            self.error.message = "Cannot connect to the Websocket due to: User is Anonymous."
+            self.error.code = 401
+            await self.disconnect(close_code=self.error.code)
 
     async def disconnect(self, close_code):
         """
@@ -117,7 +120,12 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         The user is removed from their group and the connection is closed.
         """
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
-        print(close_code)
+        print(f"Disconnection code: {close_code}")
+        if self.error.code != 0:
+            error_message = self.error.to_json()
+            await self.accept()
+            await self.send(text_data=json.dumps(error_message))
+        # TODO: Handle the close code.
         await self.close()
 
     async def receive(self, text_data, bytes_data=None):

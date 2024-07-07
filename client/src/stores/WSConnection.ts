@@ -8,19 +8,19 @@ export const useWSConnectionStore = defineStore('WSConnectionStore', () => {
   const WSConnection = ref<WebSocket | null>(null);
 
   // Actions
-  const initializeWebSocket = () => {
+  const connect = () => {
     if (me) {
       WSConnection.value = new WebSocket(`${window.env.SERVER_DOMAIN_NAME_WS}/${me.id}/?token=Bearer ` + localStorage.getItem("USER_ACCESS_KEY"));
     }
     return WSConnection;
   };
 
-  const getWSConnection = () => {
-    return WSConnection
+  const reconnect = () => {
+    return connect()
   }
 
   return {
-    initializeWebSocket,
-    getWSConnection,
+    connect,
+    reconnect
   };
 });
