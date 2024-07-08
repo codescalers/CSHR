@@ -125,7 +125,7 @@ export default {
     }
 
     const couldApprove = computed(() => {
-      if( user.value?.id && props.modelValue.receivers.includes(user.value?.id)){
+      if( user.value?.id && props.modelValue.request.approvals.includes(user.value?.id)){
         return true
       }
       return false

@@ -6,7 +6,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
 from cshr.models.users import User
-from cshr.services.users import build_user_reporting_to_hierarchy
+from cshr.services.users import build_user_reporting_to_hierarchy, get_user_by_id
 from cshr.services.notifications import NotificationsService
 from cshr.models.vacations import Vacation
 from cshr.services.vacations import get_vacation_by_id
@@ -54,13 +54,14 @@ def _build_user_reporting_to_hierarchy(applying_user: User) -> List[int]:
 @database_sync_to_async
 def _filter_receivers(receivers: List[int]) -> List[User]:
     """Filter and retrieve users based on a list of user IDs."""
-    return list(User.objects.filter(id__in=receivers))
+    return User.objects.filter(id__in=receivers)
 
 
 @database_sync_to_async
-def _push_notification_to_receivers(applying_user: User, receivers: List[User], vacation: Vacation) -> Notification:
-    """Push a notification to the specified receivers."""
-    notification = NotificationsService(sender=applying_user, receivers=receivers)
+def _push_notification_to_receiver(applying_user: User, receiver_id: int, vacation: Vacation) -> Notification:
+    """Push a notification to the specified receiver."""
+    receiver = get_user_by_id(receiver_id)
+    notification = NotificationsService(sender=applying_user, receiver=receiver)
     request = Requests.objects.get(id=vacation.id)
     message = notification.vacations.post_new_vacation(vacation.reason, request)
     notification = notification.push(message)
@@ -69,7 +70,7 @@ def _push_notification_to_receivers(applying_user: User, receivers: List[User], 
 @database_sync_to_async
 def _push_approve_notification_to_applying_user(vacation: Vacation) -> Notification:
     """Push a notification to the specified receivers."""
-    notification = NotificationsService(sender=vacation.approval_user, receivers=[vacation.applying_user])
+    notification = NotificationsService(sender=vacation.approval_user, receiver=vacation.applying_user)
     request = Requests.objects.get(id=vacation.id)
     message = notification.vacations.approve_vacation(vacation.reason, request)
     notification = notification.push(message)
@@ -78,7 +79,7 @@ def _push_approve_notification_to_applying_user(vacation: Vacation) -> Notificat
 @database_sync_to_async
 def _push_reject_notification_to_applying_user(vacation: Vacation) -> Notification:
     """Push a notification to the specified receivers."""
-    notification = NotificationsService(sender=vacation.approval_user, receivers=[vacation.applying_user])
+    notification = NotificationsService(sender=vacation.approval_user, receiver=vacation.applying_user)
     request = Requests.objects.get(id=vacation.id)
     message = notification.vacations.reject_vacation(vacation.reason, request)
     notification = notification.push(message)
@@ -180,23 +181,22 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
         if not vacation_data:
             self.error.code = 400
-            self.error.message = f"The request event type is '{RequestEvents.POST_NEW_VACATION.value}', but no vacation has been submitted."
+            self.error.message = f"The request event type is '{RequestEvents.POST_NEW_VACATION_REQUEST.value}', but no vacation has been submitted."
             return await self.send_to_group_name(self.error.to_json(), self.group_name)
 
         vacation_id = vacation_data.get("id")
         if not vacation_id:
             self.error.code = 400
-            self.error.message = f"The request event type is '{RequestEvents.POST_NEW_VACATION.value}', but no vacation ID has been submitted."
+            self.error.message = f"The request event type is '{RequestEvents.POST_NEW_VACATION_REQUEST.value}', but no vacation ID has been submitted."
             return await self.send_to_group_name(self.error.to_json(), self.group_name)
 
-        vacation = await _get_vacation_by_id(vacation_id)
-        applying_user = await _get_vacation_applying_user(vacation)
-        receivers_ids = await _build_user_reporting_to_hierarchy(applying_user)
-        receivers = await _filter_receivers(receivers_ids)
-        notification = await _push_notification_to_receivers(applying_user, receivers, vacation)
+        vacation: Vacation = await _get_vacation_by_id(vacation_id)
+        applying_user: User = await _get_vacation_applying_user(vacation)
+        receivers_ids: List[int] = await _build_user_reporting_to_hierarchy(applying_user)
 
         for receiver_id in receivers_ids:
             self.group_name = f"room_{receiver_id}"
+            notification = await _push_notification_to_receiver(applying_user, receiver_id, vacation)
             notification_serializer = await get_notification_serializer(notification)
             notification_serializer["request"]["from_date"] = notification_serializer["request"]["from_date"].isoformat()
             notification_serializer["request"]["end_date"] = notification_serializer["request"]["end_date"].isoformat()

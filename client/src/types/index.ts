@@ -45,6 +45,7 @@ export interface notificationType {
     type: string
     applying_user: Api.User;
     approval_user: Api.User;
+    approvals: number[];
   }
 }
 

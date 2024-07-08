@@ -30,14 +30,15 @@ class Notification(TimeStamp):
         __str__: Returns the email of the sender when the object is converted to a string.
     """
 
+
     sender = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="notification_sender"
     )
-    receivers = models.ManyToManyField(User, related_name="notification_receivers")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notification_receiver")
     title = models.CharField(max_length=250)
     body = models.TextField()
     request = models.ForeignKey(Requests, on_delete=models.CASCADE, related_name="notification_request")
     is_read = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return self.sender.email
+        return f"{self.sender.full_name} -> {self.receiver.full_name} | {self.created_at.date()}"

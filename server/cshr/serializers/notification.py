@@ -4,6 +4,7 @@ from cshr.models.notification import Notification
 from cshr.models.requests import TYPE_CHOICES, Requests
 from cshr.serializers.requests import RequestsSerializer
 from cshr.services.vacations import get_vacation_by_id
+from cshr.services.users import build_user_reporting_to_hierarchy
 
 class NotificationSerializer(ModelSerializer):
   """
@@ -43,6 +44,7 @@ class NotificationSerializer(ModelSerializer):
       if vacation:
         request_serializer["from_date"] = vacation.from_date
         request_serializer["end_date"] = vacation.end_date
+        request_serializer["approvals"] = build_user_reporting_to_hierarchy(vacation.applying_user)
     return request_serializer
 
 

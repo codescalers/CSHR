@@ -89,12 +89,12 @@ class NotificationsService:
 
     Attributes:
         sender (User): The user sending the notifications.
-        receivers (List[User]): The users receiving the notifications.
+        receivers (User): The user receiving the notifications.
         vacations (VacationRequestNotification): An instance of the vacation request notification handler.
     """
-    def __init__(self, sender: User, receivers: List[User]):
+    def __init__(self, sender: User, receiver: User):
         self.sender = sender
-        self.receivers = receivers
+        self.receiver = receiver
         self.vacations = VacationRequestNotification(self.sender)
 
     def push(self, notification: Notification) -> Notification:
@@ -107,17 +107,9 @@ class NotificationsService:
         Returns:
             Notification: The saved notification object.
         """
-        notification = Notification.objects.create(
-            title=notification.title,
-            body=notification.body,
-            sender=self.sender,
-            request=notification.request,
-        )
-        notification.receivers.set(self.receivers)
-        notification.save()
-        return notification
+        return self.create(notification=notification)
 
-    def create(self) -> Notification:
+    def create(self, notification: Notification) -> Notification:
         """
         Creates a new notification without pushing it.
 
@@ -125,10 +117,11 @@ class NotificationsService:
             Notification: The created notification object.
         """
         return Notification.objects.create(
+            title=notification.title,
+            body=notification.body,
             sender=self.sender,
-            receivers=self.receivers,
-            title=self.title,
-            body=self.body,
+            receiver=self.receiver,
+            request=notification.request,
         )
 
     def get_all(self) -> List[Notification]:
@@ -140,7 +133,7 @@ class NotificationsService:
         """
         return Notification.objects.all()
 
-    def get_for_sender(self) -> List[Notification]:
+    def filter_based_on_sender(self) -> List[Notification]:
         """
         Retrieves notifications sent by the sender.
 
@@ -160,16 +153,7 @@ class NotificationsService:
         Returns:
             List[Notification]: A list of notifications received by the user.
         """
-        return Notification.objects.filter(receivers__in=[receiver]).order_by("-created_at")
-
-    def filter_based_on_receivers(self) -> List[Notification]:
-        """
-        Retrieves notifications for the specified receivers.
-
-        Returns:
-            List[Notification]: A list of notifications for the receivers.
-        """
-        return Notification.objects.filter(receivers__in=self.receivers)
+        return Notification.objects.filter(receiver=receiver).order_by("-created_at")
 
     @staticmethod
     def get_by_id(notification_id: Union[str, int]) -> Union[Notification, None]:
