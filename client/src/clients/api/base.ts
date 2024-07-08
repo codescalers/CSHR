@@ -5,6 +5,7 @@ import type { Api } from '@/types'
 import type { NotifierService } from 'vue3-notifier'
 import type { ApiClient } from './index'
 import { ref } from 'vue'
+import router from '@/router'
 
 export abstract class ApiClientBase {
   public static USER_KEY = 'LOGGED_IN_USER'
@@ -94,7 +95,10 @@ export abstract class ApiClientBase {
         const req = await resolve(req$())
         res = req[0]
         err = req[1]
-      }
+      } else {
+        if(!router.currentRoute.value.fullPath.includes('login')){
+          router.push("/login")
+        }
     }
 
     if (
@@ -121,4 +125,5 @@ export abstract class ApiClientBase {
 
     return (options.transform?.(res.data, res) ?? res.data) as R
   }
+}
 }
