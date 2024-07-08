@@ -4,10 +4,11 @@ import { isValidToken, panic, resolve } from '@/utils'
 import type { Api } from '@/types'
 import type { NotifierService } from 'vue3-notifier'
 import type { ApiClient } from './index'
-import { capitalize, ref } from 'vue'
+import { ref } from 'vue'
 
 export abstract class ApiClientBase {
   public static USER_KEY = 'LOGGED_IN_USER'
+  public static USER_ACCESS_KEY = 'USER_ACCESS_KEY'
   public static $api: ApiClient
   private static readonly USER = ref<Api.LoginUser | null>(null)
   protected static $notifier?: NotifierService
@@ -43,6 +44,7 @@ export abstract class ApiClientBase {
   protected static logout() {
     ApiClientBase.assertUser()
     localStorage.removeItem(ApiClientBase.USER_KEY)
+    localStorage.removeItem(ApiClientBase.USER_ACCESS_KEY)
     ApiClientBase.USER.value = null
   }
 
