@@ -1,4 +1,5 @@
 """This file contains everything related to the landing page functionalty."""
+
 from rest_framework.generics import GenericAPIView
 from cshr.api.permission import UserIsAuthenticated
 from cshr.api.response import CustomResponse

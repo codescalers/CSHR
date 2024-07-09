@@ -194,25 +194,11 @@ export default {
 
 
     const couldApprove = computed(() => {
-
-      if (user.value) {
-        // supervisor could approve vacation
-        if (
-          user.value.fullUser.user_type.toLocaleLowerCase() === 'admin' ||
-          user.value.fullUser.user_type.toLocaleLowerCase() === 'supervisor'
-        ) {
-          // Could approve if applying user reports to the logged in supervisor
-          if (
-            props.vacation.applying_user.reporting_to &&
-            props.vacation.applying_user.reporting_to[0]?.id === user.value.fullUser.id
-          ) {
-            return true
-          }
-          return false
-        }
+      if( user.value?.id && props.vacation.approvals.includes(user.value?.id)){
+        return true
       }
       return false
-    });
+    })
 
     watch([leaveReason, startDate, endDate], ([newLeaveReason, newStartDate, newEndDate], [oldLeaveReason, oldStartDate, oldEndDate]) => {
       if (newLeaveReason.name !== oldLeaveReason.name || newStartDate !== oldStartDate || newEndDate !== oldEndDate) {
@@ -240,6 +226,12 @@ export default {
       return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
         onSuccess() {
           ctx.emit('status-vacation', 'Approve')
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'approve_request',
+              request_id: props.vacation.id
+            })
+          )
         }
       })
     }
@@ -247,6 +239,12 @@ export default {
       return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
         onSuccess() {
           ctx.emit('status-vacation', 'Reject')
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'reject_request',
+              request_id: props.vacation.id
+            })
+          )
         }
       })
     }

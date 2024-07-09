@@ -1,4 +1,5 @@
 """This file will containes all vacation serializers."""
+
 from rest_framework.serializers import (
     ModelSerializer,
     DateTimeField,
@@ -19,7 +20,17 @@ from rest_framework import serializers
 class VacationsSerializer(ModelSerializer):
     class Meta:
         model = Vacation
-        fields = ["id", "reason", "from_date", "end_date", "applying_user", "approval_user", "type", "status", "created_at" ]
+        fields = [
+            "id",
+            "reason",
+            "from_date",
+            "end_date",
+            "applying_user",
+            "approval_user",
+            "type",
+            "status",
+            "created_at",
+        ]
         read_only_fields = ("applying_user", "approval_user", "type", "status")
 
 
@@ -41,6 +52,7 @@ class CustomDateField(serializers.ReadOnlyField):
     """
     Custom read-only field to serialize datetime as date.
     """
+
     def to_representation(self, value):
         return value if value else None
 
@@ -50,10 +62,9 @@ class LandingPageVacationsSerializer(ModelSerializer):
 
     applying_user = SerializerMethodField()
     approval_user = SerializerMethodField()
-    
-    from_date = CustomDateField()  # Convert datetime to date
-    end_date = CustomDateField()   # Convert datetime to date
 
+    from_date = CustomDateField()  # Convert datetime to date
+    end_date = CustomDateField()  # Convert datetime to date
 
     class Meta:
         model = Vacation
@@ -252,6 +263,7 @@ class VacationBalanceAdjustmentSerializer(serializers.Serializer):
     officeId = serializers.IntegerField()
     value = serializers.IntegerField()
     reason = serializers.CharField()
+
 
 class AdminApplyVacationForUserSerializer(serializers.Serializer):
     reason = serializers.CharField()

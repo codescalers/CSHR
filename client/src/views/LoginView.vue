@@ -12,7 +12,8 @@
             <v-card-text>
               Our internal HR system manages all team requests across offices.
               For the first version,
-              will manage vacation requests,  Birthdays, events, meetings, and public holidays so anyone in the team can have a collective overview of the entire organization calendar.
+              will manage vacation requests, Birthdays, events, meetings, and public holidays so anyone in the team can
+              have a collective overview of the entire organization calendar.
             </v-card-text>
             <v-card-subtitle class="text-white"> Powered by CodeScalers Egypt. </v-card-subtitle>
           </div>
@@ -28,14 +29,9 @@
             </v-col>
 
             <v-col cols="7">
-              <v-text-field
-                v-model="password"
-                :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                :rules="passwordRules"
-                :type="show ? 'text' : 'password'"
-                label="Password"
-                @click:append-inner="show = !show"
-              ></v-text-field>
+              <v-text-field v-model="password" :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                :rules="passwordRules" :type="show ? 'text' : 'password'" label="Password"
+                @click:append-inner="show = !show"></v-text-field>
             </v-col>
 
             <v-col cols="7" class="d-flex justify-content-between align-center pa-0">
@@ -43,14 +39,8 @@
             </v-col>
 
             <v-col cols="7">
-              <v-btn
-                color="primary"
-                type="submit"
-                :disabled="!valid"
-                width="100%"
-                :loading="isLoading"
-                @click="execute"
-              >
+              <v-btn color="primary" type="submit" :disabled="!valid" width="100%" :loading="isLoading"
+                @click="execute">
                 Login
               </v-btn>
             </v-col>
@@ -69,6 +59,7 @@ import { $api } from '@/clients'
 import { emailRules, passwordRules } from '@/utils'
 import { useRouter } from 'vue-router'
 import { useAsyncState } from '@vueuse/core'
+import { useWSConnectionStore } from '@/stores/WSConnection'
 
 export default defineComponent({
   setup() {
@@ -78,13 +69,17 @@ export default defineComponent({
     const show = ref<boolean>(false)
     const rememberMe = ref<boolean>(false)
     const router = useRouter()
+    const WSConnection = useWSConnectionStore();
 
     const { isLoading, execute } = useAsyncState(
       () => $api.auth.login({ email: email.value, password: password.value }),
       null,
       {
         immediate: false,
-        onSuccess: () => router.push('/')
+        onSuccess: () => {
+          WSConnection.reconnect();
+          return router.push('/');
+        }
       }
     )
 
@@ -108,6 +103,7 @@ export default defineComponent({
 :deep(.v-card-title) {
   white-space: unset;
 }
+
 :deep(.v-card-text) {
   font-size: 1.125rem;
   line-height: 1.75rem;

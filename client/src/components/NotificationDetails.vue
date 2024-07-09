@@ -1,15 +1,25 @@
 <template>
   <v-card class="pa-4">
-    <div class="d-flex my-2">
-      <v-card-title class="font-weight-bold mb-3"> {{ $props.title }} </v-card-title>
-
-      <v-card-subtitle class="mt-2">
-        <v-chip :color="getStatusColor($props.status)">
-          {{ $props.status }}
-        </v-chip>
-      </v-card-subtitle>
+    <div class="my-2">
+      <v-row class="mb-0">
+        <v-col class="d-flex justify-start mb-0">
+          <v-card-title class="font-weight-bold mb-0"> {{ $props.modelValue.title }} </v-card-title>
+        </v-col>
+        <v-col class="d-flex justify-end pb-0">
+          <v-card-subtitle>
+            <v-chip :color="getStatusColor(vacationStatus)">
+              {{ vacationStatus }}
+            </v-chip>
+          </v-card-subtitle>
+        </v-col>
+      </v-row>
+      <v-card-text class="mt-0 pt-0">
+        <p>
+          {{ $props.modelValue.body }}
+        </p>
+      </v-card-text>
     </div>
-
+    
     <v-row no-gutters class="mx-3">
       <v-col v-for="section in sections" :key="section.key" cols="12">
         <v-card class="mb-6 elevation-12">
@@ -59,24 +69,17 @@
 <script lang="ts">
 import { computed, ref, type PropType } from 'vue'
 import { getStatusColor } from '@/utils'
-import type { Api } from '@/types'
+import type { notificationType } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
 import { useAsyncState } from '@vueuse/core'
 import { $api } from '@/clients'
 
 export default {
   name: 'NotificationDetails',
+  emits: ["update:approve", "update:reject", "update:approvalUser"],
   props: {
-    eventId: {
-      type: Number,
-      required: true
-    },
-    title: {
-      type: String,
-      required: true
-    },
-    status: {
-      type: String,
+    modelValue: {
+      type: Object as PropType<notificationType>,
       required: true
     },
     sections: {
@@ -84,56 +87,46 @@ export default {
       required: true
     },
     vacation: {
-      type: Object as PropType<Api.Vacation>,
-      required: true
+      type: Object as PropType<notificationType["request"]>,
+      required: false
     },
     onClose: {
       type: Function as PropType<() => void>,
       required: true
     }
   },
-  setup(props) {
-    const color = computed(() => getStatusColor(props.status))
+  setup(props, { emit }) {
+    const color = computed(() => getStatusColor(props.modelValue.request.status))
     const user = ApiClientBase.user
-    const vacationStatus = ref(props.status)
+    const vacationStatus = ref(props.modelValue.request.status)
 
     const closeDialog = () => {
       props.onClose()
     }
 
     async function handleApprove() {
-      return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
+      return useAsyncState($api.vacations.approve.update(props.vacation!.id), [], {
         onSuccess() {
           vacationStatus.value = 'approved'
+          emit("update:approve", vacationStatus.value)
+          emit("update:approvalUser", user.value)
         }
       })
     }
 
     async function handleReject() {
-      return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
+      return useAsyncState($api.vacations.reject.update(props.vacation!.id), [], {
         onSuccess() {
           vacationStatus.value = 'rejected'
+          emit("update:reject", vacationStatus.value)
+          emit("update:approvalUser", user.value)
         }
       })
     }
 
     const couldApprove = computed(() => {
-      const vacation = props.vacation
-      if (user.value && vacation) {
-        // supervisor could approve vacation
-        if (
-          user.value.fullUser.user_type.toLocaleLowerCase() === 'admin' ||
-          user.value.fullUser.user_type.toLocaleLowerCase() === 'supervisor'
-        ) {
-          // Could approve if applying user reports to the logged in supervisor
-          if (
-            vacation.applying_user.reporting_to &&
-            vacation.applying_user.reporting_to[0]?.id === user.value.fullUser.id
-          ) {
-            return true
-          }
-          return false
-        }
+      if( user.value?.id && props.modelValue.request.approvals.includes(user.value?.id)){
+        return true
       }
       return false
     })

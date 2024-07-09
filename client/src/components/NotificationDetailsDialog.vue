@@ -15,26 +15,23 @@
 
     <NotificationDetails
       v-else-if="selected && notification.state.value"
-      :title="
-        notification.state.value.type === 'vacations'
-          ? capitalize(notification.state.value.reason.split('_').join(' '))
-          : 'Applying for an HR Letter'
-      "
-      :eventId="notification.state.value.event_id"
+      :modelValue.="$props.modelValue"
       :sections="getSections(notification.state.value)"
-      :status="notification.state.value.status"
       :vacation="
-        notification.state.value.type === 'vacations' ? notification.state.value : undefined
+        notification.state.value.request.type === 'vacations' ? notification.state.value.request : undefined
       "
       @close="closeDialog"
+      @update:approve="handleApprove"
+      @update:reject="handleReject"
+      @update:approval-user="handleApprovalUser"
     />
   </VDialog>
 </template>
 
 <script lang="ts">
 import { useRouteQuery } from '@vueuse/router'
-import { watch, type PropType, capitalize } from 'vue'
-import type { Api } from '@/types'
+import { watch, type PropType, capitalize, ref } from 'vue'
+import type { Api, notificationType } from '@/types'
 import { useAsyncState } from '@vueuse/core'
 import { useApi } from '@/hooks'
 
@@ -45,33 +42,52 @@ export default {
   components: { NotificationDetails },
   props: {
     routeQuery: { type: String, required: true },
-    modelValue: Object as PropType<Api.Returns.Notification>
+    modelValue: {
+      type: Object as PropType<notificationType>,
+      required: true
+    }
   },
   emits: {
-    'update:model-value': (value?: Api.Returns.Notification) => true || value
+    'update:model-value': (value?: notificationType) => true || value,
+    'update:approve': (value: string) => value,
+    'update:reject': (value: string) => value,
+    'set:notification': (value: notificationType) => value
   },
+
   setup(props, ctx) {
     const $api = useApi()
+    const applyingUser = ref<Api.User | null>()
+    const approvalUser = ref<Api.User | null>()
     const selected = useRouteQuery<undefined | string>('selected-' + props.routeQuery, undefined)
+
     const notification = useAsyncState(
       async (selected?: string) => {
         const [type, id] = selected?.split('|') ?? []
         if (!isNaN(+id) && ['hr_letters', 'vacations'].includes(type)) {
-          return $api.notifications.read(type, +id)
+          const response = await $api.notifications.getNotification(+id)
+          applyingUser.value = response.request.applying_user
+          approvalUser.value = response.request.approval_user
+          ctx.emit("set:notification", response)
+          return response
         }
         return undefined
       },
       undefined,
       {
         immediate: false,
-        onError: closeDialog
+        onError: (error) => {
+          console.error('Error fetching notification:', error)
+          closeDialog()
+        }
       }
     )
 
     watch(
       () => props.modelValue,
       (notification) => {
-        selected.value = notification ? `${notification.type}|${notification.event_id}` : undefined
+        selected.value = notification
+          ? `${notification.request.type}|${notification.id}`
+          : undefined
       }
     )
 
@@ -84,30 +100,30 @@ export default {
     )
 
     function getSections(data: any) {
-      if (data.type === 'vacations')
+      if (data.request.type === 'vacations')
         return [
           {
             title: 'Request Details',
             details: [
               {
                 label: 'From Date',
-                value: `${new Date(data.from_date).toDateString()}`
+                value: `${new Date(data.request.from_date).toDateString()}`
               },
-              { label: 'End Date', value: `${new Date(data.end_date).toDateString()}` }
+              { label: 'End Date', value: `${new Date(data.request.end_date).toDateString()}` }
             ]
           },
           {
             title: 'Applying User',
             details: [
-              { label: 'Name', value: data.applying_user.full_name },
-              { label: 'Email', value: data.applying_user.email }
+              { label: 'Name', value: applyingUser.value ? applyingUser.value.full_name : "Not specified" },
+              { label: 'Email', value: applyingUser.value ? applyingUser.value.email : "Not specified" }
             ]
           },
           {
             title: 'Approval User',
             details: [
-              { label: 'Name', value: data.approval_user.full_name || '-' },
-              { label: 'Email', value: data.approval_user.email || '-' }
+              { label: 'Name', value: approvalUser.value ? approvalUser.value.full_name : 'Not specified' },
+              { label: 'Email', value: approvalUser.value ? approvalUser.value.email : 'Not specified' }
             ]
           }
         ]
@@ -116,24 +132,25 @@ export default {
         {
           title: 'User Details',
           details: [
-            { label: 'Name', value: data.applying_user.full_name },
-            { label: 'Email', value: data.applying_user.email },
+            { label: 'Name', value: applyingUser.value ? applyingUser.value.full_name : "Not specified" },
+            { label: 'Email', value: applyingUser.value ? applyingUser.value.email : "Not specified" },
             {
               label: 'Job Title',
-              value: data.applying_user.job_title || 'Not specified'
+              value: applyingUser.value ? applyingUser.value.job_title : 'Not specified'
             }
           ]
         },
         {
+          // TODO: Enable the HR letter and the official docs
           title: 'Event Details',
           details: [
-            { label: 'Status', value: data.status },
-            { label: 'Approval User', value: data.approval_user || '-' },
-            { label: 'With Date', value: data.with_date },
-            { label: 'From Date', value: data.from_date },
-            { label: 'End Date', value: data.end_date },
-            { label: 'Salary Mentioned', value: data.with_salary_mentioned },
-            { label: 'Addresses', value: data.addresses }
+            { label: 'Status', value: data.request.status },
+            { label: 'Approval User', value: approvalUser.value ? approvalUser.value.full_name : 'Not specified' },
+            // { label: 'With Date', value: data.with_date },
+            // { label: 'From Date', value: data.from_date },
+            // { label: 'End Date', value: data.end_date },
+            // { label: 'Salary Mentioned', value: data.with_salary_mentioned },
+            // { label: 'Addresses', value: data.addresses }
           ]
         }
       ]
@@ -144,7 +161,28 @@ export default {
       ctx.emit('update:model-value')
     }
 
-    return { selected, notification, closeDialog, getSections, capitalize }
+    function handleApprove(value: string) {
+      return ctx.emit('update:approve', value)
+    }
+
+    function handleReject(value: string) {
+      return ctx.emit('update:reject', value)
+    }
+
+    function handleApprovalUser(user: Api.User) {
+      approvalUser.value = user
+    }
+
+    return {
+      selected,
+      notification,
+      closeDialog,
+      getSections,
+      capitalize,
+      handleApprove,
+      handleReject,
+      handleApprovalUser
+    }
   }
 }
 </script>

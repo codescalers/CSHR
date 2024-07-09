@@ -4,10 +4,11 @@ import { isValidToken, panic, resolve } from '@/utils'
 import type { Api } from '@/types'
 import type { NotifierService } from 'vue3-notifier'
 import type { ApiClient } from './index'
-import { capitalize, ref } from 'vue'
+import { ref } from 'vue'
 
 export abstract class ApiClientBase {
   public static USER_KEY = 'LOGGED_IN_USER'
+  public static USER_ACCESS_KEY = 'USER_ACCESS_KEY'
   public static $api: ApiClient
   private static readonly USER = ref<Api.LoginUser | null>(null)
   protected static $notifier?: NotifierService
@@ -27,6 +28,7 @@ export abstract class ApiClientBase {
   }
 
   protected static login(user: Api.LoginUser) {
+    localStorage.setItem(ApiClientBase.USER_ACCESS_KEY, user.access_token)
     localStorage.setItem(ApiClientBase.USER_KEY, btoa(JSON.stringify(user)))
     ApiClientBase.USER.value = user
   }
@@ -99,12 +101,12 @@ export abstract class ApiClientBase {
       res &&
       (res.config.method === 'post' || res.config.method === 'put') &&
       typeof res.data === 'object' &&
-      'message' in (res.data || {}) &&
+      'message' in (res.data || {}) && ('message' in res.data! && String(res.data["message"]).toLocaleLowerCase() != "success") &&
       options.disableNotify !== true
     ) {
       ApiClientBase.$notifier?.notify({
         type: 'success',
-        description: (res.data as any).message
+        description: (res.data as any).message,
       })
     }
 

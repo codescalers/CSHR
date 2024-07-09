@@ -53,6 +53,7 @@ export default {
   setup(props, ctx) {
     const tabs = ['Leave', 'Meeting', 'Event']
     const tab = ref<String>('')
+
     async function createLeave(data: any) {
       ctx.emit('create-vacation', data)
     }

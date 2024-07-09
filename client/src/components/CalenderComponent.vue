@@ -17,7 +17,6 @@
     </v-col>
   </v-row>
   <v-divider class="d-flex mx-auto" style="width: 90%"></v-divider>
-
   <div class="ma-7 px-7">
     <div class="loading-container d-flex align-center justify-center my-5" v-if="isLoading">
       <v-alert density="compact" class="pa-5" type="info" text="Events are loading..."></v-alert>
@@ -155,6 +154,7 @@ const cached_users = new Map<number, Api.User>()
 const selectedEvent = ref<Api.Meeting | Api.Event | Api.Vacation | Api.Holiday | Api.User>()
 
 const me = ApiClientBase.user.value?.fullUser
+
 if (me) {
   cached_users.set(me.id, me)
 }
@@ -306,6 +306,18 @@ async function createVacation(vacation: Api.Vacation) {
   }
 
   vacations.value.push(vacation)
+
+  if(window.connections.ws.value){
+    window.connections.ws.value!.send(
+      JSON.stringify(
+        {
+          event: "post_new_vacation_request",
+          vacation
+        }
+      )
+    )
+  }
+
   const vacationEvent = normalizeVacation(vacation) as any
   filteredEvents.value.push(vacationEvent)
   closeDialog(CalendarEventSelection.NewEvent)

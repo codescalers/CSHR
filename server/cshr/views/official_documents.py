@@ -47,7 +47,7 @@ class OffcialDocumentAPIView(GenericAPIView):
 
             try:
                 ping_redis()
-            except:
+            except Exception:
                 return http_ensure_redis_error()
 
             bool1 = set_notification_request_redis(serializer.data)
@@ -90,7 +90,7 @@ class OfficialDocumentAcceptApiView(GenericAPIView):
 
         try:
             ping_redis()
-        except:
+        except Exception:
             return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(document, "accepted", document.id)

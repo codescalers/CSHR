@@ -17,7 +17,7 @@ class StanderdVacationBalance:
     def check(self, user) -> VacationBalance:
         self.user = user
         balance = VacationBalance.objects.filter(user=self.user)
-        if(len(balance) == 0):
+        if len(balance) == 0:
             balance = self.create_new_balance()
         else:
             balance = balance[0]
@@ -54,7 +54,7 @@ class StanderdVacationBalance:
             emergency_leaves=emergency_leaves,
             leave_excuses=leave_excuses,
             unpaid=office_balance.unpaid,
-            office_vacation_balance = office_balance
+            office_vacation_balance=office_balance,
         )[0]
 
         return balance
@@ -82,9 +82,14 @@ class StanderdVacationBalance:
         """Calculate the hours with the CORE_HOURS"""
         return (end_hour - start_hour) / CORE_HOURS
 
-    def is_valid_times(self, times: float, start_hour: str, end_hour: str,) -> bool:
+    def is_valid_times(
+        self,
+        times: float,
+        start_hour: str,
+        end_hour: str,
+    ) -> bool:
         """
-            Calculate the times and get the actual values, e.g. the start date is 11:0 AM, and the end date is 01:00 PM then the actual time should be 2 hours.
+        Calculate the times and get the actual values, e.g. the start date is 11:0 AM, and the end date is 01:00 PM then the actual time should be 2 hours.
         """
         _times = self.calculate_times(start_hour=start_hour, end_hour=end_hour)
         return _times == times
@@ -116,7 +121,7 @@ class StanderdVacationBalance:
             curr_balance = getattr(v, reason)
             if vacation.status == STATUS_CHOICES.APPROVED:
                 if delete:
-                    new_value: int= curr_balance + vacation_days
+                    new_value: int = curr_balance + vacation_days
                     return self.update_user_balance(applying_user, reason, new_value)
             if curr_balance >= vacation_days:
                 if vacation.status == STATUS_CHOICES.PENDING:
@@ -126,10 +131,14 @@ class StanderdVacationBalance:
             return f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
         return "Unknown reason."
 
-    def get_difference_between_two_days(self, start_date: datetime, end_date: datetime) -> int:
+    def get_difference_between_two_days(
+        self, start_date: datetime, end_date: datetime
+    ) -> int:
         return int((end_date - start_date).days + 1)
-    
-    def __remove_weekends(self, user: User, start_date: datetime, end_date: datetime) -> List[int]:
+
+    def __remove_weekends(
+        self, user: User, start_date: datetime, end_date: datetime
+    ) -> List[int]:
         weekend = user.location.weekend.split(":")
         delta = end_date - start_date  # returns timedelta
         actual_days = []
@@ -138,7 +147,7 @@ class StanderdVacationBalance:
             if not day.strftime("%A") in weekend:
                 actual_days.append(day)
         return actual_days
-    
+
     def remove_holidays(
         self,
         user: User,

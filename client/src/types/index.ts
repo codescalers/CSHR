@@ -1,3 +1,5 @@
+import type { Api } from './api'
+
 export * from './api'
 
 export interface Country {
@@ -26,3 +28,28 @@ export enum CalendarEventSelection {
   Meeting = 'Meeting',
   NewEvent = 'New Event'
 }
+
+export interface notificationType {
+  id: number;
+  body: string;
+  receivers: number[];
+  title: string;
+  created_at: string;
+  modified_at: string;
+  is_read: boolean;
+  link?: string;
+  request: {
+    id: number 
+    reason: string
+    status: string
+    type: string
+    applying_user: Api.User;
+    approval_user: Api.User;
+    approvals: number[];
+  }
+}
+
+export interface WSErrorType {
+  code: number;
+  message: string;
+} 

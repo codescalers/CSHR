@@ -1,4 +1,5 @@
 """This file contains everything related to the Meetings model."""
+
 from cshr.models.meetings import Meetings
 from typing import List
 

@@ -5,10 +5,12 @@ from django.apps import apps
 
 
 class VacationAdmin(admin.ModelAdmin):
-   readonly_fields = ['created_at', 'modified_at']
+    readonly_fields = ["created_at", "modified_at"]
+
 
 class RequestsAdmin(admin.ModelAdmin):
-   readonly_fields = ['created_at', 'modified_at']
+    readonly_fields = ["created_at", "modified_at"]
+
 
 def autoregister(*app_list: str) -> None:
     """
@@ -18,8 +20,6 @@ def autoregister(*app_list: str) -> None:
         for model_name, model in apps.get_app_config(app).models.items():
             if "_" not in model_name:
                 admin.site.register(model, globals().get(model.__name__ + "Admin"))
-            else:
-                admin.site.register(model)
 
 
 admin.site.site_header = "CSHR Administration Settings"

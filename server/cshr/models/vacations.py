@@ -54,7 +54,9 @@ class VacationBalance(models.Model):
     annual_leaves = models.IntegerField()
     emergency_leaves = models.IntegerField()
     leave_excuses = models.IntegerField()
-    office_vacation_balance = models.ForeignKey("OfficeVacationBalance", on_delete=models.SET_NULL, null=True)
+    office_vacation_balance = models.ForeignKey(
+        "OfficeVacationBalance", on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
         return str(self.user.email)

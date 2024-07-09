@@ -1,4 +1,5 @@
 """This file contains everything related to the Vacation model."""
+
 from cshr.models.requests import STATUS_CHOICES, Requests
 from cshr.models.users import User
 from cshr.models.vacations import Vacation, VacationBalance

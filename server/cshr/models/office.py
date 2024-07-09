@@ -1,4 +1,5 @@
 """ database office model """
+
 from django.db import models
 
 from cshr.models.abstracts import TimeStamp

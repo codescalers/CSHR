@@ -365,6 +365,7 @@ class GetUsersBirthDatesAPIView(GenericAPIView):
             data=serializer.data, message="Users founded successfully."
         )
 
+
 class SupervisorsAPIView(ListAPIView, GenericAPIView):
     """method to get all Company properties"""
 
