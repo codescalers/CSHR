@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Set
 from cshr.models.requests import STATUS_CHOICES
 from cshr.models.users import User
 from cshr.models.vacations import (
@@ -10,7 +10,7 @@ from cshr.models.vacations import (
 
 import datetime
 
-from cshr.services.public_holidays import get_user_holidays
+from cshr.services.public_holidays import filter_office_public_holidays_based_on_dates
 
 
 class StanderdVacationBalance:
@@ -97,9 +97,9 @@ class StanderdVacationBalance:
     def get_actual_days(
         self, user: User, start_date: datetime, end_date: datetime
     ) -> int:
-        days = self.__remove_weekends(user, start_date, end_date)
-        days = self.remove_holidays(user, start_date, end_date, days)
-        return days
+        dates: List[datetime.date] = self.remove_weekends(user, start_date, end_date)
+        dates = self.remove_holidays(user, dates)
+        return len(dates) if len(dates) > 0 else 0
 
     def check_and_update_balance(
         self,
@@ -131,42 +131,68 @@ class StanderdVacationBalance:
             return f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
         return "Unknown reason."
 
-    def get_difference_between_two_days(
-        self, start_date: datetime, end_date: datetime
-    ) -> int:
+    def get_difference_between_two_days(self, start_date: datetime.datetime, end_date: datetime.datetime) -> int:
         return int((end_date - start_date).days + 1)
+    
+    def remove_weekends(self, user: User, start_date: datetime.datetime, end_date: datetime.datetime) -> List[datetime.datetime]:
+        """
+        Remove weekends from a range of dates based on the user's `office location`.
 
-    def __remove_weekends(
-        self, user: User, start_date: datetime, end_date: datetime
-    ) -> List[int]:
-        weekend = user.location.weekend.split(":")
+        This function filters out weekend days from the date range defined by the
+        `start_date` and `end_date`. The weekends are determined by the `office location`
+        specified in the user's profile.
+
+        Args:
+            user (`User`): The user whose `office location` is considered for determining weekends.
+            start_date (`datetime`): The start date of the range.
+            end_date (`datetime`): The end date of the range.
+
+        Returns:
+            List[`datetime`]: A list of dates excluding weekends.
+
+        Raises:
+            `ValueError`: If the start_date is after the end_date.
+        """
+        if start_date > end_date:
+            raise ValueError("The start date cannot be after the end date.")
+
+        weekend_days = user.location.weekend.lower().split(":") # e.g. Friday:Saturday
         delta = end_date - start_date  # returns timedelta
         actual_days = []
+
         for i in range(delta.days + 1):
             day = start_date + datetime.timedelta(days=i)
-            if not day.strftime("%A") in weekend:
+            if day.strftime("%A").lower() not in weekend_days:
                 actual_days.append(day)
         return actual_days
 
     def remove_holidays(
         self,
         user: User,
-        start_date: datetime.datetime,
-        end_date: datetime.datetime,
         dates: List[datetime.date],
-    ) -> int:
-        removed_weekends = self.__remove_weekends(user, start_date, end_date)
-        years = [start_date.year, end_date.year]
-        months = [start_date.month, end_date.month]
-        holidays = get_user_holidays(years, months)
-        _holydays = 0
+    ) -> List[datetime.date]:
+        """
+            Remove holidays from a list of dates based on the user's `office location`.
 
-        for date in removed_weekends:
-            if date not in dates:
-                dates.append(date)
+            This function filters out dates that fall on public holidays specific to the user's
+            `office location`. The holidays are determined by the `office location` and the given
+            dates.
 
-        for day in holidays:
-            if day.holiday_date in removed_weekends:
-                _holydays += 1
+            Args:
+                user (User): The user whose `office location` is considered for determining holidays.
+                dates (List[datetime.date]): A list of dates to be filtered.
 
-        return len(dates) - _holydays
+            Returns:
+                List[datetime.date]: A list of dates excluding those that are public holidays.
+
+            Raises:
+                ValueError: If the 'dates' list is empty.
+        """
+        if not dates:
+            raise ValueError("The dates list cannot be empty.")
+
+        holidays = filter_office_public_holidays_based_on_dates(user.location, dates)
+        holiday_dates: Set[datetime.date] = {holiday.holiday_date for holiday in holidays}
+        filtered_dates = [date for date in dates if date not in holiday_dates]
+
+        return filtered_dates
