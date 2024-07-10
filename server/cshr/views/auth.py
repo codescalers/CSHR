@@ -43,7 +43,6 @@ class RegisterApiView(GenericAPIView):
 
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            user: User = serializer.save(joining_at=request.data.get("joining_at"))
             calculate_balance: bool = request.data.get("calculate_balance")
             user_balance: Dict = request.data.get("user_balance")
 
@@ -60,12 +59,14 @@ class RegisterApiView(GenericAPIView):
                     REASON_CHOICES.LEAVE_EXCUSES,
                 ]
                 for field in required_balance_fields:
-                    if not user_balance.get(field):
+                    if field not in user_balance.keys():
                         return CustomResponse.bad_request(
                             message=f"The {field} is missing in the `user_balance` object."
                         )
 
-                # Create or update user balance
+                # Create the user object first
+                user: User = serializer.save(joining_at=request.data.get("joining_at"))
+                # Then create or update user balance
                 get_or_create_user_balance(user, user_balance)
 
             return CustomResponse.success(
