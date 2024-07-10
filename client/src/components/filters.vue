@@ -1,23 +1,21 @@
 <template>
   <div>
-<v-row class="ma-1">
+    <v-row class="ma-1">
       <v-col cols="12" class="px-2">
-        <v-alert color="warning"
-          >You can change the selected office to discover the team in other offices.</v-alert
-        >
+        <v-alert color="warning">You can change the selected office to discover the team in other offices.</v-alert>
       </v-col>
     </v-row>
-    <v-row class="ma-2">
-      <v-col cols="12" sm="12" md="3" class="pa-1">
-        <h4 class="font-weight-medium">Select Office</h4>
+    <v-row class="mx-4">
+      <v-col cols="6" sm="6" md="6" class="pa-1">
+        <v-autocomplete clearable v-model="office" :items="offices.state.value" label="Office"
+          @update:model-value="handleFiltersChange" return-object item-title="country">
+        </v-autocomplete>
       </v-col>
-      <v-col cols="12" sm="12" md="12" class="pa-1">
-          <div>
-            <v-autocomplete clearable v-model="office" :items="offices.state.value" label="Office"
-              @update:model-value="handleOfficeChange" return-object item-title="country">
-            </v-autocomplete>
-          </div>
-           </v-col>
+      <v-col cols="6" sm="6" md="6" class="pa-1">
+        <v-autocomplete clearable v-model="team" :items="teams" label="Team"
+          @update:model-value="handleFiltersChange" return-object item-title="name">
+        </v-autocomplete>
+      </v-col>
     </v-row>
   </div>
 </template>
@@ -30,30 +28,40 @@ import type { Api } from '@/types'
 
 export default {
   name: 'officeFilters',
-  props: ['offices'],
+  props: ['offices', "teams"],
 
   setup(props) {
     const $router = useRouter()
     const office = ref<Api.Inputs.Office>()
+    const team = ref()
     const $route = useRoute()
 
 
-    const handleOfficeChange = () => {
-      $router.push({ path: '/users', query: { location_id: office.value?.id } })
+    const handleFiltersChange = () => {
+      $router.push({ path: '/users', query: { location_id: office.value?.id, team_name: team.value?.name } })
     }
-
 
     watch(
       () => props.offices.state.value,
-      async (newValue) => {
+      async (_) => {
         if ($route.query.location_id && props.offices.state.value) {
           office.value = props.offices.state.value.find((office: any) => office.id === Number($route.query.location_id));
         }
       },
     );
+
+    watch(
+      () => props.teams,
+      async (_) => {
+        if ($route.query.team_name && props.teams) {
+          team.value = props.teams.find((team: any) => team.name === $route.query.team_name);
+        }
+      },
+    );
     return {
       office,
-      handleOfficeChange
+      team,
+      handleFiltersChange,
     }
   }
 }

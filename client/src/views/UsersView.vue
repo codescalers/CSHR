@@ -4,7 +4,7 @@
       <h2 class="font-weight-medium my-3">ThreeFold Team</h2>
       <v-divider></v-divider>
     </div>
-    <officeFilters :offices="offices" />
+    <officeFilters :offices="offices" :teams="teams" />
     <v-card class="pa-2">
       <v-row>
         <v-col class="d-flex flex-wrap justify-start">
@@ -51,6 +51,15 @@ export default {
   },
   setup() {
     const offices = useAsyncState($api.office.list(), [], { immediate: true })
+    const teams = [
+      {name: 'Business Development'},
+      {name: 'Development'},
+      {name: 'HR & Finance'},
+      {name: 'QA'},
+      {name: 'Marketing and Communications'},
+      {name: 'Operations'},
+      {name: 'Support'}
+    ]
     const $route = useRoute()
     const page = ref(1)
     const count = ref<number>(0)
@@ -64,7 +73,7 @@ export default {
     }
 
     useAsyncState(
-      $api.users.list({ location_id: $route.query.location_id, page: page.value }),
+      $api.users.list({ team: $route.query.team, page: page.value }),
       undefined,
       {
         onSuccess(data) {
@@ -83,27 +92,11 @@ export default {
     )
 
     watch(
-      () => $route.query.location_id,
-      async (_) => {
+      () => [$route.query.location_id, $route.query.team_id, page.value],
+      async (_, _2, _3) => {
         page.value = 1
         useAsyncState(
-          $api.users.list({ location_id: $route.query.location_id, page: page.value }),
-          undefined,
-          {
-            onSuccess(data) {
-              setCount(data)
-              users.execute(undefined, data?.results || [])
-            }
-          }
-        )
-      }
-    )
-
-    watch(
-      () => page.value,
-      async (_) => {
-        useAsyncState(
-          $api.users.list({ location_id: $route.query.location_id, page: page.value }),
+          $api.users.list({ location_id: $route.query.location_id, team_id: $route.query.team_id, page: page.value }),
           undefined,
           {
             onSuccess(data) {
@@ -120,6 +113,7 @@ export default {
       page,
       count,
       offices,
+      teams,
       UserCard,
       officeFilters
     }
