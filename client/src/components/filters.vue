@@ -13,7 +13,7 @@
       </v-col>
       <v-col cols="6" sm="6" md="6" class="pa-1">
         <v-autocomplete clearable v-model="team" :items="teams" label="Team"
-          @update:model-value="handleFiltersChange" return-object item-title="name">
+          @update:model-value="handleFiltersChange" return-object item-title="name" :disabled="office == undefined">
         </v-autocomplete>
       </v-col>
     </v-row>
