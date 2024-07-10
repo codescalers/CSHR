@@ -85,9 +85,21 @@ def get_users_filter(
 def get_all_of_users(options=None) -> User:
     """Return all users"""
     if options:
-        return User.objects.filter(location__id=options["location"]["id"]).order_by(
-            "first_name", F("is_active").desc(nulls_last=True)
-        )
+        location_id=options.get("location").get("id")
+        team_name=options.get("team").get("name")
+        if location_id and team_name:
+            return User.objects.filter(location__id=location_id, team__icontains=team_name).order_by(
+                "first_name", F("is_active").desc(nulls_last=True)
+            )
+        if location_id and not team_name:
+            return User.objects.filter(location__id=location_id).order_by(
+                "first_name", F("is_active").desc(nulls_last=True)
+            )
+        if team_name and not location_id:
+            return User.objects.filter(team__icontains=team_name).order_by(
+                "first_name", F("is_active").desc(nulls_last=True)
+            )
+
     return User.objects.all().order_by(
         "first_name", F("is_active").desc(nulls_last=True)
     )

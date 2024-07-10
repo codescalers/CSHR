@@ -92,11 +92,11 @@ export default {
     )
 
     watch(
-      () => [$route.query.location_id, $route.query.team_id, page.value],
+      () => [$route.query.location_id, $route.query.team_name, page.value],
       async (_, _2, _3) => {
         page.value = 1
         useAsyncState(
-          $api.users.list({ location_id: $route.query.location_id, team_id: $route.query.team_id, page: page.value }),
+          $api.users.list({ location_id: $route.query.location_id, team_name: $route.query.team_name, page: page.value }),
           undefined,
           {
             onSuccess(data) {
