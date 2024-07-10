@@ -4,6 +4,7 @@ set -ex
 values="
 window.env = {
   SERVER_DOMAIN_NAME_API: '$SERVER_DOMAIN_NAME_API',
+  SERVER_DOMAIN_NAME_WS: '$SERVER_DOMAIN_NAME_WS',
 };
 "
 # decide the config file path

@@ -29,6 +29,7 @@ export abstract class ApiClientBase {
   }
 
   protected static login(user: Api.LoginUser) {
+    localStorage.setItem(ApiClientBase.USER_ACCESS_KEY, user.access_token)
     localStorage.setItem(ApiClientBase.USER_KEY, btoa(JSON.stringify(user)))
     ApiClientBase.USER.value = user
   }
@@ -105,12 +106,12 @@ export abstract class ApiClientBase {
       res &&
       (res.config.method === 'post' || res.config.method === 'put') &&
       typeof res.data === 'object' &&
-      'message' in (res.data || {}) &&
+      'message' in (res.data || {}) && ('message' in res.data! && String(res.data["message"]).toLocaleLowerCase() != "success") &&
       options.disableNotify !== true
     ) {
       ApiClientBase.$notifier?.notify({
         type: 'success',
-        description: (res.data as any).message
+        description: (res.data as any).message,
       })
     }
 

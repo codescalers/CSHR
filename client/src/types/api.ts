@@ -37,6 +37,7 @@ export module Api {
     from_date: any
     end_date: any
     change_log: any[]
+    approvals: number[]
     actual_days: number
     applying_user: number | any
     approval_user: number
@@ -228,24 +229,6 @@ export module Api {
       previous: string | null
       next: string | null
       results: T[]
-    }
-
-    export interface Notification {
-      type: string
-      title: string
-      created_at: string
-      event_id: string
-      user: {
-        id: number
-        full_name: string
-        email: string
-        image: string
-        team: string
-        gender: Gender
-        skills: Skill[]
-        job_title: string
-        user_certificates: Certificate[]
-      }
     }
 
     export interface GetAdminBalance {

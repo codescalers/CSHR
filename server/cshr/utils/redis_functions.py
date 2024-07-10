@@ -113,55 +113,55 @@ def notification_commented(data: Dict, user, state: str, event_id: int):
     return True
 
 
-def get_notifications(user: User):
-    """
-    Retrieve all notifications for a specific user.
+# def get_notifications(user: User):
+#     """
+#     Retrieve all notifications for a specific user.
 
-    Args:
-        user (User): The user for whom notifications are to be retrieved.
+#     Args:
+#         user (User): The user for whom notifications are to be retrieved.
 
-    Returns:
-        list: A list of dictionaries containing notification data.
-    """
-    notifications = []
-    keys = redis_instance.keys("user" + str(user.id) + "*")
+#     Returns:
+#         list: A list of dictionaries containing notification data.
+#     """
+#     notifications = []
+#     keys = redis_instance.keys("user" + str(user.id) + "*")
 
-    for key in keys:
-        val = redis_instance.hgetall(key)
-        dval = dict((k.decode("utf8"), v.decode("utf8")) for k, v in val.items())
+#     for key in keys:
+#         val = redis_instance.hgetall(key)
+#         dval = dict((k.decode("utf8"), v.decode("utf8")) for k, v in val.items())
 
-        # Parse notification data
-        noti_user_id = json.loads(dval.get("user"))["id"]
-        noti_id = int(json.loads(dval.get("event_id")))
+#         # Parse notification data
+#         noti_user_id = json.loads(dval.get("user"))["id"]
+#         noti_id = int(json.loads(dval.get("event_id")))
 
-        # Check if the user associated with the notification exists
-        try:
-            usernt = User.objects.get(id=noti_user_id)
-            dval["user"] = BaseUserSerializer(usernt).data
-        except User.DoesNotExist:
-            redis_instance.delete(key)
+#         # Check if the user associated with the notification exists
+#         try:
+#             usernt = User.objects.get(id=noti_user_id)
+#             dval["user"] = BaseUserSerializer(usernt).data
+#         except User.DoesNotExist:
+#             redis_instance.delete(key)
 
-        # Check if the request associated with the notification exists
-        try:
-            Requests.objects.get(id=noti_id)
-        except Requests.DoesNotExist:
-            redis_instance.delete(key)
+#         # Check if the request associated with the notification exists
+#         try:
+#             Requests.objects.get(id=noti_id)
+#         except Requests.DoesNotExist:
+#             redis_instance.delete(key)
 
-        notifications.append(dval)
+#         notifications.append(dval)
 
-    return notifications
+#     return notifications
 
 
-def sort_notifications_by_created_at(notifications):
-    # Custom key function to extract timestamp from the notification
-    def get_timestamp(notification):
-        created_at_str = notification["created_at"]
-        # Parse the timestamp string and convert it to datetime object
-        return datetime.strptime(created_at_str, "%Y-%m-%d | %H:%M")
+# def sort_notifications_by_created_at(notifications):
+#     # Custom key function to extract timestamp from the notification
+#     def get_timestamp(notification):
+#         created_at_str = notification["created_at"]
+#         # Parse the timestamp string and convert it to datetime object
+#         return datetime.strptime(created_at_str, "%Y-%m-%d | %H:%M")
 
-    # Sort the notifications based on the created_at timestamp
-    sorted_notifications = sorted(notifications, key=get_timestamp, reverse=True)
-    return sorted_notifications
+#     # Sort the notifications based on the created_at timestamp
+#     sorted_notifications = sorted(notifications, key=get_timestamp, reverse=True)
+#     return sorted_notifications
 
 
 def ping_redis():

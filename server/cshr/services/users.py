@@ -1,4 +1,5 @@
 """This file will containes everything related to User model."""
+
 from django.contrib.auth.hashers import check_password
 from django.db.models import Q, F
 from typing import List, Union
@@ -83,11 +84,20 @@ def get_users_filter(
 
 def get_all_of_users(options=None) -> User:
     """Return all users"""
+    queryset = User.objects.all()
+
     if options:
-        return User.objects.filter(location__id=options["location"]["id"]).order_by(
-            "first_name", F("is_active").desc(nulls_last=True)
-        )
-    return User.objects.all().order_by(
+        location_id = options.get("location", {}).get("id")
+        team_name = options.get("team", {}).get("name")
+
+        if location_id and team_name:
+            queryset = queryset.filter(location__id=location_id, team__icontains=team_name)
+        elif team_name:
+            queryset = queryset.filter(team__icontains=team_name)
+        elif location_id:
+            queryset = queryset.filter(location__id=location_id)
+
+    return queryset.exclude(user_type=USER_TYPE.ADMIN).order_by(
         "first_name", F("is_active").desc(nulls_last=True)
     )
 
@@ -102,7 +112,7 @@ def get_admin_office_users(admin: User) -> User:
     )
 
 
-def get_or_create_skill_by_name(name: str) -> UserSkills or bool: # type: ignore
+def get_or_create_skill_by_name(name: str) -> UserSkills or bool:  # type: ignore
     """Return a skill by name"""
     return UserSkills.objects.get_or_create(name=name.lower())
 
@@ -130,6 +140,29 @@ def filter_users_by_birthdates(month: int, day: int) -> List[User]:
     """Filter all users by birthdates"""
     return User.objects.filter(birthday__month=month, birthday__day=day)
 
+
 def get_supervisors() -> QuerySet[User]:
     """Return all supervisors users"""
     return User.objects.filter(user_type=USER_TYPE.SUPERVISOR)
+
+
+def build_user_reporting_to_hierarchy(user: User) -> List[int]:
+    """
+    Function to build a hierarchy of user reporting structure recursively.
+
+    Parameters:
+    - user (User): The user object for which the reporting hierarchy needs to be built.
+
+    Returns:
+    - List[int]: A list of user IDs representing the reporting hierarchy starting from the given user.
+
+    The function iterates through the reporting chain of the user and constructs a list of user IDs in the reporting hierarchy.
+    It recursively calls itself for each reporting user to build the complete hierarchy.
+    """
+    hierarchy = []
+
+    for report_user in user.reporting_to.all():
+        if report_user:
+            hierarchy.append(report_user.id)
+            hierarchy.extend(build_user_reporting_to_hierarchy(report_user))
+    return hierarchy

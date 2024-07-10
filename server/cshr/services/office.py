@@ -1,6 +1,7 @@
 """
 methods that will serve office endpoints
 """
+
 from cshr.models.office import Office
 from django.db.models.query import QuerySet
 
@@ -21,6 +22,7 @@ def get_office_by_name(name: str) -> Office:
         return Office.objects.get(name=name)
     except Office.DoesNotExist:
         return None
+
 
 def get_office_supervisors(office: Office) -> QuerySet[User]:
     return User.objects.filter(location__id=office.id, user_type=USER_TYPE.SUPERVISOR)

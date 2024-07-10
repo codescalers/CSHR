@@ -1,4 +1,5 @@
 """this file contains all validations inputs including mail, password etc.."""
+
 import re
 
 

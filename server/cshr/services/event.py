@@ -1,4 +1,5 @@
 """This file contains everything related to the Event model."""
+
 import datetime
 from cshr.models.event import Event
 from typing import List

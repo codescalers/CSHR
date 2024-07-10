@@ -47,7 +47,8 @@ class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):
         # print()
         if self.request.query_params.get("location_id"):
             location_id = self.request.query_params.get("location_id")
-            options = {"location": {"id": location_id}}
+            team_name = self.request.query_params.get("team_name")
+            options = {"location": {"id": location_id}, "team": {"name": team_name}}
             query_set = get_all_of_users(options)
         else:
             query_set = get_all_of_users()
@@ -364,6 +365,7 @@ class GetUsersBirthDatesAPIView(GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="Users founded successfully."
         )
+
 
 class SupervisorsAPIView(ListAPIView, GenericAPIView):
     """method to get all Company properties"""

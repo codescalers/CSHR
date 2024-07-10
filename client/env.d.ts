@@ -6,4 +6,5 @@ interface ImportMetaEnv {
   VITE_FAVICON: string
   VITE_LOGO: string
   SERVER_DOMAIN_NAME_API: string
+  SERVER_DOMAIN_NAME_WS: string
 }
