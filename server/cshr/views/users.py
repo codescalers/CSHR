@@ -25,8 +25,8 @@ from cshr.serializers.users import (
 from cshr.services.users import (
     filter_users_by_birthdates,
     get_admin_office_users,
+    get_admins_and_supervisors,
     get_all_skills,
-    get_supervisors,
     get_user_by_id,
     get_or_create_skill_by_name,
     get_all_of_users,
@@ -367,11 +367,25 @@ class GetUsersBirthDatesAPIView(GenericAPIView):
 
 
 class SupervisorsAPIView(ListAPIView, GenericAPIView):
-    """method to get all Company properties"""
+    """
+    A view for retrieving a list of supervisors and admins.
 
+    Attributes:
+        serializer_class (Serializer): The serializer class used for serializing the data.
+        permission_class (list): The list of permission classes required for accessing this view.
+
+    Methods:
+        get_queryset(self) -> Response: Retrieves the queryset of supervisors and admins.
+    """
     serializer_class = GeneralUserSerializer
     permission_class = [IsAdmin | IsSupervisor]
 
+    """
+    Retrieves the queryset of supervisors and admins.
+
+    Returns:
+        Response: A response containing the queryset of supervisors and admins.
+    """
     def get_queryset(self) -> Response:
-        query_set = get_supervisors()
+        query_set = get_admins_and_supervisors()
         return query_set
