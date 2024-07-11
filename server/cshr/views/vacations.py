@@ -187,8 +187,8 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             # Check if there are pending vacations in the same day.
             pending_requests = Vacation.objects.filter(
-                from_date__day=start_date.day,
-                end_date__day=end_date.day,
+                from_date=start_date,
+                end_date=end_date,
                 status=STATUS_CHOICES.PENDING,
                 applying_user=applying_user
             )
@@ -331,7 +331,7 @@ class VacationsHelpersApiView(ListAPIView, GenericAPIView):
                 if balance is not True:
                     return CustomResponse.bad_request(message=balance)
                 
-            vacation.delete()
+            # vacation.delete()
             return CustomResponse.success(message="The vacation has been deleted successfully.", status_code=204)
         return CustomResponse.not_found(message="The vacation is not found.", status_code=404)
 
@@ -371,8 +371,8 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
             # Check if there are pending vacations in the same day
             pending_requests = Vacation.objects.filter(
-                from_date__day=start_date.day,
-                end_date__day=end_date.day,
+                from_date=start_date,
+                end_date=end_date,
                 status=STATUS_CHOICES.PENDING,
             )
             if len(pending_requests) > 0:
@@ -796,8 +796,8 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
             # Check if there are pending vacations in the same day
             pending_requests = Vacation.objects.filter(
                 applying_user=applying_user,
-                from_date__day=from_date.day,
-                end_date__day=end_date.day,
+                from_date=from_date,
+                end_date=end_date,
                 status=STATUS_CHOICES.PENDING,
             )
 

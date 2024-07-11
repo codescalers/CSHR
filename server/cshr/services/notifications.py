@@ -1,6 +1,6 @@
 from typing import List, Union
 from cshr.models.notification import Notification
-from cshr.models.users import User
+from cshr.models.users import GENDER_TYPE, User
 from cshr.models.requests import Requests
 
 
@@ -75,6 +75,51 @@ class VacationRequestNotification:
         vacation_type = vacation_type.replace("_", " ").title()
         self.title = f"Your {vacation_type} request has been rejected by {self.sender.full_name}."
         self.body = f"{self.sender.full_name} rejected your {vacation_type} request."
+
+        return Notification(
+            title=self.title,
+            body=self.body,
+            request=request
+        )
+
+    def cancel_request(self, vacation_type: str, request: Requests) -> Notification:
+        """
+        Creates a new vacation request notification.
+
+        Args:
+            vacation_type (str): The type of vacation being requested.
+            request (Requests): The request object associated with the vacation.
+
+        Returns:
+            Notification: The created notification object.
+        """
+
+        vacation_type = vacation_type.replace("_", " ").title()
+        pronouns = 'his' if self.sender.gender == GENDER_TYPE.MALE else 'her'
+        self.title = f"Approval Request for Cancellation of {self.sender.full_name}'s {vacation_type} request."
+        self.body = f"{self.sender.full_name} has requested your approval for the cancellation of {pronouns} {vacation_type} request."
+
+        return Notification(
+            title=self.title,
+            body=self.body,
+            request=request
+        )
+
+    def approve_cancel_request(self, vacation_type: str, request: Requests, approval: User) -> Notification:
+        """
+        Creates a new vacation request notification.
+
+        Args:
+            vacation_type (str): The type of vacation being requested.
+            request (Requests): The request object associated with the vacation.
+
+        Returns:
+            Notification: The created notification object.
+        """
+
+        vacation_type = vacation_type.replace("_", " ").title()
+        self.title = f"{approval.full_name} has approved your request to cancel your vacation request."
+        self.body = f"Hello {self.sender.first_name}, {approval.full_name} approved your request to cancel your vacation request."
 
         return Notification(
             title=self.title,

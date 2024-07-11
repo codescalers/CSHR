@@ -10,7 +10,7 @@ from cshr.services.users import build_user_reporting_to_hierarchy, get_user_by_i
 from cshr.services.notifications import NotificationsService
 from cshr.models.vacations import Vacation
 from cshr.services.vacations import get_vacation_by_id
-from cshr.models.requests import Requests
+from cshr.models.requests import STATUS_CHOICES, Requests
 from cshr.models.notification import Notification
 from cshr.serializers.notification import NotificationSerializer
 
@@ -19,6 +19,9 @@ class RequestEvents(enum.Enum):
     POST_NEW_VACATION_REQUEST = "post_new_vacation_request"
     APPROVE_REQUEST = "approve_request"
     REJECT_REQUEST = "reject_request"
+    CANCEL_REQUEST = "cancel_request"
+    APPROVE_CANCELLATION_REQUEST = "approve_cancellation_request"
+    REJECT_CANCELLATION_REQUEST = "reject_cancellation_request"
 
 class WSErrorWrapper:
     def __init__(self, code: int, message: str) -> None:
@@ -77,6 +80,16 @@ def _push_approve_notification_to_applying_user(vacation: Vacation) -> Notificat
     return notification
 
 @database_sync_to_async
+def _push_approve_cancellation_request_notification(vacation: Vacation, approval_id: str) -> Notification:
+    """Push a notification to the specified receivers."""
+    request = Requests.objects.get(id=vacation.id)
+    approval = User.objects.get(id=int(approval_id))
+    notification = NotificationsService(sender=approval, receiver=vacation.applying_user)
+    message = notification.vacations.approve_cancel_request(vacation.reason, request, approval)
+    notification = notification.push(message)
+    return notification
+
+@database_sync_to_async
 def _push_reject_notification_to_applying_user(vacation: Vacation) -> Notification:
     """Push a notification to the specified receivers."""
     notification = NotificationsService(sender=vacation.approval_user, receiver=vacation.applying_user)
@@ -85,6 +98,22 @@ def _push_reject_notification_to_applying_user(vacation: Vacation) -> Notificati
     notification = notification.push(message)
     return notification
 
+@database_sync_to_async
+def _push_cancel_request_notification_to_team_leads(applying_user: User, receiver_id: int, vacation: Vacation) -> Notification:
+    """Push a notification to the specified receivers."""
+    receiver = get_user_by_id(receiver_id)
+    notification = NotificationsService(sender=applying_user, receiver=receiver)
+    request = Requests.objects.get(id=vacation.id)
+    message = notification.vacations.cancel_request(vacation.reason, request)
+    notification = notification.push(message)
+    return notification
+
+@database_sync_to_async
+def update_request_status(request: Requests, status: STATUS_CHOICES) -> Requests:
+    """Update the request status based on the incoming status."""
+    request.status = status
+    request.save()
+    return request
 
 @database_sync_to_async
 def get_notification_serializer(notification: Notification) -> Dict:
@@ -149,6 +178,10 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             return await self.approve_request(data)
         elif request_event == RequestEvents.REJECT_REQUEST.value:
             return await self.reject_request(data)
+        elif request_event == RequestEvents.CANCEL_REQUEST.value:
+            return await self.cancel_request(data)
+        elif request_event == RequestEvents.APPROVE_CANCELLATION_REQUEST.value:
+            return await self.approve_cancellation_request(data)
 
     async def send_message(self, data: Dict):
         """
@@ -207,7 +240,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
         if not request_id:
             self.error.code = 400
-            self.error.message = f"The request event type is '{RequestEvents.APPROVE_VACATION.value}', but no request ID has been submitted."
+            self.error.message = f"The request event type is '{RequestEvents.APPROVE_REQUEST.value}', but no request ID has been submitted."
             return await self.send_to_group_name(self.error.to_json(), self.group_name)
 
         vacation = await _get_vacation_by_id(request_id)
@@ -219,12 +252,36 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         self.group_name = f"room_{applying_user.id}"
         await self.send_to_group_name(notification_serializer, self.group_name)
 
+    async def approve_cancellation_request(self, data: Dict):
+        request_id = data.get("request_id")
+        approval_id = data.get("approval_id")
+
+        if not request_id:
+            self.error.code = 400
+            self.error.message = f"The request event type is '{RequestEvents.APPROVE_CANCELLATION_REQUEST.value}', but no request ID has been submitted."
+            return await self.send_to_group_name(self.error.to_json(), self.group_name)
+
+        if not approval_id:
+            self.error.code = 400
+            self.error.message = f"The request event type is '{RequestEvents.APPROVE_CANCELLATION_REQUEST.value}', but no approval ID has been submitted."
+            return await self.send_to_group_name(self.error.to_json(), self.group_name)
+
+        vacation = await _get_vacation_by_id(request_id)
+        applying_user = await _get_vacation_applying_user(vacation)
+        await update_request_status(vacation, STATUS_CHOICES.CANCEL_APPROVED)
+        notification = await _push_approve_cancellation_request_notification(vacation, approval_id)
+        notification_serializer = await get_notification_serializer(notification)
+        notification_serializer["request"]["from_date"] = notification_serializer["request"]["from_date"].isoformat()
+        notification_serializer["request"]["end_date"] = notification_serializer["request"]["end_date"].isoformat()
+        self.group_name = f"room_{applying_user.id}"
+        await self.send_to_group_name(notification_serializer, self.group_name)
+
     async def reject_request(self, data: Dict):
         request_id = data.get("request_id")
 
         if not request_id:
             self.error.code = 400
-            self.error.message = f"The request event type is '{RequestEvents.APPROVE_VACATION.value}', but no request ID has been submitted."
+            self.error.message = f"The request event type is '{RequestEvents.REJECT_REQUEST.value}', but no request ID has been submitted."
             return await self.send_to_group_name(self.error.to_json(), self.group_name)
 
         vacation = await _get_vacation_by_id(request_id)
@@ -235,3 +292,25 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         notification_serializer["request"]["end_date"] = notification_serializer["request"]["end_date"].isoformat()
         self.group_name = f"room_{applying_user.id}"
         await self.send_to_group_name(notification_serializer, self.group_name)
+
+    async def cancel_request(self, data: Dict):
+        request_id = data.get("request_id")
+
+        if not request_id:
+            self.error.code = 400
+            self.error.message = f"The request event type is '{RequestEvents.CANCEL_REQUEST.value}', but no request ID has been submitted."
+            return await self.send_to_group_name(self.error.to_json(), self.group_name)
+
+        vacation = await _get_vacation_by_id(request_id)
+        applying_user = await _get_vacation_applying_user(vacation)
+        applying_user: User = await _get_vacation_applying_user(vacation)
+        receivers_ids: List[int] = await _build_user_reporting_to_hierarchy(applying_user)
+        await update_request_status(vacation, STATUS_CHOICES.REQUESTED_TO_CANCEL)
+
+        for receiver_id in receivers_ids:
+            self.group_name = f"room_{receiver_id}"
+            notification = await _push_cancel_request_notification_to_team_leads(applying_user, receiver_id, vacation)
+            notification_serializer = await get_notification_serializer(notification)
+            notification_serializer["request"]["from_date"] = notification_serializer["request"]["from_date"].isoformat()
+            notification_serializer["request"]["end_date"] = notification_serializer["request"]["end_date"].isoformat()
+            await self.send_to_group_name(notification_serializer, self.group_name)

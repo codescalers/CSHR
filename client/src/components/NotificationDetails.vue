@@ -2,13 +2,13 @@
   <v-card class="pa-4">
     <div class="my-2">
       <v-row class="mb-0">
-        <v-col class="d-flex justify-start mb-0">
-          <v-card-title class="font-weight-bold mb-0"> {{ $props.modelValue.title }} </v-card-title>
+        <v-col class="d-flex justify-start align-center mb-0">
+          <v-card-title class="font-weight-bold mb-0"> <h5>{{ $props.modelValue.title }}</h5> </v-card-title>
         </v-col>
-        <v-col class="d-flex justify-end pb-0">
+        <v-col class="d-flex justify-end pb-0 align-center">
           <v-card-subtitle>
             <v-chip :color="getStatusColor(vacationStatus)">
-              {{ vacationStatus }}
+              {{ capitalize(vacationStatus) }}
             </v-chip>
           </v-card-subtitle>
         </v-col>
@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, type PropType } from 'vue'
+import { capitalize, computed, ref, type PropType } from 'vue'
 import { getStatusColor } from '@/utils'
 import type { notificationType } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
@@ -138,7 +138,8 @@ export default {
       closeDialog,
       getStatusColor,
       handleApprove,
-      handleReject
+      handleReject,
+      capitalize
     }
   }
 }

@@ -24,6 +24,10 @@ class STATUS_CHOICES(models.TextChoices):
 
     REJECTED = "rejected", "Rejected"
     PENDING = "pending", "Pending"
+    REQUESTED_TO_CANCEL = "requested to cancel", "Requested to cancel"
+    CANCEL_APPROVED = "cancel approved", "Cancel approved"
+    CANCEL_REJECTED = "cancel rejected", "Cancel rejected"
+    CANCELED = "canceled", "Canceled"
     APPROVED = "approved", "Approved"
 
 

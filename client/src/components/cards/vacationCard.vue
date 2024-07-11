@@ -18,7 +18,7 @@
         <v-row class="d-flex justify-center my-2">
           <v-btn color="primary" v-if="couldUpdate" class="mx-1 my-2" type="submit"
             :disabled="!form?.isValid || disabled">Update</v-btn>
-          <v-btn v-if="couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
+          <v-btn v-if="couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Request to Cancel</v-btn>
         </v-row>
         <v-divider class="my-2"></v-divider>
 
@@ -36,7 +36,7 @@
             <v-col cols="6" class="d-flex items-center">
               <p>
                 Status :
-                {{ vacation.status }}
+                {{ capitalize(vacation.status) }}
               </p>
             </v-col>
 
@@ -65,16 +65,20 @@
         </v-card>
       </v-form>
       <v-divider class="my-2"></v-divider>
-      <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'pending'">
+      <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status === pendingStatus">
         <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
         <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
+      </v-row>
+      <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status === requestedToCancelStatus">
+        <v-btn color="primary" class="ma-1" @click="handleApproveCancellationRequest">Approve the cancellation request</v-btn>
+        <v-btn color="error" class="ma-1" @click="handleRejectCancellationRequest">Reject the cancellation request</v-btn>
       </v-row>
     </v-container>
   </v-card>
 </template>
 <script lang="ts">
 import type { Api } from '@/types';
-import { computed, ref, watch } from 'vue';
+import { capitalize, computed, ref, watch } from 'vue';
 
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
@@ -98,6 +102,8 @@ export default {
 
   setup(props, ctx) {
     const $api = useApi()
+    const requestedToCancelStatus = "requested to cancel";
+    const pendingStatus = "pending";
     const startDate = ref<Date>(new Date(props.vacation.from_date));
      const start_date=  ref(startDate.value.toISOString().split('T')[0]);
 
@@ -216,12 +222,19 @@ export default {
       return true
     }
     async function handleDelete() {
-      return useAsyncState($api.vacations.delete(props.vacation.id), [], {
-        onSuccess() {
-          ctx.emit('delete-vacation')
-        }
-      })
+      window.connections.ws.value!.send(
+        JSON.stringify({
+          event: 'cancel_request',
+          request_id: props.vacation.id
+        })
+      )
+      // return useAsyncState($api.vacations.delete(props.vacation.id), [], {
+      //   onSuccess() {
+      //     ctx.emit('delete-vacation')
+      //   }
+      // })
     }
+
     async function handleApprove() {
       return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
         onSuccess() {
@@ -235,6 +248,7 @@ export default {
         }
       })
     }
+
     async function handleReject() {
       return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
         onSuccess() {
@@ -284,6 +298,25 @@ export default {
       )
     }
 
+    const handleApproveCancellationRequest = () => {
+      window.connections.ws.value!.send(
+        JSON.stringify({
+          event: 'approve_cancellation_request',
+          request_id: props.vacation.id,
+          approval_id: user.value?.id,
+        })
+      )
+    }
+    const handleRejectCancellationRequest = () => {
+      window.connections.ws.value!.send(
+        JSON.stringify({
+          event: 'reject_cancellation_request',
+          request_id: props.vacation.id,
+          approval_id: user.value?.id,
+        })
+      )
+    }
+
     return {
       startDate,
       disabled,
@@ -296,11 +329,16 @@ export default {
       couldDelete,
       start_date,
       end_date,
+      requestedToCancelStatus,
+      pendingStatus,
       validateEndDate,
       updateVacation,
       handleApprove,
       handleReject,
-      handleDelete
+      handleDelete,
+      capitalize,
+      handleApproveCancellationRequest,
+      handleRejectCancellationRequest,
     }
   }
 }

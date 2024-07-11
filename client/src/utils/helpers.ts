@@ -143,6 +143,8 @@ export function getStatusColor(status: string) {
     case 'vacations':
     case 'approved':
       return 'green'
+    case 'requested to cancel':
+      return 'yellow'
 
     case 'hr_letters':
     case 'pending':
