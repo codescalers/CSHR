@@ -66,6 +66,8 @@
       </v-form>
       <v-divider class="my-2"></v-divider>
       <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'pending'">
+        <v-btn color="primary" class="ma-1" type="submit"
+        :disabled="!form?.isValid" @click="updateVacation">Update</v-btn>
         <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
         <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
       </v-row>
@@ -142,7 +144,7 @@ export default {
       if (user.value) {
         if (props.vacation.status == 'pending') {
           // could update if user signed in is the same user applied for vacation
-          if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user) {
+          if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user || user.value.fullUser.user_type != "User" ) {
             return true
           }
           if (
