@@ -61,7 +61,7 @@
             </v-col>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="Actual Days" v-model="actualDays" :readonly="!couldUpdate">
+                label="Requested Days" v-model="actualDays" :readonly="!couldUpdate">
               </v-text-field>
             </v-col>
           </v-row>
