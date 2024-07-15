@@ -189,7 +189,7 @@ class StanderdVacationBalance:
                 ValueError: If the 'dates' list is empty.
         """
         if not dates:
-            raise ValueError("The dates list cannot be empty.")
+            return dates
 
         holidays = filter_office_public_holidays_based_on_dates(user.location, dates)
         holiday_dates: Set[datetime.date] = {holiday.holiday_date for holiday in holidays}
