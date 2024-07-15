@@ -345,6 +345,8 @@ async function updateVacationStatus(data: string) {
     } else;
     if (data === 'Reject') {
       vacations.value[vacationIndex].status = 'rejected'
+      vacations.value = vacations.value.filter((vacation) => vacation.id !== selectedEvent.value?.id)  
+      filteredEvents.value = filteredEvents.value.filter(event => event.id.toString() !== `vacation${selectedEvent.value?.id}`)
     }
   }
   closeDialog(CalendarEventSelection.Vacation)
