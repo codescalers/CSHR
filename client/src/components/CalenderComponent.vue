@@ -97,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch } from 'vue'
+import { capitalize, reactive, ref, watch } from 'vue'
 import { type CalendarApi, type CalendarOptions } from '@fullcalendar/core'
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
@@ -337,16 +337,9 @@ async function createEvent(event: Api.Event) {
   closeDialog(CalendarEventSelection.NewEvent)
 }
 
-async function updateVacationStatus(data: string) {
+async function updateVacationStatus(status: string) {
   const vacationIndex = vacations.value.findIndex((vacation) => vacation.id === selectedEvent.value!.id)
-  if (vacationIndex !== -1) {
-    if (data === 'Approve') {
-      vacations.value[vacationIndex].status = 'approved'
-    } else;
-    if (data === 'Reject') {
-      vacations.value[vacationIndex].status = 'rejected'
-    }
-  }
+  vacations.value[vacationIndex].status = capitalize(status).replace('_', ' ') as Api.RequestStatus;
   closeDialog(CalendarEventSelection.Vacation)
 }
 

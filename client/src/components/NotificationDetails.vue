@@ -56,8 +56,8 @@
     <v-card-actions class="d-flex justify-end">
       <v-row class="d-flex justify-end mt-3">
         <div v-if="couldApprove && vacationStatus == 'pending'">
-          <v-btn variant="tonal" color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
-          <v-btn variant="tonal" color="error" class="ma-1" @click="handleReject">Reject</v-btn>
+          <v-btn variant="tonal" color="primary" class="ma-1" @click="updateRequestStatus('Approved')">Approve</v-btn>
+          <v-btn variant="tonal" color="error" class="ma-1" @click="updateRequestStatus('Rejected')">Reject</v-btn>
           <v-spacer></v-spacer>
         </div>
         <v-btn color="info" class="ma-1" variant="flat" @click="closeDialog()">Close</v-btn>
@@ -69,14 +69,14 @@
 <script lang="ts">
 import { capitalize, computed, ref, type PropType } from 'vue'
 import { getStatusColor } from '@/utils'
-import type { notificationType } from '@/types'
+import type { Api, notificationType } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
 import { useAsyncState } from '@vueuse/core'
 import { $api } from '@/clients'
 
 export default {
   name: 'NotificationDetails',
-  emits: ["update:approve", "update:reject", "update:approvalUser"],
+  emits: ["update:request-status", "update:approvalUser"],
   props: {
     modelValue: {
       type: Object as PropType<notificationType>,
@@ -104,22 +104,16 @@ export default {
       props.onClose()
     }
 
-    async function handleApprove() {
-      return useAsyncState($api.vacations.approve.update(props.vacation!.id), [], {
+    async function updateRequestStatus(status: Api.RequestStatus){
+      return useAsyncState($api.vacations.status.update(props.vacation!.id, status), [], {
         onSuccess() {
-          vacationStatus.value = 'approved'
-          emit("update:approve", vacationStatus.value)
-          emit("update:approvalUser", user.value)
-        }
-      })
-    }
-
-    async function handleReject() {
-      return useAsyncState($api.vacations.reject.update(props.vacation!.id), [], {
-        onSuccess() {
-          vacationStatus.value = 'rejected'
-          emit("update:reject", vacationStatus.value)
-          emit("update:approvalUser", user.value)
+          emit('update:request-status', status)
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'update_request_status',
+              request_id: props.vacation!.id
+            })
+          )
         }
       })
     }
@@ -137,8 +131,7 @@ export default {
       vacationStatus,
       closeDialog,
       getStatusColor,
-      handleApprove,
-      handleReject,
+      updateRequestStatus,
       capitalize
     }
   }

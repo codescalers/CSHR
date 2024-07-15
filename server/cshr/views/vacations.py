@@ -425,141 +425,70 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
         )
 
 
-class VacationsAcceptApiView(GenericAPIView):
+class UpdateVacationStatusApiView(GenericAPIView):
     permission_classes = [IsSupervisor | IsAdmin]
 
-    def put(self, request: Request, id: str, format=None) -> Response:
+    def put(self, request: Request, id: str, status: str) -> Response:
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
             return CustomResponse.not_found(message="Vacation not found")
 
-        office_admin = (
-            request.user.user_type == USER_TYPE.ADMIN
-            and request.user.location == vacation.applying_user.location
-        )
-
-        if not office_admin:
-            leaders = build_user_reporting_to_hierarchy(vacation.applying_user)
-            is_reporting_to = request.user.id in leaders
-            if not is_reporting_to:
-                return CustomResponse.unauthorized(
-                    message=(
-                        "You don't have the necessary permissions to perform this action. "
-                        "Only supervisors and administrators working in the same office are authorized to do so."
-                    )
+        leaders = build_user_reporting_to_hierarchy(vacation.applying_user)
+        is_reporting_to = request.user.id in leaders
+        if not is_reporting_to or request.user.location != vacation.applying_user.location:
+            return CustomResponse.unauthorized(
+                message=(
+                    "You don't have the necessary permissions to perform this action."
+                    "Only supervisors and administrators working in the same office are authorized to do so."
                 )
-
-        v = StanderdVacationBalance()
-        balance = v.check_and_update_balance(
-            applying_user=vacation.applying_user,
-            vacation=vacation,
-            reason=vacation.reason,
-            start_date=vacation.from_date,
-            end_date=vacation.end_date,
-        )
-
-        if balance is not True:
-            return CustomResponse.bad_request(message=balance)
-
-        current_user: User = get_user_by_id(request.user.id)
-        vacation.approval_user = current_user
-        vacation.status = STATUS_CHOICES.APPROVED
-
-        comment: Dict = {
-            "user": TeamSerializer(request.user).data,
-            "comment": f"{request.user.first_name} approved your vacation",
-            "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
-        }
-
-        update_vacation_change_log(vacation, comment)
-
-        vacation.save()
-        event_id = id
-        try:
-            ping_redis()
-        except:
-            return http_ensure_redis_error()
-
-        bool1 = set_notification_reply_redis(vacation, "accepted", event_id)
-        msg = get_vacation_reply_email_template(current_user, vacation, event_id)
-        bool2 = send_email_for_reply.delay(
-            current_user.id, vacation.applying_user.id, msg, "Vacation reply"
-        )
-
-        if bool1 and bool2:
-            return CustomResponse.success(
-                message="Vacation request accepted", status_code=202, data=VacationsUpdateSerializer(vacation).data
-            )
-        else:
-            return CustomResponse.not_found(
-                message="User is not found", status_code=404
             )
 
+        statuses = [
+            STATUS_CHOICES.APPROVED,
+            STATUS_CHOICES.REJECTED,
+            STATUS_CHOICES.CANCELED,
+            STATUS_CHOICES.PENDING,
+            STATUS_CHOICES.CANCEL_APPROVED,
+            STATUS_CHOICES.CANCEL_REJECTED,
+            STATUS_CHOICES.REQUESTED_TO_CANCEL,
+        ]
 
-class VacationsRejectApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsSupervisor | IsAdmin]
-
-    def put(self, request: Request, id: str, format=None) -> Response:
-        vacation = get_vacation_by_id(id=id)
-        if vacation is None:
-            return CustomResponse.not_found(message="Vacation not found")
-
-        office_admin = (
-            request.user.user_type == USER_TYPE.ADMIN
-            and request.user.location == vacation.applying_user.location
-        )
-
-        if not office_admin:
-            leaders = build_user_reporting_to_hierarchy(vacation.applying_user)
-            is_reporting_to = request.user.id in leaders
-            if not is_reporting_to:
-                return CustomResponse.unauthorized(
-                    message=(
-                        "You don't have the necessary permissions to perform this action. "
-                        "Only supervisors and administrators working in the same office are authorized to do so."
-                    )
-                )
-
-        if vacation.status != STATUS_CHOICES.PENDING:
+        if status not in statuses:
             return CustomResponse.bad_request(
-                message=f"The vacation status is not pending, it's {vacation.status}."
+                message=f"Status not valid, only accepted statuses are: {statuses}."
             )
+
+        if status.lower() == str(STATUS_CHOICES.PENDING).lower():
+            # Update the balance.
+            v = StanderdVacationBalance()
+            balance = v.check_and_update_balance(
+                applying_user=vacation.applying_user,
+                vacation=vacation,
+                reason=vacation.reason,
+                start_date=vacation.from_date,
+                end_date=vacation.end_date,
+            )
+
+            if balance is not True:
+                return CustomResponse.bad_request(message=balance)
 
         current_user: User = get_user_by_id(request.user.id)
         vacation.approval_user = current_user
-        vacation.status = STATUS_CHOICES.REJECTED
+        vacation.status = status
 
-        comment: Dict = {
-            "user": TeamSerializer(request.user).data,
-            "comment": f"{request.user.first_name} rejected your request",
-            "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
-        }
-
-        update_vacation_change_log(vacation, comment)
-        vacation.save()
-
-        event_id = id
-
-        try:
-            ping_redis()
-        except:
-            return http_ensure_redis_error()
-
-        bool1 = set_notification_reply_redis(vacation, "rejected", event_id)
-        msg = get_vacation_reply_email_template(current_user, vacation, event_id)
-        bool2 = send_email_for_reply.delay(
-            current_user.id, vacation.applying_user.id, msg, "Vacation reply"
+        return CustomResponse.success(
+            message=f"Updated the status of the vacation to {status}",
+            status_code=202,
+            data=VacationsSerializer(vacation).data
         )
 
-        if bool1 and bool2:
-            return CustomResponse.success(
-                message="vacation request rejected", status_code=202
-            )
-        else:
-            return CustomResponse.not_found(
-                message="user is not found", status_code=404
-            )
-
+        # TODO: Unlock when support the comments feature in the UI.
+        # comment: Dict = {
+        #     "user": TeamSerializer(request.user).data,
+        #     "comment": f"{request.user.first_name} approved your vacation",
+        #     "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
+        # }
+        # update_vacation_change_log(vacation, comment)
 
 class VacationCommentsAPIView(GenericAPIView):
     """Use this endpoint to add a comment as a user."""

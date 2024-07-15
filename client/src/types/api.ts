@@ -9,6 +9,7 @@ export module Api {
   export type Teams = "Business Development" | "Development" | "HR & Finance" | "QA" | "Marketing and Communications" | "Operations" | "Support" // prettier-ignore
   export type Users = 'Admin' | 'User' | 'Team Lead'
   export type Gender = 'Male' | 'Female'
+  export type RequestStatus = "Rejected" | "Pending" | "Requested to cancel" | "Cancel approved" | "Cancel rejected" | "Canceled" | "Approved"
 
   export interface ClientOptions {
     $http: AxiosInstance
@@ -32,7 +33,7 @@ export module Api {
     created_at: any
     modified_at: any
     type: string
-    status: string
+    status: Api.RequestStatus
     reason: string
     from_date: any
     end_date: any

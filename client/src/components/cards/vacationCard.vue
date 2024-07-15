@@ -18,7 +18,7 @@
         <v-row class="d-flex justify-center my-2">
           <v-btn color="primary" v-if="couldUpdate" class="mx-1 my-2" type="submit"
             :disabled="!form?.isValid || disabled">Update</v-btn>
-          <v-btn v-if="couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Request to Cancel</v-btn>
+          <v-btn v-if="couldDelete" color="error" class="mx-1 my-2" @click="updateRequestStatus('Requested to cancel')">Request to Cancel</v-btn>
         </v-row>
         <v-divider class="my-2"></v-divider>
 
@@ -66,12 +66,13 @@
       </v-form>
       <v-divider class="my-2"></v-divider>
       <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status === pendingStatus">
-        <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
-        <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
+        <v-btn color="primary" class="ma-1" @click="updateRequestStatus('Approved')">Approve</v-btn>
+        <v-btn color="error" class="ma-1" @click="updateRequestStatus('Rejected')">Reject</v-btn>
       </v-row>
+
       <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status === requestedToCancelStatus">
-        <v-btn color="primary" class="ma-1" @click="handleApproveCancellationRequest">Approve the cancellation request</v-btn>
-        <v-btn color="error" class="ma-1" @click="handleRejectCancellationRequest">Reject the cancellation request</v-btn>
+        <v-btn color="primary" class="ma-1" @click="updateRequestStatus('Cancel approved')">Approve the cancellation request</v-btn>
+        <v-btn color="error" class="ma-1" @click="updateRequestStatus('Cancel rejected')">Reject the cancellation request</v-btn>
       </v-row>
     </v-container>
   </v-card>
@@ -102,6 +103,7 @@ export default {
 
   setup(props, ctx) {
     const $api = useApi()
+    const status = ref<Api.RequestStatus>(props.vacation.status)
     const requestedToCancelStatus = "requested to cancel";
     const pendingStatus = "pending";
     const startDate = ref<Date>(new Date(props.vacation.from_date));
@@ -120,33 +122,9 @@ export default {
     const user = ApiClientBase.user
     const leaveReasons = ref<Api.LeaveReason[]>([])
 
-    const balance = useAsyncState($api.vacations.getVacationBalance({ "user_ids": user.value?.fullUser.id }), null, {
-      onSuccess(data: any) {
-        leaveReasons.value = [{
-          name: `Emergency Leaves  ${data[0].emergency_leaves.reserved} / ${data[0].emergency_leaves.all}`,
-          reason: "emergency_leaves",
-        }, {
-          name: `Sick Leaves  ${data[0].sick_leaves.reserved} / ∞`,
-          reason: "sick_leaves",
-        },
-        {
-          name: `Annual Leaves  ${data[0].annual_leaves.reserved} / ${data[0].annual_leaves.all}`,
-          reason: "annual_leaves",
-        },
-        {
-          name: `Unpaid ${data[0].unpaid.reserved} / ∞`,
-          reason: "unpaid",
-        },
-        {
-          name: `Compensation  ${data[0].compensation.reserved} / ∞`,
-          reason: "compensation",
-        },]
-
-      }
-    })
     const couldUpdate = computed(() => {
       if (user.value) {
-        if (props.vacation.status == 'pending') {
+        if (props.vacation.status == 'Pending') {
           // could update if user signed in is the same user applied for vacation
           if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user) {
             return true
@@ -168,14 +146,13 @@ export default {
         val.setHours(8, 0, 0, 0)
       return val.toISOString()
     })
+
     const to_date = computed(() => {
       let val = new Date(endDate.value)
         val.setHours(16, 0, 0, 0)
 
       return val.toISOString()
     })
-
-  
 
     const couldDelete = computed(() => {
       if (user.value) {
@@ -221,41 +198,17 @@ export default {
       }
       return true
     }
-    async function handleDelete() {
-      window.connections.ws.value!.send(
-        JSON.stringify({
-          event: 'cancel_request',
-          request_id: props.vacation.id
-        })
-      )
-      // return useAsyncState($api.vacations.delete(props.vacation.id), [], {
-      //   onSuccess() {
-      //     ctx.emit('delete-vacation')
-      //   }
-      // })
-    }
 
-    async function handleApprove() {
-      return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
-        onSuccess() {
-          ctx.emit('status-vacation', 'Approve')
+    async function updateRequestStatus(status: Api.RequestStatus){
+      return useAsyncState($api.vacations.status.update(props.vacation.id, status), [], {
+        onSuccess(vacation) {
+          console.log("vacation.status", vacation.status)
+          status
+          // ctx.emit('update-vacation', vacation)
+          ctx.emit('status-vacation', vacation.status)
           window.connections.ws.value!.send(
             JSON.stringify({
-              event: 'approve_request',
-              request_id: props.vacation.id
-            })
-          )
-        }
-      })
-    }
-
-    async function handleReject() {
-      return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
-        onSuccess() {
-          ctx.emit('status-vacation', 'Reject')
-          window.connections.ws.value!.send(
-            JSON.stringify({
-              event: 'reject_request',
+              event: 'update_request_status',
               request_id: props.vacation.id
             })
           )
@@ -272,6 +225,7 @@ export default {
         []
       )
     }
+
     function transformString(inputString: string): string {
       const words = inputString.split('_')
       const capitalizedWords = words.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -298,25 +252,6 @@ export default {
       )
     }
 
-    const handleApproveCancellationRequest = () => {
-      window.connections.ws.value!.send(
-        JSON.stringify({
-          event: 'approve_cancellation_request',
-          request_id: props.vacation.id,
-          approval_id: user.value?.id,
-        })
-      )
-    }
-    const handleRejectCancellationRequest = () => {
-      window.connections.ws.value!.send(
-        JSON.stringify({
-          event: 'reject_cancellation_request',
-          request_id: props.vacation.id,
-          approval_id: user.value?.id,
-        })
-      )
-    }
-
     return {
       startDate,
       disabled,
@@ -333,12 +268,9 @@ export default {
       pendingStatus,
       validateEndDate,
       updateVacation,
-      handleApprove,
-      handleReject,
-      handleDelete,
+      updateRequestStatus,
+      status,
       capitalize,
-      handleApproveCancellationRequest,
-      handleRejectCancellationRequest,
     }
   }
 }

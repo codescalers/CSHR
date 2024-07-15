@@ -22,13 +22,13 @@ class STATUS_CHOICES(models.TextChoices):
     it is a list of choices for the request status
     """
 
-    REJECTED = "rejected", "Rejected"
-    PENDING = "pending", "Pending"
-    REQUESTED_TO_CANCEL = "requested to cancel", "Requested to cancel"
-    CANCEL_APPROVED = "cancel approved", "Cancel approved"
-    CANCEL_REJECTED = "cancel rejected", "Cancel rejected"
-    CANCELED = "canceled", "Canceled"
-    APPROVED = "approved", "Approved"
+    REJECTED = "rejected", "rejected"
+    PENDING = "pending", "pending"
+    REQUESTED_TO_CANCEL = "requested_to_cancel", "requested_to_cancel"
+    CANCEL_APPROVED = "cancel_approved", "cancel_approved"
+    CANCEL_REJECTED = "cancel_rejected", "cancel_rejected"
+    CANCELED = "canceled", "canceled"
+    APPROVED = "approved", "approved"
 
 
 class Requests(TimeStamp):

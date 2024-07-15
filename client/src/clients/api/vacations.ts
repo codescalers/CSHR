@@ -4,8 +4,7 @@ import { ApiClientBase } from './base'
 export class VacationsApi extends ApiClientBase {
   protected readonly path = '/vacations'
 
-  readonly approve: VacationsApproveApi
-  readonly reject: VacationsRejectApi
+  readonly status: UpdateVacationStatusApi
   readonly balance: VacationsBalanceApi
   readonly calculate: VacationsCalculateApi
   readonly comment: VacationsCommentApi
@@ -18,8 +17,7 @@ export class VacationsApi extends ApiClientBase {
   constructor(options: Api.ClientOptions) {
     super(options)
 
-    this.approve = new VacationsApproveApi(options, this.path)
-    this.reject = new VacationsRejectApi(options, this.path)
+    this.status = new UpdateVacationStatusApi(options, this.path)
     this.balance = new VacationsBalanceApi(options, this.path)
     this.calculate = new VacationsCalculateApi(options, this.path)
     this.comment = new VacationsCommentApi(options, this.path)
@@ -66,23 +64,12 @@ export class VacationsApi extends ApiClientBase {
   }
 }
 
-class VacationsApproveApi extends ApiClientBase {
-  protected readonly path = '/approve'
+class UpdateVacationStatusApi extends ApiClientBase {
+  protected readonly path = '/update-status'
 
-  async update(id: any) {
-    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/${id}`)), {
-      transform: (d) => d.results
-    })
-  }
-}
-
-class VacationsRejectApi extends ApiClientBase {
-  protected readonly path = '/reject'
-
-  async read(id: number) {}
-
-  async update(id: number) {
-    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/${id}`)), {
+  async update(id: number, status: Api.RequestStatus) {
+    const _status = status.toLocaleLowerCase().replace(' ', '_')
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/${id}/${_status}`)), {
       transform: (d) => d.results
     })
   }
