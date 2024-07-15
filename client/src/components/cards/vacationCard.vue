@@ -67,7 +67,7 @@
       <v-divider class="my-2"></v-divider>
       <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'pending'">
         <v-btn color="primary" class="ma-1" type="submit"
-        :disabled="!form?.isValid" @click="updateVacation" v-if="vacation.applying_user.id !== user?.id">Update</v-btn>
+        :disabled="!form?.isValid" @click="updateVacation" v-if="vacation.applying_user.id !== user?.id && user?.fullUser.location.id == vacation.applying_user.location.id">Update</v-btn>
         <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
         <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
       </v-row>
