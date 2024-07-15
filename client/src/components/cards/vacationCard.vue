@@ -160,12 +160,12 @@ export default {
     })
 
     const from_date = computed(() => {
-      let val = new Date(startDate.value)
+      let val = new Date(start_date.value)
         val.setHours(8, 0, 0, 0)
       return val.toISOString()
     })
     const to_date = computed(() => {
-      let val = new Date(endDate.value)
+      let val = new Date(end_date.value)
         val.setHours(16, 0, 0, 0)
 
       return val.toISOString()

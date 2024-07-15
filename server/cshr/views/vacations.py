@@ -371,10 +371,11 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
             # Check if there are pending vacations in the same day
             pending_requests = Vacation.objects.filter(
-                from_date__day=start_date.day,
-                end_date__day=end_date.day,
+                from_date=start_date,
+                end_date=end_date,
                 status=STATUS_CHOICES.PENDING,
-            )
+            ).exclude(id=int(id))
+
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
                     message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
