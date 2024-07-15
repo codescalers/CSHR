@@ -97,21 +97,24 @@ export abstract class ApiClientBase {
         res = req[0]
         err = req[1]
       } else {
-        if(!router.currentRoute.value.fullPath.includes('login')){
-          router.push("/login")
+        if (!router.currentRoute.value.fullPath.includes('login')) {
+          router.push('/login')
         }
+      }
     }
 
     if (
       res &&
       (res.config.method === 'post' || res.config.method === 'put') &&
       typeof res.data === 'object' &&
-      'message' in (res.data || {}) && ('message' in res.data! && String(res.data["message"]).toLocaleLowerCase() != "success") &&
+      'message' in (res.data || {}) &&
+      'message' in res.data! &&
+      String(res.data['message']).toLocaleLowerCase() != 'success' &&
       options.disableNotify !== true
     ) {
       ApiClientBase.$notifier?.notify({
         type: 'success',
-        description: (res.data as any).message,
+        description: (res.data as any).message
       })
     }
 
@@ -123,8 +126,6 @@ export abstract class ApiClientBase {
 
       panic(err)
     }
-
     return (options.transform?.(res.data, res) ?? res.data) as R
   }
-}
 }
