@@ -649,7 +649,7 @@ class UserVacationBalanceApiView(GenericAPIView):
         user_ids = request.query_params.get("user_ids")
         if user_ids is None:
             return CustomResponse.bad_request(
-                message="You must send `user_id` as a query_params."
+                message="You must send `user_ids` as a query_params."
             )
 
         user_ids = user_ids.split(",")
