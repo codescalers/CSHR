@@ -23,7 +23,7 @@ from cshr.api.permission import (
 )
 from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
 from cshr.models.users import USER_TYPE, User
-from cshr.services.office import get_office_by_id
+from cshr.services.office import filter_office_admins_by_id, get_office_by_id
 from cshr.utils.vacation_balance_helper import StanderdVacationBalance
 from cshr.services.users import build_user_reporting_to_hierarchy, get_user_by_id, get_users_by_id
 from cshr.services.vacations import (
@@ -433,9 +433,14 @@ class UpdateVacationStatusApiView(GenericAPIView):
         if vacation is None:
             return CustomResponse.not_found(message="Vacation not found")
 
-        leaders = build_user_reporting_to_hierarchy(vacation.applying_user)
-        is_reporting_to = request.user.id in leaders
-        if not is_reporting_to or request.user.location != vacation.applying_user.location:
+        leader_ids: List[int] = build_user_reporting_to_hierarchy(vacation.applying_user)
+        admin_ids: List[int] = list(filter_office_admins_by_id(request.user.location, flat_id=True))
+        print("admin_ids", admin_ids)
+        reporting_to = leader_ids + admin_ids
+        print("reporting_to", reporting_to)
+        
+        is_reporting_to = request.user.id in reporting_to
+        if not is_reporting_to:
             return CustomResponse.unauthorized(
                 message=(
                     "You don't have the necessary permissions to perform this action."
@@ -453,10 +458,13 @@ class UpdateVacationStatusApiView(GenericAPIView):
             STATUS_CHOICES.REQUESTED_TO_CANCEL,
         ]
 
+        print("status", status)
+
         if status not in statuses:
             return CustomResponse.bad_request(
                 message=f"Status not valid, only accepted statuses are: {statuses}."
             )
+
 
         if status.lower() == str(STATUS_CHOICES.PENDING).lower():
             # Update the balance.
@@ -475,6 +483,7 @@ class UpdateVacationStatusApiView(GenericAPIView):
         current_user: User = get_user_by_id(request.user.id)
         vacation.approval_user = current_user
         vacation.status = status
+        vacation.save()
 
         return CustomResponse.success(
             message=f"Updated the status of the vacation to {status}",

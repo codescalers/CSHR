@@ -26,3 +26,9 @@ def get_office_by_name(name: str) -> Office:
 
 def get_office_supervisors(office: Office) -> QuerySet[User]:
     return User.objects.filter(location__id=office.id, user_type=USER_TYPE.SUPERVISOR)
+
+def filter_office_admins_by_id(office: Office, flat_id: bool = False) -> QuerySet[User]:
+    users = User.objects.filter(location__id=office.id, user_type=USER_TYPE.ADMIN)
+    if flat_id:
+        return users.values_list('id', flat=flat_id)
+    return users
