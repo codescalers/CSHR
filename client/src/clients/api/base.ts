@@ -97,9 +97,10 @@ export abstract class ApiClientBase {
         res = req[0]
         err = req[1]
       } else {
-        if(!router.currentRoute.value.fullPath.includes('login')){
-          router.push("/login")
+        if (!router.currentRoute.value.fullPath.includes('login')) {
+          router.push('/login')
         }
+      }
     }
 
     if (
@@ -127,5 +128,4 @@ export abstract class ApiClientBase {
     }
     return (options.transform?.(res.data, res) ?? res.data) as R
   }
-}
 }
