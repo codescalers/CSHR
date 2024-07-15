@@ -83,7 +83,7 @@ export function normalizeEvent(e: Api.Event): any {
 function formatTitle(v: Api.Vacation) {
   const fullName = v.applying_user_full_name ? v.applying_user_full_name : v.applying_user.full_name;
   const reason = v.reason.replace("_", " ").replace(/s$/, "");
-  return `${fullName}'s ${reason}`;
+  return `${fullName} ${reason}`;
 }
 export function normalizeVacation(v: Api.Vacation) {
   const dates = handelDates(v.from_date, v.end_date)
