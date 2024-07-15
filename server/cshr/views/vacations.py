@@ -650,42 +650,37 @@ class CalculateVacationDaysApiView(GenericAPIView):
         UserIsAuthenticated,
     ]
 
+    def parse_date(self, date_str: str) -> datetime:
+        """Parses a date string in 'yyyy-mm-dd' format to a datetime.date object."""
+        try:
+            return datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            raise ValueError(f"Invalid date format for {date_str}, must be 'yyyy-mm-dd'.")
+
+
     def get(self, request: Request) -> Response:
-        """Use this endpoint to calculate the actual vacation days taked between 2 dates."""
+        """Use this endpoint to calculate the actual vacation days taken between 2 dates."""
         user: User = get_user_by_id(request.user.id)
         v: StanderdVacationBalance = StanderdVacationBalance()
         v.check(user)
 
-        start_date: List[str] = request.query_params.get("start_date").split("-")
-        end_date: List[str] = request.query_params.get("end_date").split("-")
+        start_date_str: str = request.query_params.get("start_date")
+        end_date_str: str = request.query_params.get("end_date")
 
-        try:
-            converted_start_date: datetime = datetime(
-                year=int(start_date[0]),
-                month=int(start_date[1]),
-                day=int(start_date[2]),
-            ).date()
-        except Exception:
+        if not start_date_str or not end_date_str:
             return CustomResponse.bad_request(
-                message="Invalid start date format, it must match the following pattern 'yyyy-mm-dd'.",
-                error=start_date,
+                message="Both start_date and end_date are required.",
+                error={"start_date": start_date_str, "end_date": end_date_str},
             )
 
         try:
-            converted_end_date: datetime = datetime(
-                year=int(end_date[0]), month=int(end_date[1]), day=int(end_date[2])
-            ).date()
-        except Exception:
-            return CustomResponse.bad_request(
-                message="Invalid end date format, it must match the following pattern 'yyyy-mm-dd'.",
-                error=end_date,
-            )
+            start_date: datetime = self.parse_date(start_date_str)
+            end_date: datetime = self.parse_date(end_date_str)
+        except ValueError as e:
+            return CustomResponse.bad_request(message=str(e))
 
-        actual_days: int = v.get_actual_days(
-            user, converted_start_date, converted_end_date
-        )
+        actual_days: int = v.get_actual_days(user, start_date, end_date)
 
-        # actual_days = len(actual_days) if actual_days != None else 0
         return CustomResponse.success(message="Balance calculated.", data=actual_days)
 
 class AdminApplyVacationForUserApiView(GenericAPIView):
