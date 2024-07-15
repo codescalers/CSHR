@@ -18,7 +18,7 @@
         <v-row class="d-flex justify-center my-2">
           <v-btn color="primary" v-if="couldUpdate" class="mx-1 my-2" type="submit"
             :disabled="!form?.isValid || disabled">Update</v-btn>
-          <v-btn v-if="couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
+          <v-btn v-if="vacation.status === 'pending'" color="error" class="mx-1 my-2" @click="requestToCancel">Request to Cancel</v-btn>
         </v-row>
         <v-divider class="my-2"></v-divider>
 
@@ -215,6 +215,7 @@ export default {
       }
       return true
     }
+
     async function handleDelete() {
       return useAsyncState($api.vacations.delete(props.vacation.id), [], {
         onSuccess() {
@@ -222,6 +223,16 @@ export default {
         }
       })
     }
+
+    async function requestToCancel() {
+      return useAsyncState($api.vacations.requestToCancel(props.vacation.id), [], {
+        onSuccess(res) {
+          console.log('res: ', res)
+          // ctx.emit('delete-vacation')
+        }
+      })
+    }
+
     async function handleApprove() {
       return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
         onSuccess() {
@@ -300,7 +311,8 @@ export default {
       updateVacation,
       handleApprove,
       handleReject,
-      handleDelete
+      handleDelete,
+      requestToCancel,
     }
   }
 }

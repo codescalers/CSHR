@@ -25,6 +25,7 @@ from cshr.models.vacations import Vacation
 from cshr.serializers.vacations import LandingPageVacationsSerializer
 from cshr.serializers.compensation import LandingPageCompensationSerializer
 from cshr.serializers.hr_letters import LandingPageHrLetterSerializer
+from cshr.models.requests import Requests
 
 
 def requests_format_response(user: User) -> Dict:
@@ -67,3 +68,21 @@ def requests_format_response(user: User) -> Dict:
     response["compensations"] = compensations[::-1]
     response["official_docs"] = official_docs[::-1]
     return response
+
+
+def get_request_by_id(id: int) -> (Requests | None):
+    """
+        Retrieve a request by its ID.
+
+        Args:
+            id (int): The ID of the request to retrieve.
+
+        Returns:
+            Requests: The request object if found, None otherwise.
+    """
+    if not str(id).isdigit():
+        return None
+    try:
+        return Requests.objects.get(id=int(id))
+    except Requests.DoesNotExist:
+        return None

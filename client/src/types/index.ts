@@ -52,4 +52,4 @@ export interface notificationType {
 export interface WSErrorType {
   code: number;
   message: string;
-} 
+}

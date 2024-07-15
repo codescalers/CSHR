@@ -13,6 +13,7 @@ from cshr.views.vacations import (
     CalculateVacationDaysApiView,
     VacationBalanceAdjustmentApiView,
     AdminApplyVacationForUserApiView,
+    VacationsRequestToCancelApiView
 )
 
 urlpatterns = [
@@ -24,9 +25,10 @@ urlpatterns = [
     path("balance/adjustment/", VacationBalanceAdjustmentApiView.as_view()),
     path("balance/", UserVacationBalanceApiView.as_view()),
     path("edit/<str:id>/", VacationsUpdateApiView.as_view()),
-    path("approve/<str:id>/", VacationsAcceptApiView.as_view()),
-    path("reject/<str:id>/", VacationsRejectApiView.as_view()),
     path("<str:id>/", VacationsHelpersApiView.as_view()),
     path("comment/<str:id>/", VacationCommentsAPIView.as_view()),
     path("admin/<str:user_id>/", AdminApplyVacationForUserApiView.as_view()),
+    path("approve/<str:id>/", VacationsAcceptApiView.as_view()),
+    path("reject/<str:id>/", VacationsRejectApiView.as_view()),
+    path("request-to-cancel/<str:id>/", VacationsRequestToCancelApiView.as_view()),
 ]

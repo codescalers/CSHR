@@ -64,6 +64,12 @@ export class VacationsApi extends ApiClientBase {
       transform: (d) => d.results
     })
   }
+
+  async requestToCancel(id: number) {
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/request-to-cancel/${id}`)), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsApproveApi extends ApiClientBase {

@@ -62,6 +62,7 @@ from cshr.utils.redis_functions import (
 )
 from cshr.utils.wrappers import wrap_vacation_request
 from cshr.services.notifications import NotificationsService
+from cshr.services.requests import get_request_by_id
 
 
 class GetAdminVacationBalanceApiView(GenericAPIView):
@@ -881,3 +882,47 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
             response_data: Dict = wrap_vacation_request(saved_vacation)
             return CustomResponse.success(message=message, data=response_data)
         return CustomResponse.bad_request(message="Please make sure that you entered a valid data.", error=serializer.errors)
+
+# Actions
+class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
+    permission_classes = [ IsUser ]
+    def put(self, request: Request, id: str, format=None) -> Response:
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
+            return CustomResponse.not_found(message="Vacation not found")
+
+        if request.user.id != vacation.applying_user.id:
+            return CustomResponse.unauthorized(
+                message=(
+                    "You don't have the necessary permissions to perform this action. "
+                    "Only the request creator is authorized to update the request status."
+                )
+            )
+
+        if vacation.status != STATUS_CHOICES.PENDING:
+            status = vacation.status.title().replace('_', ' ')
+            return CustomResponse.unauthorized(
+                message=f"You are not allowed to perform this action, the request status is '{status}'."
+            )
+
+        current_user: User = get_user_by_id(request.user.id)
+        vacation.approval_user = current_user
+        vacation.status = STATUS_CHOICES.REQUESTED_TO_CANCEL
+        vacation.save()
+
+        # Push notification to leads
+        lead_ids = build_user_reporting_to_hierarchy(vacation.applying_user)
+        notification = NotificationsService(sender=vacation.applying_user, receiver=None)
+        request = get_request_by_id(vacation.id)
+
+        for user_id in lead_ids:
+            user = get_user_by_id(user_id)
+            notification.receiver = user
+            _notification = notification.vacations.cancel_request(vacation.reason, request)
+            notification.push(_notification)
+
+        return CustomResponse.success(
+            message="vacation request rejected",
+            status_code=202,
+            data=VacationsSerializer(vacation).data
+        )
