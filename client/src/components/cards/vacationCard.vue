@@ -16,8 +16,8 @@
 
       <v-form ref="form" @submit.prevent="updateVacation()">
         <v-row class="d-flex justify-center my-2">
-          <v-btn color="primary" v-if="couldUpdate" class="mx-1 my-2" type="submit"
-            :disabled="!form?.isValid || disabled">Update</v-btn>
+          <v-btn color="primary" v-if="couldUpdate && vacation.applying_user.id === user?.id" class="mx-1 my-2" type="submit"
+            :disabled="!form?.isValid">Update</v-btn>
           <v-btn v-if="couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
         </v-row>
         <v-divider class="my-2"></v-divider>
@@ -67,7 +67,7 @@
       <v-divider class="my-2"></v-divider>
       <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'pending'">
         <v-btn color="primary" class="ma-1" type="submit"
-        :disabled="!form?.isValid" @click="updateVacation">Update</v-btn>
+        :disabled="!form?.isValid" @click="updateVacation" v-if="vacation.applying_user.id !== user?.id">Update</v-btn>
         <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
         <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
       </v-row>
@@ -298,6 +298,7 @@ export default {
       couldDelete,
       start_date,
       end_date,
+      user,
       validateEndDate,
       updateVacation,
       handleApprove,
