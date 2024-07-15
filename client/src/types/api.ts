@@ -271,7 +271,6 @@ export module Api {
     users?: any
     date: any
     len?: number
-    status?: string
   }
 
   export module Inputs {

@@ -170,7 +170,6 @@ const loadEvents = async () => {
     [],
     {
       onSuccess(data) {
-        data = data.filter(v => v.status !== "rejected")
         for (const event of data) {
           updateEventCalendarType(event)
         }

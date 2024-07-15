@@ -91,8 +91,7 @@ export function normalizeVacation(v: Api.Vacation) {
     end: dates.end,
     backgroundColor: '#fcd091',
     id: v.type + v.id.toString(),
-    allDay: true,
-    status: v.status
+    allDay: true
   }
 }
 
