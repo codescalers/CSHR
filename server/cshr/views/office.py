@@ -10,7 +10,7 @@ from cshr.api.permission import (
     UserIsAuthenticated,
     CustomPermissions,
 )
-from cshr.services.office import get_office_by_id, get_office_supervisors
+from cshr.services.office import get_office_by_id
 from cshr.api.response import CustomResponse
 
 

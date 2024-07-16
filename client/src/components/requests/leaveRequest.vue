@@ -227,14 +227,14 @@ export default {
         }, 200)
       }
     )
-    const validateDates = (value: string | null): string | boolean => {
+    const validateDates = (): string | boolean => {
       if (!startDate.value) return 'Please select start date.'
       if (!endDate.value) return 'Please select end date.'
       if (endDate.value < startDate.value) return 'End date must be after start date.'
       return true
     }
 
-    const validateTimes = (value: string | null): string | boolean => {
+    const validateTimes = (): string | boolean => {
       if (!excuseEnd.value) return 'Please select end time.'
       if (excuseEnd.value < excuseStart.value) return 'End time must be after start time.'
       return true

@@ -66,7 +66,7 @@ class BaseHrLetterApiView(ListAPIView, GenericAPIView):
 
             try:
                 ping_redis()
-            except:
+            except Exception:
                 return http_ensure_redis_error()
 
             bool1 = set_notification_request_redis(serializer.data)
@@ -210,7 +210,7 @@ class HrLetterAcceptApiView(ListAPIView, GenericAPIView):
 
         try:
             ping_redis()
-        except:
+        except Exception:
             return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(hr_letter, "accepted", hr_letter.id)

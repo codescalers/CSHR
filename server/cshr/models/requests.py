@@ -19,7 +19,7 @@ class TYPE_CHOICES(models.TextChoices):
 
 class STATUS_CHOICES(models.TextChoices):
     """
-        List of choices for the request status.
+    List of choices for the request status.
     """
 
     APPROVED = "approved"
@@ -29,6 +29,7 @@ class STATUS_CHOICES(models.TextChoices):
     CANCEL_APPROVED = "cancel_approved"
     CANCEL_REJECTED = "cancel_rejected"
     CANCELED = "canceled"
+
 
 class Requests(TimeStamp):
     """Class Requests model for adding a new

@@ -20,12 +20,8 @@ export class OfficialDocumentsApi extends ApiClientBase {
 
 class OfficialDocumentsApproveApi extends ApiClientBase {
   protected readonly path = '/official_documents/approve'
-
-  async update(id: number) {}
 }
 
 class OfficialDocumentsRejectApi extends ApiClientBase {
   protected readonly path = '/official_documents/reject'
-
-  async update(id: number) {}
 }

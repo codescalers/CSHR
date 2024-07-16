@@ -70,15 +70,15 @@ def requests_format_response(user: User) -> Dict:
     return response
 
 
-def get_request_by_id(id: int) -> (Requests | None):
+def get_request_by_id(id: int) -> Requests | None:
     """
-        Retrieve a request by its ID.
+    Retrieve a request by its ID.
 
-        Args:
-            id (int): The ID of the request to retrieve.
+    Args:
+        id (int): The ID of the request to retrieve.
 
-        Returns:
-            Requests: The request object if found, None otherwise.
+    Returns:
+        Requests: The request object if found, None otherwise.
     """
     if not str(id).isdigit():
         return None

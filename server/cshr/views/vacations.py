@@ -25,7 +25,12 @@ from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES, Requests
 from cshr.models.users import USER_TYPE, User
 from cshr.services.office import get_office_by_id
 from cshr.utils.vacation_balance_helper import StanderdVacationBalance
-from cshr.services.users import build_user_reporting_to_hierarchy, filter_admins_same_office_of_the_user, get_user_by_id, get_users_by_id
+from cshr.services.users import (
+    build_user_reporting_to_hierarchy,
+    filter_admins_same_office_of_the_user,
+    get_user_by_id,
+    get_users_by_id,
+)
 from cshr.services.vacations import (
     filter_balances_by_users,
     get_vacation_by_id,
@@ -57,7 +62,6 @@ from cshr.utils.redis_functions import (
     http_ensure_redis_error,
     notification_commented,
     ping_redis,
-    set_notification_request_redis,
     set_notification_reply_redis,
 )
 from cshr.utils.wrappers import wrap_vacation_request
@@ -171,7 +175,6 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
         )
 
 
-
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
     """Class Vacations_APIView to create a new vacation into database or get all"""
 
@@ -191,7 +194,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 from_date__day=start_date.day,
                 end_date__day=end_date.day,
                 status=STATUS_CHOICES.PENDING,
-                applying_user=applying_user
+                applying_user=applying_user,
             )
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
@@ -217,16 +220,18 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 )
 
             user_reason_balance = applying_user.vacationbalance
-            
+
             vacation_days = v.get_actual_days(applying_user, start_date, end_date)
 
             if start_date.day == end_date.day:
                 # The request is the same day
                 start_hour = start_date.hour
-                end_hour  = end_date.hour
+                end_hour = end_date.hour
                 times = v.calculate_times(start_hour=start_hour, end_hour=end_hour)
                 if times < 1:
-                    if not v.is_valid_times(times=times, start_hour=start_hour, end_hour=end_hour):
+                    if not v.is_valid_times(
+                        times=times, start_hour=start_hour, end_hour=end_hour
+                    ):
                         return CustomResponse.bad_request(
                             message=f"You've sent an invalid times, The days should match the {times}"
                         )
@@ -258,7 +263,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 applying_user=applying_user,
                 actual_days=vacation_days,
             )
-            
+
             notification = NotificationsService(sender=applying_user, receiver=None)
             lead_ids = build_user_reporting_to_hierarchy(applying_user)
             request = get_request_by_id(vacation.id)
@@ -266,7 +271,9 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             for lead_id in lead_ids:
                 user = get_user_by_id(lead_id)
                 notification.receiver = user
-                _notification = notification.vacations.post_new_vacation(vacation.reason, request)
+                _notification = notification.vacations.post_new_vacation(
+                    vacation.reason, request
+                )
                 notification.push(_notification)
 
             vacation_data: Dict = wrap_vacation_request(vacation)
@@ -300,6 +307,7 @@ class VacationsHelpersApiView(ListAPIView, GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="vacation request found", status_code=200
         )
+
 
 class VacationUserApiView(ListAPIView, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
@@ -442,7 +450,7 @@ class VacationsAcceptApiView(GenericAPIView):
         event_id = id
         try:
             ping_redis()
-        except:
+        except Exception:
             return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(vacation, "accepted", event_id)
@@ -453,7 +461,9 @@ class VacationsAcceptApiView(GenericAPIView):
 
         if bool1 and bool2:
             return CustomResponse.success(
-                message="Vacation request accepted", status_code=202, data=VacationsUpdateSerializer(vacation).data
+                message="Vacation request accepted",
+                status_code=202,
+                data=VacationsUpdateSerializer(vacation).data,
             )
         else:
             return CustomResponse.not_found(
@@ -507,7 +517,7 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
 
         try:
             ping_redis()
-        except:
+        except Exception:
             return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(vacation, "rejected", event_id)
@@ -546,7 +556,7 @@ class VacationCommentsAPIView(GenericAPIView):
 
         try:
             ping_redis()
-        except:
+        except Exception:
             return http_ensure_redis_error()
 
         notification_commented(vacation, request.user, "commented", id)
@@ -691,8 +701,9 @@ class CalculateVacationDaysApiView(GenericAPIView):
         try:
             return datetime.strptime(date_str, "%Y-%m-%d").date()
         except ValueError:
-            raise ValueError(f"Invalid date format for {date_str}, must be 'yyyy-mm-dd'.")
-
+            raise ValueError(
+                f"Invalid date format for {date_str}, must be 'yyyy-mm-dd'."
+            )
 
     def get(self, request: Request) -> Response:
         """Use this endpoint to calculate the actual vacation days taken between 2 dates."""
@@ -719,8 +730,9 @@ class CalculateVacationDaysApiView(GenericAPIView):
 
         return CustomResponse.success(message="Balance calculated.", data=actual_days)
 
+
 class AdminApplyVacationForUserApiView(GenericAPIView):
-    permission_classes = [ IsAdmin ]
+    permission_classes = [IsAdmin]
     serializer_class = AdminApplyVacationForUserSerializer
 
     def post(self, request: Request, user_id: str) -> Response:
@@ -742,16 +754,29 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
                 return CustomResponse.not_found(message="User not found.")
 
             if applying_user.location.id != admin.location.id:
-                return CustomResponse.unauthorized(message=f"This action can only be performed by administrators who work in the {applying_user.location.name} office.")
+                return CustomResponse.unauthorized(
+                    message=f"This action can only be performed by administrators who work in the {applying_user.location.name} office."
+                )
 
-            known_reasons = [REASON_CHOICES.ANNUAL_LEAVES, REASON_CHOICES.EMERGENCY_LEAVE, REASON_CHOICES.COMPENSATION, REASON_CHOICES.LEAVE_EXCUSES, REASON_CHOICES.UNPAID, REASON_CHOICES.SICK_LEAVES]
-            reason = serializer.validated_data.get('reason')
+            known_reasons = [
+                REASON_CHOICES.ANNUAL_LEAVES,
+                REASON_CHOICES.EMERGENCY_LEAVE,
+                REASON_CHOICES.COMPENSATION,
+                REASON_CHOICES.LEAVE_EXCUSES,
+                REASON_CHOICES.UNPAID,
+                REASON_CHOICES.SICK_LEAVES,
+            ]
+            reason = serializer.validated_data.get("reason")
             if reason not in known_reasons:
-                formatted_string = ', '.join(known_reasons[:-1]) + f' and {known_reasons[-1]}'
-                return CustomResponse.bad_request(message=f"reason {reason} is not valid, the available resons are {formatted_string}")
+                formatted_string = (
+                    ", ".join(known_reasons[:-1]) + f" and {known_reasons[-1]}"
+                )
+                return CustomResponse.bad_request(
+                    message=f"reason {reason} is not valid, the available resons are {formatted_string}"
+                )
 
-            from_date = serializer.validated_data.get('from_date')
-            end_date = serializer.validated_data.get('end_date')
+            from_date = serializer.validated_data.get("from_date")
+            end_date = serializer.validated_data.get("end_date")
 
             # Check if there are pending vacations in the same day
             pending_requests = Vacation.objects.filter(
@@ -803,7 +828,10 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
 
             if chcked_balance < vacation_days:
                 return CustomResponse.bad_request(
-                    message=f"The user have an additional pending request that deducts {sum(pending_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                    message=(
+                        f"The user have an additional pending request that deducts {sum(pending_vacations)} days from your balance"
+                        f"even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                    )
                 )
 
             saved_vacation = Vacation.objects.create(
@@ -813,16 +841,19 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
                 reason=reason,
                 from_date=from_date,
                 end_date=end_date,
-                actual_days=vacation_days
+                actual_days=vacation_days,
             )
 
             message = f"You have successfully applied for a {reason.capitalize().replace('_', ' ')} vacation for {applying_user.full_name}."
-            if reason == REASON_CHOICES.ANNUAL_LEAVES or reason == REASON_CHOICES.EMERGENCY_LEAVE:
+            if (
+                reason == REASON_CHOICES.ANNUAL_LEAVES
+                or reason == REASON_CHOICES.EMERGENCY_LEAVE
+            ):
                 message = f"You have successfully applied for an {reason.capitalize().replace('_', ' ')} vacation for {applying_user.full_name}."
 
             try:
                 ping_redis()
-            except:
+            except Exception:
                 return http_ensure_redis_error()
 
             # Update the balance
@@ -845,11 +876,16 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
             # set_notification_request_redis(serializer.data)
             response_data: Dict = wrap_vacation_request(saved_vacation)
             return CustomResponse.success(message=message, data=response_data)
-        return CustomResponse.bad_request(message="Please make sure that you entered a valid data.", error=serializer.errors)
+        return CustomResponse.bad_request(
+            message="Please make sure that you entered a valid data.",
+            error=serializer.errors,
+        )
+
 
 # Actions
 class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
-    permission_classes = [ IsUser ]
+    permission_classes = [IsUser]
+
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
         if vacation is None:
@@ -864,7 +900,7 @@ class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
             )
 
         if vacation.status != STATUS_CHOICES.APPROVED:
-            status = vacation.status.title().replace('_', ' ')
+            status = vacation.status.title().replace("_", " ")
             return CustomResponse.unauthorized(
                 message=f"You are not allowed to perform this action, the request status is '{status}'."
             )
@@ -876,32 +912,37 @@ class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
 
         # Push notification to leads
         lead_ids = build_user_reporting_to_hierarchy(vacation.applying_user)
-        notification = NotificationsService(sender=vacation.applying_user, receiver=None)
+        notification = NotificationsService(
+            sender=vacation.applying_user, receiver=None
+        )
         request = get_request_by_id(vacation.id)
 
         for user_id in lead_ids:
             user = get_user_by_id(user_id)
             notification.receiver = user
-            _notification = notification.vacations.cancel_request(vacation.reason, request)
+            _notification = notification.vacations.cancel_request(
+                vacation.reason, request
+            )
             notification.push(_notification)
 
         return CustomResponse.success(
             message="vacation request rejected",
             status_code=202,
-            data=VacationsSerializer(vacation).data
+            data=VacationsSerializer(vacation).data,
         )
 
+
 class CancelVacationApiView(GenericAPIView):
-    permission_classes = [ IsUser | IsAdmin ]
+    permission_classes = [IsUser | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         """
         Handle the PUT request to cancel a vacation.
-        
+
         Parameters:
         request (Request): The request object containing user data.
         id (str): The ID of the vacation to cancel.
-        
+
         Returns:
         Response: Custom response indicating success or failure.
         """
@@ -918,7 +959,7 @@ class CancelVacationApiView(GenericAPIView):
             )
 
         if not self._can_cancel(request.user, vacation):
-            status = vacation.status.title().replace('_', ' ')
+            status = vacation.status.title().replace("_", " ")
             return CustomResponse.unauthorized(
                 message=f"You are not allowed to perform this action, the request status is '{status}'."
             )
@@ -928,41 +969,45 @@ class CancelVacationApiView(GenericAPIView):
         return CustomResponse.success(
             message="Vacation request canceled",
             status_code=202,
-            data=VacationsSerializer(vacation).data
+            data=VacationsSerializer(vacation).data,
         )
 
     def _has_permission(self, user: User, vacation: Vacation) -> bool:
         """
         Check if the user has permission to cancel the vacation.
-        
+
         Parameters:
         user (User): The user making the request.
         vacation (Vacation): The vacation being canceled.
-        
+
         Returns:
         bool: True if the user has permission, False otherwise.
         """
         return user.id == vacation.applying_user.id or (
-            user.user_type == USER_TYPE.ADMIN and user.location.id == vacation.applying_user.location.id
+            user.user_type == USER_TYPE.ADMIN
+            and user.location.id == vacation.applying_user.location.id
         )
 
     def _can_cancel(self, user: User, vacation: Vacation) -> bool:
         """
         Check if the user can cancel the vacation based on its current status.
-        
+
         Parameters:
         user (User): The user making the request.
         vacation (Vacation): The vacation being canceled.
-        
+
         Returns:
         bool: True if the user can cancel, False otherwise.
         """
-        return user.id != vacation.applying_user.id or vacation.status == STATUS_CHOICES.PENDING
+        return (
+            user.id != vacation.applying_user.id
+            or vacation.status == STATUS_CHOICES.PENDING
+        )
 
     def _cancel_vacation(self, user: User, vacation: Vacation):
         """
         Perform the cancellation of the vacation.
-        
+
         Parameters:
         user (User): The user making the request.
         vacation (Vacation): The vacation being canceled.
@@ -976,10 +1021,12 @@ class CancelVacationApiView(GenericAPIView):
             vacation.status = STATUS_CHOICES.CANCELED
             vacation.save()
 
-    def _notify_approval(self, vacation: Vacation, current_user: User, request: Requests):
+    def _notify_approval(
+        self, vacation: Vacation, current_user: User, request: Requests
+    ):
         """
         Notify relevant users about the cancellation approval.
-        
+
         Parameters:
         vacation (Vacation): The vacation being canceled.
         current_user (User): The user approving the cancellation.
@@ -989,7 +1036,9 @@ class CancelVacationApiView(GenericAPIView):
         vacation.status = STATUS_CHOICES.CANCELED
         vacation.save()
 
-        notification_service = NotificationsService(sender=vacation.approval_user, receiver=vacation.applying_user)
+        notification_service = NotificationsService(
+            sender=vacation.approval_user, receiver=vacation.applying_user
+        )
         notification = notification_service.vacations.cancel(vacation.reason, request)
         notification_service.push(notification)
 
@@ -998,20 +1047,23 @@ class CancelVacationApiView(GenericAPIView):
         for user_id in lead_ids:
             user = get_user_by_id(user_id)
             notification_service.receiver = user
-            notification = notification_service.vacations.cancel(vacation.reason, request)
+            notification = notification_service.vacations.cancel(
+                vacation.reason, request
+            )
             notification_service.push(notification)
 
+
 class ApproveCancelVacationRequestApiView(GenericAPIView):
-    permission_classes = [ IsSupervisor | IsAdmin ]
+    permission_classes = [IsSupervisor | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         """
         Handle the PUT request to approve the vacation cancel request.
-        
+
         Parameters:
         request (Request): The request object containing user data.
         id (str): The ID of the vacation to cancel.
-        
+
         Returns:
         Response: Custom response indicating success or failure.
         """
@@ -1020,7 +1072,9 @@ class ApproveCancelVacationRequestApiView(GenericAPIView):
             return CustomResponse.not_found(message="Vacation not found")
 
         lead_ids: List[int] = build_user_reporting_to_hierarchy(vacation.applying_user)
-        admin_ids = filter_admins_same_office_of_the_user(request.user).values_list('id', flat=True)
+        admin_ids = filter_admins_same_office_of_the_user(request.user).values_list(
+            "id", flat=True
+        )
         could_approve: List[int] = lead_ids + list(admin_ids)
 
         if not request.user.id == request.user.id in could_approve:
@@ -1032,7 +1086,7 @@ class ApproveCancelVacationRequestApiView(GenericAPIView):
             )
 
         if not vacation.status == STATUS_CHOICES.REQUESTED_TO_CANCEL:
-            status = vacation.status.title().replace('_', ' ')
+            status = vacation.status.title().replace("_", " ")
             return CustomResponse.unauthorized(
                 message=f"You are not allowed to perform this action, the request status is '{status}'."
             )
@@ -1043,27 +1097,32 @@ class ApproveCancelVacationRequestApiView(GenericAPIView):
         vacation.save()
         request = get_request_by_id(vacation.id)
 
-        notification_service = NotificationsService(sender=vacation.approval_user, receiver=vacation.applying_user)
-        notification = notification_service.vacations.approve_cancel_request(vacation.reason, request)
+        notification_service = NotificationsService(
+            sender=vacation.approval_user, receiver=vacation.applying_user
+        )
+        notification = notification_service.vacations.approve_cancel_request(
+            vacation.reason, request
+        )
         notification_service.push(notification)
 
         return CustomResponse.success(
             message="The request to cancel the vacation request is approved.",
             status_code=202,
-            data=VacationsSerializer(vacation).data
+            data=VacationsSerializer(vacation).data,
         )
 
+
 class RejectCancelVacationRequestApiView(GenericAPIView):
-    permission_classes = [ IsSupervisor | IsAdmin ]
+    permission_classes = [IsSupervisor | IsAdmin]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         """
         Handle the PUT request to reject the vacation cancel request.
-        
+
         Parameters:
         request (Request): The request object containing user data.
         id (str): The ID of the vacation to cancel.
-        
+
         Returns:
         Response: Custom response indicating success or failure.
         """
@@ -1072,7 +1131,9 @@ class RejectCancelVacationRequestApiView(GenericAPIView):
             return CustomResponse.not_found(message="Vacation not found")
 
         lead_ids: List[int] = build_user_reporting_to_hierarchy(vacation.applying_user)
-        admin_ids = filter_admins_same_office_of_the_user(request.user).values_list('id', flat=True)
+        admin_ids = filter_admins_same_office_of_the_user(request.user).values_list(
+            "id", flat=True
+        )
         could_reject: List[int] = lead_ids + list(admin_ids)
 
         if not request.user.id == request.user.id in could_reject:
@@ -1084,7 +1145,7 @@ class RejectCancelVacationRequestApiView(GenericAPIView):
             )
 
         if not vacation.status == STATUS_CHOICES.REQUESTED_TO_CANCEL:
-            status = vacation.status.title().replace('_', ' ')
+            status = vacation.status.title().replace("_", " ")
             return CustomResponse.unauthorized(
                 message=f"You are not allowed to perform this action, the request status is '{status}'."
             )
@@ -1095,12 +1156,16 @@ class RejectCancelVacationRequestApiView(GenericAPIView):
         vacation.save()
         request = get_request_by_id(vacation.id)
 
-        notification_service = NotificationsService(sender=vacation.approval_user, receiver=vacation.applying_user)
-        notification = notification_service.vacations.reject_cancel_request(vacation.reason, request)
+        notification_service = NotificationsService(
+            sender=vacation.approval_user, receiver=vacation.applying_user
+        )
+        notification = notification_service.vacations.reject_cancel_request(
+            vacation.reason, request
+        )
         notification_service.push(notification)
 
         return CustomResponse.success(
             message="The request to cancel the vacation request is rejectd.",
             status_code=202,
-            data=VacationsSerializer(vacation).data
+            data=VacationsSerializer(vacation).data,
         )

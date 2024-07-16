@@ -21,26 +21,14 @@ export class HrLettersApi extends ApiClientBase {
   async list() {}
 
   async create() {}
-
-  async read(id: number) {}
-
-  async delete(id: number) {}
 }
 
 class LettersApproveApi extends ApiClientBase {
   protected readonly path = '/approve'
-
-  async read(id: number) {}
-
-  async update(id: number) {}
 }
 
 class LettersRejectApi extends ApiClientBase {
   protected readonly path = '/reject'
-
-  async read(id: number) {}
-
-  async update(id: number) {}
 }
 
 class LettersUserApi extends ApiClientBase {
@@ -55,6 +43,4 @@ class LettersDocsApi extends ApiClientBase {
   async list() {}
 
   async create() {}
-
-  async read(id: number) {}
 }

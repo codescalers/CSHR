@@ -152,14 +152,10 @@ class VacationsCalculateApi extends ApiClientBase {
 
 class VacationsCommentApi extends ApiClientBase {
   protected readonly path = '/comment'
-
-  async update(id: number) {}
 }
 
 class VacationsEditApi extends ApiClientBase {
   protected readonly path = '/edit'
-
-  async read(id: number) {}
 
   async update(id: number, input: Api.Inputs.Leave) {
     ApiClientBase.assertUser()

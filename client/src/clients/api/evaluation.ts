@@ -15,12 +15,6 @@ export class EvaluationApi extends ApiClientBase {
   async list() {}
 
   async create() {}
-
-  async ready(id: number) {}
-
-  async update(id: number) {}
-
-  async delete(id: number) {}
 }
 
 class EvaluationUsersApi extends ApiClientBase {
@@ -29,10 +23,4 @@ class EvaluationUsersApi extends ApiClientBase {
   async list() {}
 
   async create() {}
-
-  async ready(id: number) {}
-
-  async update(id: number) {}
-
-  async delete(id: number) {}
 }

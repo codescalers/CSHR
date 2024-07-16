@@ -2,7 +2,6 @@
 
 from rest_framework.serializers import (
     ModelSerializer,
-    DateTimeField,
     SerializerMethodField,
 )
 from cshr.models.users import User
