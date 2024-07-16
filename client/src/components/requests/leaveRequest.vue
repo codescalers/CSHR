@@ -278,8 +278,21 @@ export default {
     function calculateTimes() {
       const startTimeInHours = timeStringToHours(excuseStart.value);
       const endTimeInHours = timeStringToHours(excuseEnd.value);
-      const days = +((endTimeInHours - startTimeInHours) / CORE_HOURS).toFixed(2)
-      return days
+      const days = (endTimeInHours - startTimeInHours) / CORE_HOURS
+
+      if (days < .25) {
+        return .25
+      }
+
+      if (days < .5) {
+        return .5
+      }
+
+      if (days < .75) {
+        return .75
+      }
+      
+      return 1
     }
 
     async function createLeave() {
