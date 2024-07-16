@@ -1,12 +1,14 @@
 """This file will containes everything related to User model."""
 
+from typing import Dict, List, Union
+
 from django.contrib.auth.hashers import check_password
 from django.db.models import Q, F
-from typing import List, Union
-from cshr.models.office import Office
-
-from cshr.models.users import USER_TYPE, User, UserSkills
 from django.db.models.query import QuerySet
+
+from cshr.models.office import Office
+from cshr.models.users import USER_TYPE, User, UserSkills
+from cshr.models.vacations import OfficeVacationBalance, VacationBalance
 
 
 def get_user_by_id(id: str) -> User:
@@ -144,6 +146,30 @@ def filter_users_by_birthdates(month: int, day: int) -> List[User]:
 def get_supervisors() -> QuerySet[User]:
     """Return all supervisors users"""
     return User.objects.filter(user_type=USER_TYPE.SUPERVISOR)
+
+def get_admins_and_supervisors() -> QuerySet[User]:
+    """Return all supervisors users"""
+    return User.objects.filter(
+        user_type__in=[USER_TYPE.SUPERVISOR, USER_TYPE.ADMIN]
+    )
+
+def get_or_create_user_balance(user: User, user_balance: Dict) -> QuerySet[User]:
+    """Get or create user balance record."""
+    user = get_user_by_id(user.pk)
+    if user:
+        office_balance = OfficeVacationBalance.objects.get(location=user.location)
+        user_balance = VacationBalance.objects.get_or_create(
+            user=user,
+            sick_leaves = 365,
+            compensation = 365,
+            unpaid = 365,
+            annual_leaves = user_balance.get("annual_leaves"),
+            emergency_leaves = user_balance.get("emergency_leaves"),
+            leave_excuses = user_balance.get("leave_excuses"),
+            office_vacation_balance = office_balance,
+        )
+        return user_balance[0]
+    return None
 
 
 def build_user_reporting_to_hierarchy(user: User) -> List[int]:

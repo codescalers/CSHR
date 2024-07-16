@@ -4,6 +4,7 @@ from cshr.models.requests import STATUS_CHOICES, Requests
 from cshr.models.users import User
 from cshr.models.vacations import Vacation, VacationBalance
 from django.db.models import Q
+from django.db.models.query import QuerySet
 from typing import List
 
 
@@ -11,7 +12,7 @@ def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
     """
     This function will filter all of vacations based on its yesr, month.
     """
-    vacations: List[Vacation] = Vacation.objects.filter(
+    vacations: QuerySet[Vacation] = Vacation.objects.filter(
         Q(
             from_date__month=month,
             from_date__year=year,
@@ -21,6 +22,7 @@ def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
             end_date__year=year,
         )
     )
+    vacations = vacations.exclude(status=STATUS_CHOICES.REJECTED)
     return vacations
 
 

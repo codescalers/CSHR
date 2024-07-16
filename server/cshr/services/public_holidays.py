@@ -29,7 +29,6 @@ def filter_office_public_holidays_based_on_dates(location: Office, dates: List[d
         holiday_date__year__in=years,
         holiday_date__month__in=months,
         location__id=location.pk,
-        expired=False
     )
 
     for holiday in holidays:

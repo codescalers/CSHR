@@ -42,7 +42,7 @@ export default {
     const user = ApiClientBase.user
     const officeId = ref()
     const office = ref()
-    const selectedItem = ref(items[0])
+    const selectedItem = ref(items.value[0])
     const selectedForm = computed(() => {
       switch (selectedItem.value.id) {
         case 2:
