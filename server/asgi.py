@@ -18,11 +18,9 @@ from cshr.consumers.auth_middleware import TokenAuthMiddleware
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
 
 django_asgi_app = get_asgi_application()
-application = ProtocolTypeRouter({
-    "http": django_asgi_app,
-    "websocket": TokenAuthMiddleware(
-        URLRouter(
-            websocket_urlpatterns
-        )
-    ),
-})
+application = ProtocolTypeRouter(
+    {
+        "http": django_asgi_app,
+        "websocket": TokenAuthMiddleware(URLRouter(websocket_urlpatterns)),
+    }
+)

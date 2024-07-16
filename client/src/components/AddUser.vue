@@ -227,7 +227,6 @@
                           density="comfortable"
                           hide-details="auto"
                           :rules="[
-                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             (value: number) => (isSetBalance && value > 25) ? `The annual balance souldn't be more than 25 days.` as any : undefined as any,
                             (value: number) => (isSetBalance && value < 0) ? `The annual balance cannot be less than 0.` as any : undefined as any
                           ]"

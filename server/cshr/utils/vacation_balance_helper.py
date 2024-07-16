@@ -131,10 +131,14 @@ class StanderdVacationBalance:
             return f"You only have {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
         return "Unknown reason."
 
-    def get_difference_between_two_days(self, start_date: datetime.datetime, end_date: datetime.datetime) -> int:
+    def get_difference_between_two_days(
+        self, start_date: datetime.datetime, end_date: datetime.datetime
+    ) -> int:
         return int((end_date - start_date).days + 1)
-    
-    def remove_weekends(self, user: User, start_date: datetime.datetime, end_date: datetime.datetime) -> List[datetime.datetime]:
+
+    def remove_weekends(
+        self, user: User, start_date: datetime.datetime, end_date: datetime.datetime
+    ) -> List[datetime.datetime]:
         """
         Remove weekends from a range of dates based on the user's `office location`.
 
@@ -156,7 +160,7 @@ class StanderdVacationBalance:
         if start_date > end_date:
             raise ValueError("The start date cannot be after the end date.")
 
-        weekend_days = user.location.weekend.lower().split(":") # e.g. Friday:Saturday
+        weekend_days = user.location.weekend.lower().split(":")  # e.g. Friday:Saturday
         delta = end_date - start_date  # returns timedelta
         actual_days = []
 
@@ -172,27 +176,29 @@ class StanderdVacationBalance:
         dates: List[datetime.date],
     ) -> List[datetime.date]:
         """
-            Remove holidays from a list of dates based on the user's `office location`.
+        Remove holidays from a list of dates based on the user's `office location`.
 
-            This function filters out dates that fall on public holidays specific to the user's
-            `office location`. The holidays are determined by the `office location` and the given
-            dates.
+        This function filters out dates that fall on public holidays specific to the user's
+        `office location`. The holidays are determined by the `office location` and the given
+        dates.
 
-            Args:
-                user (User): The user whose `office location` is considered for determining holidays.
-                dates (List[datetime.date]): A list of dates to be filtered.
+        Args:
+            user (User): The user whose `office location` is considered for determining holidays.
+            dates (List[datetime.date]): A list of dates to be filtered.
 
-            Returns:
-                List[datetime.date]: A list of dates excluding those that are public holidays.
+        Returns:
+            List[datetime.date]: A list of dates excluding those that are public holidays.
 
-            Raises:
-                ValueError: If the 'dates' list is empty.
+        Raises:
+            ValueError: If the 'dates' list is empty.
         """
         if not dates:
             return dates
 
         holidays = filter_office_public_holidays_based_on_dates(user.location, dates)
-        holiday_dates: Set[datetime.date] = {holiday.holiday_date for holiday in holidays}
+        holiday_dates: Set[datetime.date] = {
+            holiday.holiday_date for holiday in holidays
+        }
         filtered_dates = [date for date in dates if date not in holiday_dates]
 
         return filtered_dates

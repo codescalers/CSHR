@@ -14,7 +14,9 @@ def filter_public_holidays_by_month_and_year(year: str, month: str):
     )
 
 
-def filter_office_public_holidays_based_on_dates(location: Office, dates: List[datetime]) -> List[PublicHoliday]:
+def filter_office_public_holidays_based_on_dates(
+    location: Office, dates: List[datetime]
+) -> List[PublicHoliday]:
     """
     Filter holidays based on the provided dates' years and months, and mark past holidays as expired.
     """

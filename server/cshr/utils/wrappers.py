@@ -28,7 +28,9 @@ def wrap_vacation_request(vacation: Vacation) -> LandingPageVacationsSerializer:
     vacation_data = LandingPageVacationsSerializer(vacation).data
     vacation_data["type"] = LandingPageTypeEnum.VACATION.value
     vacation_data["applying_user_full_name"] = vacation.applying_user.full_name
-    vacation_data["approvals"] = build_user_reporting_to_hierarchy(vacation.applying_user)
+    vacation_data["approvals"] = build_user_reporting_to_hierarchy(
+        vacation.applying_user
+    )
     return vacation_data
 
 

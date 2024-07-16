@@ -14,11 +14,14 @@ from cshr.models.requests import Requests
 from cshr.models.notification import Notification
 from cshr.serializers.notification import NotificationSerializer
 
+
 class RequestEvents(enum.Enum):
     """Enumeration for different types of request events."""
+
     POST_NEW_VACATION_REQUEST = "post_new_vacation_request"
     APPROVE_REQUEST = "approve_request"
     REJECT_REQUEST = "reject_request"
+
 
 class WSErrorWrapper:
     def __init__(self, code: int, message: str) -> None:
@@ -26,12 +29,14 @@ class WSErrorWrapper:
         self.message = message
 
     def to_json(self) -> Dict:
-        return { "code": self.code, "message": self.message }
+        return {"code": self.code, "message": self.message}
+
 
 @database_sync_to_async
 def _get_vacation_applying_user(vacation: Vacation) -> User:
     """Fetch the user who applied for the vacation."""
     return vacation.applying_user
+
 
 @database_sync_to_async
 def _get_vacation_approval_user(vacation: Vacation) -> User:
@@ -58,7 +63,9 @@ def _filter_receivers(receivers: List[int]) -> List[User]:
 
 
 @database_sync_to_async
-def _push_notification_to_receiver(applying_user: User, receiver_id: int, vacation: Vacation) -> Notification:
+def _push_notification_to_receiver(
+    applying_user: User, receiver_id: int, vacation: Vacation
+) -> Notification:
     """Push a notification to the specified receiver."""
     receiver = get_user_by_id(receiver_id)
     notification = NotificationsService(sender=applying_user, receiver=receiver)
@@ -67,19 +74,25 @@ def _push_notification_to_receiver(applying_user: User, receiver_id: int, vacati
     notification = notification.push(message)
     return notification
 
+
 @database_sync_to_async
 def _push_approve_notification_to_applying_user(vacation: Vacation) -> Notification:
     """Push a notification to the specified receivers."""
-    notification = NotificationsService(sender=vacation.approval_user, receiver=vacation.applying_user)
+    notification = NotificationsService(
+        sender=vacation.approval_user, receiver=vacation.applying_user
+    )
     request = Requests.objects.get(id=vacation.id)
     message = notification.vacations.approve_vacation(vacation.reason, request)
     notification = notification.push(message)
     return notification
 
+
 @database_sync_to_async
 def _push_reject_notification_to_applying_user(vacation: Vacation) -> Notification:
     """Push a notification to the specified receivers."""
-    notification = NotificationsService(sender=vacation.approval_user, receiver=vacation.applying_user)
+    notification = NotificationsService(
+        sender=vacation.approval_user, receiver=vacation.applying_user
+    )
     request = Requests.objects.get(id=vacation.id)
     message = notification.vacations.reject_vacation(vacation.reason, request)
     notification = notification.push(message)
@@ -110,7 +123,9 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_add(self.group_name, self.channel_name)
             await self.accept()
         else:
-            self.error.message = "Cannot connect to the Websocket due to: User is Anonymous."
+            self.error.message = (
+                "Cannot connect to the Websocket due to: User is Anonymous."
+            )
             self.error.code = 401
             await self.disconnect(close_code=self.error.code)
 
@@ -192,14 +207,22 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
         vacation: Vacation = await _get_vacation_by_id(vacation_id)
         applying_user: User = await _get_vacation_applying_user(vacation)
-        receivers_ids: List[int] = await _build_user_reporting_to_hierarchy(applying_user)
+        receivers_ids: List[int] = await _build_user_reporting_to_hierarchy(
+            applying_user
+        )
 
         for receiver_id in receivers_ids:
             self.group_name = f"room_{receiver_id}"
-            notification = await _push_notification_to_receiver(applying_user, receiver_id, vacation)
+            notification = await _push_notification_to_receiver(
+                applying_user, receiver_id, vacation
+            )
             notification_serializer = await get_notification_serializer(notification)
-            notification_serializer["request"]["from_date"] = notification_serializer["request"]["from_date"].isoformat()
-            notification_serializer["request"]["end_date"] = notification_serializer["request"]["end_date"].isoformat()
+            notification_serializer["request"]["from_date"] = notification_serializer[
+                "request"
+            ]["from_date"].isoformat()
+            notification_serializer["request"]["end_date"] = notification_serializer[
+                "request"
+            ]["end_date"].isoformat()
             await self.send_to_group_name(notification_serializer, self.group_name)
 
     async def approve_request(self, data: Dict):
@@ -214,8 +237,12 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         applying_user = await _get_vacation_applying_user(vacation)
         notification = await _push_approve_notification_to_applying_user(vacation)
         notification_serializer = await get_notification_serializer(notification)
-        notification_serializer["request"]["from_date"] = notification_serializer["request"]["from_date"].isoformat()
-        notification_serializer["request"]["end_date"] = notification_serializer["request"]["end_date"].isoformat()
+        notification_serializer["request"]["from_date"] = notification_serializer[
+            "request"
+        ]["from_date"].isoformat()
+        notification_serializer["request"]["end_date"] = notification_serializer[
+            "request"
+        ]["end_date"].isoformat()
         self.group_name = f"room_{applying_user.id}"
         await self.send_to_group_name(notification_serializer, self.group_name)
 
@@ -231,7 +258,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         applying_user = await _get_vacation_applying_user(vacation)
         notification = await _push_reject_notification_to_applying_user(vacation)
         notification_serializer = await get_notification_serializer(notification)
-        notification_serializer["request"]["from_date"] = notification_serializer["request"]["from_date"].isoformat()
-        notification_serializer["request"]["end_date"] = notification_serializer["request"]["end_date"].isoformat()
+        notification_serializer["request"]["from_date"] = notification_serializer[
+            "request"
+        ]["from_date"].isoformat()
+        notification_serializer["request"]["end_date"] = notification_serializer[
+            "request"
+        ]["end_date"].isoformat()
         self.group_name = f"room_{applying_user.id}"
         await self.send_to_group_name(notification_serializer, self.group_name)

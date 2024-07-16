@@ -26,18 +26,20 @@ class TokenAuthMiddleware:
     """
     Custom token auth middleware
     """
- 
+
     def __init__(self, inner):
         # Store the ASGI application we were passed
         self.inner = inner
- 
+
     async def __call__(self, scope, receive, send):
- 
+
         # Close old database connections to prevent usage of timed out connections
         close_old_connections()
- 
+
         # Get the token
-        token = parse_qs(scope["query_string"].decode("utf8"))["token"][0].replace('Bearer ', '')
+        token = parse_qs(scope["query_string"].decode("utf8"))["token"][0].replace(
+            "Bearer ", ""
+        )
         # Try to authenticate the user
         try:
             # This will automatically validate the token and raise an error if token is invalid
@@ -52,4 +54,3 @@ class TokenAuthMiddleware:
             scope["user"] = user
 
         return await self.inner(scope, receive, send)
-    
