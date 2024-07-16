@@ -91,7 +91,7 @@
         @close-dialog="closeDialog(CalendarEventSelection.Vacation)"
         @status-vacation="updateVacationStatus($event)"
         @update-vacation="updateVacation($event)"
-        @delete-vacation="deleteVacation()" />
+        @cancel-vacation="cancelVacation()" />
     </v-card>
   </v-dialog>
 </template>
@@ -371,7 +371,7 @@ async function updateVacation(vacation: Api.Vacation) {
 }
 
 
-async function deleteVacation() {
+async function cancelVacation() {
   vacations.value = vacations.value.filter((vacation) => vacation.id !== selectedEvent.value?.id)  
   filteredEvents.value = filteredEvents.value.filter(event => event.id.toString() !== `vacation${selectedEvent.value?.id}`)
   closeDialog(CalendarEventSelection.Vacation)

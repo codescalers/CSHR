@@ -21,7 +21,7 @@ from cshr.api.permission import (
     UserIsAuthenticated,
     IsAdmin,
 )
-from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES
+from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES, Requests
 from cshr.models.users import USER_TYPE, User
 from cshr.services.office import get_office_by_id
 from cshr.utils.vacation_balance_helper import StanderdVacationBalance
@@ -314,28 +314,6 @@ class VacationsHelpersApiView(ListAPIView, GenericAPIView):
         return CustomResponse.success(
             data=serializer.data, message="vacation request found", status_code=200
         )
-
-    def delete(self, request: Request, id, format=None) -> Response:
-        """method to delete a vacation request by id"""
-        vacation = get_vacation_by_id(id=id)
-        if vacation is not None:
-            if vacation.status == STATUS_CHOICES.APPROVED:
-                v = StanderdVacationBalance()
-                balance = v.check_and_update_balance(
-                    applying_user=vacation.applying_user,
-                    vacation=vacation,
-                    reason=vacation.reason,
-                    start_date=vacation.from_date,
-                    end_date=vacation.end_date,
-                    delete= True,
-                )
-                if balance is not True:
-                    return CustomResponse.bad_request(message=balance)
-                
-            vacation.delete()
-            return CustomResponse.success(message="The vacation has been deleted successfully.", status_code=204)
-        return CustomResponse.not_found(message="The vacation is not found.", status_code=404)
-
 
 class VacationUserApiView(ListAPIView, GenericAPIView):
     serializer_class = VacationsUpdateSerializer
@@ -899,7 +877,7 @@ class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
                 )
             )
 
-        if vacation.status != STATUS_CHOICES.PENDING:
+        if vacation.status != STATUS_CHOICES.APPROVED:
             status = vacation.status.title().replace('_', ' ')
             return CustomResponse.unauthorized(
                 message=f"You are not allowed to perform this action, the request status is '{status}'."
@@ -926,3 +904,113 @@ class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
             status_code=202,
             data=VacationsSerializer(vacation).data
         )
+
+class CancelVacationApiView(GenericAPIView):
+    permission_classes = [ IsUser | IsAdmin ]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        """
+        Handle the PUT request to cancel a vacation.
+        
+        Parameters:
+        request (Request): The request object containing user data.
+        id (str): The ID of the vacation to cancel.
+        
+        Returns:
+        Response: Custom response indicating success or failure.
+        """
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
+            return CustomResponse.not_found(message="Vacation not found")
+
+        if not self._has_permission(request.user, vacation):
+            return CustomResponse.unauthorized(
+                message=(
+                    "You don't have the necessary permissions to perform this action. "
+                    "Only the request creator is authorized to update the request status."
+                )
+            )
+
+        if not self._can_cancel(request.user, vacation):
+            status = vacation.status.title().replace('_', ' ')
+            return CustomResponse.unauthorized(
+                message=f"You are not allowed to perform this action, the request status is '{status}'."
+            )
+
+        self._cancel_vacation(request.user, vacation)
+
+        return CustomResponse.success(
+            message="Vacation request canceled",
+            status_code=202,
+            data=VacationsSerializer(vacation).data
+        )
+
+    def _has_permission(self, user: User, vacation: Vacation) -> bool:
+        """
+        Check if the user has permission to cancel the vacation.
+        
+        Parameters:
+        user (User): The user making the request.
+        vacation (Vacation): The vacation being canceled.
+        
+        Returns:
+        bool: True if the user has permission, False otherwise.
+        """
+        return user.id == vacation.applying_user.id or (
+            user.user_type == USER_TYPE.ADMIN and user.location.id == vacation.applying_user.location.id
+        )
+
+    def _can_cancel(self, user: User, vacation: Vacation) -> bool:
+        """
+        Check if the user can cancel the vacation based on its current status.
+        
+        Parameters:
+        user (User): The user making the request.
+        vacation (Vacation): The vacation being canceled.
+        
+        Returns:
+        bool: True if the user can cancel, False otherwise.
+        """
+        return user.id != vacation.applying_user.id or vacation.status == STATUS_CHOICES.PENDING
+
+    def _cancel_vacation(self, user: User, vacation: Vacation):
+        """
+        Perform the cancellation of the vacation.
+        
+        Parameters:
+        user (User): The user making the request.
+        vacation (Vacation): The vacation being canceled.
+        """
+        current_user = get_user_by_id(user.id)
+        request = get_request_by_id(vacation.id)
+
+        if current_user.id != vacation.applying_user.id:
+            self._notify_approval(vacation, current_user, request)
+        else:
+            vacation.status = STATUS_CHOICES.CANCELED
+            vacation.save()
+
+    def _notify_approval(self, vacation: Vacation, current_user: User, request: Requests):
+        """
+        Notify relevant users about the cancellation approval.
+        
+        Parameters:
+        vacation (Vacation): The vacation being canceled.
+        current_user (User): The user approving the cancellation.
+        request (Requests): The related request object.
+        """
+        vacation.approval_user = current_user
+        vacation.status = STATUS_CHOICES.CANCELED
+        vacation.save()
+
+        notification_service = NotificationsService(sender=vacation.approval_user, receiver=vacation.applying_user)
+        notification = notification_service.vacations.cancel(vacation.reason, request)
+        notification_service.push(notification)
+
+        # Push notification to leads
+        lead_ids = build_user_reporting_to_hierarchy(vacation.applying_user)
+        for user_id in lead_ids:
+            user = get_user_by_id(user_id)
+            notification_service.receiver = user
+            notification = notification_service.vacations.cancel(vacation.reason, request)
+            notification_service.push(notification)

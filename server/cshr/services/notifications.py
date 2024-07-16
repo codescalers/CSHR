@@ -82,6 +82,28 @@ class VacationRequestNotification:
             request=request
         )
 
+    def cancel(self, vacation_type: str, request: Requests) -> Notification:
+        """
+        Creates a new vacation request notification.
+
+        Args:
+            vacation_type (str): The type of vacation being requested.
+            request (Requests): The request object associated with the vacation.
+
+        Returns:
+            Notification: The created notification object.
+        """
+
+        vacation_type = vacation_type.replace("_", " ").title()
+        self.title = f"{self.sender.full_name} canceled the {request.applying_user.full_name}'s {vacation_type} request."
+        self.body = self.title
+
+        return Notification(
+            title=self.title,
+            body=self.body,
+            request=request
+        )
+
     def cancel_request(self, vacation_type: str, request: Requests) -> Notification:
         """
         Creates a new vacation request notification.

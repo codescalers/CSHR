@@ -57,10 +57,9 @@ export class VacationsApi extends ApiClientBase {
 
     return vacation
   }
-  async read(id: number) {}
 
-  async delete(id: number) {
-    return this.unwrap(() => this.$http.delete<any>(this.getUrl(`/${id}`)), {
+  async cancel(id: number) {
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/cancel/${id}`)), {
       transform: (d) => d.results
     })
   }
