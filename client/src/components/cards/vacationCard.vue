@@ -34,9 +34,15 @@
               <v-icon class="mr-2">mdi-account</v-icon>
               <p>
                 Applying User :
+<<<<<<< HEAD
                 <span color="warning" class="mx-2">
                   {{ vacation.applying_user.full_name }}
                 </span>
+=======
+                <span color="warning" class="mx-2">{{
+                  vacation.applying_user.full_name
+                  }}</span>
+>>>>>>> development
               </p>
             </v-col>
             <v-col cols="6" class="d-flex items-center">
@@ -66,6 +72,11 @@
                 :items="leaveReasons" label="Reason" return-object item-title="name" :readonly="!couldUpdate">
               </v-autocomplete>
             </v-col>
+            <v-col cols="6">
+              <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
+                label="Requested Days" v-model="actualDays" readonly>
+              </v-text-field>
+            </v-col>
           </v-row>
 
         </v-card>
@@ -84,7 +95,11 @@
 </template>
 <script lang="ts">
 import type { Api } from '@/types';
+<<<<<<< HEAD
 import { capitalize, computed, ref, watch } from 'vue';
+=======
+import { computed, onMounted, ref, watch } from 'vue';
+>>>>>>> development
 
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
@@ -109,12 +124,10 @@ export default {
   setup(props, ctx) {
     const $api = useApi()
     const startDate = ref<Date>(new Date(props.vacation.from_date));
-     const start_date=  ref(startDate.value.toISOString().split('T')[0]);
-
-
+    const start_date = ref(startDate.value.toISOString().split('T')[0]);
     const endDate = ref<Date>(new Date(props.vacation.end_date))
-      const end_date=  ref(endDate.value.toISOString().split('T')[0]);
-
+    const end_date = ref(endDate.value.toISOString().split('T')[0]);
+    const actualDays = ref();
     const leaveReason = ref<Api.LeaveReason>({
       name: transformString(props.vacation.reason),
       reason: props.vacation.reason
@@ -124,6 +137,13 @@ export default {
     const user = ApiClientBase.user
     const leaveReasons = ref<Api.LeaveReason[]>([])
 
+<<<<<<< HEAD
+=======
+    onMounted(async() => {
+      actualDays.value = (await calculateActualDays()).state.value;
+    })
+  
+>>>>>>> development
     const couldUpdate = computed(() => {
       if (user.value) {
         if (props.vacation.status == 'pending') {
@@ -145,17 +165,15 @@ export default {
 
     const from_date = computed(() => {
       let val = new Date(startDate.value)
-        val.setHours(8, 0, 0, 0)
+      val.setHours(8, 0, 0, 0)
       return val.toISOString()
     })
     const to_date = computed(() => {
       let val = new Date(endDate.value)
-        val.setHours(16, 0, 0, 0)
+      val.setHours(16, 0, 0, 0)
 
       return val.toISOString()
     })
-
-  
 
     const couldDelete = computed(() => {
       if (user.value) {
@@ -166,9 +184,8 @@ export default {
         }
         // Could delete if applying user reports  admin logged in 
         // and works from the same office
-        
         if (
-          user.value.fullUser.user_type ==="Admin"&&
+          user.value.fullUser.user_type === "Admin" &&
           props.vacation.applying_user.location.name === user.value.fullUser.location.name
         ) {
           return true
@@ -180,7 +197,7 @@ export default {
 
 
     const couldApprove = computed(() => {
-      if( user.value?.id && props.vacation.approvals.includes(user.value?.id)){
+      if (user.value?.id && props.vacation.approvals.includes(user.value?.id)) {
         return true
       }
       return false
@@ -293,6 +310,7 @@ export default {
       couldDelete,
       start_date,
       end_date,
+      actualDays,
       validateEndDate,
       updateVacation,
       handleApprove,
