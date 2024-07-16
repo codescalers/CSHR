@@ -227,34 +227,39 @@ function onSelect(arg: any) {
 function onClick(arg: any) {
   selectedEvent.value = undefined
   const event = arg.event
-  // We use a normalized event ID to avoid duplication. It's created by concatenating 'holiday', 'birthday', 'event', 'meeting', and 'vacation' with the event ID.
-  if (event.extendedProps.type === "holiday") {
-    selectedEvent.value = holidays.value.filter(
-      (h) => h.id === Number(event.id.replace('holiday', ''))
-    )[0]
 
-    openDialog(CalendarEventSelection.PublicHoliday)
-  } else if (event.extendedProps.type === "vacation") {
-    selectedEvent.value = vacations.value.filter(
-      (v) => v.id === Number(event.id.replace('vacation', ''))
-    )[0]
-    openDialog(CalendarEventSelection.Vacation)
-  } else if (event.extendedProps.type === "birthday") {
-    selectedEvent.value = birthdays.value.filter(
-      (b) => b.id === Number(event.id.replace('birthday', ''))
-    )[0]
-    openDialog(CalendarEventSelection.Birthday)
-  } else if (event.extendedProps.type === "event") {
-    selectedEvent.value = events.value.filter(
-      (e) => e.id === Number(event.id.replace('event', ''))
-    )[0]
-    openDialog(CalendarEventSelection.Event)
-  } else if (event.extendedProps.type === "meeting") {
-    selectedEvent.value = meetings.value.filter(
-      (m) => m.id === Number(event.id.replace('meeting', ''))
-    )[0]
-    openDialog(CalendarEventSelection.Meeting)
-  }
+  const eventsMap = {
+    holiday: {
+      data: holidays.value,
+      dialog: CalendarEventSelection.PublicHoliday,
+    },
+    vacation: {
+      data: vacations.value,
+      dialog: CalendarEventSelection.Vacation,
+    },
+    birthday: {
+      data: birthdays.value,
+      dialog: CalendarEventSelection.Birthday,
+    },
+    event: {
+      data: events.value,
+      dialog: CalendarEventSelection.Event,
+    },
+    meeting: {
+      data: meetings.value,
+      dialog: CalendarEventSelection.Meeting,
+    },
+  };
+
+  const eventType = event.extendedProps.type
+
+  // We use a normalized event ID to avoid duplication. It's created by concatenating 'holiday', 'birthday', 'event', 'meeting', and 'vacation' with the event ID.
+  if ((eventsMap as any)[eventType]) {
+  selectedEvent.value = (eventsMap as any)[eventType].data.filter(
+    (item: { id: number }) => item.id === +event.id.replace(eventType, '')
+  )[0];
+  openDialog((eventsMap as any)[eventType].dialog);
+}
   selectedEventType.isViewRequest = true
 }
 
