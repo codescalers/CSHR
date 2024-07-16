@@ -228,6 +228,10 @@ function onClick(arg: any) {
   selectedEvent.value = undefined
   calendar.value = arg.view.calendar
   const clickedEventTitle = arg.event.title as string
+  const vacationReasons: Api.VacationReasonWrapper[] = ['annual', 'sick', 'excuse', 'emergency', 'compensation', 'unpaid']
+  const titleSpliter = clickedEventTitle.split(' ')
+  const includeVacatioReason = titleSpliter.map(name => vacationReasons.includes(name as Api.VacationReasonWrapper))
+  const hasVacationTitle = includeVacatioReason.includes(true)
 
   // We use a normalized event ID to avoid duplication. It's created by concatenating 'holiday', 'birthday', 'event', 'meeting', and 'vacation' with the event ID.
   if (clickedEventTitle.includes(CalendarEventSelection.PublicHoliday)) {
@@ -236,11 +240,7 @@ function onClick(arg: any) {
     )[0]
 
     openDialog(CalendarEventSelection.PublicHoliday)
-  } else if (
-    clickedEventTitle
-      .toLocaleLowerCase()
-      .includes(CalendarEventSelection.Vacation.toLocaleLowerCase())
-  ) {
+  } else if (hasVacationTitle) {
     selectedEvent.value = vacations.value.filter(
       (vacation) => vacation.id === Number(arg.event.id.replace('vacation', ''))
     )[0]

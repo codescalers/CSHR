@@ -28,6 +28,7 @@ export module Api {
   }
 
   export type RequestStatus = "approved" | "rejected" | "pending" | "requested_to_cancel" | "cancel_approved" | "cancel_rejected" | "canceled";
+  export type VacationReasonWrapper = "emergency" | "annual" | "excuse" | "sick" | "unpaid" | "compensation";
 
   export interface Vacation {
     id: number
