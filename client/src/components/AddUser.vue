@@ -227,8 +227,9 @@
                           density="comfortable"
                           hide-details="auto"
                           :rules="[
-                            (value: number) => (isSetBalance && value > 25) ? `The annual balance souldn't be more than 25 days.` : undefined,
-                            (value: number) => (isSetBalance && value < 0) ? `The annual balance cannot be less than 0.` : undefined
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                            (value: number) => (isSetBalance && value > 25) ? `The annual balance souldn't be more than 25 days.` as any : undefined as any,
+                            (value: number) => (isSetBalance && value < 0) ? `The annual balance cannot be less than 0.` as any : undefined as any
                           ]"
                           type="number"
                           />
@@ -240,8 +241,8 @@
                           density="comfortable"
                           hide-details="auto"
                           :rules="[
-                            (value: number) => (isSetBalance && value > 6) ? `The emergency balance souldn't be more than 6 days.` : undefined,
-                            (value: number) => (isSetBalance && value < 0) ? `The emergency balance cannot be less than 0.` : undefined,
+                            (value: any) => (isSetBalance && value > 6) ? `The emergency balance souldn't be more than 6 days.` as any : undefined as any,
+                            (value: any) => (isSetBalance && value < 0) ? `The emergency balance cannot be less than 0.` as any : undefined as any,
                           ]"
                           type="number"
                         />
@@ -253,8 +254,8 @@
                           density="comfortable"
                           hide-details="auto"
                           :rules="[
-                            (value: number) => (isSetBalance && value > 6) ? `The excuses balance souldn't be more than 6 days.` : undefined,
-                            (value: number) => (isSetBalance && value < 0) ? `The excuses balance cannot be less than 0.` : undefined,
+                            (value: any) => (isSetBalance && value > 6) ? `The excuses balance souldn't be more than 6 days.` as any : undefined as any,
+                            (value: any) => (isSetBalance && value < 0) ? `The excuses balance cannot be less than 0.` as any : undefined as any,
                           ]"
                           type="number"
                         />
@@ -368,7 +369,6 @@ export default {
       emergency_leaves: +emergencyBalance.value || 0,
       leave_excuses: +excusesBalance.value || 0,
     }))
-
     const user = computed(() => ({
       first_name: first_name.value,
       last_name: last_name.value,
