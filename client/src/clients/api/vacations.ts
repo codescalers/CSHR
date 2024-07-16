@@ -79,12 +79,16 @@ class VacationsApproveApi extends ApiClientBase {
       transform: (d) => d.results
     })
   }
+
+  async cancel(id: any) {
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/cancel/${id}`)), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsRejectApi extends ApiClientBase {
   protected readonly path = '/reject'
-
-  async read(id: number) {}
 
   async update(id: number) {
     return this.unwrap(() => this.$http.put<any>(this.getUrl(`/${id}`)), {

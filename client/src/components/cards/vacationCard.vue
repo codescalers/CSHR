@@ -76,13 +76,15 @@
         </v-card>
       </v-form>
       <v-divider class="my-2"></v-divider>
+      <!-- Approve/Reject the normal request -->
       <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'pending'">
         <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
         <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
       </v-row>
+      <!-- Approve/Reject the cancel request -->
       <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'requested_to_cancel'">
-        <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
-        <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
+        <v-btn color="primary" class="ma-1" @click="handleCancelApprove">Approve the cancel request</v-btn>
+        <v-btn color="error" class="ma-1" @click="handleCancelReject">Reject the cancel request</v-btn>
       </v-row>
     </v-container>
   </v-card>
@@ -236,6 +238,7 @@ export default {
         }
       })
     }
+
     async function handleReject() {
       return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
         onSuccess() {
@@ -249,6 +252,22 @@ export default {
         }
       })
     }
+
+    async function handleCancelApprove(){
+      return useAsyncState($api.vacations.approve.cancel(props.vacation.id), [], {
+        onSuccess() {
+          // ctx.emit('status-vacation', 'Reject')
+          // window.connections.ws.value!.send(
+          //   JSON.stringify({
+          //     event: 'reject_request',
+          //     request_id: props.vacation.id
+          //   })
+          // )
+        }
+      })
+    }
+
+    async function handleCancelReject(){}
 
     async function calculateActualDays() {
       return useAsyncState(
@@ -304,7 +323,9 @@ export default {
       handleReject,
       handleDelete,
       requestToCancel,
-      capitalize
+      capitalize,
+      handleCancelApprove,
+      handleCancelReject,
     }
   }
 }

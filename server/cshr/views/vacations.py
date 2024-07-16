@@ -25,7 +25,7 @@ from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES, Requests
 from cshr.models.users import USER_TYPE, User
 from cshr.services.office import get_office_by_id
 from cshr.utils.vacation_balance_helper import StanderdVacationBalance
-from cshr.services.users import build_user_reporting_to_hierarchy, get_user_by_id, get_users_by_id
+from cshr.services.users import build_user_reporting_to_hierarchy, filter_admins_same_office_of_the_user, get_user_by_id, get_users_by_id
 from cshr.services.vacations import (
     filter_balances_by_users,
     get_vacation_by_id,
@@ -1014,3 +1014,55 @@ class CancelVacationApiView(GenericAPIView):
             notification_service.receiver = user
             notification = notification_service.vacations.cancel(vacation.reason, request)
             notification_service.push(notification)
+
+class ApproveCancelVacationRequestApiView(GenericAPIView):
+    permission_classes = [ IsSupervisor | IsAdmin ]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        """
+        Handle the PUT request to approve the vacation cancel request.
+        
+        Parameters:
+        request (Request): The request object containing user data.
+        id (str): The ID of the vacation to cancel.
+        
+        Returns:
+        Response: Custom response indicating success or failure.
+        """
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
+            return CustomResponse.not_found(message="Vacation not found")
+
+        lead_ids: List[int] = build_user_reporting_to_hierarchy(vacation.applying_user)
+        admin_ids = filter_admins_same_office_of_the_user(request.user).values_list('id', flat=True)
+        could_approve: List[int] = lead_ids + list(admin_ids)
+
+        if not request.user.id == request.user.id in could_approve:
+            return CustomResponse.unauthorized(
+                message=(
+                    "You don't have the necessary permissions to perform this action. "
+                    "Only the request creator is authorized to update the request status."
+                )
+            )
+
+        if not vacation.status == STATUS_CHOICES.REQUESTED_TO_CANCEL:
+            status = vacation.status.title().replace('_', ' ')
+            return CustomResponse.unauthorized(
+                message=f"You are not allowed to perform this action, the request status is '{status}'."
+            )
+
+        current_user = get_user_by_id(request.user.id)
+        vacation.approval_user = current_user
+        vacation.status = STATUS_CHOICES.CANCEL_APPROVED
+        vacation.save()
+        request = get_request_by_id(vacation.id)
+
+        notification_service = NotificationsService(sender=vacation.approval_user, receiver=vacation.applying_user)
+        notification = notification_service.vacations.approve_cancel_request(vacation.reason, request)
+        notification_service.push(notification)
+
+        return CustomResponse.success(
+            message="The request to cancel the vacation request is approved.",
+            status_code=202,
+            data=VacationsSerializer(vacation).data
+        )
