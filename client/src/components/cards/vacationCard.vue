@@ -36,7 +36,7 @@
             <v-col cols="6" class="d-flex items-center">
               <p>
                 Status :
-                {{ vacation.status }}
+                {{ capitalize(vacation.status).replace('_', ' ').replace('_', ' ') }}
               </p>
             </v-col>
 
@@ -74,7 +74,7 @@
 </template>
 <script lang="ts">
 import type { Api } from '@/types';
-import { computed, ref, watch } from 'vue';
+import { capitalize, computed, ref, watch } from 'vue';
 
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
@@ -313,6 +313,7 @@ export default {
       handleReject,
       handleDelete,
       requestToCancel,
+      capitalize
     }
   }
 }
