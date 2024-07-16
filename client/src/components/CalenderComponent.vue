@@ -226,38 +226,32 @@ function onSelect(arg: any) {
 
 function onClick(arg: any) {
   selectedEvent.value = undefined
-  calendar.value = arg.view.calendar
-  const clickedEventTitle = arg.event.title as string
-
+  const event = arg.event
   // We use a normalized event ID to avoid duplication. It's created by concatenating 'holiday', 'birthday', 'event', 'meeting', and 'vacation' with the event ID.
-  if (clickedEventTitle.includes(CalendarEventSelection.PublicHoliday)) {
+  if (event.extendedProps.type === "holiday") {
     selectedEvent.value = holidays.value.filter(
-      (holiday) => holiday.id === Number(arg.event.id.replace('holiday', ''))
+      (h) => h.id === Number(event.id.replace('holiday', ''))
     )[0]
 
     openDialog(CalendarEventSelection.PublicHoliday)
-  } else if (
-    clickedEventTitle
-      .toLocaleLowerCase()
-      .includes(CalendarEventSelection.Vacation.toLocaleLowerCase())
-  ) {
+  } else if (event.extendedProps.type === "vacation") {
     selectedEvent.value = vacations.value.filter(
-      (vacation) => vacation.id === Number(arg.event.id.replace('vacation', ''))
+      (v) => v.id === Number(event.id.replace('vacation', ''))
     )[0]
     openDialog(CalendarEventSelection.Vacation)
-  } else if (clickedEventTitle.includes(CalendarEventSelection.Birthday)) {
+  } else if (event.extendedProps.type === "birthday") {
     selectedEvent.value = birthdays.value.filter(
-      (birthday) => birthday.id === Number(arg.event.id.replace('birthday', ''))
+      (b) => b.id === Number(event.id.replace('birthday', ''))
     )[0]
     openDialog(CalendarEventSelection.Birthday)
-  } else if (clickedEventTitle === CalendarEventSelection.Event) {
+  } else if (event.extendedProps.type === "event") {
     selectedEvent.value = events.value.filter(
-      (event) => event.id === Number(arg.event.id.replace('event', ''))
+      (e) => e.id === Number(event.id.replace('event', ''))
     )[0]
     openDialog(CalendarEventSelection.Event)
-  } else if (clickedEventTitle === CalendarEventSelection.Meeting) {
+  } else if (event.extendedProps.type === "meeting") {
     selectedEvent.value = meetings.value.filter(
-      (meeting) => meeting.id === Number(arg.event.id.replace('meeting', ''))
+      (m) => m.id === Number(event.id.replace('meeting', ''))
     )[0]
     openDialog(CalendarEventSelection.Meeting)
   }
