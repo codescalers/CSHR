@@ -34,15 +34,9 @@
               <v-icon class="mr-2">mdi-account</v-icon>
               <p>
                 Applying User :
-<<<<<<< HEAD
                 <span color="warning" class="mx-2">
                   {{ vacation.applying_user.full_name }}
                 </span>
-=======
-                <span color="warning" class="mx-2">{{
-                  vacation.applying_user.full_name
-                  }}</span>
->>>>>>> development
               </p>
             </v-col>
             <v-col cols="6" class="d-flex items-center">
@@ -95,11 +89,7 @@
 </template>
 <script lang="ts">
 import type { Api } from '@/types';
-<<<<<<< HEAD
-import { capitalize, computed, ref, watch } from 'vue';
-=======
-import { computed, onMounted, ref, watch } from 'vue';
->>>>>>> development
+import { capitalize, computed, onMounted, ref, watch } from 'vue';
 
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
@@ -137,13 +127,10 @@ export default {
     const user = ApiClientBase.user
     const leaveReasons = ref<Api.LeaveReason[]>([])
 
-<<<<<<< HEAD
-=======
     onMounted(async() => {
       actualDays.value = (await calculateActualDays()).state.value;
     })
   
->>>>>>> development
     const couldUpdate = computed(() => {
       if (user.value) {
         if (props.vacation.status == 'pending') {
