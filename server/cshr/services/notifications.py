@@ -13,6 +13,7 @@ class VacationRequestNotification:
         body (str): The body content of the notification.
         title (str): The title of the notification.
     """
+
     def __init__(self, sender: User):
         self.sender = sender
         self.body = None
@@ -30,13 +31,11 @@ class VacationRequestNotification:
             Notification: The created notification object.
         """
         vacation_type = vacation_type.replace("_", " ").title()
-        self.title = f"A new vacation request has been submitted by {self.sender.full_name}."
-        self.body = f"{self.sender.full_name} requested a new {vacation_type} vacation."
-        return Notification(
-            title=self.title,
-            body=self.body,
-            request=request
+        self.title = (
+            f"A new vacation request has been submitted by {self.sender.full_name}."
         )
+        self.body = f"{self.sender.full_name} requested a new {vacation_type} vacation."
+        return Notification(title=self.title, body=self.body, request=request)
 
     def approve_vacation(self, vacation_type: str, request: Requests) -> Notification:
         """
@@ -54,11 +53,7 @@ class VacationRequestNotification:
         self.title = f"Your {vacation_type} request has been approved by {self.sender.full_name}."
         self.body = f"{self.sender.full_name} approved your {vacation_type} request."
 
-        return Notification(
-            title=self.title,
-            body=self.body,
-            request=request
-        )
+        return Notification(title=self.title, body=self.body, request=request)
 
     def reject_vacation(self, vacation_type: str, request: Requests) -> Notification:
         """
@@ -76,11 +71,7 @@ class VacationRequestNotification:
         self.title = f"Your {vacation_type} request has been rejected by {self.sender.full_name}."
         self.body = f"{self.sender.full_name} rejected your {vacation_type} request."
 
-        return Notification(
-            title=self.title,
-            body=self.body,
-            request=request
-        )
+        return Notification(title=self.title, body=self.body, request=request)
 
     def cancel(self, vacation_type: str, request: Requests) -> Notification:
         """
@@ -181,6 +172,7 @@ class NotificationsService:
         receivers (User): The user receiving the notifications.
         vacations (VacationRequestNotification): An instance of the vacation request notification handler.
     """
+
     def __init__(self, sender: User, receiver: User):
         self.sender = sender
         self.receiver = receiver

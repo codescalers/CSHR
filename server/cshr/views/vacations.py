@@ -25,7 +25,12 @@ from cshr.models.requests import TYPE_CHOICES, STATUS_CHOICES, Requests
 from cshr.models.users import USER_TYPE, User
 from cshr.services.office import get_office_by_id
 from cshr.utils.vacation_balance_helper import StanderdVacationBalance
-from cshr.services.users import build_user_reporting_to_hierarchy, filter_admins_same_office_of_the_user, get_user_by_id, get_users_by_id
+from cshr.services.users import (
+    build_user_reporting_to_hierarchy,
+    filter_admins_same_office_of_the_user,
+    get_user_by_id,
+    get_users_by_id,
+)
 from cshr.services.vacations import (
     filter_balances_by_users,
     get_vacation_by_id,
@@ -171,7 +176,6 @@ class PostAdminVacationBalanceApiView(GenericAPIView):
         )
 
 
-
 class BaseVacationsApiView(ListAPIView, GenericAPIView):
     """Class Vacations_APIView to create a new vacation into database or get all"""
 
@@ -191,7 +195,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 from_date__day=start_date.day,
                 end_date__day=end_date.day,
                 status=STATUS_CHOICES.PENDING,
-                applying_user=applying_user
+                applying_user=applying_user,
             )
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
@@ -204,16 +208,18 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             reason: str = serializer.validated_data.get("reason")
             user_reason_balance = applying_user.vacationbalance
-            
+
             vacation_days = v.get_actual_days(applying_user, start_date, end_date)
 
             if start_date.day == end_date.day:
                 # The request is the same day
                 start_hour = start_date.hour
-                end_hour  = end_date.hour
+                end_hour = end_date.hour
                 times = v.calculate_times(start_hour=start_hour, end_hour=end_hour)
                 if times < 1:
-                    if not v.is_valid_times(times=times, start_hour=start_hour, end_hour=end_hour):
+                    if not v.is_valid_times(
+                        times=times, start_hour=start_hour, end_hour=end_hour
+                    ):
                         return CustomResponse.bad_request(
                             message=f"You've sent an invalid times, The days should match the {times}"
                         )
@@ -270,11 +276,11 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
                 # receivers = build_user_reporting_to_hierarchy(applying_user)
                 # receivers = User.objects.filter(id__in = receivers)
- 
+
                 # notification = NotificationsService(sender=applying_user, receivers=receivers)
                 # message = notification.vacations.post_new_vacation(reason_format)
                 # notification.push(message)
-  
+
                 # notification.push()
 
                 # set_notification_request_redis(serializer.data)
@@ -467,7 +473,9 @@ class VacationsAcceptApiView(GenericAPIView):
 
         if bool1 and bool2:
             return CustomResponse.success(
-                message="Vacation request accepted", status_code=202, data=VacationsUpdateSerializer(vacation).data
+                message="Vacation request accepted",
+                status_code=202,
+                data=VacationsUpdateSerializer(vacation).data,
             )
         else:
             return CustomResponse.not_found(
@@ -705,8 +713,9 @@ class CalculateVacationDaysApiView(GenericAPIView):
         try:
             return datetime.strptime(date_str, "%Y-%m-%d").date()
         except ValueError:
-            raise ValueError(f"Invalid date format for {date_str}, must be 'yyyy-mm-dd'.")
-
+            raise ValueError(
+                f"Invalid date format for {date_str}, must be 'yyyy-mm-dd'."
+            )
 
     def get(self, request: Request) -> Response:
         """Use this endpoint to calculate the actual vacation days taken between 2 dates."""
@@ -733,8 +742,9 @@ class CalculateVacationDaysApiView(GenericAPIView):
 
         return CustomResponse.success(message="Balance calculated.", data=actual_days)
 
+
 class AdminApplyVacationForUserApiView(GenericAPIView):
-    permission_classes = [ IsAdmin ]
+    permission_classes = [IsAdmin]
     serializer_class = AdminApplyVacationForUserSerializer
 
     def post(self, request: Request, user_id: str) -> Response:
@@ -756,16 +766,29 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
                 return CustomResponse.not_found(message="User not found.")
 
             if applying_user.location.id != admin.location.id:
-                return CustomResponse.unauthorized(message=f"This action can only be performed by administrators who work in the {applying_user.location.name} office.")
+                return CustomResponse.unauthorized(
+                    message=f"This action can only be performed by administrators who work in the {applying_user.location.name} office."
+                )
 
-            known_reasons = [REASON_CHOICES.ANNUAL_LEAVES, REASON_CHOICES.EMERGENCY_LEAVE, REASON_CHOICES.COMPENSATION, REASON_CHOICES.LEAVE_EXCUSES, REASON_CHOICES.UNPAID, REASON_CHOICES.SICK_LEAVES]
-            reason = serializer.validated_data.get('reason')
+            known_reasons = [
+                REASON_CHOICES.ANNUAL_LEAVES,
+                REASON_CHOICES.EMERGENCY_LEAVE,
+                REASON_CHOICES.COMPENSATION,
+                REASON_CHOICES.LEAVE_EXCUSES,
+                REASON_CHOICES.UNPAID,
+                REASON_CHOICES.SICK_LEAVES,
+            ]
+            reason = serializer.validated_data.get("reason")
             if reason not in known_reasons:
-                formatted_string = ', '.join(known_reasons[:-1]) + f' and {known_reasons[-1]}'
-                return CustomResponse.bad_request(message=f"reason {reason} is not valid, the available resons are {formatted_string}")
+                formatted_string = (
+                    ", ".join(known_reasons[:-1]) + f" and {known_reasons[-1]}"
+                )
+                return CustomResponse.bad_request(
+                    message=f"reason {reason} is not valid, the available resons are {formatted_string}"
+                )
 
-            from_date = serializer.validated_data.get('from_date')
-            end_date = serializer.validated_data.get('end_date')
+            from_date = serializer.validated_data.get("from_date")
+            end_date = serializer.validated_data.get("end_date")
 
             # Check if there are pending vacations in the same day
             pending_requests = Vacation.objects.filter(
@@ -827,11 +850,14 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
                 reason=reason,
                 from_date=from_date,
                 end_date=end_date,
-                actual_days=vacation_days
+                actual_days=vacation_days,
             )
 
             message = f"You have successfully applied for a {reason.capitalize().replace('_', ' ')} vacation for {applying_user.full_name}."
-            if reason == REASON_CHOICES.ANNUAL_LEAVES or reason == REASON_CHOICES.EMERGENCY_LEAVE:
+            if (
+                reason == REASON_CHOICES.ANNUAL_LEAVES
+                or reason == REASON_CHOICES.EMERGENCY_LEAVE
+            ):
                 message = f"You have successfully applied for an {reason.capitalize().replace('_', ' ')} vacation for {applying_user.full_name}."
 
             try:

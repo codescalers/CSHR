@@ -8,7 +8,10 @@ from cshr.utils.redis_functions import (
 from cshr.api.permission import UserIsAuthenticated
 from cshr.api.response import CustomResponse
 from cshr.services.notifications import NotificationsService
-from cshr.serializers.notification import NotificationSerializer, ReadNotificationSerializer
+from cshr.serializers.notification import (
+    NotificationSerializer,
+    ReadNotificationSerializer,
+)
 from cshr.models.notification import Notification
 from cshr.services.users import get_user_by_id
 from cshr.models.users import User
@@ -24,7 +27,10 @@ class BaseNotificationApiView(ListAPIView, GenericAPIView):
         except Exception:
             return http_ensure_redis_error()
         notifications = NotificationsService.filter_based_on_receiver(request.user)
-        return CustomResponse.success(data=NotificationSerializer(notifications, many=True).data)
+        return CustomResponse.success(
+            data=NotificationSerializer(notifications, many=True).data
+        )
+
 
 class ReadNotificationApiView(GenericAPIView):
     permission_classes = (UserIsAuthenticated,)
@@ -45,12 +51,15 @@ class ReadNotificationApiView(GenericAPIView):
             return CustomResponse.not_found(message="Notification is not found.")
         return CustomResponse.success(data=NotificationSerializer(notification).data)
 
+
 class ReadAllNotificationsApiView(GenericAPIView):
     permission_classes = (UserIsAuthenticated,)
 
     def mark_notifications_as_read(self, user: User) -> Notification:
         """Mark all unread notifications for the user as read."""
-        notifications = NotificationsService.filter_based_on_receiver(user).filter(is_read=False)
+        notifications = NotificationsService.filter_based_on_receiver(user).filter(
+            is_read=False
+        )
         notifications.update(is_read=True)
         return NotificationsService.filter_based_on_receiver(user)
 
@@ -63,6 +72,7 @@ class ReadAllNotificationsApiView(GenericAPIView):
         notifications = self.mark_notifications_as_read(user)
         serialized_notifications = NotificationSerializer(notifications, many=True).data
         return CustomResponse.success(data=serialized_notifications)
+
 
 class DeleteAllNotificationsApiView(GenericAPIView):
     permission_classes = (UserIsAuthenticated,)
