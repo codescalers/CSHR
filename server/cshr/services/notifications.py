@@ -149,6 +149,28 @@ class VacationRequestNotification:
             request=request
         )
 
+    def reject_cancel_request(self, vacation_type: str, request: Requests) -> Notification:
+        """
+        Creates a new vacation request notification.
+
+        Args:
+            vacation_type (str): The type of vacation being requested.
+            request (Requests): The request object associated with the vacation.
+
+        Returns:
+            Notification: The created notification object.
+        """
+
+        vacation_type = vacation_type.replace("_", " ").title()
+        self.title = f"{request.approval_user.full_name} has rejected your request to cancel your vacation request."
+        self.body = f"Hello {request.applying_user.first_name}, {request.approval_user.full_name} rejected your request to cancel your vacation request."
+
+        return Notification(
+            title=self.title,
+            body=self.body,
+            request=request
+        )
+
 
 class NotificationsService:
     """

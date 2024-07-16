@@ -267,7 +267,19 @@ export default {
       })
     }
 
-    async function handleCancelReject(){}
+    async function handleCancelReject(){
+      return useAsyncState($api.vacations.reject.cancel(props.vacation.id), [], {
+        onSuccess() {
+          // ctx.emit('status-vacation', 'Reject')
+          // window.connections.ws.value!.send(
+          //   JSON.stringify({
+          //     event: 'reject_request',
+          //     request_id: props.vacation.id
+          //   })
+          // )
+        }
+      })
+    }
 
     async function calculateActualDays() {
       return useAsyncState(

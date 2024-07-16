@@ -95,6 +95,12 @@ class VacationsRejectApi extends ApiClientBase {
       transform: (d) => d.results
     })
   }
+
+  async cancel(id: any) {
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/cancel/${id}`)), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsBalanceApi extends ApiClientBase {
