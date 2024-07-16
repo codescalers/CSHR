@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { useApi } from '@/hooks'
 import { formatDate, getStatusColor } from '@/utils'
@@ -166,7 +166,7 @@ export default {
       return `${_formatDate} - ${time}`
     }
 
-    const selectedNotification = ref<notificationType>()
+    const selectedNotification = ref<notificationType>() as Ref<notificationType>
 
     const handleApprove = (value: string) => {
       const notification = notificationStore.notifications.find(
