@@ -126,7 +126,7 @@ export default {
       if (user.value) {
         if (props.vacation.status == 'pending') {
           // could update if user signed in is the same user applied for vacation
-          if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user || user.value.fullUser.user_type != "User" ) {
+          if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user || user.value.fullUser.user_type != "User" && user.value?.id && props.vacation.approvals.includes(user.value?.id)) {
             return true
           }
           if (
