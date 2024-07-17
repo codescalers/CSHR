@@ -186,7 +186,6 @@ export default {
       return false
     })
 
-
     const couldApprove = computed(() => {
       if (user.value?.id && props.vacation.approvals.includes(user.value?.id)) {
         return true

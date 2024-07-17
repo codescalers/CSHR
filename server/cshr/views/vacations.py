@@ -50,7 +50,6 @@ from cshr.models.vacations import (
     OfficeVacationBalance,
     PublicHoliday,
     Vacation,
-    VacationBalance,
 )
 from cshr.services.vacations import get_vacations_by_user
 from cshr.utils.redis_functions import (
@@ -833,7 +832,7 @@ class CancelVacationApiView(GenericAPIView):
                 reason=vacation.reason,
                 start_date=vacation.from_date,
                 end_date=vacation.end_date,
-                delete=True
+                delete=True,
             )
 
             if balance is not True:
@@ -876,7 +875,8 @@ class CancelVacationApiView(GenericAPIView):
         """
         return (
             user.id != vacation.applying_user.id
-            or vacation.status == STATUS_CHOICES.PENDING or vacation.status == STATUS_CHOICES.CANCEL_APPROVED
+            or vacation.status == STATUS_CHOICES.PENDING
+            or vacation.status == STATUS_CHOICES.CANCEL_APPROVED
         )
 
     def _cancel_vacation(self, user: User, vacation: Vacation):
