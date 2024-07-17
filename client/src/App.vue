@@ -55,9 +55,6 @@ export default defineComponent({
     notifications.addNotification(notification);
 
     if (notification.request.type === "vacation") {
-      const event = normalizeVacation(notification.request as unknown as Api.Vacation);
-      homeEventsStore.vacations.push(notification.request as unknown as Api.Vacation);
-      homeEventsStore.addEvent(event as unknown as Api.Home);
       homeEventsStore.reload = true;
     }
 
@@ -73,23 +70,23 @@ export default defineComponent({
   }
 };
 
-    onMounted(async () => {
-      window.connections = {
-        ws: connection
-      }
+  onMounted(async () => {
+    window.connections = {
+      ws: connection
+    }
 
-      if (window.connections.ws.value) {
-        window.connections.ws.value!.onmessage = (event: MessageEvent) =>
-          handleIncomingMessage(event)
-        window.connections.ws.value!.onerror = (error) => {
-          console.error('WebSocket error:', error)
-        }
-        window.connections.ws.value!.onclose = (event) => {
-          console.log('WebSocket connection closed:', event)
-        }
+    if (window.connections.ws.value) {
+      window.connections.ws.value!.onmessage = (event: MessageEvent) =>
+        handleIncomingMessage(event)
+      window.connections.ws.value!.onerror = (error) => {
+        console.error('WebSocket error:', error)
       }
-    })
-  }
+      window.connections.ws.value!.onclose = (event) => {
+        console.log('WebSocket connection closed:', event)
+      }
+    }
+  })
+}
 })
 </script>
 <style>

@@ -246,6 +246,11 @@ watch(
   async () => {
     if(homeEventsStore.reload){
       homeEventsStore.events = [];
+      homeEventsStore.vacations = [];
+      homeEventsStore.meetings = [];
+      homeEventsStore.userEvents = [];
+      homeEventsStore.birthdays = [];
+      homeEventsStore.holidays = [];
       await loadEvents();
       homeEventsStore.reload = false
     }

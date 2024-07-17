@@ -239,16 +239,23 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
         vacation = await _get_vacation_by_id(request_id)
         applying_user = await _get_vacation_applying_user(vacation)
-        notification = await _push_approve_notification_to_applying_user(vacation)
-        notification_serializer = await get_notification_serializer(notification)
-        notification_serializer["request"]["from_date"] = notification_serializer[
-            "request"
-        ]["from_date"].isoformat()
-        notification_serializer["request"]["end_date"] = notification_serializer[
-            "request"
-        ]["end_date"].isoformat()
         self.group_name = f"room_{applying_user.id}"
-        await self.send_to_group_name(notification_serializer, self.group_name)
+        notification = await _get_request_notification_for_receiver(
+            request_id, applying_user.id
+        )
+
+        if notification is not None:
+            notification_serializer = await get_notification_serializer(
+                notification
+            )
+            notification_serializer["request"]["from_date"] = (
+                notification_serializer["request"]["from_date"].isoformat()
+            )
+            notification_serializer["request"]["end_date"] = (
+                notification_serializer["request"]["end_date"].isoformat()
+            )
+            await self.send_to_group_name(notification_serializer, self.group_name)
+
 
     async def reject_request(self, data: Dict):
         request_id = data.get("request_id")
