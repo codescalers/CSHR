@@ -114,9 +114,38 @@ export default {
     const form = ref()
     const disabled = ref<boolean>(true)
     const user = ApiClientBase.user
-    const leaveReasons = ref<Api.LeaveReason[]>([])
+    const leaveReasons = ref<Api.LeaveReason[]>([
+      {
+        name: `Emergency Leaves`,
+        reason: 'emergency_leaves'
+      },
+      {
+        name: `Sick Leaves`,
+        reason: 'sick_leaves'
+      },
+      {
+        name: `Annual Leaves`,
+        reason: 'annual_leaves'
+      },
+      {
+        name: `Unpaid`,
+        reason: 'unpaid'
+      },
+      {
+        name: `Compensation`,
+        reason: 'compensation'
+      },
+      {
+        name: `Leave Excuse`,
+        reason: 'leave_excuses'
+      }
+    ])
 
     onMounted(async() => {
+      actualDays.value = (await calculateActualDays()).state.value;
+    })
+
+    watch([start_date, end_date], async() => {
       actualDays.value = (await calculateActualDays()).state.value;
     })
   
@@ -179,13 +208,12 @@ export default {
       return false
     })
 
-    watch([leaveReason, startDate, endDate], ([newLeaveReason, newStartDate, newEndDate], [oldLeaveReason, oldStartDate, oldEndDate]) => {
+    watch([leaveReason, start_date, end_date], ([newLeaveReason, newStartDate, newEndDate], [oldLeaveReason, oldStartDate, oldEndDate]) => {
       if (newLeaveReason.name !== oldLeaveReason.name || newStartDate !== oldStartDate || newEndDate !== oldEndDate) {
         disabled.value = false;
         return
       }
       disabled.value = true;
-
     });
 
     function validateEndDate(value: any) {
