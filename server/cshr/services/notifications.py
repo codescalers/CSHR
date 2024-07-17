@@ -1,7 +1,7 @@
 from typing import List, Union
 from cshr.models.notification import Notification
 from cshr.models.users import GENDER_TYPE, User
-from cshr.models.requests import Requests
+from cshr.models.requests import STATUS_CHOICES, Requests
 
 
 class VacationRequestNotification:
@@ -14,8 +14,9 @@ class VacationRequestNotification:
         title (str): The title of the notification.
     """
 
-    def __init__(self, sender: User):
+    def __init__(self, sender: User, status: STATUS_CHOICES):
         self.sender = sender
+        self.request_status = status
         self.body = None
         self.title = None
 
@@ -35,7 +36,7 @@ class VacationRequestNotification:
             f"A new vacation request has been submitted by {self.sender.full_name}."
         )
         self.body = f"{self.sender.full_name} requested a new {vacation_type} vacation."
-        return Notification(title=self.title, body=self.body, request=request)
+        return Notification(title=self.title, body=self.body, request=request, request_status=self.request_status)
 
     def approve_vacation(self, vacation_type: str, request: Requests) -> Notification:
         """
@@ -53,7 +54,7 @@ class VacationRequestNotification:
         self.title = f"Your {vacation_type} request has been approved by {self.sender.full_name}."
         self.body = f"{self.sender.full_name} approved your {vacation_type} request."
 
-        return Notification(title=self.title, body=self.body, request=request)
+        return Notification(title=self.title, body=self.body, request=request, request_status=self.request_status)
 
     def reject_vacation(self, vacation_type: str, request: Requests) -> Notification:
         """
@@ -71,7 +72,7 @@ class VacationRequestNotification:
         self.title = f"Your {vacation_type} request has been rejected by {self.sender.full_name}."
         self.body = f"{self.sender.full_name} rejected your {vacation_type} request."
 
-        return Notification(title=self.title, body=self.body, request=request)
+        return Notification(title=self.title, body=self.body, request=request, request_status=self.request_status)
 
     def cancel(self, vacation_type: str, request: Requests) -> Notification:
         """
@@ -89,7 +90,7 @@ class VacationRequestNotification:
         self.title = f"{self.sender.full_name} canceled the {request.applying_user.full_name}'s {vacation_type} request."
         self.body = self.title
 
-        return Notification(title=self.title, body=self.body, request=request)
+        return Notification(title=self.title, body=self.body, request=request, request_status=self.request_status)
 
     def cancel_request(self, vacation_type: str, request: Requests) -> Notification:
         """
@@ -108,7 +109,7 @@ class VacationRequestNotification:
         self.title = f"Approval Request for Cancellation of {self.sender.full_name}'s {vacation_type} request."
         self.body = f"{self.sender.full_name} has requested your approval for the cancellation of {pronouns} {vacation_type} request."
 
-        return Notification(title=self.title, body=self.body, request=request)
+        return Notification(title=self.title, body=self.body, request=request, request_status=self.request_status)
 
     def approve_cancel_request(
         self, vacation_type: str, request: Requests
@@ -128,7 +129,7 @@ class VacationRequestNotification:
         self.title = f"{request.approval_user.full_name} has approved your request to cancel your vacation request."
         self.body = f"Hello {request.applying_user.first_name}, {request.approval_user.full_name} approved your request to cancel your vacation request."
 
-        return Notification(title=self.title, body=self.body, request=request)
+        return Notification(title=self.title, body=self.body, request=request, request_status=self.request_status)
 
     def reject_cancel_request(
         self, vacation_type: str, request: Requests
@@ -148,7 +149,7 @@ class VacationRequestNotification:
         self.title = f"{request.approval_user.full_name} has rejected your request to cancel your vacation request."
         self.body = f"Hello {request.applying_user.first_name}, {request.approval_user.full_name} rejected your request to cancel your vacation request."
 
-        return Notification(title=self.title, body=self.body, request=request)
+        return Notification(title=self.title, body=self.body, request=request, request_status=self.request_status)
 
 
 class NotificationsService:
@@ -161,10 +162,11 @@ class NotificationsService:
         vacations (VacationRequestNotification): An instance of the vacation request notification handler.
     """
 
-    def __init__(self, sender: User, receiver: User):
+    def __init__(self, sender: User, receiver: User, status: STATUS_CHOICES):
         self.sender = sender
         self.receiver = receiver
-        self.vacations = VacationRequestNotification(self.sender)
+        self.request_status = status
+        self.vacations = VacationRequestNotification(sender=self.sender, status=self.request_status)
 
     def push(self, notification: Notification) -> Notification:
         """
@@ -191,6 +193,7 @@ class NotificationsService:
             sender=self.sender,
             receiver=self.receiver,
             request=notification.request,
+            request_status=notification.request_status,
         )
 
     def get_all(self) -> List[Notification]:

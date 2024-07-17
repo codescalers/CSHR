@@ -220,6 +220,12 @@ export default {
       return useAsyncState($api.vacations.requestToCancel(props.vacation.id), [] as unknown as Api.Vacation, {
         onSuccess(res: Api.Vacation) {
           ctx.emit('status-vacation', res.status)
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'request_to_cancel_request',
+              request_id: props.vacation.id
+            })
+          )
         }
       })
     }

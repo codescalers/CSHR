@@ -257,7 +257,12 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 actual_days=vacation_days,
             )
 
-            notification = NotificationsService(sender=applying_user, receiver=None)
+            notification = NotificationsService(
+                sender=applying_user,
+                receiver=None,
+                status=STATUS_CHOICES.PENDING
+            )
+
             lead_ids = build_user_reporting_to_hierarchy(applying_user)
             request = get_request_by_id(vacation.id)
 
@@ -768,7 +773,9 @@ class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
         # Push notification to leads
         lead_ids = build_user_reporting_to_hierarchy(vacation.applying_user)
         notification = NotificationsService(
-            sender=vacation.applying_user, receiver=None
+            sender=vacation.applying_user,
+            receiver=None,
+            status=STATUS_CHOICES.REQUESTED_TO_CANCEL,
         )
         request = get_request_by_id(vacation.id)
 
@@ -892,7 +899,9 @@ class CancelVacationApiView(GenericAPIView):
         vacation.save()
 
         notification_service = NotificationsService(
-            sender=vacation.approval_user, receiver=vacation.applying_user
+            sender=vacation.approval_user,
+            receiver=vacation.applying_user,
+            status=STATUS_CHOICES.CANCELED,
         )
         notification = notification_service.vacations.cancel(vacation.reason, request)
         notification_service.push(notification)
@@ -953,7 +962,9 @@ class ApproveCancelVacationRequestApiView(GenericAPIView):
         request = get_request_by_id(vacation.id)
 
         notification_service = NotificationsService(
-            sender=vacation.approval_user, receiver=vacation.applying_user
+            sender=vacation.approval_user,
+            receiver=vacation.applying_user,
+            status=STATUS_CHOICES.CANCEL_APPROVED,
         )
         notification = notification_service.vacations.approve_cancel_request(
             vacation.reason, request
@@ -1012,7 +1023,9 @@ class RejectCancelVacationRequestApiView(GenericAPIView):
         request = get_request_by_id(vacation.id)
 
         notification_service = NotificationsService(
-            sender=vacation.approval_user, receiver=vacation.applying_user
+            sender=vacation.approval_user,
+            receiver=vacation.applying_user,
+            status=STATUS_CHOICES.CANCEL_REJECTED,
         )
         notification = notification_service.vacations.reject_cancel_request(
             vacation.reason, request
@@ -1071,7 +1084,9 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
         request = get_request_by_id(vacation.id)
 
         notification_service = NotificationsService(
-            sender=vacation.approval_user, receiver=vacation.applying_user
+            sender=vacation.approval_user,
+            receiver=vacation.applying_user,
+            status=STATUS_CHOICES.REJECTED,
         )
         notification = notification_service.vacations.reject_vacation(
             vacation.reason, request
@@ -1142,7 +1157,9 @@ class VacationsAcceptApiView(GenericAPIView):
         request = get_request_by_id(vacation.id)
 
         notification_service = NotificationsService(
-            sender=vacation.approval_user, receiver=vacation.applying_user
+            sender=vacation.approval_user,
+            receiver=vacation.applying_user,
+            status=STATUS_CHOICES.APPROVED,
         )
         notification = notification_service.vacations.approve_vacation(
             vacation.reason, request
