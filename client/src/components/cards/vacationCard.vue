@@ -213,6 +213,12 @@ export default {
       return useAsyncState($api.vacations.cancel(props.vacation.id), [], {
         onSuccess() {
           ctx.emit('cancel-vacation')
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'cancel_request',
+              request_id: props.vacation.id
+            })
+          )
         }
       })
     }
@@ -263,27 +269,26 @@ export default {
       return useAsyncState($api.vacations.approve.cancel(props.vacation.id), [] as unknown as Api.Vacation, {
         onSuccess(res: Api.Vacation) {
           ctx.emit('status-vacation', res.status)
-          // ctx.emit('status-vacation', 'Reject')
-          // window.connections.ws.value!.send(
-          //   JSON.stringify({
-          //     event: 'reject_request',
-          //     request_id: props.vacation.id
-          //   })
-          // )
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'approve_cancel_request',
+              request_id: props.vacation.id
+            })
+          )
         }
       })
     }
 
     async function handleCancelReject(){
-      return useAsyncState($api.vacations.reject.cancel(props.vacation.id), [], {
-        onSuccess() {
-          // ctx.emit('status-vacation', 'Reject')
-          // window.connections.ws.value!.send(
-          //   JSON.stringify({
-          //     event: 'reject_request',
-          //     request_id: props.vacation.id
-          //   })
-          // )
+      return useAsyncState($api.vacations.reject.cancel(props.vacation.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          ctx.emit('status-vacation', res.status)
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'reject_cancel_request',
+              request_id: props.vacation.id
+            })
+          )
         }
       })
     }

@@ -350,7 +350,7 @@ async function createVacation(vacation: Api.Vacation) {
     window.connections.ws.value!.send(
       JSON.stringify({
         event: 'post_new_vacation_request',
-        vacation
+        request_id: vacation.id
       })
     )
   }
