@@ -227,8 +227,6 @@ const updateEventCalendarType = (event: any) => {
     homeEventsStore.addEvent(_event)
     homeEventsStore.userEvents.push(event)
   }
-
-  filteredEvents.value = [...homeEventsStore.events]
 }
 
 const filterEvents = () => {
@@ -244,9 +242,13 @@ const filterEvents = () => {
 }
 
 watch(
-  homeEventsStore.events,
-  () => {
-filteredEvents.value = [...homeEventsStore.events]
+  () => homeEventsStore.reload,
+  async () => {
+    if(homeEventsStore.reload){
+      homeEventsStore.events = [];
+      await loadEvents();
+      homeEventsStore.reload = false
+    }
   },
   { deep: true }
 )
@@ -367,24 +369,25 @@ async function createEvent(event: Api.Event) {
   closeDialog(CalendarEventSelection.NewEvent)
 }
 
-async function updateVacationStatus(data: string) {
+async function updateVacationStatus(status: Api.RequestStatus) {
   const vacationIndex = homeEventsStore.vacations.findIndex(
     (vacation) => vacation.id === selectedEvent.value!.id
   )
-  if (vacationIndex !== -1) {
-    if (data === 'Approve') {
-      homeEventsStore.vacations[vacationIndex].status = 'approved'
-    } else;
-    if (data === 'Reject') {
-      homeEventsStore.vacations[vacationIndex].status = 'rejected'
-      homeEventsStore.vacations = homeEventsStore.vacations.filter(
-        (vacation) => vacation.id !== selectedEvent.value?.id
-      )
-      filteredEvents.value = filteredEvents.value.filter(
-        (event) => event.id.toString() !== `vacation${selectedEvent.value?.id}`
-      )
-    }
+
+  homeEventsStore.vacations[vacationIndex].status = status
+  if (status === 'rejected') {
+    // Remove it from the calendar.
+    homeEventsStore.vacations = homeEventsStore.vacations.filter(
+      (vacation) => vacation.id !== selectedEvent.value?.id
+    )
+
+    filteredEvents.value = filteredEvents.value.filter(
+      (event) => event.id.toString() !== `vacation${selectedEvent.value?.id}`
+    )
+
+    homeEventsStore.vacations = homeEventsStore.vacations.splice(vacationIndex);
   }
+
   closeDialog(CalendarEventSelection.Vacation)
 }
 

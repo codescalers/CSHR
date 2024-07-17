@@ -263,7 +263,7 @@ export module Api {
   }
 
   export interface Home {
-    id: number
+    id: string
     type: string
     className: string
     eventName: string

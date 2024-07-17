@@ -470,72 +470,6 @@ class VacationsAcceptApiView(GenericAPIView):
                 message="User is not found", status_code=404
             )
 
-
-class VacationsRejectApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsSupervisor | IsAdmin]
-
-    def put(self, request: Request, id: str, format=None) -> Response:
-        vacation = get_vacation_by_id(id=id)
-        if vacation is None:
-            return CustomResponse.not_found(message="Vacation not found")
-
-        office_admin = (
-            request.user.user_type == USER_TYPE.ADMIN
-            and request.user.location == vacation.applying_user.location
-        )
-
-        if not office_admin:
-            leaders = build_user_reporting_to_hierarchy(vacation.applying_user)
-            is_reporting_to = request.user.id in leaders
-            if not is_reporting_to:
-                return CustomResponse.unauthorized(
-                    message=(
-                        "You don't have the necessary permissions to perform this action. "
-                        "Only supervisors and administrators working in the same office are authorized to do so."
-                    )
-                )
-
-        if vacation.status != STATUS_CHOICES.PENDING:
-            return CustomResponse.bad_request(
-                message=f"The vacation status is not pending, it's {vacation.status}."
-            )
-
-        current_user: User = get_user_by_id(request.user.id)
-        vacation.approval_user = current_user
-        vacation.status = STATUS_CHOICES.REJECTED
-
-        comment: Dict = {
-            "user": TeamSerializer(request.user).data,
-            "comment": f"{request.user.first_name} rejected your request",
-            "commented_at": f"{datetime.now().date()} | {datetime.now().hour}:{datetime.now().minute}",
-        }
-
-        update_vacation_change_log(vacation, comment)
-        vacation.save()
-
-        event_id = id
-
-        try:
-            ping_redis()
-        except Exception:
-            return http_ensure_redis_error()
-
-        bool1 = set_notification_reply_redis(vacation, "rejected", event_id)
-        msg = get_vacation_reply_email_template(current_user, vacation, event_id)
-        bool2 = send_email_for_reply.delay(
-            current_user.id, vacation.applying_user.id, msg, "Vacation reply"
-        )
-
-        if bool1 and bool2:
-            return CustomResponse.success(
-                message="vacation request rejected", status_code=202
-            )
-        else:
-            return CustomResponse.not_found(
-                message="user is not found", status_code=404
-            )
-
-
 class VacationCommentsAPIView(GenericAPIView):
     """Use this endpoint to add a comment as a user."""
 
@@ -926,7 +860,7 @@ class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
             notification.push(_notification)
 
         return CustomResponse.success(
-            message="vacation request rejected",
+            message="Your vacation request has been requested to cancel Please wait for approval.",
             status_code=202,
             data=VacationsSerializer(vacation).data,
         )
@@ -1169,3 +1103,62 @@ class RejectCancelVacationRequestApiView(GenericAPIView):
             status_code=202,
             data=VacationsSerializer(vacation).data,
         )
+
+class VacationsRejectApiView(ListAPIView, GenericAPIView):
+    permission_classes = [IsSupervisor | IsAdmin]
+
+    def put(self, request: Request, id: str, format=None) -> Response:
+        """
+        Handle the PUT request to reject the vacation cancel request.
+
+        Parameters:
+        request (Request): The request object containing user data.
+        id (str): The ID of the vacation to cancel.
+
+        Returns:
+        Response: Custom response indicating success or failure.
+        """
+        vacation = get_vacation_by_id(id=id)
+        if vacation is None:
+            return CustomResponse.not_found(message="Vacation not found")
+
+        lead_ids: List[int] = build_user_reporting_to_hierarchy(vacation.applying_user)
+        admin_ids = filter_admins_same_office_of_the_user(request.user).values_list(
+            "id", flat=True
+        )
+        could_reject: List[int] = lead_ids + list(admin_ids)
+
+        if not request.user.id == request.user.id in could_reject:
+            return CustomResponse.unauthorized(
+                message=(
+                    "You don't have the necessary permissions to perform this action. "
+                    "Only the office admin and your team leads are authorized to reject your cancelation request."
+                )
+            )
+
+        if not vacation.status == STATUS_CHOICES.PENDING:
+            status = vacation.status.title().replace("_", " ")
+            return CustomResponse.unauthorized(
+                message=f"You are not allowed to perform this action, the request status is '{status}'."
+            )
+
+        current_user = get_user_by_id(request.user.id)
+        vacation.approval_user = current_user
+        vacation.status = STATUS_CHOICES.REJECTED
+        vacation.save()
+        request = get_request_by_id(vacation.id)
+
+        notification_service = NotificationsService(
+            sender=vacation.approval_user, receiver=vacation.applying_user
+        )
+        notification = notification_service.vacations.reject_cancel_request(
+            vacation.reason, request
+        )
+        notification_service.push(notification)
+
+        return CustomResponse.success(
+            message="The vacation request has been canceled. The user who submitted the request will be notified.",
+            status_code=202,
+            data=VacationsSerializer(vacation).data,
+        )
+

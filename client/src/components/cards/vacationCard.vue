@@ -110,7 +110,7 @@ export default {
     'close-dialog': (item: Boolean) => item,
     'update-vacation': (item: any) => item,
     'cancel-vacation': () => true,
-    'status-vacation': (item: string) => item
+    'status-vacation': (item: Api.RequestStatus) => item
   },
 
   setup(props, ctx) {
@@ -217,18 +217,17 @@ export default {
     }
 
     async function requestToCancel() {
-      return useAsyncState($api.vacations.requestToCancel(props.vacation.id), [], {
-        onSuccess(res) {
-          console.log('res: ', res)
-          // ctx.emit('delete-vacation')
+      return useAsyncState($api.vacations.requestToCancel(props.vacation.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          ctx.emit('status-vacation', res.status)
         }
       })
     }
 
     async function handleApprove() {
-      return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
-        onSuccess() {
-          ctx.emit('status-vacation', 'Approve')
+      return useAsyncState($api.vacations.approve.update(props.vacation.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          ctx.emit('status-vacation', res.status)
           window.connections.ws.value!.send(
             JSON.stringify({
               event: 'approve_request',
@@ -240,9 +239,9 @@ export default {
     }
 
     async function handleReject() {
-      return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
-        onSuccess() {
-          ctx.emit('status-vacation', 'Reject')
+      return useAsyncState($api.vacations.reject.update(props.vacation.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          ctx.emit('status-vacation', res.status)
           window.connections.ws.value!.send(
             JSON.stringify({
               event: 'reject_request',
@@ -254,8 +253,9 @@ export default {
     }
 
     async function handleCancelApprove(){
-      return useAsyncState($api.vacations.approve.cancel(props.vacation.id), [], {
-        onSuccess() {
+      return useAsyncState($api.vacations.approve.cancel(props.vacation.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          ctx.emit('status-vacation', res.status)
           // ctx.emit('status-vacation', 'Reject')
           // window.connections.ws.value!.send(
           //   JSON.stringify({

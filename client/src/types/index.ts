@@ -41,7 +41,7 @@ export interface notificationType {
   request: {
     id: number 
     reason: string
-    status: string
+    status: Api.RequestStatus;
     type: string
     applying_user: Api.User;
     approval_user: Api.User;
