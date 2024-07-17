@@ -3,7 +3,7 @@ import moment from 'moment'
 import type { Api } from "@/types"
 import type { JWTokenObject } from "@/types"
 import type { ApiClient } from '@/clients/api'
-import { ref } from 'vue'
+import { capitalize, ref } from 'vue'
 
 export async function resolve<T>(promise: Promise<T>): Promise<[T, any]> {
   try {
@@ -144,23 +144,29 @@ export function normalizeMeeting(m: Api.Meeting): any {
     allDay: true
   }
 }
-export function getStatusColor(status: string) {
+export function getStatusColor(status: Api.RequestStatus) {
   switch (status) {
-    case 'vacations':
     case 'approved':
       return 'green'
-
-    case 'hr_letters':
-    case 'pending':
-      return 'orange'
-
     case 'rejected':
       return 'red'
-
+    case 'canceled':
+      return 'red'
+    case 'requested_to_cancel':
+      return 'orange'
+    case 'cancel_approved':
+      return 'green'
+    case 'cancel_rejected':
+      return 'red'
     default:
       return 'grey'
   }
 }
+
+export function formatRequestStatus(status: Api.RequestStatus) {
+  return capitalize(status).replace('_', ' ').replace('_', ' ')
+}
+
 export function decodeAccessToken(token: string): JWTokenObject {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');

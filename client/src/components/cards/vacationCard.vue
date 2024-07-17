@@ -42,7 +42,7 @@
             <v-col cols="6" class="d-flex items-center">
               <p>
                 Status :
-                {{ capitalize(vacation.status).replace('_', ' ').replace('_', ' ') }}
+                <span :style="{color: getStatusColor(vacation.status)}">{{ formatRequestStatus(vacation.status) }}</span>
               </p>
             </v-col>
 
@@ -97,6 +97,7 @@ import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
 import type { PropType } from 'vue';
+import { formatRequestStatus, getStatusColor } from '@/utils';
 
 export default {
   name: 'vacationCard',
@@ -344,6 +345,8 @@ export default {
       capitalize,
       handleCancelApprove,
       handleCancelReject,
+      formatRequestStatus,
+      getStatusColor
     }
   }
 }

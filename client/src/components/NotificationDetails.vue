@@ -8,7 +8,7 @@
         <v-col class="d-flex justify-end pb-0">
           <v-card-subtitle>
             <v-chip :color="getStatusColor(vacationStatus)">
-              {{ vacationStatus }}
+              {{ formatRequestStatus(vacationStatus) }}
             </v-chip>
           </v-card-subtitle>
         </v-col>
@@ -68,7 +68,7 @@
 
 <script lang="ts">
 import { computed, ref, type PropType } from 'vue'
-import { getStatusColor } from '@/utils'
+import { getStatusColor, formatRequestStatus } from '@/utils'
 import type { notificationType } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
 import { useAsyncState } from '@vueuse/core'
@@ -138,7 +138,8 @@ export default {
       closeDialog,
       getStatusColor,
       handleApprove,
-      handleReject
+      handleReject,
+      formatRequestStatus,
     }
   }
 }
