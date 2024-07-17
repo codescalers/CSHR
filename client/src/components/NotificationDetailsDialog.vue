@@ -12,30 +12,45 @@
         </VCardText>
       </VCard>
     </div>
-
-    <NotificationDetails
-      v-else-if="selected && notification.state.value"
+    <template v-else-if="selected && notification.state.value">
+      <NotificationDetails
+      v-if="couldAccessNotification"
       :modelValue.="$props.modelValue"
       :sections="getSections(notification.state.value)"
       :vacation="
-        notification.state.value.request.type === 'vacations' ? notification.state.value.request : undefined
-      "
-      @close="closeDialog"
-      @update:approve="handleApprove"
-      @update:reject="handleReject"
-      @update:approval-user="handleApprovalUser"
-    />
+          notification.state.value.request.type === 'vacation' ? notification.state.value.request : undefined
+        "
+        @close="closeDialog"
+        @update:approve="handleApprove"
+        @update:reject="handleReject"
+        @update:approval-user="handleApprovalUser"
+      />
+      <div v-else class="not-allowed">
+        <v-container>
+          <v-toolbar type="warning" class="pl-5" height="40">
+            <v-icon class="mr-2 d-flex align-center" color="warning">mdi-alert</v-icon>
+            <p class="d-flex align-center" style="font-size: 18px;">Admin Area</p>
+          </v-toolbar>
+          <v-card class="pa-3">
+            <v-card-text>
+              <strong>You are not allowed to access this content.</strong>
+            </v-card-text>
+          </v-card>
+        </v-container>
+      </div>
+    </template>
   </VDialog>
 </template>
 
 <script lang="ts">
 import { useRouteQuery } from '@vueuse/router'
-import { watch, type PropType, capitalize, ref } from 'vue'
+import { watch, type PropType, capitalize, ref, reactive, computed } from 'vue'
 import type { Api, notificationType } from '@/types'
 import { useAsyncState } from '@vueuse/core'
 import { useApi } from '@/hooks'
 
 import NotificationDetails from './NotificationDetails.vue'
+import { useNotificationStore } from '@/stores/notifications'
 
 export default {
   name: 'NotificationDetailsDialog',
@@ -59,11 +74,16 @@ export default {
     const applyingUser = ref<Api.User | null>()
     const approvalUser = ref<Api.User | null>()
     const selected = useRouteQuery<undefined | string>('selected-' + props.routeQuery, undefined)
+    const notificationsStore = useNotificationStore()
+    const notifications = computed(() => notificationsStore.notifications)
+    const couldAccessNotification = computed(() => {
+      return notifications.value.filter(_notification => _notification.id === notification.state.value?.id).length
+    })
 
     const notification = useAsyncState(
       async (selected?: string) => {
         const [type, id] = selected?.split('|') ?? []
-        if (!isNaN(+id) && ['hr_letters', 'vacations'].includes(type)) {
+        if (!isNaN(+id) && ['hr_letters', 'vacation'].includes(type)) {
           const response = await $api.notifications.getNotification(+id)
           applyingUser.value = response.request.applying_user
           approvalUser.value = response.request.approval_user
@@ -100,7 +120,7 @@ export default {
     )
 
     function getSections(data: any) {
-      if (data.request.type === 'vacations')
+      if (data.request.type === 'vacation')
         return [
           {
             title: 'Request Details',
@@ -181,8 +201,16 @@ export default {
       capitalize,
       handleApprove,
       handleReject,
-      handleApprovalUser
+      handleApprovalUser,
+      couldAccessNotification,
     }
   }
 }
 </script>
+
+<style>
+.not-allowed{
+  width: 550px !important;
+  margin: 0 auto;
+}
+</style>

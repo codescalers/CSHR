@@ -53,8 +53,7 @@ export default defineComponent({
         const notification: notificationType = data as notificationType
         const homeEventsStore = useHomeEventsStore()
         notifications.addNotification(notification)
-        if (notification.request.type === "vacations") {
-          notification.request.type = "vacation";
+        if (notification.request.type === "vacation") {
           homeEventsStore.vacations.push(notification.request as unknown as Api.Vacation)
           const event = normalizeVacation(notification.request as unknown as Api.Vacation)
           homeEventsStore.addNewEvents(event as unknown as Api.Home);
