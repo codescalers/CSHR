@@ -39,7 +39,7 @@ from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from cshr.api.response import CustomResponse
-from datetime import datetime
+from datetime import datetime, timedelta
 from cshr.utils.update_change_log import (
     update_vacation_change_log,
 )
@@ -189,12 +189,14 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             applying_user = request.user
 
             # Check if there are pending vacations in the same day.
-            pending_requests = Vacation.objects.filter(
-                from_date__day=start_date.day,
-                end_date__day=end_date.day,
-                status=STATUS_CHOICES.PENDING,
-                applying_user=applying_user,
-            )
+            date_range = [start_date + timedelta(days=x) for x in range((end_date - start_date).days + 1)]
+            for date in date_range:
+                pending_requests = Vacation.objects.filter(
+                    from_date__lte=date,
+                    end_date__gte=date,
+                    status=STATUS_CHOICES.PENDING,
+                    applying_user=applying_user,
+                )
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
                     message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
@@ -379,11 +381,13 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             end_date = serializer.validated_data.get("end_date")
 
             # Check if there are pending vacations in the same day
-            pending_requests = Vacation.objects.filter(
-                from_date__day=start_date.day,
-                end_date__day=end_date.day,
-                status=STATUS_CHOICES.PENDING,
-            )
+            date_range = [start_date + timedelta(days=x) for x in range((end_date - start_date).days + 1)]
+            for date in date_range:
+                pending_requests = Vacation.objects.filter(
+                    from_date__lte=date,
+                    end_date__gte=date,
+                    status=STATUS_CHOICES.PENDING,
+                )
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
                     message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
