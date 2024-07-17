@@ -245,17 +245,14 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
 
         if notification is not None:
-            notification_serializer = await get_notification_serializer(
-                notification
-            )
-            notification_serializer["request"]["from_date"] = (
-                notification_serializer["request"]["from_date"].isoformat()
-            )
-            notification_serializer["request"]["end_date"] = (
-                notification_serializer["request"]["end_date"].isoformat()
-            )
+            notification_serializer = await get_notification_serializer(notification)
+            notification_serializer["request"]["from_date"] = notification_serializer[
+                "request"
+            ]["from_date"].isoformat()
+            notification_serializer["request"]["end_date"] = notification_serializer[
+                "request"
+            ]["end_date"].isoformat()
             await self.send_to_group_name(notification_serializer, self.group_name)
-
 
     async def reject_request(self, data: Dict):
         request_id = data.get("request_id")
@@ -273,13 +270,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
 
         if notification is not None:
-            notification_serializer = await get_notification_serializer(
-                notification
-            )
-            notification_serializer["request"]["from_date"] = (
-                notification_serializer["request"]["from_date"].isoformat()
-            )
-            notification_serializer["request"]["end_date"] = (
-                notification_serializer["request"]["end_date"].isoformat()
-            )
+            notification_serializer = await get_notification_serializer(notification)
+            notification_serializer["request"]["from_date"] = notification_serializer[
+                "request"
+            ]["from_date"].isoformat()
+            notification_serializer["request"]["end_date"] = notification_serializer[
+                "request"
+            ]["end_date"].isoformat()
             await self.send_to_group_name(notification_serializer, self.group_name)

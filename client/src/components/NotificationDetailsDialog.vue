@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import { useRouteQuery } from '@vueuse/router'
-import { watch, type PropType, capitalize, ref, reactive, computed } from 'vue'
+import { watch, type PropType, capitalize, ref, computed } from 'vue'
 import type { Api, notificationType } from '@/types'
 import { useAsyncState } from '@vueuse/core'
 import { useApi } from '@/hooks'

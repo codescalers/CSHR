@@ -44,13 +44,7 @@ from datetime import datetime
 from cshr.utils.update_change_log import (
     update_vacation_change_log,
 )
-from cshr.utils.email_messages_templates import (
-    # get_vacation_request_email_template,
-    get_vacation_reply_email_template,
-)
 
-# from cshr.celery.send_email import send_email_for_request
-from cshr.celery.send_email import send_email_for_reply
 from cshr.models.vacations import (
     REASON_CHOICES,
     OfficeVacationBalance,
@@ -62,7 +56,6 @@ from cshr.utils.redis_functions import (
     http_ensure_redis_error,
     notification_commented,
     ping_redis,
-    set_notification_reply_redis,
 )
 from cshr.utils.wrappers import wrap_vacation_request
 from cshr.services.notifications import NotificationsService
@@ -396,6 +389,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
         return CustomResponse.bad_request(
             data=serializer.errors, message="Vacation Failed to Update"
         )
+
 
 class VacationCommentsAPIView(GenericAPIView):
     """Use this endpoint to add a comment as a user."""
@@ -1031,6 +1025,7 @@ class RejectCancelVacationRequestApiView(GenericAPIView):
             data=VacationsSerializer(vacation).data,
         )
 
+
 class VacationsRejectApiView(ListAPIView, GenericAPIView):
     permission_classes = [IsSupervisor | IsAdmin]
 
@@ -1088,6 +1083,7 @@ class VacationsRejectApiView(ListAPIView, GenericAPIView):
             status_code=202,
             data=VacationsSerializer(vacation).data,
         )
+
 
 class VacationsAcceptApiView(GenericAPIView):
     permission_classes = [IsSupervisor | IsAdmin]

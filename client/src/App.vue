@@ -11,9 +11,8 @@ import { useApi } from '@/hooks'
 import SideDrawer from './components/SideDrawer.vue'
 import { useWSConnectionStore } from './stores/WSConnection'
 import { useNotificationStore } from './stores/notifications'
-import type { Api, notificationType, WSErrorType } from './types'
+import type { notificationType, WSErrorType } from './types'
 import { useHomeEventsStore } from './stores/homeEvents'
-import { normalizeVacation } from './utils'
 
 export default defineComponent({
   name: 'App',
