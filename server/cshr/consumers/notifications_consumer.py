@@ -6,11 +6,10 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
 from cshr.models.users import User
-from cshr.services.users import build_user_reporting_to_hierarchy, get_user_by_id
-from cshr.services.notifications import NotificationsService
+from cshr.services.users import build_user_reporting_to_hierarchy
 from cshr.models.vacations import Vacation
 from cshr.services.vacations import get_vacation_by_id
-from cshr.models.requests import STATUS_CHOICES, Requests
+from cshr.models.requests import STATUS_CHOICES
 from cshr.models.notification import Notification
 from cshr.serializers.notification import NotificationSerializer
 
@@ -60,10 +59,11 @@ def _get_request_notification_for_receiver_based_on_status(
         return Notification.objects.get(
             request__id=int(request_id),
             receiver__id=int(receiver_id),
-            request_status= status
+            request_status=status,
         )
     except Notification.DoesNotExist:
         return None
+
 
 @database_sync_to_async
 def get_notification_serializer(notification: Notification) -> Dict:
@@ -182,9 +182,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         for receiver_id in receivers_ids:
             self.group_name = f"room_{receiver_id}"
             notification = await _get_request_notification_for_receiver_based_on_status(
-                vacation_id,
-                receiver_id,
-                STATUS_CHOICES.PENDING
+                vacation_id, receiver_id, STATUS_CHOICES.PENDING
             )
             if notification is not None:
                 notification_serializer = await get_notification_serializer(
@@ -223,9 +221,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         for receiver_id in receivers_ids:
             self.group_name = f"room_{receiver_id}"
             notification = await _get_request_notification_for_receiver_based_on_status(
-                request_id,
-                receiver_id,
-                STATUS_CHOICES.REQUESTED_TO_CANCEL
+                request_id, receiver_id, STATUS_CHOICES.REQUESTED_TO_CANCEL
             )
             print("notification", notification)
             if notification is not None:
@@ -279,9 +275,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         applying_user = await _get_vacation_applying_user(vacation)
         self.group_name = f"room_{applying_user.id}"
         notification = await _get_request_notification_for_receiver_based_on_status(
-            request_id,
-            applying_user.id,
-            STATUS_CHOICES.REJECTED
+            request_id, applying_user.id, STATUS_CHOICES.REJECTED
         )
 
         if notification is not None:

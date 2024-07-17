@@ -258,9 +258,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             )
 
             notification = NotificationsService(
-                sender=applying_user,
-                receiver=None,
-                status=STATUS_CHOICES.PENDING
+                sender=applying_user, receiver=None, status=STATUS_CHOICES.PENDING
             )
 
             lead_ids = build_user_reporting_to_hierarchy(applying_user)
