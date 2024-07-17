@@ -11,7 +11,9 @@ import { useApi } from '@/hooks'
 import SideDrawer from './components/SideDrawer.vue'
 import { useWSConnectionStore } from './stores/WSConnection'
 import { useNotificationStore } from './stores/notifications'
-import type { notificationType, WSErrorType } from './types'
+import type { Api, notificationType, WSErrorType } from './types'
+import { useHomeEventsStore } from './stores/homeEvents'
+import { normalizeVacation } from './utils'
 
 export default defineComponent({
   name: 'App',
@@ -49,7 +51,14 @@ export default defineComponent({
       } else {
         // Handle notification
         const notification: notificationType = data as notificationType
+        const homeEventsStore = useHomeEventsStore()
         notifications.addNotification(notification)
+        if (notification.request.type === "vacations") {
+          notification.request.type = "vacation";
+          homeEventsStore.vacations.push(notification.request as unknown as Api.Vacation)
+          const event = normalizeVacation(notification.request as unknown as Api.Vacation)
+          homeEventsStore.addNewEvents(event as unknown as Api.Home);
+        }
 
         const noti = notifier.notify({
           title: notification.title,
