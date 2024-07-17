@@ -50,6 +50,7 @@ from cshr.models.vacations import (
     OfficeVacationBalance,
     PublicHoliday,
     Vacation,
+    VacationBalance,
 )
 from cshr.services.vacations import get_vacations_by_user
 from cshr.utils.redis_functions import (
@@ -824,6 +825,20 @@ class CancelVacationApiView(GenericAPIView):
                 message=f"You are not allowed to perform this action, the request status is '{status}'."
             )
 
+        if vacation.status == STATUS_CHOICES.CANCEL_APPROVED:
+            v = StanderdVacationBalance()
+            balance = v.check_and_update_balance(
+                applying_user=vacation.applying_user,
+                vacation=vacation,
+                reason=vacation.reason,
+                start_date=vacation.from_date,
+                end_date=vacation.end_date,
+                delete=True
+            )
+
+            if balance is not True:
+                return CustomResponse.bad_request(message=balance)
+
         self._cancel_vacation(request.user, vacation)
 
         return CustomResponse.success(
@@ -861,7 +876,7 @@ class CancelVacationApiView(GenericAPIView):
         """
         return (
             user.id != vacation.applying_user.id
-            or vacation.status == STATUS_CHOICES.PENDING
+            or vacation.status == STATUS_CHOICES.PENDING or vacation.status == STATUS_CHOICES.CANCEL_APPROVED
         )
 
     def _cancel_vacation(self, user: User, vacation: Vacation):
