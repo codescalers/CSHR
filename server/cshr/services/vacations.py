@@ -22,7 +22,7 @@ def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
             end_date__year=year,
         )
     )
-    vacations = vacations.exclude(status=STATUS_CHOICES.REJECTED)
+    vacations = vacations.exclude(status=STATUS_CHOICES.REJECTED).exclude(status=STATUS_CHOICES.CANCELED)
     return vacations
 
 
