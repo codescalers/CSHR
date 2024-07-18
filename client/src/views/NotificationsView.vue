@@ -79,7 +79,7 @@ import { formatDate, getStatusColor } from '@/utils'
 import NotificationDetailsDialog from '@/components/NotificationDetailsDialog.vue'
 import { useNotificationStore } from '@/stores/notifications'
 import { ApiClientBase } from '@/clients/api/base'
-import type { notificationType } from '@/types'
+import type { Api, notificationType } from '@/types'
 
 export default {
   name: 'NotificationsView',
@@ -162,7 +162,7 @@ export default {
       }
     }
 
-    const handleApprove = (value: string) => {
+    const handleApprove = (value: Api.RequestStatus) => {
       const notification = notificationStore.notifications.find(
         (notification) => notification.id === selectedNotification.value?.id
       )
@@ -177,7 +177,7 @@ export default {
       }
     }
 
-    const handleReject = (value: string) => {
+    const handleReject = (value: Api.RequestStatus) => {
       const notification = notificationStore.notifications.find(
         (notification) => notification.id === selectedNotification.value?.id
       )

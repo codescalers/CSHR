@@ -64,8 +64,8 @@ export default {
   },
   emits: {
     'update:model-value': (value?: notificationType) => true || value,
-    'update:approve': (value: string) => value,
-    'update:reject': (value: string) => value,
+    'update:approve': (value: Api.RequestStatus) => value,
+    'update:reject': (value: Api.RequestStatus) => value,
     'set:notification': (value: notificationType) => value
   },
 
@@ -181,11 +181,11 @@ export default {
       ctx.emit('update:model-value')
     }
 
-    function handleApprove(value: string) {
+    function handleApprove(value: Api.RequestStatus) {
       return ctx.emit('update:approve', value)
     }
 
-    function handleReject(value: string) {
+    function handleReject(value: Api.RequestStatus) {
       return ctx.emit('update:reject', value)
     }
 

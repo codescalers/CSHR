@@ -126,7 +126,7 @@ import { computed, ref, type Ref } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { useApi } from '@/hooks'
 import { formatDate, getStatusColor } from '@/utils'
-import type { notificationType } from '@/types'
+import type { Api, notificationType } from '@/types'
 import NotificationDetailsDialog from './NotificationDetailsDialog.vue'
 import profileImage from './profileImage.vue'
 import { useNotificationStore } from '@/stores/notifications'
@@ -168,7 +168,7 @@ export default {
 
     const selectedNotification = ref<notificationType>() as Ref<notificationType>
 
-    const handleApprove = (value: string) => {
+    const handleApprove = (value: Api.RequestStatus) => {
       const notification = notificationStore.notifications.find(
         (notification) => notification.id === selectedNotification.value?.id
       )
@@ -183,7 +183,7 @@ export default {
       }
     }
 
-    const handleReject = (value: string) => {
+    const handleReject = (value: Api.RequestStatus) => {
       const notification = notificationStore.notifications.find(
         (notification) => notification.id === selectedNotification.value?.id
       )

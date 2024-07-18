@@ -742,7 +742,7 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
 
 # Actions
 class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
-    permission_classes = [IsUser]
+    permission_classes = [IsUser | IsSupervisor]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         vacation = get_vacation_by_id(id=id)
@@ -793,7 +793,7 @@ class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
 
 
 class CancelVacationApiView(GenericAPIView):
-    permission_classes = [IsUser | IsAdmin]
+    permission_classes = [IsUser | IsAdmin | IsSupervisor]
 
     def put(self, request: Request, id: str, format=None) -> Response:
         """
