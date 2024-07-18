@@ -279,11 +279,20 @@ export default {
       const startTimeInHours = timeStringToHours(excuseStart.value);
       const endTimeInHours = timeStringToHours(excuseEnd.value);
       const days = (endTimeInHours - startTimeInHours) / CORE_HOURS
-      if (days === 0.25 || days === 0.50 || days === 0.75) {
-        return days
-      }
-      return 1
 
+      if (days < .25) {
+        return .25
+      }
+
+      if (days < .5) {
+        return .5
+      }
+
+      if (days < .75) {
+        return .75
+      }
+      
+      return 1
     }
 
     async function createLeave() {
