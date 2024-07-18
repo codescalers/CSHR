@@ -9,7 +9,7 @@
     </v-card-title>
     <v-container class="pa-6">
       <p class="text-subtitle-1 text-center">
-        From <b>{{ start_date }} </b> to <b color="primary">{{ end_date }} </b> vacation
+        From <b>{{ start_date.replace('T', ' ') }} </b> to <b color="primary">{{ end_date.replace('T', ' ') }} </b> vacation
       </p>
 
       <v-form ref="form" @submit.prevent="updateVacation()">
@@ -160,12 +160,12 @@ export default {
     });
 
     const from_date = computed(() => {
-      let val = new Date(startDate.value)
+      let val = new Date(start_date.value)
       val.setHours(8, 0, 0, 0)
       return val.toISOString()
     })
     const to_date = computed(() => {
-      let val = new Date(endDate.value)
+      let val = new Date(end_date.value)
       val.setHours(16, 0, 0, 0)
 
       return val.toISOString()
@@ -248,8 +248,8 @@ export default {
     async function calculateActualDays() {
       return useAsyncState(
         $api.vacations.calculate.list({
-          start_date: startDate.value.toISOString().split('T')[0],
-          end_date: endDate.value.toISOString().split('T')[0]
+          start_date: start_date.value.split(' ')[0].split('T')[0],
+          end_date: end_date.value.split(' ')[0].split('T')[0]
         }),
         []
       )
