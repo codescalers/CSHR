@@ -153,7 +153,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
     async def approve_cancel_request(self, data: Dict):
         await self.handle_single_receiver_request(
-            data, RequestEvents.APPROVE_CANCEL_REQUEST, STATUS_CHOICES.CANCEL_APPROVED
+            data, RequestEvents.APPROVE_CANCEL_REQUEST, STATUS_CHOICES.CANCELED
         )
 
     async def reject_cancel_request(self, data: Dict):

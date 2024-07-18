@@ -763,8 +763,6 @@ class VacationsRequestToCancelApiView(ListAPIView, GenericAPIView):
                 message=f"You are not allowed to perform this action, the request status is '{status}'."
             )
 
-        current_user: User = get_user_by_id(request.user.id)
-        vacation.approval_user = current_user
         vacation.status = STATUS_CHOICES.REQUESTED_TO_CANCEL
         vacation.save()
 
@@ -972,12 +970,31 @@ class ApproveCancelVacationRequestApiView(GenericAPIView):
         vacation.approval_user = current_user
         vacation.status = STATUS_CHOICES.CANCEL_APPROVED
         vacation.save()
+
+        # Return the balance back.
+        v = StanderdVacationBalance()
+        balance = v.check_and_update_balance(
+            applying_user=vacation.applying_user,
+            vacation=vacation,
+            reason=vacation.reason,
+            start_date=vacation.from_date,
+            end_date=vacation.end_date,
+            delete=True,
+        )
+
+        if balance is not True:
+            return CustomResponse.bad_request(message=balance)
+
+        # Save the vacation as canceled vacation request.
+        vacation.status = STATUS_CHOICES.CANCELED
+        vacation.save()
+
         request = get_request_by_id(vacation.id)
 
         notification_service = NotificationsService(
             sender=vacation.approval_user,
             receiver=vacation.applying_user,
-            status=STATUS_CHOICES.CANCEL_APPROVED,
+            status=STATUS_CHOICES.CANCELED,
         )
         notification = notification_service.vacations.approve_cancel_request(
             vacation.reason, request
