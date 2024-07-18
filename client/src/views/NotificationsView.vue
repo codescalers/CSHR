@@ -50,7 +50,7 @@
       </template>
       <template v-slot:[`item.request.status`]="{ value }">
         <v-chip :color="getStatusColor(value)">
-          {{ value.split('_').join(' ') }}
+          {{ formatRequestStatus(value) }}
         </v-chip>
       </template>
       <template v-slot:[`item.created_at`]="{ value }">
@@ -65,8 +65,7 @@
   <NotificationDetailsDialog
     route-query="notification-view"
     v-model="selectedNotification"
-    @update:approve="handleApprove"
-    @update:reject="handleReject"
+    @update:status="updateStatus"
     @set:notification="setNotification"
   />
 </template>
@@ -75,7 +74,7 @@
 import { $api } from '@/clients'
 import { computed, onMounted, ref } from 'vue'
 import { capitalize } from 'vue'
-import { formatDate, getStatusColor } from '@/utils'
+import { formatDate, formatRequestStatus, getStatusColor } from '@/utils'
 import NotificationDetailsDialog from '@/components/NotificationDetailsDialog.vue'
 import { useNotificationStore } from '@/stores/notifications'
 import { ApiClientBase } from '@/clients/api/base'
@@ -162,33 +161,12 @@ export default {
       }
     }
 
-    const handleApprove = (value: Api.RequestStatus) => {
+    const updateStatus = (value: Api.RequestStatus) => {
       const notification = notificationStore.notifications.find(
         (notification) => notification.id === selectedNotification.value?.id
       )
       if (notification) {
         notification.request.status = value
-        window.connections.ws.value!.send(
-          JSON.stringify({
-            event: 'approve_request',
-            request_id: notification.request.id
-          })
-        )
-      }
-    }
-
-    const handleReject = (value: Api.RequestStatus) => {
-      const notification = notificationStore.notifications.find(
-        (notification) => notification.id === selectedNotification.value?.id
-      )
-      if (notification) {
-        notification.request.status = value
-        window.connections.ws.value!.send(
-          JSON.stringify({
-            event: 'reject_request',
-            request_id: notification.request.id
-          })
-        )
       }
     }
 
@@ -206,10 +184,10 @@ export default {
       formatedDate,
       readAllNotifications,
       deleteAllNotifications,
+      formatRequestStatus,
 
       setNotification,
-      handleApprove,
-      handleReject,
+      updateStatus,
     }
   }
 }

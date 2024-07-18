@@ -146,6 +146,8 @@ export function normalizeMeeting(m: Api.Meeting): any {
 }
 export function getStatusColor(status: Api.RequestStatus) {
   switch (status) {
+    case 'pending':
+      return 'yellow'
     case 'approved':
       return 'green'
     case 'rejected':

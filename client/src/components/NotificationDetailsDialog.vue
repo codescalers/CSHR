@@ -21,8 +21,7 @@
           notification.state.value.request.type === 'vacation' ? notification.state.value.request : undefined
         "
         @close="closeDialog"
-        @update:approve="handleApprove"
-        @update:reject="handleReject"
+        @update:status="updateStatus"
         @update:approval-user="handleApprovalUser"
       />
       <div v-else class="not-allowed">
@@ -64,8 +63,7 @@ export default {
   },
   emits: {
     'update:model-value': (value?: notificationType) => true || value,
-    'update:approve': (value: Api.RequestStatus) => value,
-    'update:reject': (value: Api.RequestStatus) => value,
+    'update:status': (value: Api.RequestStatus) => value,
     'set:notification': (value: notificationType) => value
   },
 
@@ -181,12 +179,8 @@ export default {
       ctx.emit('update:model-value')
     }
 
-    function handleApprove(value: Api.RequestStatus) {
-      return ctx.emit('update:approve', value)
-    }
-
-    function handleReject(value: Api.RequestStatus) {
-      return ctx.emit('update:reject', value)
+    function updateStatus(value: Api.RequestStatus) {
+      return ctx.emit('update:status', value)
     }
 
     function handleApprovalUser(user: Api.User) {
@@ -199,8 +193,7 @@ export default {
       closeDialog,
       getSections,
       capitalize,
-      handleApprove,
-      handleReject,
+      updateStatus,
       handleApprovalUser,
       couldAccessNotification,
     }
