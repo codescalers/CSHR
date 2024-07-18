@@ -51,7 +51,7 @@ export default {
 
 <style scoped>
 .hover-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.01);
   /* Increase the scale on hover */
   transition: transform 0.3s ease;
   /* Add a smooth transition effect */
