@@ -127,7 +127,10 @@ class StanderdVacationBalance:
 
         if hasattr(v, reason):
             curr_balance = getattr(v, reason)
-            if vacation.status == STATUS_CHOICES.APPROVED:
+            if (
+                vacation.status == STATUS_CHOICES.APPROVED
+                or vacation.status == STATUS_CHOICES.CANCEL_APPROVED
+            ):
                 if delete:
                     new_value: int = curr_balance + vacation_days
                     return self.update_user_balance(applying_user, reason, new_value)
