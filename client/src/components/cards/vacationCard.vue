@@ -9,33 +9,40 @@
     </v-card-title>
     <v-container class="pa-6">
       <p class="text-subtitle-1 text-center">
-        From <b>{{ start_date }} </b> to
-        <b color="primary">{{ end_date }} </b> vacation
+        From <b>{{ start_date }}</b>
+        to <b color="primary">{{ end_date }}</b>
+        vacation
       </p>
 
       <v-form ref="form" @submit.prevent="updateVacation()">
         <v-row class="d-flex justify-center my-2">
           <v-btn color="primary" v-if="couldUpdate && vacation.applying_user.id === user?.id" class="mx-1 my-2" type="submit"
             :disabled="!form?.isValid">Update</v-btn>
-          <v-btn v-if="couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Delete</v-btn>
+          <v-btn v-if="vacation.status === 'approved' && couldDelete" color="error" class="mx-1 my-2" @click="requestToCancel">Request to Cancel</v-btn>
+          <v-btn v-if="vacation.status === 'pending' && couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Cancel</v-btn>
         </v-row>
+        <div v-if="couldApprove && vacation.status == 'requested_to_cancel'">
+          <v-divider class="my-2"></v-divider>
+          <v-alert class="my-2" type="warning">
+            {{ vacation.applying_user.full_name }} is requesting an action to cancel the vacation request.
+          </v-alert>
+        </div>
         <v-divider class="my-2"></v-divider>
-
         <v-card elevation="0" class="pa-4">
           <v-row class="py-2">
             <v-col cols="6" class="d-flex">
               <v-icon class="mr-2">mdi-account</v-icon>
               <p>
                 Applying User :
-                <span color="warning" class="mx-2">{{
-                  vacation.applying_user.full_name
-                  }}</span>
+                <span color="warning" class="mx-2">
+                  {{ vacation.applying_user.full_name }}
+                </span>
               </p>
             </v-col>
             <v-col cols="6" class="d-flex items-center">
               <p>
                 Status :
-                {{ vacation.status }}
+                <span :style="{color: getStatusColor(vacation.status)}">{{ formatRequestStatus(vacation.status) }}</span>
               </p>
             </v-col>
 
@@ -69,23 +76,30 @@
         </v-card>
       </v-form>
       <v-divider class="my-2"></v-divider>
+      <!-- Approve/Reject the normal request -->
       <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'pending'">
         <v-btn color="primary" class="ma-1" type="submit"
         :disabled="!form?.isValid" @click="updateVacation" v-if="vacation.applying_user.id !== user?.id && user?.fullUser.location.id == vacation.applying_user.location.id">Update</v-btn>
         <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
         <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
       </v-row>
+      <!-- Approve/Reject the cancel request -->
+      <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'requested_to_cancel'">
+        <v-btn color="primary" class="ma-1" @click="handleCancelApprove">Approve the cancel request</v-btn>
+        <v-btn color="error" class="ma-1" @click="handleCancelReject">Reject the cancel request</v-btn>
+      </v-row>
     </v-container>
   </v-card>
 </template>
 <script lang="ts">
 import type { Api } from '@/types';
-import { computed, onMounted, ref, watch } from 'vue';
+import { capitalize, computed, onMounted, ref, watch } from 'vue';
 
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
 import type { PropType } from 'vue';
+import { formatRequestStatus, getStatusColor } from '@/utils';
 
 export default {
   name: 'vacationCard',
@@ -98,8 +112,8 @@ export default {
   emits: {
     'close-dialog': (item: Boolean) => item,
     'update-vacation': (item: any) => item,
-    'delete-vacation': () => true,
-    'status-vacation': (item: string) => item
+    'cancel-vacation': () => true,
+    'status-vacation': (item: Api.RequestStatus) => item
   },
 
   setup(props, ctx) {
@@ -173,7 +187,6 @@ export default {
       return false
     })
 
-
     const couldApprove = computed(() => {
       if (user.value?.id && props.vacation.approvals.includes(user.value?.id)) {
         return true
@@ -196,17 +209,39 @@ export default {
       }
       return true
     }
+
     async function handleDelete() {
-      return useAsyncState($api.vacations.delete(props.vacation.id), [], {
+      return useAsyncState($api.vacations.cancel(props.vacation.id), [], {
         onSuccess() {
-          ctx.emit('delete-vacation')
+          ctx.emit('cancel-vacation')
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'cancel_request',
+              request_id: props.vacation.id
+            })
+          )
         }
       })
     }
+
+    async function requestToCancel() {
+      return useAsyncState($api.vacations.requestToCancel(props.vacation.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          ctx.emit('status-vacation', res.status)
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'request_to_cancel_request',
+              request_id: props.vacation.id
+            })
+          )
+        }
+      })
+    }
+
     async function handleApprove() {
-      return useAsyncState($api.vacations.approve.update(props.vacation.id), [], {
-        onSuccess() {
-          ctx.emit('status-vacation', 'Approve')
+      return useAsyncState($api.vacations.approve.update(props.vacation.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          ctx.emit('status-vacation', res.status)
           window.connections.ws.value!.send(
             JSON.stringify({
               event: 'approve_request',
@@ -216,13 +251,42 @@ export default {
         }
       })
     }
+
     async function handleReject() {
-      return useAsyncState($api.vacations.reject.update(props.vacation.id), [], {
-        onSuccess() {
-          ctx.emit('status-vacation', 'Reject')
+      return useAsyncState($api.vacations.reject.update(props.vacation.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          ctx.emit('status-vacation', res.status)
           window.connections.ws.value!.send(
             JSON.stringify({
               event: 'reject_request',
+              request_id: props.vacation.id
+            })
+          )
+        }
+      })
+    }
+
+    async function handleCancelApprove(){
+      return useAsyncState($api.vacations.approve.cancel(props.vacation.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          ctx.emit('status-vacation', res.status)
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'approve_cancel_request',
+              request_id: props.vacation.id
+            })
+          )
+        }
+      })
+    }
+
+    async function handleCancelReject(){
+      return useAsyncState($api.vacations.reject.cancel(props.vacation.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          ctx.emit('status-vacation', res.status)
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'reject_cancel_request',
               request_id: props.vacation.id
             })
           )
@@ -283,7 +347,13 @@ export default {
       updateVacation,
       handleApprove,
       handleReject,
-      handleDelete
+      handleDelete,
+      requestToCancel,
+      capitalize,
+      handleCancelApprove,
+      handleCancelReject,
+      formatRequestStatus,
+      getStatusColor
     }
   }
 }

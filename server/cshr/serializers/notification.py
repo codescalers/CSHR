@@ -51,6 +51,8 @@ class NotificationSerializer(ModelSerializer):
             if vacation:
                 request_serializer["from_date"] = vacation.from_date
                 request_serializer["end_date"] = vacation.end_date
+                request_serializer["reason"] = vacation.reason
+                request_serializer["type"] = "vacation"
                 request_serializer["approvals"] = build_user_reporting_to_hierarchy(
                     vacation.applying_user
                 )

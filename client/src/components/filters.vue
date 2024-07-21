@@ -43,7 +43,7 @@ export default {
 
     watch(
       () => props.offices.state.value,
-      async (_) => {
+      async () => {
         if ($route.query.location_id && props.offices.state.value) {
           office.value = props.offices.state.value.find((office: any) => office.id === Number($route.query.location_id));
         }
@@ -52,7 +52,7 @@ export default {
 
     watch(
       () => props.teams,
-      async (_) => {
+      async () => {
         if ($route.query.team_name && props.teams) {
           team.value = props.teams.find((team: any) => team.name === $route.query.team_name);
         }

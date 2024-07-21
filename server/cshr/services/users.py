@@ -194,3 +194,8 @@ def build_user_reporting_to_hierarchy(user: User) -> List[int]:
             hierarchy.append(report_user.id)
             hierarchy.extend(build_user_reporting_to_hierarchy(report_user))
     return hierarchy
+
+
+def filter_admins_same_office_of_the_user(user: User) -> QuerySet[User]:
+    """Return all admins of the same office of the user."""
+    return User.objects.filter(location__id=user.location.id, user_type=USER_TYPE.ADMIN)

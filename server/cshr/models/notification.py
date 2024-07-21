@@ -2,7 +2,7 @@ from django.db import models
 
 from cshr.models.abstracts import TimeStamp
 from cshr.models.users import User
-from cshr.models.requests import Requests
+from cshr.models.requests import STATUS_CHOICES, Requests
 
 
 class NotificationType(models.TextChoices):
@@ -41,7 +41,13 @@ class Notification(TimeStamp):
     request = models.ForeignKey(
         Requests, on_delete=models.CASCADE, related_name="notification_request"
     )
+    request_status = models.CharField(max_length=20, choices=STATUS_CHOICES.choices)
     is_read = models.BooleanField(default=False)
 
-    def __str__(self) -> str:
-        return f"{self.sender.full_name} -> {self.receiver.full_name} | {self.created_at.date()}"
+    class Meta:
+        unique_together = (
+            "request_status",
+            "request",
+            "receiver",
+            "sender",
+        )

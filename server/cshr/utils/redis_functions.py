@@ -1,18 +1,15 @@
 from typing import Dict
 from django.utils.dateparse import parse_datetime
 from django.core.exceptions import ImproperlyConfigured
-from cshr.models.requests import TYPE_CHOICES, Requests
+from cshr.models.requests import TYPE_CHOICES
 from cshr.models.users import USER_TYPE, User
-from cshr.serializers.users import BaseUserSerializer, TeamSerializer
+from cshr.serializers.users import TeamSerializer
 from cshr.services.users import get_user_by_id
 from components import config
 import redis
 import json
-from datetime import datetime
-
 
 from cshr.api.response import CustomResponse
-
 
 try:
     _, R_HOST, R_PORT = config("REDIS_HOST").replace("//", "").split(":")
@@ -167,7 +164,7 @@ def notification_commented(data: Dict, user, state: str, event_id: int):
 def ping_redis():
     try:
         redis_instance.ping()
-    except:
+    except Exception:
         raise redis.ConnectionError(
             "Redis is not running, please make sure that you run the redis server on the provided values."
         )

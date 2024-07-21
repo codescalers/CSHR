@@ -103,7 +103,7 @@ export default {
     );
 
 
-    const validateDates = (value: string | null): string | boolean => {
+    const validateDates = (): string | boolean => {
       if (!startDate.value) return 'Please select start date.'
       if (!endDate.value) return 'Please select end date.'
       if (endDate.value < startDate.value) return 'End date must be after start date.'
