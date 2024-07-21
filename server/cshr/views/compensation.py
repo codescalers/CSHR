@@ -65,7 +65,7 @@ class BaseCompensationApiView(ListAPIView, GenericAPIView):
 
             try:
                 ping_redis()
-            except:
+            except Exception:
                 return http_ensure_redis_error()
 
             bool1 = set_notification_request_redis(serializer.data)
@@ -188,7 +188,7 @@ class CompensationAcceptApiView(ListAPIView, GenericAPIView):
 
         try:
             ping_redis()
-        except:
+        except Exception:
             return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(compensation, "accepted", compensation.id)
@@ -222,7 +222,7 @@ class CompensationRejectApiView(ListAPIView, GenericAPIView):
 
         try:
             ping_redis()
-        except:
+        except Exception:
             return http_ensure_redis_error()
 
         bool1 = set_notification_reply_redis(compensation, "rejected", compensation.id)

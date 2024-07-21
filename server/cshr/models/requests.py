@@ -19,12 +19,16 @@ class TYPE_CHOICES(models.TextChoices):
 
 class STATUS_CHOICES(models.TextChoices):
     """
-    it is a list of choices for the request status
+    List of choices for the request status.
     """
 
-    REJECTED = "rejected", "Rejected"
-    PENDING = "pending", "Pending"
-    APPROVED = "approved", "Approved"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    PENDING = "pending"
+    REQUESTED_TO_CANCEL = "requested_to_cancel"
+    CANCEL_APPROVED = "cancel_approved"
+    CANCEL_REJECTED = "cancel_rejected"
+    CANCELED = "canceled"
 
 
 class Requests(TimeStamp):

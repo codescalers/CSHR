@@ -29,12 +29,6 @@ export class MeetingApi extends ApiClientBase {
 
     return event
   }
-
-  async read(id: number) {}
-
-  async update(id: number) {}
-
-  async delete(id: number) {}
 }
 
 class MeetingExactApi extends ApiClientBase {

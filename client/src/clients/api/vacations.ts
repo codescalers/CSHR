@@ -57,10 +57,15 @@ export class VacationsApi extends ApiClientBase {
 
     return vacation
   }
-  async read(id: number) {}
 
-  async delete(id: number) {
-    return this.unwrap(() => this.$http.delete<any>(this.getUrl(`/${id}`)), {
+  async cancel(id: number) {
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/cancel/${id}`)), {
+      transform: (d) => d.results
+    })
+  }
+
+  async requestToCancel(id: number) {
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/request-to-cancel/${id}`)), {
       transform: (d) => d.results
     })
   }
@@ -74,15 +79,25 @@ class VacationsApproveApi extends ApiClientBase {
       transform: (d) => d.results
     })
   }
+
+  async cancel(id: any) {
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/cancel/${id}`)), {
+      transform: (d) => d.results
+    })
+  }
 }
 
 class VacationsRejectApi extends ApiClientBase {
   protected readonly path = '/reject'
 
-  async read(id: number) {}
-
   async update(id: number) {
     return this.unwrap(() => this.$http.put<any>(this.getUrl(`/${id}`)), {
+      transform: (d) => d.results
+    })
+  }
+
+  async cancel(id: any) {
+    return this.unwrap(() => this.$http.put<any>(this.getUrl(`/cancel/${id}`)), {
       transform: (d) => d.results
     })
   }
@@ -137,14 +152,10 @@ class VacationsCalculateApi extends ApiClientBase {
 
 class VacationsCommentApi extends ApiClientBase {
   protected readonly path = '/comment'
-
-  async update(id: number) {}
 }
 
 class VacationsEditApi extends ApiClientBase {
   protected readonly path = '/edit'
-
-  async read(id: number) {}
 
   async update(id: number, input: Api.Inputs.Leave) {
     ApiClientBase.assertUser()

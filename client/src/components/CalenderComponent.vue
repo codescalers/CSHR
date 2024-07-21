@@ -41,41 +41,69 @@
     @click:outside="closeDialog(CalendarEventSelection.NewEvent)"
   >
     <v-card>
-      <calender-request :dates="dates" @close-dialog="closeDialog(CalendarEventSelection.NewEvent)"
-        @create-vacation="createVacation($event)" @create-meeting="createMeeting($event)"
-        @create-event="createEvent($event)" />
+      <calender-request
+        :dates="dates"
+        @close-dialog="closeDialog(CalendarEventSelection.NewEvent)"
+        @create-vacation="createVacation($event)"
+        @create-meeting="createMeeting($event)"
+        @create-event="createEvent($event)"
+      />
     </v-card>
   </v-dialog>
 
   <!-- View meeting dialog -->
-  <v-dialog v-if="selectedEventType.isViewRequest && selectedEventType.isMeeting && selectedEvent"
-    :routeQuery="selectedEvent.id" :modelValue="selectedEventType.isMeeting">
+  <v-dialog
+    v-if="selectedEventType.isViewRequest && selectedEventType.isMeeting && selectedEvent"
+    :routeQuery="selectedEvent.id"
+    :modelValue="selectedEventType.isMeeting"
+  >
     <v-card>
-      <meeting-card :meeting="selectedEvent" @close-dialog="closeDialog(CalendarEventSelection.Meeting)" />
+      <meeting-card
+        :meeting="selectedEvent"
+        @close-dialog="closeDialog(CalendarEventSelection.Meeting)"
+      />
     </v-card>
   </v-dialog>
 
   <!-- View holiday dialog -->
-  <v-dialog v-if="selectedEventType.isViewRequest && selectedEventType.isHoliday && selectedEvent"
-    :routeQuery="selectedEvent.id" :modelValue="selectedEventType.isHoliday">
+  <v-dialog
+    v-if="selectedEventType.isViewRequest && selectedEventType.isHoliday && selectedEvent"
+    :routeQuery="selectedEvent.id"
+    :modelValue="selectedEventType.isHoliday"
+  >
     <v-card>
-      <holiday-card :holiday="selectedEvent" @close-dialog="closeDialog(CalendarEventSelection.PublicHoliday)" />
+      <holiday-card
+        :holiday="selectedEvent"
+        @close-dialog="closeDialog(CalendarEventSelection.PublicHoliday)"
+      />
     </v-card>
   </v-dialog>
 
   <!-- View holiday dialog -->
-  <v-dialog v-if="selectedEventType.isViewRequest && selectedEventType.isBirthday && selectedEvent"
-    :routeQuery="selectedEvent.id" :modelValue="selectedEventType.isBirthday">
+  <v-dialog
+    v-if="selectedEventType.isViewRequest && selectedEventType.isBirthday && selectedEvent"
+    :routeQuery="selectedEvent.id"
+    :modelValue="selectedEventType.isBirthday"
+  >
     <v-card>
-      <birthday-card :birthday="selectedEvent" @close-dialog="closeDialog(CalendarEventSelection.Birthday)" />
+      <birthday-card
+        :birthday="selectedEvent"
+        @close-dialog="closeDialog(CalendarEventSelection.Birthday)"
+      />
     </v-card>
   </v-dialog>
 
   <!-- View event dialog -->
-  <v-dialog v-if="selectedEventType.isViewRequest && selectedEventType.isEvent && selectedEvent"
-    :routeQuery="selectedEvent.id" :modelValue="selectedEventType.isEvent">
+  <v-dialog
+    v-if="selectedEventType.isViewRequest && selectedEventType.isEvent && selectedEvent"
+    :routeQuery="selectedEvent.id"
+    :modelValue="selectedEventType.isEvent"
+  >
     <v-card>
-      <event-card :event="selectedEvent" @close-dialog="closeDialog(CalendarEventSelection.Event)" />
+      <event-card
+        :event="selectedEvent"
+        @close-dialog="closeDialog(CalendarEventSelection.Event)"
+      />
     </v-card>
   </v-dialog>
 
@@ -87,11 +115,12 @@
   >
     <v-card>
       <vacation-card
-      :vacation="(selectedEvent as Api.Vacation)"
+        :vacation="(selectedEvent as Api.Vacation)"
         @close-dialog="closeDialog(CalendarEventSelection.Vacation)"
         @status-vacation="updateVacationStatus($event)"
         @update-vacation="updateVacation($event)"
-        @delete-vacation="deleteVacation()" />
+        @cancel-vacation="cancelVacation()"
+      />
     </v-card>
   </v-dialog>
 </template>
@@ -116,8 +145,9 @@ import { CalendarEventSelection, type Api } from '@/types'
 import { normalizeEvent, normalizeVacation } from '@/utils/helpers'
 import { normalizedBirthday, normalizeHoliday, normalizeMeeting } from '@/utils'
 import { ApiClientBase } from '@/clients/api/base'
+import { useHomeEventsStore } from '@/stores/homeEvents'
 
-const homeEvents = ref<Api.Home[]>([])
+const homeEventsStore = useHomeEventsStore()
 const filteredEvents = ref<Api.Home[]>([])
 
 const currentDate = ref<Date>(new Date())
@@ -144,11 +174,6 @@ const selectedEventType = reactive({
   isViewRequest: false
 })
 
-const meetings = ref<Api.Meeting[]>([])
-const events = ref<Api.Event[]>([])
-const vacations = ref<Api.Vacation[]>([])
-const holidays = ref<Api.Holiday[]>([])
-const birthdays = ref<Api.User[]>([])
 const cached_users = new Map<number, Api.User>()
 
 const selectedEvent = ref<Api.Meeting | Api.Event | Api.Vacation | Api.Holiday | Api.User>()
@@ -173,7 +198,7 @@ const loadEvents = async () => {
         for (const event of data) {
           updateEventCalendarType(event)
         }
-        filteredEvents.value = [...homeEvents.value]
+        filteredEvents.value = [...homeEventsStore.events]
       }
     }
   )
@@ -183,31 +208,29 @@ const loadEvents = async () => {
 const updateEventCalendarType = (event: any) => {
   if (event.type === 'vacation') {
     const vacationEvent = normalizeVacation(event) as any
-    homeEvents.value.push(vacationEvent)
-    vacations.value.push(event)
+    homeEventsStore.addEvent(vacationEvent)
+    homeEventsStore.vacations.push(event)
   } else if (event.type === 'holiday') {
     const publicHoliday = normalizeHoliday(event) as any
-    homeEvents.value.push(publicHoliday)
-    holidays.value.push(event)
+    homeEventsStore.addEvent(publicHoliday)
+    homeEventsStore.holidays.push(event)
   } else if (event.type === 'meeting') {
     const meeting = normalizeMeeting(event) as any
-    homeEvents.value.push(meeting)
-    meetings.value.push(event)
+    homeEventsStore.addEvent(meeting)
+    homeEventsStore.meetings.push(event)
   } else if (event.type === 'birthday') {
     const birthday = normalizedBirthday(event) as any
-    homeEvents.value.push(birthday)
-    birthdays.value.push(event)
+    homeEventsStore.addEvent(birthday)
+    homeEventsStore.birthdays.push(event)
   } else if (event.type === 'event') {
     const _event = normalizeEvent(event) as any
-    homeEvents.value.push(_event)
-    events.value.push(event)
+    homeEventsStore.addEvent(_event)
+    homeEventsStore.userEvents.push(event)
   }
-
-  filteredEvents.value = [...homeEvents.value]
 }
 
 const filterEvents = () => {
-  filteredEvents.value = homeEvents.value.filter((event) => {
+  filteredEvents.value = homeEventsStore.events.filter((event) => {
     return (
       (event.type === 'meeting' && filters.meeting) ||
       (event.type === 'event' && filters.event) ||
@@ -217,6 +240,23 @@ const filterEvents = () => {
     )
   })
 }
+
+watch(
+  () => homeEventsStore.reload,
+  async () => {
+    if(homeEventsStore.reload){
+      homeEventsStore.events = [];
+      homeEventsStore.vacations = [];
+      homeEventsStore.meetings = [];
+      homeEventsStore.userEvents = [];
+      homeEventsStore.birthdays = [];
+      homeEventsStore.holidays = [];
+      await loadEvents();
+      homeEventsStore.reload = false
+    }
+  },
+  { deep: true }
+)
 
 function onSelect(arg: any) {
   calendar.value = arg.view.calendar
@@ -230,36 +270,36 @@ function onClick(arg: any) {
 
   const eventsMap = {
     holiday: {
-      data: holidays.value,
-      dialog: CalendarEventSelection.PublicHoliday,
+      data: homeEventsStore.holidays,
+      dialog: CalendarEventSelection.PublicHoliday
     },
     vacation: {
-      data: vacations.value,
-      dialog: CalendarEventSelection.Vacation,
+      data: homeEventsStore.vacations,
+      dialog: CalendarEventSelection.Vacation
     },
     birthday: {
-      data: birthdays.value,
-      dialog: CalendarEventSelection.Birthday,
+      data: homeEventsStore.birthdays,
+      dialog: CalendarEventSelection.Birthday
     },
     event: {
-      data: events.value,
-      dialog: CalendarEventSelection.Event,
+      data: homeEventsStore.userEvents,
+      dialog: CalendarEventSelection.Event
     },
     meeting: {
-      data: meetings.value,
-      dialog: CalendarEventSelection.Meeting,
-    },
-  };
+      data: homeEventsStore.meetings,
+      dialog: CalendarEventSelection.Meeting
+    }
+  }
 
   const eventType = event.extendedProps.type
 
   // We use a normalized event ID to avoid duplication. It's created by concatenating 'holiday', 'birthday', 'event', 'meeting', and 'vacation' with the event ID.
   if ((eventsMap as any)[eventType]) {
-  selectedEvent.value = (eventsMap as any)[eventType].data.filter(
-    (item: { id: number }) => item.id === +event.id.replace(eventType, '')
-  )[0];
-  openDialog((eventsMap as any)[eventType].dialog);
-}
+    selectedEvent.value = (eventsMap as any)[eventType].data.filter(
+      (item: { id: number }) => item.id === +event.id.replace(eventType, '')
+    )[0]
+    openDialog((eventsMap as any)[eventType].dialog)
+  }
   selectedEventType.isViewRequest = true
 }
 
@@ -304,16 +344,14 @@ async function createVacation(vacation: Api.Vacation) {
     vacation.applying_user = user
   }
 
-  vacations.value.push(vacation)
+  homeEventsStore.vacations.push(vacation)
 
-  if(window.connections.ws.value){
+  if (window.connections.ws.value) {
     window.connections.ws.value!.send(
-      JSON.stringify(
-        {
-          event: "post_new_vacation_request",
-          vacation
-        }
-      )
+      JSON.stringify({
+        event: 'post_new_vacation_request',
+        request_id: vacation.id
+      })
     )
   }
 
@@ -323,37 +361,46 @@ async function createVacation(vacation: Api.Vacation) {
 }
 
 async function createMeeting(meeting: Api.Meeting) {
-  meetings.value.push(meeting)
+  homeEventsStore.meetings.push(meeting)
   const meetingEvent = normalizeMeeting(meeting) as any
   filteredEvents.value.push(meetingEvent)
   closeDialog(CalendarEventSelection.NewEvent)
 }
 
 async function createEvent(event: Api.Event) {
-  events.value.push(event)
+  homeEventsStore.userEvents.push(event)
   const eventData = normalizeEvent(event) as any
   filteredEvents.value.push(eventData)
   closeDialog(CalendarEventSelection.NewEvent)
 }
 
-async function updateVacationStatus(data: string) {
-  const vacationIndex = vacations.value.findIndex((vacation) => vacation.id === selectedEvent.value!.id)
-  if (vacationIndex !== -1) {
-    if (data === 'Approve') {
-      vacations.value[vacationIndex].status = 'approved'
-    } else;
-    if (data === 'Reject') {
-      vacations.value[vacationIndex].status = 'rejected'
-      vacations.value = vacations.value.filter((vacation) => vacation.id !== selectedEvent.value?.id)  
-      filteredEvents.value = filteredEvents.value.filter(event => event.id.toString() !== `vacation${selectedEvent.value?.id}`)
-    }
+async function updateVacationStatus(status: Api.RequestStatus) {
+  const vacationIndex = homeEventsStore.vacations.findIndex(
+    (vacation) => vacation.id === selectedEvent.value!.id
+  )
+
+  homeEventsStore.vacations[vacationIndex].status = status
+  if (status === 'rejected') {
+    // Remove it from the calendar.
+    homeEventsStore.vacations = homeEventsStore.vacations.filter(
+      (vacation) => vacation.id !== selectedEvent.value?.id
+    )
+
+    filteredEvents.value = filteredEvents.value.filter(
+      (event) => event.id.toString() !== `vacation${selectedEvent.value?.id}`
+    )
+
+    homeEventsStore.vacations = homeEventsStore.vacations.splice(vacationIndex);
   }
+
   closeDialog(CalendarEventSelection.Vacation)
 }
 
 async function updateVacation(vacation: Api.Vacation) {
-  vacations.value = vacations.value.filter((vacation) => vacation.id !== selectedEvent.value?.id)
-  filteredEvents.value = filteredEvents.value.filter(event => event.id.toString() !== `vacation${selectedEvent.value?.id}`)
+  homeEventsStore.vacations = homeEventsStore.vacations.filter((vacation) => vacation.id !== selectedEvent.value?.id)
+  filteredEvents.value = filteredEvents.value.filter(
+    (event) => event.id.toString() !== `vacation${selectedEvent.value?.id}`
+  )
 
   if (cached_users.has(vacation.applying_user)) {
     vacation.applying_user = cached_users.get(vacation.applying_user)
@@ -362,17 +409,18 @@ async function updateVacation(vacation: Api.Vacation) {
     cached_users.set(vacation.applying_user, user)
     vacation.applying_user = user
   }
-  vacation.type="vacation"
-  vacations.value.push(vacation)
+  vacation.type = 'vacation'
+  homeEventsStore.vacations.push(vacation)
   const vacationEvent = normalizeVacation(vacation) as any
   filteredEvents.value.push(vacationEvent)
   closeDialog(CalendarEventSelection.Vacation)
 }
 
-
-async function deleteVacation() {
-  vacations.value = vacations.value.filter((vacation) => vacation.id !== selectedEvent.value?.id)  
-  filteredEvents.value = filteredEvents.value.filter(event => event.id.toString() !== `vacation${selectedEvent.value?.id}`)
+async function cancelVacation() {
+  homeEventsStore.vacations = homeEventsStore.vacations.filter((vacation) => vacation.id !== selectedEvent.value?.id)
+  filteredEvents.value = filteredEvents.value.filter(
+    (event) => event.id.toString() !== `vacation${selectedEvent.value?.id}`
+  )
   closeDialog(CalendarEventSelection.Vacation)
 }
 

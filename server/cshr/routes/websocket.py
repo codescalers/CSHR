@@ -1,6 +1,6 @@
 """this file will contain evertyting that related to WS."""
 
-from django.urls import re_path, path
+from django.urls import path
 
 from cshr.consumers.notifications_consumer import NotificationConsumer
 

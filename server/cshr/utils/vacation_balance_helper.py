@@ -80,7 +80,14 @@ class StanderdVacationBalance:
 
     def calculate_times(self, start_hour: str, end_hour: str, CORE_HOURS=8) -> float:
         """Calculate the hours with the CORE_HOURS"""
-        return (end_hour - start_hour) / CORE_HOURS
+        time = (end_hour - start_hour) / CORE_HOURS
+        if time < .25:
+            return .25
+        if time < .5:
+            return .5
+        if time < .75:
+            return .75
+        return 1
 
     def is_valid_times(
         self,
@@ -92,6 +99,7 @@ class StanderdVacationBalance:
         Calculate the times and get the actual values, e.g. the start date is 11:0 AM, and the end date is 01:00 PM then the actual time should be 2 hours.
         """
         _times = self.calculate_times(start_hour=start_hour, end_hour=end_hour)
+
         return _times == times
 
     def get_actual_days(
@@ -119,7 +127,10 @@ class StanderdVacationBalance:
 
         if hasattr(v, reason):
             curr_balance = getattr(v, reason)
-            if vacation.status == STATUS_CHOICES.APPROVED:
+            if (
+                vacation.status == STATUS_CHOICES.APPROVED
+                or vacation.status == STATUS_CHOICES.CANCEL_APPROVED
+            ):
                 if delete:
                     new_value: int = curr_balance + vacation_days
                     return self.update_user_balance(applying_user, reason, new_value)

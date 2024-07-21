@@ -8,7 +8,7 @@
         <v-col class="d-flex justify-end pb-0">
           <v-card-subtitle>
             <v-chip :color="getStatusColor(vacationStatus)">
-              {{ vacationStatus }}
+              {{ formatRequestStatus(vacationStatus) }}
             </v-chip>
           </v-card-subtitle>
         </v-col>
@@ -59,6 +59,11 @@
           <v-btn variant="tonal" color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
           <v-btn variant="tonal" color="error" class="ma-1" @click="handleReject">Reject</v-btn>
           <v-spacer></v-spacer>
+        </div>        
+        <div v-if="couldApprove && vacationStatus == 'requested_to_cancel'">
+          <v-btn variant="tonal" color="primary" class="ma-1" @click="handleCancelApprove">Approve the cancel request</v-btn>
+          <v-btn variant="tonal" color="error" class="ma-1" @click="handleCancelReject">Reject the cancel request</v-btn>
+          <v-spacer></v-spacer>
         </div>
         <v-btn color="info" class="ma-1" variant="flat" @click="closeDialog()">Close</v-btn>
       </v-row>
@@ -68,15 +73,15 @@
 
 <script lang="ts">
 import { computed, ref, type PropType } from 'vue'
-import { getStatusColor } from '@/utils'
-import type { notificationType } from '@/types'
+import { getStatusColor, formatRequestStatus } from '@/utils'
+import type { Api, notificationType } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
 import { useAsyncState } from '@vueuse/core'
 import { $api } from '@/clients'
 
 export default {
   name: 'NotificationDetails',
-  emits: ["update:approve", "update:reject", "update:approvalUser"],
+  emits: ["update:status", "update:approvalUser"],
   props: {
     modelValue: {
       type: Object as PropType<notificationType>,
@@ -105,21 +110,65 @@ export default {
     }
 
     async function handleApprove() {
-      return useAsyncState($api.vacations.approve.update(props.vacation!.id), [], {
-        onSuccess() {
-          vacationStatus.value = 'approved'
-          emit("update:approve", vacationStatus.value)
+      return useAsyncState($api.vacations.approve.update(props.vacation!.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          vacationStatus.value = res.status
+          emit('update:status', res.status)
           emit("update:approvalUser", user.value)
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'approve_request',
+              request_id: props.vacation!.id
+            })
+          )
         }
       })
     }
 
     async function handleReject() {
-      return useAsyncState($api.vacations.reject.update(props.vacation!.id), [], {
-        onSuccess() {
-          vacationStatus.value = 'rejected'
-          emit("update:reject", vacationStatus.value)
+      return useAsyncState($api.vacations.reject.update(props.vacation!.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          vacationStatus.value = res.status
+          emit('update:status', res.status)
           emit("update:approvalUser", user.value)
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'reject_request',
+              request_id: props.vacation!.id
+            })
+          )
+        }
+      })
+    }
+
+    async function handleCancelApprove(){
+      return useAsyncState($api.vacations.approve.cancel(props.vacation!.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          vacationStatus.value = res.status
+          emit('update:status', res.status)
+          emit("update:approvalUser", user.value)
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'approve_cancel_request',
+              request_id: props.vacation!.id
+            })
+          )
+        }
+      })
+    }
+
+    async function handleCancelReject(){
+      return useAsyncState($api.vacations.reject.cancel(props.vacation!.id), [] as unknown as Api.Vacation, {
+        onSuccess(res: Api.Vacation) {
+          vacationStatus.value = res.status
+          emit('update:status', res.status)
+          emit("update:approvalUser", user.value)
+          window.connections.ws.value!.send(
+            JSON.stringify({
+              event: 'reject_cancel_request',
+              request_id: props.vacation!.id
+            })
+          )
         }
       })
     }
@@ -138,7 +187,10 @@ export default {
       closeDialog,
       getStatusColor,
       handleApprove,
-      handleReject
+      handleReject,
+      formatRequestStatus,
+      handleCancelApprove,
+      handleCancelReject,
     }
   }
 }

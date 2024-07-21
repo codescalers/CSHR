@@ -27,12 +27,15 @@ export module Api {
     name: string
   }
 
+  export type RequestStatus = "approved" | "rejected" | "pending" | "requested_to_cancel" | "cancel_approved" | "cancel_rejected" | "canceled";
+  export type VacationReasonWrapper = "emergency" | "annual" | "excuse" | "sick" | "unpaid" | "compensation";
+
   export interface Vacation {
     id: number
     created_at: any
     modified_at: any
     type: string
-    status: string
+    status: RequestStatus
     reason: string
     from_date: any
     end_date: any
@@ -260,7 +263,7 @@ export module Api {
   }
 
   export interface Home {
-    id: number
+    id: string
     type: string
     className: string
     eventName: string
