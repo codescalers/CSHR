@@ -45,9 +45,15 @@ class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):
     def get_queryset(self) -> Response:
         """get all users in the system for a normal user"""
         # print()
+        location_id = ""
+        team_name = ""
         if self.request.query_params.get("location_id"):
             location_id = self.request.query_params.get("location_id")
+
+        if self.request.query_params.get("team_name"):
             team_name = self.request.query_params.get("team_name")
+
+        if len(location_id) > 0 or len(team_name) > 0:
             options = {"location": {"id": location_id}, "team": {"name": team_name}}
             query_set = get_all_of_users(options)
         else:
