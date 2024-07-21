@@ -190,8 +190,8 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             # Check if there are pending vacations in the same day.
             pending_requests = Vacation.objects.filter(
-                from_date__day=start_date.day,
-                end_date__day=end_date.day,
+                from_date__lte=end_date,
+                end_date__gte=start_date,
                 status=STATUS_CHOICES.PENDING,
                 applying_user=applying_user,
             )
@@ -380,8 +380,8 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
             # Check if there are pending vacations in the same day
             pending_requests = Vacation.objects.filter(
-                from_date__day=start_date.day,
-                end_date__day=end_date.day,
+                from_date__lte=end_date,
+                end_date__gte=start_date,
                 status=STATUS_CHOICES.PENDING,
             )
             if len(pending_requests) > 0:
