@@ -19,26 +19,14 @@ export class CompensationsApi extends ApiClientBase {
   async list() {}
 
   async create() {}
-
-  async read(id: number) {}
-
-  async delete(id: number) {}
 }
 
 class CompensationsApproveApi extends ApiClientBase {
   protected readonly path = '/approve'
-
-  async read(id: number) {}
-
-  async update(id: number) {}
 }
 
 class CompensationsRejectApi extends ApiClientBase {
   protected readonly path = '/reject'
-
-  async read(id: number) {}
-
-  async update(id: number) {}
 }
 
 class CompensationsUserApi extends ApiClientBase {

@@ -227,14 +227,14 @@ export default {
         }, 200)
       }
     )
-    const validateDates = (value: string | null): string | boolean => {
+    const validateDates = (): string | boolean => {
       if (!startDate.value) return 'Please select start date.'
       if (!endDate.value) return 'Please select end date.'
       if (endDate.value < startDate.value) return 'End date must be after start date.'
       return true
     }
 
-    const validateTimes = (value: string | null): string | boolean => {
+    const validateTimes = (): string | boolean => {
       if (!excuseEnd.value) return 'Please select end time.'
       if (excuseEnd.value < excuseStart.value) return 'End time must be after start time.'
       return true
@@ -279,11 +279,20 @@ export default {
       const startTimeInHours = timeStringToHours(excuseStart.value);
       const endTimeInHours = timeStringToHours(excuseEnd.value);
       const days = (endTimeInHours - startTimeInHours) / CORE_HOURS
-      if (days === 0.25 || days === 0.50 || days === 0.75) {
-        return days
-      }
-      return 1
 
+      if (days < .25) {
+        return .25
+      }
+
+      if (days < .5) {
+        return .5
+      }
+
+      if (days < .75) {
+        return .75
+      }
+      
+      return 1
     }
 
     async function createLeave() {

@@ -30,12 +30,6 @@ export class EventApi extends ApiClientBase {
 
     return event
   }
-
-  async read(id: number) {}
-
-  async update(id: number) {}
-
-  async delete(id: number) {}
 }
 
 class EventExactApi extends ApiClientBase {

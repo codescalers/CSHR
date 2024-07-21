@@ -12,6 +12,7 @@ import SideDrawer from './components/SideDrawer.vue'
 import { useWSConnectionStore } from './stores/WSConnection'
 import { useNotificationStore } from './stores/notifications'
 import type { notificationType, WSErrorType } from './types'
+import { useHomeEventsStore } from './stores/homeEvents'
 
 export default defineComponent({
   name: 'App',
@@ -32,54 +33,59 @@ export default defineComponent({
     const connection = WSConnection.connect()
 
     const handleIncomingMessage = (event: MessageEvent) => {
-      const data: notificationType | WSErrorType = JSON.parse(event.data as string)
+  const data: notificationType | WSErrorType = JSON.parse(event.data as string);
 
-      if ('code' in data && 'message' in data) {
-        // Handle error
-        const error: WSErrorType = data as WSErrorType
-        const noti = notifier.notify({
-          title: 'An error received from the WebSocket',
-          description: error.message,
-          type: 'error'
-        })
+  if ('code' in data && 'message' in data) {
+    // Handle error
+    const error: WSErrorType = data as WSErrorType;
+    const noti = notifier.notify({
+      title: 'An error received from the WebSocket',
+      description: error.message,
+      type: 'error'
+    });
 
-        setTimeout(() => {
-          noti?.destroy()
-        }, 4000)
-      } else {
-        // Handle notification
-        const notification: notificationType = data as notificationType
-        notifications.addNotification(notification)
+    setTimeout(() => {
+      noti?.destroy();
+    }, 4000);
+  } else {
+    // Handle notification
+    const notification: notificationType = data as notificationType;
+    const homeEventsStore = useHomeEventsStore();
+    notifications.addNotification(notification);
 
-        const noti = notifier.notify({
-          title: notification.title,
-          description: notification.body,
-          type: 'success'
-        })
-
-        setTimeout(() => {
-          noti?.destroy()
-        }, 4000)
-      }
+    if (notification.request.type === "vacation") {
+      homeEventsStore.reload = true;
     }
 
-    onMounted(async () => {
-      window.connections = {
-        ws: connection
-      }
+    const noti = notifier.notify({
+      title: notification.title,
+      description: notification.body,
+      type: 'success'
+    });
 
-      if (window.connections.ws.value) {
-        window.connections.ws.value!.onmessage = (event: MessageEvent) =>
-          handleIncomingMessage(event)
-        window.connections.ws.value!.onerror = (error) => {
-          console.error('WebSocket error:', error)
-        }
-        window.connections.ws.value!.onclose = (event) => {
-          console.log('WebSocket connection closed:', event)
-        }
-      }
-    })
+    setTimeout(() => {
+      noti?.destroy();
+    }, 4000);
   }
+};
+
+  onMounted(async () => {
+    window.connections = {
+      ws: connection
+    }
+
+    if (window.connections.ws.value) {
+      window.connections.ws.value!.onmessage = (event: MessageEvent) =>
+        handleIncomingMessage(event)
+      window.connections.ws.value!.onerror = (error) => {
+        console.error('WebSocket error:', error)
+      }
+      window.connections.ws.value!.onclose = (event) => {
+        console.log('WebSocket connection closed:', event)
+      }
+    }
+  })
+}
 })
 </script>
 <style>

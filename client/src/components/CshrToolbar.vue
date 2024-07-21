@@ -114,8 +114,7 @@
     <NotificationDetailsDialog
       route-query="toolbar-notification"
       v-model="selectedNotification"
-      @update:approve="handleApprove"
-      @update:reject="handleReject"
+      @update:status="updateStatus"
       @set:notification="setNotification"
     />
   </VToolbar>
@@ -126,7 +125,7 @@ import { computed, ref, type Ref } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { useApi } from '@/hooks'
 import { formatDate, getStatusColor } from '@/utils'
-import type { notificationType } from '@/types'
+import type { Api, notificationType } from '@/types'
 import NotificationDetailsDialog from './NotificationDetailsDialog.vue'
 import profileImage from './profileImage.vue'
 import { useNotificationStore } from '@/stores/notifications'
@@ -168,33 +167,12 @@ export default {
 
     const selectedNotification = ref<notificationType>() as Ref<notificationType>
 
-    const handleApprove = (value: string) => {
+    const updateStatus = (value: Api.RequestStatus) => {
       const notification = notificationStore.notifications.find(
         (notification) => notification.id === selectedNotification.value?.id
       )
       if (notification) {
         notification.request.status = value
-        window.connections.ws.value!.send(
-          JSON.stringify({
-            event: 'approve_request',
-            request_id: notification.request.id
-          })
-        )
-      }
-    }
-
-    const handleReject = (value: string) => {
-      const notification = notificationStore.notifications.find(
-        (notification) => notification.id === selectedNotification.value?.id
-      )
-      if (notification) {
-        notification.request.status = value
-        window.connections.ws.value!.send(
-          JSON.stringify({
-            event: 'reject_request',
-            request_id: notification.request.id
-          })
-        )
       }
     }
 
@@ -257,8 +235,7 @@ export default {
       hasReadNotifications,
       getStatusColor,
       formatedDate,
-      handleApprove,
-      handleReject,
+      updateStatus,
       setNotification,
       handleReadAllNotifications,
       handleDeleteAllNotifications,

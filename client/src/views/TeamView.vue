@@ -110,7 +110,7 @@ export default {
     }
     watch(
       () => count.value,
-      async (newValue) => {
+      async () => {
         if (page.value !== count.value && count.value >= 1) {
           concatTeam();
         }
