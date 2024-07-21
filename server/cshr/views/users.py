@@ -378,6 +378,7 @@ class SupervisorsAPIView(ListAPIView, GenericAPIView):
     Methods:
         get_queryset(self) -> Response: Retrieves the queryset of supervisors and admins.
     """
+
     serializer_class = GeneralUserSerializer
     permission_class = [IsAdmin | IsSupervisor]
 
@@ -387,6 +388,7 @@ class SupervisorsAPIView(ListAPIView, GenericAPIView):
     Returns:
         Response: A response containing the queryset of supervisors and admins.
     """
+
     def get_queryset(self) -> Response:
         query_set = get_admins_and_supervisors()
         return query_set

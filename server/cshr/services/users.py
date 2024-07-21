@@ -93,7 +93,9 @@ def get_all_of_users(options=None) -> User:
         team_name = options.get("team", {}).get("name")
 
         if location_id and team_name:
-            queryset = queryset.filter(location__id=location_id, team__icontains=team_name)
+            queryset = queryset.filter(
+                location__id=location_id, team__icontains=team_name
+            )
         elif team_name:
             queryset = queryset.filter(team__icontains=team_name)
         elif location_id:
@@ -147,11 +149,11 @@ def get_supervisors() -> QuerySet[User]:
     """Return all supervisors users"""
     return User.objects.filter(user_type=USER_TYPE.SUPERVISOR)
 
+
 def get_admins_and_supervisors() -> QuerySet[User]:
     """Return all supervisors users"""
-    return User.objects.filter(
-        user_type__in=[USER_TYPE.SUPERVISOR, USER_TYPE.ADMIN]
-    )
+    return User.objects.filter(user_type__in=[USER_TYPE.SUPERVISOR, USER_TYPE.ADMIN])
+
 
 def get_or_create_user_balance(user: User, user_balance: Dict) -> QuerySet[User]:
     """Get or create user balance record."""
@@ -160,13 +162,13 @@ def get_or_create_user_balance(user: User, user_balance: Dict) -> QuerySet[User]
         office_balance = OfficeVacationBalance.objects.get(location=user.location)
         user_balance = VacationBalance.objects.get_or_create(
             user=user,
-            sick_leaves = 365,
-            compensation = 365,
-            unpaid = 365,
-            annual_leaves = user_balance.get("annual_leaves"),
-            emergency_leaves = user_balance.get("emergency_leaves"),
-            leave_excuses = user_balance.get("leave_excuses"),
-            office_vacation_balance = office_balance,
+            sick_leaves=365,
+            compensation=365,
+            unpaid=365,
+            annual_leaves=user_balance.get("annual_leaves"),
+            emergency_leaves=user_balance.get("emergency_leaves"),
+            leave_excuses=user_balance.get("leave_excuses"),
+            office_vacation_balance=office_balance,
         )
         return user_balance[0]
     return None

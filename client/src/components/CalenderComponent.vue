@@ -226,41 +226,40 @@ function onSelect(arg: any) {
 
 function onClick(arg: any) {
   selectedEvent.value = undefined
-  calendar.value = arg.view.calendar
-  const clickedEventTitle = arg.event.title as string
+  const event = arg.event
+
+  const eventsMap = {
+    holiday: {
+      data: holidays.value,
+      dialog: CalendarEventSelection.PublicHoliday,
+    },
+    vacation: {
+      data: vacations.value,
+      dialog: CalendarEventSelection.Vacation,
+    },
+    birthday: {
+      data: birthdays.value,
+      dialog: CalendarEventSelection.Birthday,
+    },
+    event: {
+      data: events.value,
+      dialog: CalendarEventSelection.Event,
+    },
+    meeting: {
+      data: meetings.value,
+      dialog: CalendarEventSelection.Meeting,
+    },
+  };
+
+  const eventType = event.extendedProps.type
 
   // We use a normalized event ID to avoid duplication. It's created by concatenating 'holiday', 'birthday', 'event', 'meeting', and 'vacation' with the event ID.
-  if (clickedEventTitle.includes(CalendarEventSelection.PublicHoliday)) {
-    selectedEvent.value = holidays.value.filter(
-      (holiday) => holiday.id === Number(arg.event.id.replace('holiday', ''))
-    )[0]
-
-    openDialog(CalendarEventSelection.PublicHoliday)
-  } else if (
-    clickedEventTitle
-      .toLocaleLowerCase()
-      .includes(CalendarEventSelection.Vacation.toLocaleLowerCase())
-  ) {
-    selectedEvent.value = vacations.value.filter(
-      (vacation) => vacation.id === Number(arg.event.id.replace('vacation', ''))
-    )[0]
-    openDialog(CalendarEventSelection.Vacation)
-  } else if (clickedEventTitle.includes(CalendarEventSelection.Birthday)) {
-    selectedEvent.value = birthdays.value.filter(
-      (birthday) => birthday.id === Number(arg.event.id.replace('birthday', ''))
-    )[0]
-    openDialog(CalendarEventSelection.Birthday)
-  } else if (clickedEventTitle === CalendarEventSelection.Event) {
-    selectedEvent.value = events.value.filter(
-      (event) => event.id === Number(arg.event.id.replace('event', ''))
-    )[0]
-    openDialog(CalendarEventSelection.Event)
-  } else if (clickedEventTitle === CalendarEventSelection.Meeting) {
-    selectedEvent.value = meetings.value.filter(
-      (meeting) => meeting.id === Number(arg.event.id.replace('meeting', ''))
-    )[0]
-    openDialog(CalendarEventSelection.Meeting)
-  }
+  if ((eventsMap as any)[eventType]) {
+  selectedEvent.value = (eventsMap as any)[eventType].data.filter(
+    (item: { id: number }) => item.id === +event.id.replace(eventType, '')
+  )[0];
+  openDialog((eventsMap as any)[eventType].dialog);
+}
   selectedEventType.isViewRequest = true
 }
 

@@ -2,7 +2,12 @@
 
 from django.urls import path
 
-from cshr.views.notifications import BaseNotificationApiView, ReadNotificationApiView, ReadAllNotificationsApiView, DeleteAllNotificationsApiView
+from cshr.views.notifications import (
+    BaseNotificationApiView,
+    ReadNotificationApiView,
+    ReadAllNotificationsApiView,
+    DeleteAllNotificationsApiView,
+)
 
 urlpatterns = [
     path("", BaseNotificationApiView.as_view()),

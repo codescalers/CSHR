@@ -81,12 +81,17 @@ export function normalizeEvent(e: Api.Event): any {
     allDay: true
   }
 }
+function formatTitle(v: Api.Vacation) {
+  const fullName = v.applying_user_full_name ? v.applying_user_full_name : v.applying_user.full_name;
+  const reason = v.reason.replace("_", " ").replace(/s$/, "");
+  return `${fullName} ${reason}`;
+}
 export function normalizeVacation(v: Api.Vacation) {
   const dates = handelDates(v.from_date, v.end_date)
 
   return {
     type: v.type,
-    title: `${v.applying_user_full_name ? v.applying_user_full_name : v.applying_user.full_name }'s Vacation`,
+    title: formatTitle(v),
     color: '#fcd091',
     start: dates.start,
     end: dates.end,
