@@ -14,8 +14,8 @@
 
       <v-form ref="form" @submit.prevent="updateVacation()">
         <v-row class="d-flex justify-center my-2">
-          <v-btn color="primary" v-if="couldUpdate" class="mx-1 my-2" type="submit"
-            :disabled="!form?.isValid || disabled">Update</v-btn>
+          <v-btn color="primary" v-if="couldUpdate && vacation.applying_user.id === user?.id" class="mx-1 my-2" type="submit"
+            :disabled="!form?.isValid">Update</v-btn>
           <v-btn v-if="vacation.status === 'approved' && couldDelete" color="error" class="mx-1 my-2" @click="requestToCancel">Request to Cancel</v-btn>
           <v-btn v-if="vacation.status === 'pending' && couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Cancel</v-btn>
         </v-row>
@@ -74,6 +74,8 @@
       <v-divider class="my-2"></v-divider>
       <!-- Approve/Reject the normal request -->
       <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'pending'">
+        <v-btn color="primary" class="ma-1" type="submit"
+        :disabled="!form?.isValid || disabled" @click="updateVacation" v-if="vacation.applying_user.id !== user?.id && user?.fullUser.location.id == vacation.applying_user.location.id">Update</v-btn>
         <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
         <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
       </v-row>
@@ -178,26 +180,22 @@ export default {
     }
 
     const couldUpdate = computed(() => {
-      const currentUser = user.value?.fullUser?.id;
-      const vacationUser = props.vacation?.applying_user?.id || props.vacation?.applying_user;
-
       if (user.value && props.vacation.status === 'pending') {
-        return (
-          (props.vacation.isUpdated && currentUser === vacationUser) ||
-          (!props.vacation.isUpdated && currentUser === vacationUser)
-        );
+        if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user || user.value.fullUser.user_type != "User" && user.value?.id && props.vacation.approvals.includes(user.value?.id)) {
+            return true
+          }
       }
       return false;
     });
 
     const from_date = computed(() => {
       let val = new Date(start_date.value)
-      val.setHours(8, 0, 0, 0)
+        val.setHours(8, 0, 0, 0)
       return val.toISOString()
     })
     const to_date = computed(() => {
       let val = new Date(end_date.value)
-      val.setHours(16, 0, 0, 0)
+        val.setHours(16, 0, 0, 0)
 
       return val.toISOString()
     })
@@ -386,6 +384,7 @@ export default {
       couldDelete,
       start_date,
       end_date,
+      user,
       actualDays,
       validateForm,
       validateEndDate,

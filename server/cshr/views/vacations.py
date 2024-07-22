@@ -343,7 +343,8 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
                 from_date__lte=end_date,
                 end_date__gte=start_date,
                 status=STATUS_CHOICES.PENDING,
-            )
+            ).exclude(id=int(id))
+
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
                     message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
