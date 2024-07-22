@@ -116,6 +116,7 @@ export module Api {
     date: string
     location: LocationType
     skills: Skill[]
+    leads: number[]
     user_certificates: Certificate[]
     joining_at: string
     job_title: string

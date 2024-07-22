@@ -81,12 +81,12 @@ class StanderdVacationBalance:
     def calculate_times(self, start_hour: str, end_hour: str, CORE_HOURS=8) -> float:
         """Calculate the hours with the CORE_HOURS"""
         time = (end_hour - start_hour) / CORE_HOURS
-        if time < .25:
-            return .25
-        if time < .5:
-            return .5
-        if time < .75:
-            return .75
+        if time < 0.25:
+            return 0.25
+        if time < 0.5:
+            return 0.5
+        if time < 0.75:
+            return 0.75
         return 1
 
     def is_valid_times(

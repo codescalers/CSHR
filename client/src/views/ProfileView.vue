@@ -1,19 +1,19 @@
 <template>
   <div>
     <v-row class="ma-5">
-      <v-col cols="12" sm="12" md="3" class="pa-2 rounded ma-2 align-self-start">
-        <v-alert class="mb-4" color="primary" variant="outlined">User info</v-alert>
+      <v-col cols="12" sm="12" md="12" lg="3" class="pa-2 rounded ma-2 align-self-start">
+        <v-card-title class="font-weight-medium bg-primary">User info</v-card-title>
         <UserCard :loading="user.isLoading" :user="user.state.value" />
-        <div v-if="couldSeeReportingTo">
+        <div v-if="user.state.value.reporting_to && user.state.value.reporting_to.length">
           <v-divider class="mt-4 mb-4"></v-divider>
-          <v-alert class="mb-4" color="primary" variant="outlined">Reporting to</v-alert>
+          <v-card-title class="font-weight-medium bg-primary">Team lead</v-card-title>
           <UserCard :loading="user.isLoading" :user="user.state.value.reporting_to[0]" />
         </div>
       </v-col>
-      <v-col cols="12" sm="12" md="8" class="pa-2 border rounded position-relative ma-2">
+      <v-col cols="12" sm="12" md="12" lg="8" class="pa-2 border rounded position-relative ma-2">
         <div>
           <personalInformation :user="user.state.value" />
-          <vacationBalance :balance="balance.state.value" />
+          <vacationBalance :balance="balance.state.value" v-if="couldSeeBalance" />
         </div>
       </v-col>
     </v-row>
@@ -53,12 +53,8 @@ export default defineComponent({
       }
     )
 
-    const couldSeeReportingTo = computed(() => {
-      return (
-        user.state.value.reporting_to && user.state.value.reporting_to.length &&
-        ((requestedUser && user.state.value.id === requestedUser.id) ||
-          (requestedUser && requestedUser.user_type === 'Admin'))
-      )
+    const couldSeeBalance = computed(() => {
+      return user.state.value.leads && user.state.value.leads.includes(requestedUser!.id) || requestedUser!.id === user.state.value.id
     })
 
     const balance = useAsyncState(
@@ -69,34 +65,10 @@ export default defineComponent({
       { immediate: false }
     )
 
-    // const showBalance = computed(() => {
-    //   if (storedUser.value?.fullUser) {
-    //     if (
-    //       user.state.value &&
-    //       storedUser.value?.fullUser &&
-    //       user.state.value.id === storedUser.value?.fullUser.id
-    //     ) {
-    //       return true
-    //     } else if (storedUser.value?.fullUser && storedUser.value?.fullUser.user_type === 'Admin') {
-    //       if (user.state.value.reporting_to) {
-    //         if (
-    //           user.state.value.reporting_to.includes(storedUser.value?.fullUser.id) &&
-    //           user.state.value.location.name === storedUser.value?.fullUser.location.name
-    //         ) {
-    //           return true
-    //         }
-    //       }
-    //       return false
-    //     }
-    //   }
-    //   return false
-    // })
-
     return {
       user,
       balance,
-      couldSeeReportingTo,
-      // showBalance,
+      couldSeeBalance,
       vacationBalance,
       personalInformation,
       profileImage
