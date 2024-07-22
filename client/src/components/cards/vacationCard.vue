@@ -47,12 +47,12 @@
           <v-row>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="From" v-model="start_date" :readonly="!couldUpdate" type="datetime-local">
+                label="From" v-model="start_date" :readonly="!couldUpdate" type="datetime-local" :rules="[validateStartDate]" @input="validateForm">
               </v-text-field>
             </v-col>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="To" v-model="end_date" :readonly="!couldUpdate" type="datetime-local" :rules="[validateEndDate]">
+                label="To" v-model="end_date" :readonly="!couldUpdate" type="datetime-local" :rules="[validateEndDate]" @input="validateForm">
               </v-text-field>
             </v-col>
           </v-row>
@@ -156,18 +156,27 @@ export default {
     })
 
     watch([start_date, end_date], async([newStart, newEnd]) => {
-      const START = start_date.value.split('T')[0].split(' ')[0]
-      const END = end_date.value.split('T')[0].split(' ')[0]
-
-      if (START === END) {
-        const start = convertToTimeOnly(newStart);
-        const end = convertToTimeOnly(newEnd);
-        actualDays.value = calculateTimes(start, end)
-      } else {
-        actualDays.value = (await calculateActualDays()).state.value;
+      if (form.value) {
+        await validateForm();
+      }
+      
+      if (form.value?.isValid) {
+        const START = start_date.value.split('T')[0].split(' ')[0]
+        const END = end_date.value.split('T')[0].split(' ')[0]
+        if (START === END) {
+          const start = convertToTimeOnly(newStart);
+          const end = convertToTimeOnly(newEnd);
+          actualDays.value = calculateTimes(start, end)
+        } else {
+          actualDays.value = (await calculateActualDays()).state.value;
+        }
       }
     })
   
+    async function validateForm() {
+      await form.value.validate();
+    }
+
     const couldUpdate = computed(() => {
       const currentUser = user.value?.fullUser?.id;
       const vacationUser = props.vacation?.applying_user?.id || props.vacation?.applying_user;
@@ -227,9 +236,21 @@ export default {
       disabled.value = true;
     });
 
+    function validateStartDate(value: any) {
+      const start = new Date(value);
+      const end = new Date(end_date.value);
+
+      if (start > end) {
+        return 'From date must be before to date.'
+      }
+      return true
+    }
+
     function validateEndDate(value: any) {
-      if (startDate.value && value <= startDate.value) {
-        return 'To date must be after From date'
+      const start = new Date(value);
+      const end = new Date(end_date.value);
+      if (end < start) {
+        return 'To date must be after from date.'
       }
       return true
     }
@@ -366,7 +387,9 @@ export default {
       start_date,
       end_date,
       actualDays,
+      validateForm,
       validateEndDate,
+      validateStartDate,
       updateVacation,
       handleApprove,
       handleReject,
