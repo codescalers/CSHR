@@ -64,10 +64,10 @@ class RegisterApiView(GenericAPIView):
                             message=f"The {field} is missing in the `user_balance` object."
                         )
 
-                # Create the user object first
-                user: User = serializer.save(joining_at=request.data.get("joining_at"))
-                # Then create or update user balance
-                get_or_create_user_balance(user, user_balance)
+            # Create the user object first
+            user: User = serializer.save(joining_at=request.data.get("joining_at"))
+            # Then create or update user balance
+            get_or_create_user_balance(user, user_balance)
 
             return CustomResponse.success(
                 data=serializer.data,

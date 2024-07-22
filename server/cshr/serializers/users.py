@@ -21,6 +21,7 @@ from cshr.services.company_properties import (
 from cshr.services.evaluations import get_evaluations_for_a_user
 from cshr.serializers.userEvaluation import UserEvaluationSerializer
 from cshr.serializers.office import OfficeSerializer
+from cshr.services.users import build_user_reporting_to_hierarchy
 
 
 class ActiveUserSerializer(Serializer):
@@ -255,6 +256,7 @@ class SelfUserSerializer(ModelSerializer):
     image = SerializerMethodField()
     skills = SerializerMethodField()
     location = SerializerMethodField()
+    leads = SerializerMethodField()
 
     class Meta:
         model = User
@@ -284,6 +286,7 @@ class SelfUserSerializer(ModelSerializer):
             "user_type",
             "background_color",
             "is_active",
+            "leads",
         ]
 
     def get_user_certificates(self, obj):
@@ -310,6 +313,9 @@ class SelfUserSerializer(ModelSerializer):
 
     def get_location(self, obj):
         return OfficeSerializer(obj.location).data
+
+    def get_leads(self, obj):
+        return build_user_reporting_to_hierarchy(obj)
 
 
 class BaseUserSerializer(ModelSerializer):

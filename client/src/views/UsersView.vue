@@ -5,7 +5,7 @@
       <v-divider></v-divider>
     </div>
     <officeFilters :offices="offices" :teams="teams" />
-    <v-card class="pa-2">
+    <v-card class="pa-2" v-if="users.state.value.length">
       <v-row>
         <v-col class="d-flex flex-wrap justify-start">
           <v-col
@@ -31,6 +31,9 @@
           <v-pagination v-model="page" :length="count" rounded="circle"></v-pagination>
         </v-col>
       </v-row>
+    </v-card>
+    <v-card v-else class="pa-15 mt-15 d-flex justify-center text-center" variant="plain">
+      Seems like there are no users. Please try changing the filters and attempting again.
     </v-card>
   </v-container>
 </template>
@@ -94,7 +97,6 @@ export default {
     watch(
       () => [$route.query.location_id, $route.query.team_name, page.value],
       async () => {
-        page.value = 1
         useAsyncState(
           $api.users.list({ location_id: $route.query.location_id, team_name: $route.query.team_name, page: page.value }),
           undefined,

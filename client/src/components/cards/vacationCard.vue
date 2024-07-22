@@ -9,9 +9,7 @@
     </v-card-title>
     <v-container class="pa-6">
       <p class="text-subtitle-1 text-center">
-        From <b>{{ start_date }}</b>
-        to <b color="primary">{{ end_date }}</b>
-        vacation
+        From <b>{{ start_date.replace('T', ' ') }} </b> to <b color="primary">{{ end_date.replace('T', ' ') }} </b> vacation
       </p>
 
       <v-form ref="form" @submit.prevent="updateVacation()">
@@ -45,18 +43,16 @@
                 <span :style="{color: getStatusColor(vacation.status)}">{{ formatRequestStatus(vacation.status) }}</span>
               </p>
             </v-col>
-
           </v-row>
-
           <v-row>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="From" v-model="start_date" :readonly="!couldUpdate" type="date">
+                label="From" v-model="start_date" :readonly="!couldUpdate" type="datetime-local" :rules="[validateStartDate]" @input="validateForm">
               </v-text-field>
             </v-col>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="To" v-model="end_date" :readonly="!couldUpdate" type="date" :rules="[validateEndDate]">
+                label="To" v-model="end_date" :readonly="!couldUpdate" type="datetime-local" :rules="[validateEndDate]" @input="validateForm">
               </v-text-field>
             </v-col>
           </v-row>
@@ -79,7 +75,7 @@
       <!-- Approve/Reject the normal request -->
       <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'pending'">
         <v-btn color="primary" class="ma-1" type="submit"
-        :disabled="!form?.isValid" @click="updateVacation" v-if="vacation.applying_user.id !== user?.id && user?.fullUser.location.id == vacation.applying_user.location.id">Update</v-btn>
+        :disabled="!form?.isValid || disabled" @click="updateVacation" v-if="vacation.applying_user.id !== user?.id && user?.fullUser.location.id == vacation.applying_user.location.id">Update</v-btn>
         <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
         <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
       </v-row>
@@ -99,7 +95,7 @@ import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
 import type { PropType } from 'vue';
-import { formatRequestStatus, getStatusColor } from '@/utils';
+import { calculateTimes, convertToTimeOnly, formatRequestStatus, getStatusColor } from '@/utils';
 
 export default {
   name: 'vacationCard',
@@ -119,9 +115,9 @@ export default {
   setup(props, ctx) {
     const $api = useApi()
     const startDate = ref<Date>(new Date(props.vacation.from_date));
-    const start_date = ref(startDate.value.toISOString().split('T')[0]);
+    const start_date = ref(startDate.value.toISOString().replace('T', ' ').slice(0,16))
     const endDate = ref<Date>(new Date(props.vacation.end_date))
-    const end_date = ref(endDate.value.toISOString().split('T')[0]);
+    const end_date = ref(endDate.value.toISOString().replace('T', ' ').slice(0,16))
     const actualDays = ref();
     const leaveReason = ref<Api.LeaveReason>({
       name: transformString(props.vacation.reason),
@@ -130,30 +126,67 @@ export default {
     const form = ref()
     const disabled = ref<boolean>(true)
     const user = ApiClientBase.user
-    const leaveReasons = ref<Api.LeaveReason[]>([])
+    const leaveReasons = ref<Api.LeaveReason[]>([
+      {
+        name: `Emergency Leaves`,
+        reason: 'emergency_leaves'
+      },
+      {
+        name: `Sick Leaves`,
+        reason: 'sick_leaves'
+      },
+      {
+        name: `Annual Leaves`,
+        reason: 'annual_leaves'
+      },
+      {
+        name: `Unpaid`,
+        reason: 'unpaid'
+      },
+      {
+        name: `Compensation`,
+        reason: 'compensation'
+      },
+      {
+        name: `Leave Excuse`,
+        reason: 'leave_excuses'
+      }
+    ])
 
-    onMounted(async() => {
-      actualDays.value = (await calculateActualDays()).state.value;
+    onMounted(async () => {
+      actualDays.value = (await calculateActualDays()).state.value
     })
-  
-    const couldUpdate = computed(() => {
-      if (user.value) {
-        if (props.vacation.status == 'pending') {
-          // could update if user signed in is the same user applied for vacation
-          if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user || user.value.fullUser.user_type != "User" && user.value?.id && props.vacation.approvals.includes(user.value?.id)) {
-            return true
-          }
-          if (
-            !props.vacation.isUpdated &&
-            user.value.fullUser.id == props.vacation.applying_user.id
-          ) {
-            return true
-          }
-          return false
+
+    watch([start_date, end_date], async([newStart, newEnd]) => {
+      if (form.value) {
+        await validateForm();
+      }
+      
+      if (form.value?.isValid) {
+        const START = start_date.value.split('T')[0].split(' ')[0]
+        const END = end_date.value.split('T')[0].split(' ')[0]
+        if (START === END) {
+          const start = convertToTimeOnly(newStart);
+          const end = convertToTimeOnly(newEnd);
+          actualDays.value = calculateTimes(start, end)
+        } else {
+          actualDays.value = (await calculateActualDays()).state.value;
         }
       }
-      return false
     })
+  
+    async function validateForm() {
+      await form.value.validate();
+    }
+
+    const couldUpdate = computed(() => {
+      if (user.value && props.vacation.status === 'pending') {
+        if (props.vacation.isUpdated && user.value.fullUser.id == props.vacation.applying_user || user.value.fullUser.user_type != "User" && user.value?.id && props.vacation.approvals.includes(user.value?.id)) {
+            return true
+          }
+      }
+      return false;
+    });
 
     const from_date = computed(() => {
       let val = new Date(start_date.value)
@@ -169,7 +202,6 @@ export default {
 
     const couldDelete = computed(() => {
       if (user.value) {
-
         // Could delete if user signed in is the same user applied for vacation
         if (props.vacation.applying_user.id == user.value.fullUser.id) {
           return true
@@ -194,18 +226,29 @@ export default {
       return false
     })
 
-    watch([leaveReason, startDate, endDate], ([newLeaveReason, newStartDate, newEndDate], [oldLeaveReason, oldStartDate, oldEndDate]) => {
+    watch([leaveReason, start_date, end_date], ([newLeaveReason, newStartDate, newEndDate], [oldLeaveReason, oldStartDate, oldEndDate]) => {
       if (newLeaveReason.name !== oldLeaveReason.name || newStartDate !== oldStartDate || newEndDate !== oldEndDate) {
         disabled.value = false;
         return
       }
       disabled.value = true;
-
     });
 
+    function validateStartDate(value: any) {
+      const start = new Date(value);
+      const end = new Date(end_date.value);
+
+      if (start > end) {
+        return 'From date must be before to date.'
+      }
+      return true
+    }
+
     function validateEndDate(value: any) {
-      if (startDate.value && value <= startDate.value) {
-        return 'To date must be after From date'
+      const start = new Date(value);
+      const end = new Date(end_date.value);
+      if (end < start) {
+        return 'To date must be after from date.'
       }
       return true
     }
@@ -297,8 +340,8 @@ export default {
     async function calculateActualDays() {
       return useAsyncState(
         $api.vacations.calculate.list({
-          start_date: start_date.value,
-          end_date: end_date.value
+          start_date: start_date.value.split(' ')[0].split('T')[0],
+          end_date: end_date.value.split(' ')[0].split('T')[0]
         }),
         []
       )
@@ -343,7 +386,9 @@ export default {
       end_date,
       user,
       actualDays,
+      validateForm,
       validateEndDate,
+      validateStartDate,
       updateVacation,
       handleApprove,
       handleReject,
