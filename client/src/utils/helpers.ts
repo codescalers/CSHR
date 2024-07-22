@@ -198,3 +198,36 @@ export async function listUsers($api: ApiClient, page: number, count: number): P
     return { page, count, users };
 
 }
+
+export function convertToTimeOnly(datetime: string) {
+  // Use a regular expression to capture the time part
+  const match = datetime.match(/(?:T| )(\d{2}:\d{2})/);
+  return match ? match[1] : '';
+}
+
+function timeStringToHours(time: string): number {
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours + minutes / 60;
+}
+
+export function calculateTimes(excuseStart: string, excuseEnd: string) {
+  const startTimeInHours = timeStringToHours(excuseStart);
+  const endTimeInHours = timeStringToHours(excuseEnd);
+  
+  const CORE_HOURS = 8;
+  const days = (endTimeInHours - startTimeInHours) / CORE_HOURS
+  
+  if (days <= .25) {
+    return .25
+  }
+
+  if (days <= .5) {
+    return .5
+  }
+
+  if (days <= .75) {
+    return .75
+  }
+  
+  return 1
+}

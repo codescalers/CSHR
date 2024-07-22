@@ -70,7 +70,7 @@
 <script lang="ts">
 import { useApi } from '@/hooks'
 import { Selection, type Api } from '@/types'
-import { requiredRules, listUsers } from '@/utils'
+import { requiredRules, listUsers, calculateTimes } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
 import { computed, onMounted, ref, watch } from 'vue'
 import { ApiClientBase } from '@/clients/api/base'
@@ -221,8 +221,8 @@ export default {
         setTimeout(async () => {
           excuseStartField.value.validate()
           excuseEndField.value.validate()
-          if (startDate.value === endDate.value) {
-            days.value = calculateTimes()
+          if (startDate.value == endDate.value) {
+            days.value = calculateTimes(excuseStart.value, excuseEnd.value)
           }
         }, 200)
       }
@@ -268,32 +268,6 @@ export default {
       }
       return false
     })
-
-    function timeStringToHours(time: string): number {
-      const [hours, minutes] = time.split(':').map(Number);
-      return hours + minutes / 60;
-    }
-
-
-    function calculateTimes() {
-      const startTimeInHours = timeStringToHours(excuseStart.value);
-      const endTimeInHours = timeStringToHours(excuseEnd.value);
-      const days = (endTimeInHours - startTimeInHours) / CORE_HOURS
-
-      if (days < .25) {
-        return .25
-      }
-
-      if (days < .5) {
-        return .5
-      }
-
-      if (days < .75) {
-        return .75
-      }
-      
-      return 1
-    }
 
     async function createLeave() {
       requesting.value = true

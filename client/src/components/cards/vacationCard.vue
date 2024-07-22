@@ -93,7 +93,7 @@ import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
 import type { PropType } from 'vue';
-import { formatRequestStatus, getStatusColor } from '@/utils';
+import { calculateTimes, convertToTimeOnly, formatRequestStatus, getStatusColor } from '@/utils';
 
 export default {
   name: 'vacationCard',
@@ -155,8 +155,17 @@ export default {
       actualDays.value = (await calculateActualDays()).state.value
     })
 
-    watch([start_date, end_date], async() => {
-      actualDays.value = (await calculateActualDays()).state.value;
+    watch([start_date, end_date], async([newStart, newEnd]) => {
+      const START = start_date.value.split('T')[0].split(' ')[0]
+      const END = end_date.value.split('T')[0].split(' ')[0]
+
+      if (START === END) {
+        const start = convertToTimeOnly(newStart);
+        const end = convertToTimeOnly(newEnd);
+        actualDays.value = calculateTimes(start, end)
+      } else {
+        actualDays.value = (await calculateActualDays()).state.value;
+      }
     })
   
     const couldUpdate = computed(() => {
