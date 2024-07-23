@@ -1,3 +1,4 @@
+from django.core.exceptions import ImproperlyConfigured
 from datetime import timedelta
 from components import BASE_DIR, config
 import os
@@ -162,11 +163,17 @@ LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Africa/Cairo"
 ASGI_APPLICATION = "asgi.application"
+
+try:
+    _, R_HOST, R_PORT = config("REDIS_HOST").replace("//", "").split(":")
+except Exception:
+    raise ImproperlyConfigured("REDIS_HOST is not defined")
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [(R_HOST, R_PORT)],
         },
     },
 }
