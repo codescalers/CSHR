@@ -81,13 +81,14 @@ class StanderdVacationBalance:
     def calculate_times(self, start_hour: str, end_hour: str, CORE_HOURS=8) -> float:
         """Calculate the hours with the CORE_HOURS"""
         time = (end_hour - start_hour) / CORE_HOURS
-        if time < 0.25:
+        if time <= 0.25:
             return 0.25
-        if time < 0.5:
+        elif time <= 0.5:
             return 0.5
-        if time < 0.75:
+        elif time <= 0.75:
             return 0.75
-        return 1
+        else:
+            return 1
 
     def is_valid_times(
         self,
@@ -105,7 +106,13 @@ class StanderdVacationBalance:
     def get_actual_days(
         self, user: User, start_date: datetime, end_date: datetime
     ) -> int:
-        dates: List[datetime.date] = self.remove_weekends(user, start_date, end_date)
+        dates: List[datetime.date] = []
+
+        try:
+            dates = self.remove_weekends(user, start_date, end_date)
+        except ValueError as e:
+            raise e
+
         dates = self.remove_holidays(user, dates)
         return len(dates) if len(dates) > 0 else 0
 
@@ -123,7 +130,12 @@ class StanderdVacationBalance:
 
         self.check(applying_user)
         v = applying_user.vacationbalance
-        vacation_days = self.get_actual_days(applying_user, start_date, end_date)
+        vacation_days = 0
+
+        try:
+            vacation_days = self.get_actual_days(applying_user, start_date, end_date)
+        except ValueError as e:
+            raise e
 
         if hasattr(v, reason):
             curr_balance = getattr(v, reason)

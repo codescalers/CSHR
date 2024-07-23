@@ -210,7 +210,11 @@ export default {
             excuseStart.value = '08:00'
             excuseEnd.value = '16:00'
           }
-          actualDays.execute()
+
+          if(form.value.isValid){
+            actualDays.execute()
+          }
+
         }, 200)
       }
     )

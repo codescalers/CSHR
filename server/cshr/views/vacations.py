@@ -585,7 +585,12 @@ class CalculateVacationDaysApiView(GenericAPIView):
         except ValueError as e:
             return CustomResponse.bad_request(message=str(e))
 
-        actual_days: int = v.get_actual_days(user, start_date, end_date)
+        actual_days = 0
+
+        try:
+            actual_days: int = v.get_actual_days(user, start_date, end_date)
+        except ValueError as e:
+            return CustomResponse.bad_request(message=str(e))
 
         return CustomResponse.success(message="Balance calculated.", data=actual_days)
 
@@ -716,16 +721,16 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
                 return http_ensure_redis_error()
 
             # Update the balance
-            balance = v.check_and_update_balance(
-                applying_user=saved_vacation.applying_user,
-                vacation=saved_vacation,
-                reason=saved_vacation.reason,
-                start_date=saved_vacation.from_date,
-                end_date=saved_vacation.end_date,
-            )
-
-            if balance is not True:
-                return CustomResponse.bad_request(message=balance)
+            try:
+                v.check_and_update_balance(
+                    applying_user=saved_vacation.applying_user,
+                    vacation=saved_vacation,
+                    reason=saved_vacation.reason,
+                    start_date=saved_vacation.from_date,
+                    end_date=saved_vacation.end_date,
+                )
+            except ValueError as e:
+                return CustomResponse.bad_request(message=str(e))
 
             # Approve the vacation.
             saved_vacation.status = STATUS_CHOICES.APPROVED
@@ -825,17 +830,17 @@ class CancelVacationApiView(GenericAPIView):
 
         if vacation.status == STATUS_CHOICES.CANCEL_APPROVED:
             v = StanderdVacationBalance()
-            balance = v.check_and_update_balance(
-                applying_user=vacation.applying_user,
-                vacation=vacation,
-                reason=vacation.reason,
-                start_date=vacation.from_date,
-                end_date=vacation.end_date,
-                delete=True,
-            )
-
-            if balance is not True:
-                return CustomResponse.bad_request(message=balance)
+            try:
+                v.check_and_update_balance(
+                    applying_user=vacation.applying_user,
+                    vacation=vacation,
+                    reason=vacation.reason,
+                    start_date=vacation.from_date,
+                    end_date=vacation.end_date,
+                    delete=True,
+                )
+            except ValueError as e:
+                return CustomResponse.bad_request(message=str(e))
 
         self._cancel_vacation(request.user, vacation)
 
@@ -974,17 +979,17 @@ class ApproveCancelVacationRequestApiView(GenericAPIView):
 
         # Return the balance back.
         v = StanderdVacationBalance()
-        balance = v.check_and_update_balance(
-            applying_user=vacation.applying_user,
-            vacation=vacation,
-            reason=vacation.reason,
-            start_date=vacation.from_date,
-            end_date=vacation.end_date,
-            delete=True,
-        )
-
-        if balance is not True:
-            return CustomResponse.bad_request(message=balance)
+        try:
+            v.check_and_update_balance(
+                applying_user=vacation.applying_user,
+                vacation=vacation,
+                reason=vacation.reason,
+                start_date=vacation.from_date,
+                end_date=vacation.end_date,
+                delete=True,
+            )
+        except ValueError as e:
+            return CustomResponse.bad_request(message=str(e))
 
         # Save the vacation as canceled vacation request.
         vacation.status = STATUS_CHOICES.CANCELED
@@ -1170,16 +1175,16 @@ class VacationsAcceptApiView(GenericAPIView):
             )
 
         v = StanderdVacationBalance()
-        balance = v.check_and_update_balance(
-            applying_user=vacation.applying_user,
-            vacation=vacation,
-            reason=vacation.reason,
-            start_date=vacation.from_date,
-            end_date=vacation.end_date,
-        )
-
-        if balance is not True:
-            return CustomResponse.bad_request(message=balance)
+        try:
+            v.check_and_update_balance(
+                applying_user=vacation.applying_user,
+                vacation=vacation,
+                reason=vacation.reason,
+                start_date=vacation.from_date,
+                end_date=vacation.end_date,
+            )
+        except ValueError as e:
+            return CustomResponse.bad_request(message=str(e))
 
         current_user = get_user_by_id(request.user.id)
         vacation.approval_user = current_user
