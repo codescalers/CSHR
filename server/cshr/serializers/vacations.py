@@ -29,8 +29,15 @@ class VacationsSerializer(ModelSerializer):
             "type",
             "status",
             "created_at",
+            "actual_days",
         ]
-        read_only_fields = ("applying_user", "approval_user", "type", "status")
+        read_only_fields = (
+            "applying_user",
+            "approval_user",
+            "type",
+            "status",
+            "actual_days",
+        )
 
 
 class VacationsUpdateSerializer(ModelSerializer):

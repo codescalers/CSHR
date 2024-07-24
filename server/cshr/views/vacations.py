@@ -357,6 +357,20 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             user_reason_balance = applying_user.vacationbalance
             vacation_days = v.get_actual_days(applying_user, start_date, end_date)
 
+            if start_date.day == end_date.day:
+                # The request is the same day
+                start_hour = start_date.hour
+                end_hour = end_date.hour
+                times = v.calculate_times(start_hour=start_hour, end_hour=end_hour)
+                if times < 1:
+                    if not v.is_valid_times(
+                        times=times, start_hour=start_hour, end_hour=end_hour
+                    ):
+                        return CustomResponse.bad_request(
+                            message=f"You've sent an invalid times, The days should match the {times}"
+                        )
+                    vacation_days = times
+
             curr_balance = getattr(user_reason_balance, reason)
 
             pending_vacations = Vacation.objects.filter(
@@ -377,7 +391,8 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
                     message=f"You have an additional pending request that deducts {sum(pending_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
                 )
 
-            serializer.save()
+            serializer.save(actual_days=vacation_days)
+
             comment: Dict = {
                 "update": True,
                 "user": TeamSerializer(request.user).data,
