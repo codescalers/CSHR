@@ -43,16 +43,6 @@
           :color="value ? 'primary' : 'warning'"
         />
       </template>
-      <template v-slot:[`item.request.type`]="{ value }">
-        <v-chip :color="getStatusColor(value)">
-          {{ value.split('_').join(' ') }}
-        </v-chip>
-      </template>
-      <template v-slot:[`item.request.status`]="{ value }">
-        <v-chip :color="getStatusColor(value)">
-          {{ formatRequestStatus(value) }}
-        </v-chip>
-      </template>
       <template v-slot:[`item.created_at`]="{ value }">
         {{ formatedDate(value) }}
       </template>
@@ -65,7 +55,6 @@
   <NotificationDetailsDialog
     route-query="notification-view"
     v-model="selectedNotification"
-    @update:status="updateStatus"
     @set:notification="setNotification"
   />
 </template>
@@ -74,11 +63,11 @@
 import { $api } from '@/clients'
 import { computed, onMounted, ref } from 'vue'
 import { capitalize } from 'vue'
-import { formatDate, formatRequestStatus, getStatusColor } from '@/utils'
+import { formatDate } from '@/utils'
 import NotificationDetailsDialog from '@/components/NotificationDetailsDialog.vue'
 import { useNotificationStore } from '@/stores/notifications'
 import { ApiClientBase } from '@/clients/api/base'
-import type { Api, notificationType } from '@/types'
+import type { notificationType } from '@/types'
 
 export default {
   name: 'NotificationsView',
@@ -104,7 +93,6 @@ export default {
       { title: 'Type', align: 'start', key: 'request.type' },
       { title: 'Content', align: 'start', key: 'title' },
       { title: 'Created At', align: 'start', key: 'created_at' },
-      { title: 'Status', align: 'start', key: 'request.status' },
       { title: 'Actions', key: 'actions', align: 'end', sortable: false }
     ] as any[]
 
@@ -161,15 +149,6 @@ export default {
       }
     }
 
-    const updateStatus = (value: Api.RequestStatus) => {
-      const notification = notificationStore.notifications.find(
-        (notification) => notification.id === selectedNotification.value?.id
-      )
-      if (notification) {
-        notification.request.status = value
-      }
-    }
-
 
     return {
       headers,
@@ -178,16 +157,12 @@ export default {
       showDialog,
       selectedNotification,
       hasReadNotifications,
-      getStatusColor,
       readNotification,
       capitalize,
       formatedDate,
       readAllNotifications,
       deleteAllNotifications,
-      formatRequestStatus,
-
       setNotification,
-      updateStatus,
     }
   }
 }

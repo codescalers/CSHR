@@ -5,13 +5,6 @@
         <v-col class="d-flex justify-start mb-0">
           <v-card-title class="font-weight-bold mb-0"> {{ $props.modelValue.title }} </v-card-title>
         </v-col>
-        <v-col class="d-flex justify-end pb-0">
-          <v-card-subtitle>
-            <v-chip :color="getStatusColor(vacationStatus)">
-              {{ formatRequestStatus(vacationStatus) }}
-            </v-chip>
-          </v-card-subtitle>
-        </v-col>
       </v-row>
       <v-card-text class="mt-0 pt-0">
         <p>
@@ -73,7 +66,6 @@
 
 <script lang="ts">
 import { computed, ref, type PropType } from 'vue'
-import { getStatusColor, formatRequestStatus } from '@/utils'
 import type { Api, notificationType } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
 import { useAsyncState } from '@vueuse/core'
@@ -81,7 +73,7 @@ import { $api } from '@/clients'
 
 export default {
   name: 'NotificationDetails',
-  emits: ["update:status", "update:approvalUser"],
+  emits: ["update:approvalUser"],
   props: {
     modelValue: {
       type: Object as PropType<notificationType>,
@@ -101,7 +93,6 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const color = computed(() => getStatusColor(props.modelValue.request.status))
     const user = ApiClientBase.user
     const vacationStatus = ref(props.modelValue.request.status)
 
@@ -113,7 +104,6 @@ export default {
       return useAsyncState($api.vacations.approve.update(props.vacation!.id), [] as unknown as Api.Vacation, {
         onSuccess(res: Api.Vacation) {
           vacationStatus.value = res.status
-          emit('update:status', res.status)
           emit("update:approvalUser", user.value)
           window.connections.ws.value!.send(
             JSON.stringify({
@@ -129,7 +119,6 @@ export default {
       return useAsyncState($api.vacations.reject.update(props.vacation!.id), [] as unknown as Api.Vacation, {
         onSuccess(res: Api.Vacation) {
           vacationStatus.value = res.status
-          emit('update:status', res.status)
           emit("update:approvalUser", user.value)
           window.connections.ws.value!.send(
             JSON.stringify({
@@ -145,7 +134,6 @@ export default {
       return useAsyncState($api.vacations.approve.cancel(props.vacation!.id), [] as unknown as Api.Vacation, {
         onSuccess(res: Api.Vacation) {
           vacationStatus.value = res.status
-          emit('update:status', res.status)
           emit("update:approvalUser", user.value)
           window.connections.ws.value!.send(
             JSON.stringify({
@@ -161,7 +149,6 @@ export default {
       return useAsyncState($api.vacations.reject.cancel(props.vacation!.id), [] as unknown as Api.Vacation, {
         onSuccess(res: Api.Vacation) {
           vacationStatus.value = res.status
-          emit('update:status', res.status)
           emit("update:approvalUser", user.value)
           window.connections.ws.value!.send(
             JSON.stringify({
@@ -181,14 +168,11 @@ export default {
     })
 
     return {
-      color,
       couldApprove,
       vacationStatus,
       closeDialog,
-      getStatusColor,
       handleApprove,
       handleReject,
-      formatRequestStatus,
       handleCancelApprove,
       handleCancelReject,
     }
