@@ -18,18 +18,18 @@
     </div>
     <!-- <v-card elevation="0" variant="outlined" color="white" class="px-4"> -->
     <v-row class="text-center mx-2 mt-2">
-      <v-col cols="6" class="mt-2 border" v-for="header in Headers" :key="header">
-        {{ header }}
+      <v-col cols="6" class="mt-2 border" v-for="header in headers" :key="header">
+        <strong>{{ header }}</strong>
       </v-col>
     </v-row>
 
     <v-row class="text-center mx-2 mb-2">
       <v-col cols="6" class="border">
-        {{ fromDate }}{{ fromTime }}
+        {{ fromDateTime }}
       </v-col>
 
       <v-col cols="6" class="border">
-        {{ toDate }}{{ toTime }}
+        {{ toDateTime }}
       </v-col>
 
       
@@ -41,6 +41,7 @@
 </template>
 <script lang="ts">
 import { ref } from 'vue'
+import { formatDateTime } from '@/utils'
 
 export default {
   name: 'eventCard',
@@ -50,23 +51,14 @@ export default {
   },
 
   setup(props) {
-    const fromDateTime = new Date(props.event.from_date)
-    const Headers = ref(['From Date', 'To Date'])
-
-    const fromDate = ref<string>(fromDateTime.toISOString().split('T')[0])
-    const fromTime = ref<string>(fromDateTime.toISOString().split('T')[1].substring(0, 8))
-
-    const toDateTime = new Date(props.event.end_date)
-
-    const toDate = ref<string>(toDateTime.toISOString().split('T')[0])
-    const toTime = ref<string>(toDateTime.toISOString().split('T')[1].substring(0, 8))
+    const fromDateTime = formatDateTime(props.event.from_date)
+    const toDateTime = formatDateTime(props.event.end_date)
+    const headers = ref(['From', 'To'])
 
     return {
-      fromDate,
-      fromTime,
-      toDate,
-      toTime,
-      Headers
+      fromDateTime,
+      toDateTime,
+      headers
     }
   }
 }

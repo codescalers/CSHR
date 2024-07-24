@@ -43,13 +43,13 @@
 
     <div class="mt-3">
       <v-text-field item-color="info" base-color="info" color="info" variant="outlined" label="Event Start Time"
-        v-model="eventStart" hide-details="auto" :rules="fieldRequired" type="time">
+        v-model="eventStart" hide-details="auto" :rules="[fieldRequired, validateTimes]" type="time">
       </v-text-field>
     </div>
 
     <div class="mt-3">
       <v-text-field item-color="info" base-color="info" color="info" variant="outlined" label="Event End Time"
-        v-model="eventEnd" hide-details="auto" :rules="fieldRequired" type="time">
+        v-model="eventEnd" hide-details="auto" :rules="[fieldRequired, validateTimes]" type="time">
       </v-text-field>
     </div>
 
@@ -86,8 +86,8 @@ export default {
     const name = ref<string>("")
     const description = ref<string>("")
     const form = ref()
-    const eventStart = ref()
-    const eventEnd = ref()
+    const eventStart = ref('08:00')
+    const eventEnd = ref('16:00')
     const startDateField = ref()
     const endDateField = ref()
     const requesting = ref<boolean>(false)
@@ -110,24 +110,11 @@ export default {
       return true
     }
 
-    const from_date = computed(() => {
-      let val = new Date(startDate.value)
-      if (eventStart.value) {
-        const [hours, minutes] = eventStart.value.split(':').map(Number)
-        val.setHours(hours, minutes, 0, 0)
-      }
-
-      return val.toISOString()
-    })
-    const end_date = computed(() => {
-      let val = new Date(endDate.value)
-      if (eventEnd.value) {
-        const [hours, minutes] = eventEnd.value.split(':').map(Number)
-        val.setHours(hours, minutes, 0, 0)
-      }
-
-      return val.toISOString()
-    })
+    const validateTimes = (): string | boolean => {
+      if (!eventEnd.value) return 'Please select end time.'
+      if (eventEnd.value < eventStart.value) return 'End time must be after start time.'
+      return true
+    }
 
     onMounted(async () => {
       startDateField.value.validate()
@@ -140,8 +127,8 @@ export default {
         $api.event.create({
           name: name.value,
           description: description.value,
-          from_date: from_date.value,
-          end_date: end_date.value
+          from_date: `${startDate.value}T${eventStart.value}`,
+          end_date: `${endDate.value}T${eventEnd.value}`,
         }),
         undefined,
         {
@@ -166,7 +153,8 @@ export default {
       startDateField,
       endDateField,
       validateDates,
-      createEvent
+      createEvent,
+      validateTimes,
     }
   }
 }
