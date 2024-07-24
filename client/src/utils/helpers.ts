@@ -39,10 +39,15 @@ export function formatDateTime(dateString: string) {
     year: 'numeric', month: 'long', day: 'numeric',
     hour: 'numeric', minute: 'numeric', second: 'numeric',
     hour12: true
-  }).replace(' at', '');
+  }).replace(' at', ' | ');
 }
 
 export const fieldRequired = [(v: string) => !!v || 'Field is required.']
+
+export function validURL(value: string) {
+  const pattern = /^(https?:\/\/)?([\w\d-]+\.)+[a-z]{2,6}(:\d{1,5})?(\/.*)?$/i;
+  return pattern.test(value) || 'Please enter a valid URL.';
+}
 
 export function handelDates(start: any, end: any): any {
   const dates = {
