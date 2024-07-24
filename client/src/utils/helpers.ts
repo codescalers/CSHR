@@ -39,7 +39,7 @@ export function formatDateTime(dateString: string) {
     year: 'numeric', month: 'long', day: 'numeric',
     hour: 'numeric', minute: 'numeric', second: 'numeric',
     hour12: true
-  }).replace(' at', '');
+  }).replace(' at', ' | ');
 }
 
 export const fieldRequired = [(v: string) => !!v || 'Field is required.']

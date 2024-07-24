@@ -25,19 +25,15 @@
             ><v-icon class="mx-2"> mdi-link </v-icon>Meeting Link</a
           >
         </v-col>
-        <v-col cols="6" class="border">
-          Date :<span class="mx-2">{{ date }}</span>
-        </v-col>
-
-        <v-col cols="6" class="border">
-          Time : <span class="mx-2">{{ time }} </span>
+        <v-col cols="12" class="border">
+          Date :<span class="mx-2">{{ formatedDateTime }}</span>
         </v-col>
       </v-row>
     </v-container>
   </v-card>
 </template>
 <script lang="ts">
-import { ref } from 'vue'
+import { formatDateTime } from '@/utils'
 
 export default {
   name: 'meetingCard',
@@ -47,16 +43,10 @@ export default {
   },
 
   setup(props) {
-    const dateTime = new Date(props.meeting.date)
-    // const Headers = ref(['Date', 'Time'])
-
-    const date = ref<string>(dateTime.toISOString().split('T')[0])
-    const time = ref<string>(dateTime.toISOString().split('T')[1].substring(0, 8))
+    const formatedDateTime = formatDateTime(props.meeting.date)
 
     return {
-      date,
-      time,
-      Headers
+      formatedDateTime,
     }
   }
 }
