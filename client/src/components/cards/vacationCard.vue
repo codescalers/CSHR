@@ -9,7 +9,7 @@
     </v-card-title>
     <v-container class="pa-6">
       <p class="text-subtitle-1 text-center">
-        From <b>{{ start_date.replace('T', ' ') }} </b> to <b color="primary">{{ end_date.replace('T', ' ') }} </b> vacation
+        From <b>{{ formatDateTime(startDate) }} </b> to <b>{{ formatDateTime(endDate) }} </b> vacation
       </p>
 
       <v-form ref="form" @submit.prevent="updateVacation()">
@@ -47,12 +47,12 @@
           <v-row>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="From" v-model="start_date" :readonly="!couldUpdate" type="datetime-local" :rules="[validateStartDate]" @input="validateForm">
+                label="From" v-model="startDate" :readonly="!couldUpdate" type="datetime-local" :rules="[validateStartDate]" @input="validateForm">
               </v-text-field>
             </v-col>
             <v-col cols="6">
               <v-text-field color="info" item-color="info" base-color="info" variant="outlined" hide-details="auto"
-                label="To" v-model="end_date" :readonly="!couldUpdate" type="datetime-local" :rules="[validateEndDate]" @input="validateForm">
+                label="To" v-model="endDate" :readonly="!couldUpdate" type="datetime-local" :rules="[validateEndDate]" @input="validateForm">
               </v-text-field>
             </v-col>
           </v-row>
@@ -90,12 +90,13 @@
 <script lang="ts">
 import type { Api } from '@/types';
 import { capitalize, computed, onMounted, ref, watch } from 'vue';
+import { calculateTimes, convertToTimeOnly, formatDateTime } from '@/utils'
 
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
 import type { PropType } from 'vue';
-import { calculateTimes, convertToTimeOnly, formatRequestStatus, getStatusColor } from '@/utils';
+import { formatRequestStatus, getStatusColor } from '@/utils';
 
 export default {
   name: 'vacationCard',
@@ -114,11 +115,10 @@ export default {
 
   setup(props, ctx) {
     const $api = useApi()
-    const startDate = ref<Date>(new Date(props.vacation.from_date));
-    const start_date = ref(startDate.value.toISOString().replace('T', ' ').slice(0,16))
-    const endDate = ref<Date>(new Date(props.vacation.end_date))
-    const end_date = ref(endDate.value.toISOString().replace('T', ' ').slice(0,16))
-    const actualDays = ref();
+    const startDate = ref<string>(props.vacation.from_date);
+    const endDate = ref<string>(props.vacation.end_date);
+    const actualDays = ref<number>(props.vacation.actual_days);
+
     const leaveReason = ref<Api.LeaveReason>({
       name: transformString(props.vacation.reason),
       reason: props.vacation.reason
@@ -126,54 +126,7 @@ export default {
     const form = ref()
     const disabled = ref<boolean>(true)
     const user = ApiClientBase.user
-    const leaveReasons = ref<Api.LeaveReason[]>([
-      {
-        name: `Emergency Leaves`,
-        reason: 'emergency_leaves'
-      },
-      {
-        name: `Sick Leaves`,
-        reason: 'sick_leaves'
-      },
-      {
-        name: `Annual Leaves`,
-        reason: 'annual_leaves'
-      },
-      {
-        name: `Unpaid`,
-        reason: 'unpaid'
-      },
-      {
-        name: `Compensation`,
-        reason: 'compensation'
-      },
-      {
-        name: `Leave Excuse`,
-        reason: 'leave_excuses'
-      }
-    ])
-
-    onMounted(async () => {
-      actualDays.value = (await calculateActualDays()).state.value
-    })
-
-    watch([start_date, end_date], async([newStart, newEnd]) => {
-      if (form.value) {
-        await validateForm();
-      }
-      
-      if (form.value?.isValid) {
-        const START = start_date.value.split('T')[0].split(' ')[0]
-        const END = end_date.value.split('T')[0].split(' ')[0]
-        if (START === END) {
-          const start = convertToTimeOnly(newStart);
-          const end = convertToTimeOnly(newEnd);
-          actualDays.value = calculateTimes(start, end)
-        } else {
-          actualDays.value = (await calculateActualDays()).state.value;
-        }
-      }
-    })
+    const leaveReasons = ref<Api.LeaveReason[]>([])
   
     async function validateForm() {
       await form.value.validate();
@@ -191,16 +144,44 @@ export default {
       return false;
     });
 
-    const from_date = computed(() => {
-      let val = new Date(start_date.value)
-        val.setHours(8, 0, 0, 0)
-      return val.toISOString()
-    })
-    const to_date = computed(() => {
-      let val = new Date(end_date.value)
-        val.setHours(16, 0, 0, 0)
+    const balance = useAsyncState(
+      () => $api.vacations.getVacationBalance({ user_ids: user.value?.fullUser.id }),
+      null,
+      {
+        immediate: false,
+        onSuccess(data: any) {
+          leaveReasons.value = [
+            {
+              name: `Emergency Leaves  ${data[0].emergency_leaves.reserved} / ${data[0].emergency_leaves.all}`,
+              reason: 'emergency_leaves'
+            },
+            {
+              name: `Sick Leaves  ${data[0].sick_leaves.reserved} / ∞`,
+              reason: 'sick_leaves'
+            },
+            {
+              name: `Annual Leaves  ${data[0].annual_leaves.reserved} / ${data[0].annual_leaves.all}`,
+              reason: 'annual_leaves'
+            },
+            {
+              name: `Unpaid ${data[0].unpaid.reserved} / ∞`,
+              reason: 'unpaid'
+            },
+            {
+              name: `Compensation  ${data[0].compensation.reserved} / ∞`,
+              reason: 'compensation'
+            },
+            {
+              name: `Leave Excuse  ${data[0].leave_excuses.reserved} / ${data[0].leave_excuses.all}`,
+              reason: 'leave_excuses'
+            }
+          ]
+        }
+      }
+    )
 
-      return val.toISOString()
+    onMounted(() => {
+      balance.execute();
     })
 
     const couldDelete = computed(() => {
@@ -229,7 +210,7 @@ export default {
       return false
     })
 
-    watch([leaveReason, start_date, end_date], ([newLeaveReason, newStartDate, newEndDate], [oldLeaveReason, oldStartDate, oldEndDate]) => {
+    watch([leaveReason, startDate, endDate], ([newLeaveReason, newStartDate, newEndDate], [oldLeaveReason, oldStartDate, oldEndDate]) => {
       if (newLeaveReason.name !== oldLeaveReason.name || newStartDate !== oldStartDate || newEndDate !== oldEndDate) {
         disabled.value = false;
         return
@@ -239,7 +220,7 @@ export default {
 
     function validateStartDate(value: any) {
       const start = new Date(value);
-      const end = new Date(end_date.value);
+      const end = new Date(endDate.value);
 
       if (start > end) {
         return 'From date must be before to date.'
@@ -249,7 +230,7 @@ export default {
 
     function validateEndDate(value: any) {
       const start = new Date(value);
-      const end = new Date(end_date.value);
+      const end = new Date(endDate.value);
       if (end < start) {
         return 'To date must be after from date.'
       }
@@ -340,15 +321,6 @@ export default {
       })
     }
 
-    async function calculateActualDays() {
-      return useAsyncState(
-        $api.vacations.calculate.list({
-          start_date: start_date.value.split(' ')[0].split('T')[0],
-          end_date: end_date.value.split(' ')[0].split('T')[0]
-        }),
-        []
-      )
-    }
     function transformString(inputString: string): string {
       const words = inputString.split('_')
       const capitalizedWords = words.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -356,14 +328,42 @@ export default {
       return resultString
     }
 
+    async function calculateActualDays() {
+      return useAsyncState(
+        $api.vacations.calculate.list({
+          start_date: startDate.value.split(' ')[0].split('T')[0],
+          end_date: endDate.value.split(' ')[0].split('T')[0]
+        }),
+        []
+      )
+    }
+
+    watch([startDate, endDate], async([newStart, newEnd]) => {
+      if (form.value) {
+        await validateForm();
+      }
+      
+      if (form.value?.isValid) {
+        const START = startDate.value.split('T')[0].split(' ')[0]
+        const END = endDate.value.split('T')[0].split(' ')[0]
+        if (START === END) {
+          const start = convertToTimeOnly(newStart);
+          const end = convertToTimeOnly(newEnd);
+          actualDays.value = calculateTimes(start, end)
+        } else {
+          actualDays.value = (await calculateActualDays()).state.value;
+        }
+      }
+    })
+
     async function updateVacation() {
       const actualDays = await calculateActualDays()
 
       await useAsyncState(
         $api.vacations.edit.update(props.vacation.id, {
           reason: leaveReason.value.reason,
-          from_date: from_date.value,
-          end_date: to_date.value,
+          from_date: startDate.value,
+          end_date: endDate.value,
           actual_days: actualDays.state.value
         }),
         null,
@@ -385,8 +385,6 @@ export default {
       couldApprove,
       couldUpdate,
       couldDelete,
-      start_date,
-      end_date,
       user,
       actualDays,
       validateForm,
@@ -401,7 +399,8 @@ export default {
       handleCancelApprove,
       handleCancelReject,
       formatRequestStatus,
-      getStatusColor
+      getStatusColor,
+      formatDateTime,
     }
   }
 }

@@ -105,27 +105,7 @@ export default {
     const requesting = ref<boolean>(false)
     const excuseStart = ref('08:00')
     const excuseEnd = ref('16:00')
-    const CORE_HOURS = 8;
     const days = ref()
-
-    const from_date = computed(() => {
-      let val = new Date(startDate.value)
-      if (excuseStart.value) {
-        const [hours, minutes] = excuseStart.value.split(':').map(Number)
-        val.setHours(hours, minutes, 0, 0)
-      }
-
-      return val.toISOString()
-    })
-    const end_date = computed(() => {
-      let val = new Date(endDate.value)
-      if (excuseEnd.value) {
-        const [hours, minutes] = excuseEnd.value.split(':').map(Number)
-        val.setHours(hours, minutes, 0, 0)
-      }
-
-      return val.toISOString()
-    })
 
     const actualDays = useAsyncState(async () => {
       return $api.vacations.calculate.list({
@@ -280,8 +260,8 @@ export default {
           await useAsyncState(
             $api.vacations.admin.create(selectedUser.value.id, {
               reason: leaveReason.value.reason,
-              from_date: from_date.value,
-              end_date: end_date.value
+              from_date: `${startDate.value}T${excuseStart.value}`,
+              end_date: `${endDate.value}T${excuseEnd.value}`,
             }),
             null,
             {
@@ -294,8 +274,8 @@ export default {
           await useAsyncState(
             $api.vacations.create({
               reason: leaveReason.value.reason,
-              from_date: from_date.value,
-              end_date: end_date.value
+              from_date: `${startDate.value}T${excuseStart.value}`,
+              end_date: `${endDate.value}T${excuseEnd.value}`,
             }),
             undefined,
             {
@@ -337,7 +317,7 @@ export default {
       concatUsers,
       createLeave,
       validateDates,
-      validateTimes
+      validateTimes,
     }
   }
 }

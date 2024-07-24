@@ -33,6 +33,15 @@ export const DASHBOARD_ITEMS = ref([
 
 export const formatDate = (date: any) => moment(date).format('YYYY-MM-DD')
 
+export function formatDateTime(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric',
+    hour: 'numeric', minute: 'numeric', second: 'numeric',
+    hour12: true
+  }).replace(' at', '');
+}
+
 export const fieldRequired = [(v: string) => !!v || 'Field is required.']
 
 export function validURL(value: string) {
