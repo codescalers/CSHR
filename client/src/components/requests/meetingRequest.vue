@@ -26,7 +26,7 @@
         label="Meeting Link"
         v-model="meetingLink"
         hide-details="auto"
-        :rules="fieldRequired"
+        :rules="[...fieldRequired, validURL]"
       >
       </v-text-field>
     </div>
@@ -72,7 +72,7 @@
 </template>
 <script lang="ts">
 import { computed, ref } from 'vue'
-import { fieldRequired } from '@/utils'
+import { fieldRequired, validURL } from '@/utils'
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
 
@@ -127,6 +127,7 @@ export default {
       meetingTime,
       requesting,
       fieldRequired,
+      validURL,
       createMeeting
     }
   }

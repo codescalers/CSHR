@@ -35,6 +35,16 @@ export const formatDate = (date: any) => moment(date).format('YYYY-MM-DD')
 
 export const fieldRequired = [(v: string) => !!v || 'Field is required.']
 
+export function validURL(value: string) {
+  const pattern = new RegExp('^(https?:\\/\\/)?'+
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+
+    '(\\#[-a-z\\d_]*)?$','i');
+  return !!pattern.test(value) || 'Please enter a vlaid URL.';
+}
+
 export function handelDates(start: any, end: any): any {
   const dates = {
     start,
