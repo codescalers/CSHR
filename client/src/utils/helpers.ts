@@ -45,13 +45,8 @@ export function formatDateTime(dateString: string) {
 export const fieldRequired = [(v: string) => !!v || 'Field is required.']
 
 export function validURL(value: string) {
-  const pattern = new RegExp('^(https?:\\/\\/)?'+
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+
-    '((\\d{1,3}\\.){3}\\d{1,3}))'+
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
-    '(\\?[;&a-z\\d%_.~+=-]*)?'+
-    '(\\#[-a-z\\d_]*)?$','i');
-  return !!pattern.test(value) || 'Please enter a vlaid URL.';
+  const pattern = /^(https?:\/\/)?([\w\d-]+\.)+[a-z]{2,6}(:\d{1,5})?(\/.*)?$/i;
+  return pattern.test(value) || 'Please enter a valid URL.';
 }
 
 export function handelDates(start: any, end: any): any {
