@@ -66,14 +66,6 @@
               <VListItemSubtitle>
                 ( {{ formatedDate(notification.created_at) }} )
               </VListItemSubtitle>
-
-              <template #append>
-                <VChip
-                  :color="getStatusColor(notification.request.status)"
-                  :text="notification.request.type"
-                  class="ml-4"
-                />
-              </template>
             </VListItem>
 
             <VDivider v-if="notifications.length > index + 1" />
@@ -114,7 +106,6 @@
     <NotificationDetailsDialog
       route-query="toolbar-notification"
       v-model="selectedNotification"
-      @update:status="updateStatus"
       @set:notification="setNotification"
     />
   </VToolbar>
@@ -167,14 +158,6 @@ export default {
 
     const selectedNotification = ref<notificationType>() as Ref<notificationType>
 
-    const updateStatus = (value: Api.RequestStatus) => {
-      const notification = notificationStore.notifications.find(
-        (notification) => notification.id === selectedNotification.value?.id
-      )
-      if (notification) {
-        notification.request.status = value
-      }
-    }
 
     const setNotification = async (notification: notificationType) => {
       selectedNotification.value = notification
@@ -235,7 +218,6 @@ export default {
       hasReadNotifications,
       getStatusColor,
       formatedDate,
-      updateStatus,
       setNotification,
       handleReadAllNotifications,
       handleDeleteAllNotifications,

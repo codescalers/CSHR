@@ -21,7 +21,6 @@
           notification.state.value.request.type === 'vacation' ? notification.state.value.request : undefined
         "
         @close="closeDialog"
-        @update:status="updateStatus"
         @update:approval-user="handleApprovalUser"
       />
       <div v-else class="not-allowed">
@@ -63,7 +62,6 @@ export default {
   },
   emits: {
     'update:model-value': (value?: notificationType) => true || value,
-    'update:status': (value: Api.RequestStatus) => value,
     'set:notification': (value: notificationType) => value
   },
 
@@ -162,7 +160,6 @@ export default {
           // TODO: Enable the HR letter and the official docs
           title: 'Event Details',
           details: [
-            { label: 'Status', value: data.request.status },
             { label: 'Approval User', value: approvalUser.value ? approvalUser.value.full_name : 'Not specified' },
             // { label: 'With Date', value: data.with_date },
             // { label: 'From Date', value: data.from_date },
@@ -179,10 +176,6 @@ export default {
       ctx.emit('update:model-value')
     }
 
-    function updateStatus(value: Api.RequestStatus) {
-      return ctx.emit('update:status', value)
-    }
-
     function handleApprovalUser(user: Api.User) {
       approvalUser.value = user
     }
@@ -193,7 +186,6 @@ export default {
       closeDialog,
       getSections,
       capitalize,
-      updateStatus,
       handleApprovalUser,
       couldAccessNotification,
     }
