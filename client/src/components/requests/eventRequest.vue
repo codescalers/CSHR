@@ -43,13 +43,13 @@
 
     <div class="mt-3">
       <v-text-field item-color="info" base-color="info" color="info" variant="outlined" label="Event Start Time"
-        v-model="eventStart" hide-details="auto" :rules="[fieldRequired, validateTimes]" type="time">
+        v-model="eventStart" hide-details="auto" :rules="[...fieldRequired, validateTimes]" type="time">
       </v-text-field>
     </div>
 
     <div class="mt-3">
       <v-text-field item-color="info" base-color="info" color="info" variant="outlined" label="Event End Time"
-        v-model="eventEnd" hide-details="auto" :rules="[fieldRequired, validateTimes]" type="time">
+        v-model="eventEnd" hide-details="auto" :rules="[...fieldRequired, validateTimes]" type="time">
       </v-text-field>
     </div>
 
