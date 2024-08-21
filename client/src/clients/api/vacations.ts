@@ -30,6 +30,15 @@ export class VacationsApi extends ApiClientBase {
     this.user = new VacationsUserApi(options, this.path)
   }
 
+  async myPendingRequests(query?: any) {
+    ApiClientBase.assertUser()
+    const requests = await this.unwrap(
+      () => this.$http.get<Api.Returns.APIVacation>(this.getUrl('/my-peneding-requests', query)),
+      { transform: (d) => d.results }
+    )
+    return requests
+  }
+
   async getVacationBalance(query?: any) {
     ApiClientBase.assertUser()
     const userBalance = await this.unwrap(

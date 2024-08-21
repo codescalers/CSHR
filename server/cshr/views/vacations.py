@@ -1222,3 +1222,25 @@ class VacationsAcceptApiView(GenericAPIView):
             status_code=202,
             data=VacationsSerializer(vacation).data,
         )
+
+
+class GetMyPendingRequestsAPIView(ListAPIView, GenericAPIView):
+    serializer_class = LandingPageVacationsSerializer
+    permission_classes = [UserIsAuthenticated,]
+
+    def get_pending_requests(self, request: Request) -> CustomResponse:
+        user = get_user_by_id(request.user.id)
+        if user is None:
+            return CustomResponse.not_found(message="User not found.")
+
+        vacations = Vacation.objects.filter(
+            applying_user=user,
+            status = STATUS_CHOICES.PENDING,
+        )
+
+        return vacations
+
+    def get_queryset(self) -> Response:
+        """method to get all vacations"""
+        query_set: List[Vacation] = self.get_pending_requests(self.request)
+        return query_set
