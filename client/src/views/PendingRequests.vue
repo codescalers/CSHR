@@ -13,7 +13,7 @@
     <v-tabs-window v-model="tab">
       <v-tabs-window-item >
         <v-container fluid>
-          <v-list lines="one" color="primary">
+          <v-list lines="one" color="primary" v-if="requests?.length">
             <v-list-item class="mb-3" v-for="request in requests" :key="request">
               <v-card variant="tonal" class="elevation-4 border bg-graytitle">
                 <template #prepend>
@@ -37,8 +37,11 @@
               </v-card>
             </v-list-item>
           </v-list>
+          <card v-else>
+            <p class="text-center">No requests were found</p>
+          </card>
         </v-container>
-        <v-pagination v-model="page" :length="requestCount" rounded="circle"></v-pagination>
+        <v-pagination v-if="requests?.length" v-model="page" :length="requestCount" rounded="circle"></v-pagination>
       </v-tabs-window-item>
     </v-tabs-window>
   </v-container>
@@ -61,7 +64,7 @@ export default defineComponent({
     const user = ApiClientBase.user
     const isTeamlead = computed(() => user.value?.fullUser.user_type.toLowerCase() === 'supervisor')
     const isAdmin = computed(() => user.value?.fullUser.user_type.toLowerCase() === 'admin')
-    const requests = ref<Api.Vacation>()
+    const requests = ref<Api.Vacation[]>()
     const requestMethod = ref()
     const requestCount = ref<number>()
     const page = ref(1)
@@ -78,7 +81,7 @@ export default defineComponent({
         }
 
         useAsyncState(requestMethod.value, undefined, {
-          onSuccess(data: {results: Api.Vacation, count: number, next: string |  null, previous: string |  null} | undefined) {
+          onSuccess(data: {results: Api.Vacation[], count: number, next: string |  null, previous: string |  null} | undefined) {
             requests.value = data!.results
             requestCount.value = Math.ceil(data!.count / 3)
           }
