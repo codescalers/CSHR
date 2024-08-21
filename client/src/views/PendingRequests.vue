@@ -10,11 +10,13 @@
         <v-tab :value="2" v-if="isTeamlead || isAdmin">Team Pending Requests</v-tab>
       </v-tabs>
     </v-card>
+    requests?.length = {{requests?.length}}
+    requests = {{requests}}
     <v-tabs-window v-model="tab">
       <v-tabs-window-item >
         <v-container fluid>
           <v-list lines="one" color="primary" v-if="requests?.length">
-            <v-list-item class="mb-3" v-for="request in requests" :key="request">
+            <v-list-item class="mb-3" v-for="request in requests" :key="request.id">
               <v-card variant="tonal" class="elevation-4 border bg-graytitle">
                 <template #prepend>
                   <profileImage width="55px" :with-link="false" :user="request.applying_user" />

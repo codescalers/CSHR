@@ -174,7 +174,7 @@ const selectedEventType = reactive({
   isViewRequest: false
 })
 
-const cached_users = new Map<number, Api.User | undefined>()
+const cached_users = new Map<number, Api.User>()
 
 const selectedEvent = ref<Api.Meeting | Api.Event | Api.Vacation | Api.Holiday | Api.User>()
 

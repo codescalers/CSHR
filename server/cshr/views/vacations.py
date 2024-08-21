@@ -403,7 +403,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             }
             update_vacation_change_log(vacation, comment)
             return CustomResponse.success(
-                data=serializer.data,
+                data=LandingPageVacationsSerializer(vacation).data,
                 message="Vacation Request Updated",
                 status_code=202,
             )
