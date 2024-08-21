@@ -67,6 +67,7 @@ class GeneralUserSerializer(ModelSerializer):
     reporting_to = SerializerMethodField()
     location = SerializerMethodField()
     reporting_to = SerializerMethodField()
+    leads = SerializerMethodField()
 
     class Meta:
         model = User
@@ -94,6 +95,7 @@ class GeneralUserSerializer(ModelSerializer):
             "user_type",
             "background_color",
             "is_active",
+            "leads",
         ]
 
     def get_user_certificates(self, obj):
@@ -111,7 +113,8 @@ class GeneralUserSerializer(ModelSerializer):
 
     def get_location(self, obj):
         return OfficeSerializer(obj.location).data
-
+    def get_leads(self, obj):
+        return build_user_reporting_to_hierarchy(obj)
 
 class SupervisorUserSerializer(ModelSerializer):
     """
