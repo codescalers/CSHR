@@ -42,8 +42,8 @@ export module Api {
     change_log: any[]
     approvals: number[]
     actual_days: number
-    applying_user: number | User
-    approval_user: number | User
+    applying_user: User
+    approval_user: User
     applying_user_full_name?: string;
     isUpdated?: boolean
   }

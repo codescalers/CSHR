@@ -113,8 +113,10 @@ class GeneralUserSerializer(ModelSerializer):
 
     def get_location(self, obj):
         return OfficeSerializer(obj.location).data
+
     def get_leads(self, obj):
         return build_user_reporting_to_hierarchy(obj)
+
 
 class SupervisorUserSerializer(ModelSerializer):
     """

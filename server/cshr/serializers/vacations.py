@@ -1,5 +1,6 @@
 """This file will containes all vacation serializers."""
 
+from typing import List
 from rest_framework.serializers import (
     ModelSerializer,
     SerializerMethodField,
@@ -14,6 +15,8 @@ from cshr.models.vacations import (
 from cshr.serializers.office import OfficeSerializer
 from cshr.serializers.users import BaseUserSerializer, TeamSerializer
 from rest_framework import serializers
+
+from cshr.services.users import build_user_reporting_to_hierarchy
 
 
 class VacationsSerializer(ModelSerializer):
@@ -68,6 +71,7 @@ class LandingPageVacationsSerializer(ModelSerializer):
 
     applying_user = SerializerMethodField()
     approval_user = SerializerMethodField()
+    approvals = SerializerMethodField()
 
     from_date = CustomDateField()  # Convert datetime to date
     end_date = CustomDateField()  # Convert datetime to date
@@ -84,6 +88,7 @@ class LandingPageVacationsSerializer(ModelSerializer):
             "approval_user",
             "change_log",
             "type",
+            "approvals",
         ]
 
     def get_applying_user(self, obj: Vacation) -> BaseUserSerializer:
@@ -97,6 +102,12 @@ class LandingPageVacationsSerializer(ModelSerializer):
         this function return request's approving user
         """
         return BaseUserSerializer(obj.approval_user).data
+
+    def get_approvals(self, obj: Vacation) -> List[int]:
+        """
+        this function return request's approvals
+        """
+        return build_user_reporting_to_hierarchy(obj.applying_user)
 
 
 class GetOfficeVacationBalanceSerializer(ModelSerializer):

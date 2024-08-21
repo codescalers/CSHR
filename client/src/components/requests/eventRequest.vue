@@ -66,7 +66,7 @@
   </v-form>
 </template>
 <script lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { fieldRequired } from '@/utils'
 import { useApi } from '@/hooks'
 import { useAsyncState } from '@vueuse/core'
