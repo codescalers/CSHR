@@ -174,7 +174,7 @@ const selectedEventType = reactive({
   isViewRequest: false
 })
 
-const cached_users = new Map<number, Api.User>()
+const cached_users = new Map<number, Api.User | undefined>()
 
 const selectedEvent = ref<Api.Meeting | Api.Event | Api.Vacation | Api.Holiday | Api.User>()
 
@@ -337,7 +337,7 @@ function closeDialog(dialogType: CalendarEventSelection) {
 
 async function createVacation(vacation: Api.Vacation) {
   if (cached_users.has(vacation.applying_user.id)) {
-    vacation.applying_user = cached_users.get(vacation.applying_user.id)
+    vacation.applying_user = cached_users.get(vacation.applying_user.id) as Api.User
   } else {
     const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true })
     cached_users.set(vacation.applying_user.id, user)
@@ -402,11 +402,11 @@ async function updateVacation(vacation: Api.Vacation) {
     (event) => event.id.toString() !== `vacation${selectedEvent.value?.id}`
   )
 
-  if (cached_users.has(vacation.applying_user)) {
-    vacation.applying_user = cached_users.get(vacation.applying_user)
+  if (cached_users.has(vacation.applying_user.id)) {
+    vacation.applying_user = cached_users.get(vacation.applying_user.id) as Api.User
   } else {
-    const user = await $api.users.getuser(vacation.applying_user, { disableNotify: true })
-    cached_users.set(vacation.applying_user, user)
+    const user = await $api.users.getuser(vacation.applying_user.id, { disableNotify: true })
+    cached_users.set(vacation.applying_user.id, user)
     vacation.applying_user = user
   }
   vacation.type = 'vacation'
