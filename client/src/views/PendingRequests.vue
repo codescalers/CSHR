@@ -10,13 +10,16 @@
         <v-tab :value="2" v-if="isTeamlead || isAdmin">Team Pending Requests</v-tab>
       </v-tabs>
     </v-card>
-    requests?.length = {{requests?.length}}
-    requests = {{requests}}
     <v-tabs-window v-model="tab">
       <v-tabs-window-item >
         <v-container fluid>
-          <v-list lines="one" color="primary" v-if="requests?.length">
-            <v-list-item class="mb-3" v-for="request in requests" :key="request.id">
+          <template v-if="isLoading">
+            <div class="d-flex justify-center">
+              <VProgressCircular indeterminate color="primary"/>
+            </div>
+          </template>
+          <v-list lines="one" color="primary" v-else>
+            <v-list-item class="mb-3" v-for="request in state?.results" :key="request.id">
               <v-card variant="tonal" class="elevation-4 border bg-graytitle">
                 <template #prepend>
                   <profileImage width="55px" :with-link="false" :user="request.applying_user" />
@@ -39,11 +42,11 @@
               </v-card>
             </v-list-item>
           </v-list>
-          <card v-else>
+          <card v-if="!isLoading && !state?.results?.length">
             <p class="text-center">No requests were found</p>
           </card>
         </v-container>
-        <v-pagination v-if="requests?.length" v-model="page" :length="requestCount" rounded="circle"></v-pagination>
+        <v-pagination v-if="state?.results?.length" v-model="page" :length="count" rounded="circle"></v-pagination>
       </v-tabs-window-item>
     </v-tabs-window>
   </v-container>
@@ -52,7 +55,6 @@
 <script lang="ts">
 import { $api } from '@/clients'
 import { ApiClientBase } from '@/clients/api/base'
-import type { Api } from '@/types'
 import { useAsyncState } from '@vueuse/core'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { formatDateTime, formatVacationReason } from '@/utils'
@@ -62,44 +64,33 @@ import ActionButtons from '@/components/requests/ActionButtons.vue'
 export default defineComponent({
   components: { profileImage, ActionButtons },
   setup() {
-    const tab = ref()
+    const tab = ref(1)
     const user = ApiClientBase.user
     const isTeamlead = computed(() => user.value?.fullUser.user_type.toLowerCase() === 'supervisor')
     const isAdmin = computed(() => user.value?.fullUser.user_type.toLowerCase() === 'admin')
-    const requests = ref<Api.Vacation[]>()
-    const requestMethod = ref()
-    const requestCount = ref<number>()
     const page = ref(1)
+    const count = computed(() => state.value ? Math.ceil(state.value!.count / 3) : 0)
 
-    watch(
-      [tab, page],
-      () => {
-        if (tab.value === 1) {
-          requestMethod.value = $api.vacations.myPendingRequests({page: page.value})
-        }
+    const { execute, state, isLoading } = useAsyncState(() => {
+      if (tab.value === 1) {
+        return $api.vacations.myPendingRequests({page: page.value})
+      }
+      return $api.vacations.myTeamPendingRequests({page: page.value})
+    }, undefined, {
+      immediate: true,
+    })
 
-        if (tab.value === 2 && (isTeamlead.value === true || isAdmin.value === true)) {
-          requestMethod.value = $api.vacations.myTeamPendingRequests({page: page.value})
-        }
-
-        useAsyncState(requestMethod.value, undefined, {
-          onSuccess(data: {results: Api.Vacation[], count: number, next: string |  null, previous: string |  null} | undefined) {
-            requests.value = data!.results
-            requestCount.value = Math.ceil(data!.count / 3)
-          }
-        })
-      },
-      { deep: true }
-    )
+    watch([tab, page], () => execute())
 
     return {
       tab,
       user,
       isTeamlead,
-      requests,
       isAdmin,
-      requestCount,
       page,
+      state,
+      isLoading,
+      count,
 
       formatDateTime,
       formatVacationReason
