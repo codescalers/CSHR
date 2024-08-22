@@ -10,45 +10,41 @@
         <v-tab :value="2" v-if="isTeamlead || isAdmin">Team Pending Requests</v-tab>
       </v-tabs>
     </v-card>
-    <v-tabs-window v-model="tab">
-      <v-tabs-window-item >
-        <v-container fluid>
-          <template v-if="isLoading">
-            <div class="d-flex justify-center">
-              <VProgressCircular indeterminate color="primary"/>
-            </div>
-          </template>
-          <v-list lines="one" color="primary" v-else>
-            <v-list-item class="mb-3" v-for="request in state?.results" :key="request.id">
-              <v-card variant="tonal" class="elevation-4 border bg-graytitle">
-                <template #prepend>
-                  <profileImage width="55px" :with-link="false" :user="request.applying_user" />
-                </template>
-                <template #title>
-                  {{ request.applying_user.full_name }}
-                </template>
-                <template #subtitle>
-                  Applied for a vacation request from
-                  <strong>( {{ formatDateTime(request.from_date) }} )</strong>
-                  to
-                  <strong>( {{ formatDateTime(request.end_date) }} )</strong>
-                  <p>
-                    Reason: <strong>{{ formatVacationReason(request.reason) }}</strong>
-                  </p>
-                </template>
-                <div class="ma-5">
-                  <ActionButtons :vacation="request" />
-                </div>
-              </v-card>
-            </v-list-item>
-          </v-list>
-          <card v-if="!isLoading && !state?.results?.length">
-            <p class="text-center">No requests were found</p>
-          </card>
-        </v-container>
+      <v-container fluid>
+        <template v-if="isLoading">
+          <div class="d-flex justify-center">
+            <VProgressCircular indeterminate color="primary"/>
+          </div>
+        </template>
+        <v-list lines="one" color="primary" v-else>
+          <v-list-item class="mb-3" v-for="request in state?.results" :key="request.id">
+            <v-card variant="tonal" class="elevation-4 border bg-graytitle">
+              <template #prepend>
+                <profileImage width="55px" :with-link="false" :user="request.applying_user" />
+              </template>
+              <template #title>
+                {{ request.applying_user.full_name }}
+              </template>
+              <template #subtitle>
+                Applied for a vacation request from
+                <strong>( {{ formatDateTime(request.from_date) }} )</strong>
+                to
+                <strong>( {{ formatDateTime(request.end_date) }} )</strong>
+                <p>
+                  Reason: <strong>{{ formatVacationReason(request.reason) }}</strong>
+                </p>
+              </template>
+              <div class="ma-5">
+                <ActionButtons :vacation="request" />
+              </div>
+            </v-card>
+          </v-list-item>
+        </v-list>
+        <card v-if="!isLoading && !state?.results?.length">
+          <p class="text-center">No requests were found</p>
+        </card>
         <v-pagination v-if="state?.results?.length" v-model="page" :length="count" rounded="circle"></v-pagination>
-      </v-tabs-window-item>
-    </v-tabs-window>
+      </v-container>
   </v-container>
 </template>
 
