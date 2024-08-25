@@ -58,7 +58,7 @@ export default {
 
     const navItems = [
       {
-        icon: 'mdi-calendar-range',
+        icon: 'mdi-calendar',
         title: 'Calendar',
         path: '/'
       },
@@ -73,7 +73,7 @@ export default {
         path: '/team'
       },
       {
-        icon: 'mdi-account-multiple-outline',
+        icon: 'mdi-account-multiple',
         title: 'Threefold Team',
         path: '/users'
       },
@@ -86,6 +86,11 @@ export default {
         icon: 'mdi-cog',
         title: 'Settings',
         path: '/settings'
+      },
+      {
+        icon: 'mdi-account-clock',
+        title: 'Pending Requests',
+        path: '/pending-requests'
       },
       {
         icon: 'mdi-account',

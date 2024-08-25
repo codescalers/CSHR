@@ -95,11 +95,13 @@ export function normalizeEvent(e: Api.Event): any {
     allDay: true
   }
 }
+
 function formatTitle(v: Api.Vacation) {
   const fullName = v.applying_user_full_name ? v.applying_user_full_name : v.applying_user.full_name;
   const reason = v.reason.replace("_", " ").replace(/s$/, "");
   return `${fullName} ${reason}`;
 }
+
 export function normalizeVacation(v: Api.Vacation) {
   const dates = handelDates(v.from_date, v.end_date)
 
@@ -181,6 +183,10 @@ export function getStatusColor(status: Api.RequestStatus) {
 
 export function formatRequestStatus(status: Api.RequestStatus) {
   return capitalize(status).replace('_', ' ').replace('_', ' ')
+}
+
+export function formatVacationReason(reason: string) {
+  return capitalize(reason).replace('_', ' ').replace('_', ' ')
 }
 
 export function decodeAccessToken(token: string): JWTokenObject {

@@ -42,8 +42,8 @@ export module Api {
     change_log: any[]
     approvals: number[]
     actual_days: number
-    applying_user: number | any
-    approval_user: number
+    applying_user: User
+    approval_user: User
     applying_user_full_name?: string;
     isUpdated?: boolean
   }
@@ -217,6 +217,7 @@ export module Api {
     }>
 
     export type Balance = MsgRes<BalanceVacation>
+    export type APIVacation = MsgRes<Vacation>
 
     export interface Register {
       message: string

@@ -17,11 +17,15 @@ from cshr.views.vacations import (
     CancelVacationApiView,
     ApproveCancelVacationRequestApiView,
     RejectCancelVacationRequestApiView,
+    GetMyPendingRequestsAPIView,
+    GetMyTeamPendingRequestsAPIView,
 )
 
 urlpatterns = [
     path("", BaseVacationsApiView.as_view()),
     path("user/", VacationUserApiView.as_view()),
+    path("my-peneding-requests/", GetMyPendingRequestsAPIView.as_view()),
+    path("my-team-peneding-requests/", GetMyTeamPendingRequestsAPIView.as_view()),
     path("calculate/", CalculateVacationDaysApiView.as_view()),
     path("post-admin-balance/", PostAdminVacationBalanceApiView.as_view()),
     path("get-admin-balance/", GetAdminVacationBalanceApiView.as_view()),

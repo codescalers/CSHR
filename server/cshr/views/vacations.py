@@ -28,6 +28,7 @@ from cshr.utils.vacation_balance_helper import StanderdVacationBalance
 from cshr.services.users import (
     build_user_reporting_to_hierarchy,
     filter_admins_same_office_of_the_user,
+    build_user_reporting_to_hierarchy_down,
     get_user_by_id,
     get_users_by_id,
 )
@@ -60,6 +61,7 @@ from cshr.utils.redis_functions import (
 from cshr.utils.wrappers import wrap_vacation_request
 from cshr.services.notifications import NotificationsService
 from cshr.services.requests import get_request_by_id
+from cshr.api.pagination import PendingRequestsPagination
 
 
 class GetAdminVacationBalanceApiView(GenericAPIView):
@@ -401,7 +403,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
             }
             update_vacation_change_log(vacation, comment)
             return CustomResponse.success(
-                data=serializer.data,
+                data=LandingPageVacationsSerializer(vacation).data,
                 message="Vacation Request Updated",
                 status_code=202,
             )
@@ -1220,5 +1222,76 @@ class VacationsAcceptApiView(GenericAPIView):
         return CustomResponse.success(
             message="The vacation request has been approved. The user who submitted the request will be notified.",
             status_code=202,
-            data=VacationsSerializer(vacation).data,
+            data=LandingPageVacationsSerializer(vacation).data,
         )
+
+
+class GetMyPendingRequestsAPIView(ListAPIView, GenericAPIView):
+    serializer_class = LandingPageVacationsSerializer
+    permission_classes = [
+        UserIsAuthenticated,
+    ]
+    pagination_class = PendingRequestsPagination
+
+    def get_pending_requests(self, request: Request) -> CustomResponse:
+        status = request.query_params.get('status')
+        if not status:
+            status = STATUS_CHOICES.PENDING
+
+        user = get_user_by_id(request.user.id)
+        if user is None:
+            return CustomResponse.not_found(message="User not found.")
+
+        vacations = Vacation.objects.filter(
+            applying_user=user,
+        )
+
+        if status == "all":
+            status = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
+        else:
+            status = [status]
+
+        vacations = vacations.filter(status__in=status)
+
+        return vacations
+
+    def get_queryset(self) -> Response:
+        """method to get all vacations"""
+        query_set: List[Vacation] = self.get_pending_requests(self.request)
+        return query_set
+
+
+class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
+    serializer_class = LandingPageVacationsSerializer
+    permission_classes = [
+        UserIsAuthenticated,
+    ]
+    pagination_class = PendingRequestsPagination
+
+    def get_team_pending_requests(self, request: Request) -> CustomResponse:
+        status = request.query_params.get('status')
+        if not status:
+            status = STATUS_CHOICES.PENDING
+
+        user = get_user_by_id(request.user.id)
+        if user is None:
+            return CustomResponse.not_found(message="User not found.")
+
+        users = build_user_reporting_to_hierarchy_down(user)
+
+        vacations = Vacation.objects.filter(
+            applying_user__id__in=users,
+        )
+
+        if status == "all":
+            status = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
+        else:
+            status = [status]
+
+        vacations = vacations.filter(status__in=status)
+        return vacations
+
+    def get_queryset(self) -> Response:
+        """method to get all vacations"""
+        query_set: List[Vacation] = self.get_team_pending_requests(self.request)
+        return query_set

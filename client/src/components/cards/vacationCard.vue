@@ -72,18 +72,12 @@
         </v-card>
       </v-form>
       <v-divider class="my-2"></v-divider>
-      <!-- Approve/Reject the normal request -->
-      <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'pending'">
-        <v-btn color="primary" class="ma-1" type="submit"
-        :disabled="!form?.isValid || disabled" @click="updateVacation" v-if="couldUpdate && vacation.applying_user.id !== user?.id && user?.fullUser.location.id == vacation.applying_user.location.id">Update</v-btn>
-        <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
-        <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
-      </v-row>
-      <!-- Approve/Reject the cancel request -->
-      <v-row class="d-flex justify-end mt-3" v-if="couldApprove && vacation.status == 'requested_to_cancel'">
-        <v-btn color="primary" class="ma-1" @click="handleCancelApprove">Approve the cancel request</v-btn>
-        <v-btn color="error" class="ma-1" @click="handleCancelReject">Reject the cancel request</v-btn>
-      </v-row>
+      <ActionButtons 
+          :vacation="vacation"
+          :display-close-btn="true"
+          @update:close-dialog="$emit('close-dialog', $event)"
+          @update:vacation="$emit('status-vacation', $event.status)"
+        />
     </v-container>
   </v-card>
 </template>
@@ -97,9 +91,12 @@ import { useAsyncState } from '@vueuse/core'
 import { ApiClientBase } from '@/clients/api/base'
 import type { PropType } from 'vue';
 import { formatRequestStatus, getStatusColor } from '@/utils';
+import ActionButtons from "@/components/requests/ActionButtons.vue"
+
 
 export default {
   name: 'vacationCard',
+  components: { ActionButtons },
   props: {
     vacation: {
       type: Object as PropType<Api.Vacation>,
@@ -265,62 +262,6 @@ export default {
       })
     }
 
-    async function handleApprove() {
-      return useAsyncState($api.vacations.approve.update(props.vacation.id), [] as unknown as Api.Vacation, {
-        onSuccess(res: Api.Vacation) {
-          ctx.emit('status-vacation', res.status)
-          window.connections.ws.value!.send(
-            JSON.stringify({
-              event: 'approve_request',
-              request_id: props.vacation.id
-            })
-          )
-        }
-      })
-    }
-
-    async function handleReject() {
-      return useAsyncState($api.vacations.reject.update(props.vacation.id), [] as unknown as Api.Vacation, {
-        onSuccess(res: Api.Vacation) {
-          ctx.emit('status-vacation', res.status)
-          window.connections.ws.value!.send(
-            JSON.stringify({
-              event: 'reject_request',
-              request_id: props.vacation.id
-            })
-          )
-        }
-      })
-    }
-
-    async function handleCancelApprove(){
-      return useAsyncState($api.vacations.approve.cancel(props.vacation.id), [] as unknown as Api.Vacation, {
-        onSuccess(res: Api.Vacation) {
-          ctx.emit('status-vacation', res.status)
-          window.connections.ws.value!.send(
-            JSON.stringify({
-              event: 'approve_cancel_request',
-              request_id: props.vacation.id
-            })
-          )
-        }
-      })
-    }
-
-    async function handleCancelReject(){
-      return useAsyncState($api.vacations.reject.cancel(props.vacation.id), [] as unknown as Api.Vacation, {
-        onSuccess(res: Api.Vacation) {
-          ctx.emit('status-vacation', res.status)
-          window.connections.ws.value!.send(
-            JSON.stringify({
-              event: 'reject_cancel_request',
-              request_id: props.vacation.id
-            })
-          )
-        }
-      })
-    }
-
     function transformString(inputString: string): string {
       const words = inputString.split('_')
       const capitalizedWords = words.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -391,13 +332,9 @@ export default {
       validateEndDate,
       validateStartDate,
       updateVacation,
-      handleApprove,
-      handleReject,
       handleDelete,
       requestToCancel,
       capitalize,
-      handleCancelApprove,
-      handleCancelReject,
       formatRequestStatus,
       getStatusColor,
       formatDateTime,

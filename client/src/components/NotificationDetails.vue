@@ -46,32 +46,25 @@
       </v-col>
     </v-row>
 
-    <v-card-actions class="d-flex justify-end">
-      <v-row class="d-flex justify-end mt-3">
-        <div v-if="couldApprove && vacationStatus == 'pending'">
-          <v-btn variant="tonal" color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
-          <v-btn variant="tonal" color="error" class="ma-1" @click="handleReject">Reject</v-btn>
-          <v-spacer></v-spacer>
-        </div>        
-        <div v-if="couldApprove && vacationStatus == 'requested_to_cancel'">
-          <v-btn variant="tonal" color="primary" class="ma-1" @click="handleCancelApprove">Approve the cancel request</v-btn>
-          <v-btn variant="tonal" color="error" class="ma-1" @click="handleCancelReject">Reject the cancel request</v-btn>
-          <v-spacer></v-spacer>
-        </div>
-        <v-btn color="info" class="ma-1" variant="flat" @click="closeDialog()">Close</v-btn>
+      <v-row class="d-flex justify-end mt-3 mb-3 mr-4">
+        <ActionButtons 
+          :vacation="vacation"
+          :display-close-btn="true"
+          @update:close-dialog="closeDialog"
+          @update:vacation="$emit('update:approvalUser', $event.approval_user)"
+        />
       </v-row>
-    </v-card-actions>
   </v-card>
 </template>
 
 <script lang="ts">
 import { computed, ref, type PropType } from 'vue'
-import type { Api, notificationType } from '@/types'
+import type { notificationType } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
-import { useAsyncState } from '@vueuse/core'
-import { $api } from '@/clients'
+import ActionButtons from "@/components/requests/ActionButtons.vue"
 
 export default {
+  components: { ActionButtons },
   name: 'NotificationDetails',
   emits: ["update:approvalUser"],
   props: {
@@ -92,72 +85,12 @@ export default {
       required: true
     }
   },
-  setup(props, { emit }) {
+  setup(props) {
     const user = ApiClientBase.user
     const vacationStatus = ref(props.modelValue.request.status)
 
     const closeDialog = () => {
       props.onClose()
-    }
-
-    async function handleApprove() {
-      return useAsyncState($api.vacations.approve.update(props.vacation!.id), [] as unknown as Api.Vacation, {
-        onSuccess(res: Api.Vacation) {
-          vacationStatus.value = res.status
-          emit("update:approvalUser", user.value)
-          window.connections.ws.value!.send(
-            JSON.stringify({
-              event: 'approve_request',
-              request_id: props.vacation!.id
-            })
-          )
-        }
-      })
-    }
-
-    async function handleReject() {
-      return useAsyncState($api.vacations.reject.update(props.vacation!.id), [] as unknown as Api.Vacation, {
-        onSuccess(res: Api.Vacation) {
-          vacationStatus.value = res.status
-          emit("update:approvalUser", user.value)
-          window.connections.ws.value!.send(
-            JSON.stringify({
-              event: 'reject_request',
-              request_id: props.vacation!.id
-            })
-          )
-        }
-      })
-    }
-
-    async function handleCancelApprove(){
-      return useAsyncState($api.vacations.approve.cancel(props.vacation!.id), [] as unknown as Api.Vacation, {
-        onSuccess(res: Api.Vacation) {
-          vacationStatus.value = res.status
-          emit("update:approvalUser", user.value)
-          window.connections.ws.value!.send(
-            JSON.stringify({
-              event: 'approve_cancel_request',
-              request_id: props.vacation!.id
-            })
-          )
-        }
-      })
-    }
-
-    async function handleCancelReject(){
-      return useAsyncState($api.vacations.reject.cancel(props.vacation!.id), [] as unknown as Api.Vacation, {
-        onSuccess(res: Api.Vacation) {
-          vacationStatus.value = res.status
-          emit("update:approvalUser", user.value)
-          window.connections.ws.value!.send(
-            JSON.stringify({
-              event: 'reject_cancel_request',
-              request_id: props.vacation!.id
-            })
-          )
-        }
-      })
     }
 
     const couldApprove = computed(() => {
@@ -171,10 +104,6 @@ export default {
       couldApprove,
       vacationStatus,
       closeDialog,
-      handleApprove,
-      handleReject,
-      handleCancelApprove,
-      handleCancelReject,
     }
   }
 }
