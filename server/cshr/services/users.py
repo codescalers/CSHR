@@ -174,27 +174,33 @@ def get_or_create_user_balance(user: User, user_balance: Dict) -> QuerySet[User]
     return None
 
 
-def build_user_reporting_to_hierarchy(user: User) -> List[int]:
+def build_user_reporting_to_hierarchy(user: User, visited=None) -> List[int]:
     """
     Function to build a hierarchy of user reporting structure recursively.
 
     Parameters:
     - user (User): The user object for which the reporting hierarchy needs to be built.
+    - visited (set): A set to keep track of visited users to avoid circular references.
 
     Returns:
     - List[int]: A list of user IDs representing the reporting hierarchy starting from the given user.
-
-    The function iterates through the reporting chain of the user and constructs a list of user IDs in the reporting hierarchy.
-    It recursively calls itself for each reporting user to build the complete hierarchy.
     """
+    if visited is None:
+        visited = set()
+
+    # Avoid infinite loops by checking if the user has already been visited
+    if user.id in visited:
+        return []
+
+    visited.add(user.id)
     hierarchy = []
 
     for report_user in user.reporting_to.all():
         if report_user:
             hierarchy.append(report_user.id)
-            hierarchy.extend(build_user_reporting_to_hierarchy(report_user))
-    return hierarchy
+            hierarchy.extend(build_user_reporting_to_hierarchy(report_user, visited))
 
+    return hierarchy
 
 def filter_admins_same_office_of_the_user(user: User) -> QuerySet[User]:
     """Return all admins of the same office of the user."""
