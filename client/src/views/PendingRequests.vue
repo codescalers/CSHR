@@ -31,6 +31,7 @@
             </template>
             <template #title>
               {{ request.applying_user.full_name }}
+              <v-chip :color="getStatusColor(request.status)">{{ formatRequestStatus(request.status) }}</v-chip>
             </template>
             <template #subtitle>
               Applied for a vacation request from
@@ -66,7 +67,7 @@ import type { Api } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
 import { useAsyncState } from '@vueuse/core'
 import { computed, defineComponent, ref, watch } from 'vue'
-import { formatDateTime, formatRequestStatus, formatVacationReason } from '@/utils'
+import { formatDateTime, formatRequestStatus, formatVacationReason, getStatusColor } from '@/utils'
 import profileImage from '@/components/profileImage.vue'
 import ActionButtons from '@/components/requests/ActionButtons.vue'
 
@@ -120,7 +121,9 @@ export default defineComponent({
       requestStatus,
 
       formatDateTime,
-      formatVacationReason
+      formatVacationReason,
+      formatRequestStatus,
+      getStatusColor,
     }
   }
 })
