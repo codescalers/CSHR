@@ -73,7 +73,7 @@ import ActionButtons from '@/components/requests/ActionButtons.vue'
 
 type RequestStatusSelection = {
   title: string
-  value: Api.RequestStatus
+  value: Api.RequestStatus | 'all'
 }
 
 export default defineComponent({
@@ -86,6 +86,7 @@ export default defineComponent({
     const page = ref(1)
     const count = computed(() => (state.value ? Math.ceil(state.value!.count / 3) : 0))
     const requestStatus = ref<RequestStatusSelection[]>([
+      { title: 'All', value: 'all' },
       { title: formatRequestStatus('pending'), value: 'pending' },
       { title: formatRequestStatus('requested_to_cancel'), value: 'requested_to_cancel' }
     ])
@@ -105,7 +106,7 @@ export default defineComponent({
       }
     )
 
-    watch(tab, () => page.value = 1)
+    watch([tab,selectedStatus], () => page.value = 1)
     watch([tab, page, selectedStatus], () => execute())
 
     return {

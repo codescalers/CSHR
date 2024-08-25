@@ -1244,8 +1244,14 @@ class GetMyPendingRequestsAPIView(ListAPIView, GenericAPIView):
 
         vacations = Vacation.objects.filter(
             applying_user=user,
-            status=status,
         )
+
+        if status == "all":
+            status = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
+        else:
+            status = [status]
+
+        vacations = vacations.filter(status__in=status)
 
         return vacations
 
@@ -1275,9 +1281,14 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
 
         vacations = Vacation.objects.filter(
             applying_user__id__in=users,
-            status=status,
         )
 
+        if status == "all":
+            status = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
+        else:
+            status = [status]
+
+        vacations = vacations.filter(status__in=status)
         return vacations
 
     def get_queryset(self) -> Response:
