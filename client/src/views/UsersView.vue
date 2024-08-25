@@ -5,7 +5,7 @@
       <v-divider></v-divider>
     </div>
     <officeFilters :offices="offices" :teams="teams" />
-    <v-card class="pa-2" v-if="users.state.value.length">
+    <v-card class="pa-4" v-if="users.state.value.length">
       <v-row>
         <v-col class="d-flex flex-wrap justify-start">
           <v-col
@@ -26,11 +26,7 @@
           </v-col>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col class="d-flex flex-wrap justify-center">
-          <v-pagination v-model="page" :length="count" rounded="circle"></v-pagination>
-        </v-col>
-      </v-row>
+      <v-pagination class="mt-4 mb-4" v-if="users.state.value.length" v-model="page" :length="count" rounded="circle"></v-pagination>
     </v-card>
     <v-card v-else class="pa-15 mt-15 d-flex justify-center text-center" variant="plain">
       Seems like there are no users. Please try changing the filters and attempting again.
