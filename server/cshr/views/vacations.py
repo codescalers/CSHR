@@ -1234,13 +1234,17 @@ class GetMyPendingRequestsAPIView(ListAPIView, GenericAPIView):
     pagination_class = PendingRequestsPagination
 
     def get_pending_requests(self, request: Request) -> CustomResponse:
+        status = request.query_params.get('status')
+        if not status:
+            status = STATUS_CHOICES.PENDING
+
         user = get_user_by_id(request.user.id)
         if user is None:
             return CustomResponse.not_found(message="User not found.")
 
         vacations = Vacation.objects.filter(
             applying_user=user,
-            status=STATUS_CHOICES.PENDING,
+            status=status,
         )
 
         return vacations
@@ -1259,6 +1263,10 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
     pagination_class = PendingRequestsPagination
 
     def get_team_pending_requests(self, request: Request) -> CustomResponse:
+        status = request.query_params.get('status')
+        if not status:
+            status = STATUS_CHOICES.PENDING
+
         user = get_user_by_id(request.user.id)
         if user is None:
             return CustomResponse.not_found(message="User not found.")
@@ -1267,7 +1275,7 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
 
         vacations = Vacation.objects.filter(
             applying_user__id__in=users,
-            status=STATUS_CHOICES.PENDING,
+            status=status,
         )
 
         return vacations
