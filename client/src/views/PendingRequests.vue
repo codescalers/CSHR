@@ -47,7 +47,7 @@
 
       <div v-if="!loading" class="mb-5 mt-5">
         <v-row>
-          <v-col cols="4" v-for="request in state?.results" :key="request.id">
+          <v-col xl="4" lg="6" md="12" sm="12" cols="12" v-for="request in state?.results" :key="request.id">
             <v-card variant="tonal" class="elevation-4 border bg-graytitle">
               <template #prepend>
                 <profileImage width="55px" :with-link="false" :user="request.applying_user" />
