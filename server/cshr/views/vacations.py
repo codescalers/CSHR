@@ -1281,7 +1281,6 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
             applying_user__id__in=users,
         )
 
-        Vacation.objects.all().update(status=STATUS_CHOICES.PENDING)
         if status == "all":
             status = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
         else:

@@ -1,14 +1,14 @@
 <template>
   <v-row class="d-flex justify-end">
     <div v-if="couldApprove && vacationStatus == 'pending'">
-      <v-btn color="primary" class="ma-1" @click="handleApprove">Approve</v-btn>
-      <v-btn color="error" class="ma-1" @click="handleReject">Reject</v-btn>
-      <v-btn v-if="displayCloseBtn" color="info" class="ma-1" variant="flat" @click="$emit('update:closeDialog')">Close</v-btn>
+      <v-btn color="primary" class="ma-1 action-btn" @click="handleApprove">Approve</v-btn>
+      <v-btn color="error" class="ma-1 action-btn" @click="handleReject">Reject</v-btn>
+      <v-btn v-if="displayCloseBtn" color="info" class="ma-1 action-btn" variant="flat" @click="$emit('update:closeDialog')">Close</v-btn>
       <v-spacer></v-spacer>
     </div>
     <div v-if="couldApprove && vacationStatus == 'requested_to_cancel'">
-      <v-btn color="primary" class="ma-1" @click="handleCancelApprove">Approve the cancel request</v-btn>
-      <v-btn color="error" class="ma-1" @click="handleCancelReject">Reject the cancel request</v-btn>
+      <v-btn color="primary" class="ma-1 action-btn" @click="handleCancelApprove">Approve</v-btn>
+      <v-btn color="error" class="ma-1 action-btn" @click="handleCancelReject">Reject</v-btn>
       <v-spacer></v-spacer>
     </div>
   </v-row>
@@ -117,3 +117,12 @@ export default {
   }
 }
 </script>
+
+<style>
+.action-btn{
+  text-transform: capitalize !important;
+  width: 115px !important;
+  border-radius: 7px !important;
+  height: 33px !important;
+}
+</style>

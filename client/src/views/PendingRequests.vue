@@ -18,20 +18,36 @@
       </v-tabs>
     </v-card>
     <v-container fluid>
-      <template v-if="isLoading">
-        <div class="d-flex justify-center">
+      <div class="d-flex justify-end">
+        <v-btn 
+          variant="outlined"
+          color="primary"
+          class="mr-3 btn"
+          :disabled="!state?.results?.length"
+          @click="changeStateTask.execute(undefined, 'approve')"
+        >
+          Approve all
+        </v-btn>
+        <v-btn 
+          variant="outlined"
+          color="error"
+          class="btn"
+          :disabled="!state?.results?.length"
+          @click="changeStateTask.execute(undefined, 'reject')"
+        >
+          Reject all
+        </v-btn>
+      </div>
+
+      <template v-if="loading">
+        <div class="d-flex justify-center align-center" style="height: 150px;">
           <VProgressCircular indeterminate color="primary" />
         </div>
       </template>
-      <div v-else class="mb-5 mt-5">
-        <div class="mb-5" v-if="state?.results?.length">
-          <v-btn color="primary" class="mr-3" @click="allRequestsAction('approve')"
-            >Approve all</v-btn
-          >
-          <v-btn color="error" @click="allRequestsAction('reject')">Reject all</v-btn>
-        </div>
+
+      <div v-if="!loading" class="mb-5 mt-5">
         <v-row>
-          <v-col cols="6" v-for="request in state?.results" :key="request.id">
+          <v-col cols="4" v-for="request in state?.results" :key="request.id">
             <v-card variant="tonal" class="elevation-4 border bg-graytitle">
               <template #prepend>
                 <profileImage width="55px" :with-link="false" :user="request.applying_user" />
@@ -43,13 +59,15 @@
                 }}</v-chip>
               </template>
               <template #subtitle>
-                Applied for a vacation request from
-                <strong>( {{ formatDateTime(request.from_date) }} )</strong>
-                to
-                <strong>( {{ formatDateTime(request.end_date) }} )</strong>
-                <p>
-                  Reason: <strong>{{ formatVacationReason(request.reason) }}</strong>
-                </p>
+                <div class="mt-2">
+                  Vacation request from
+                  <strong>{{ formatDateString(request.from_date) }}</strong>
+                  -
+                  <strong>{{ formatDateString(request.end_date) }}</strong>
+                  <p>
+                    Reason: <strong>{{ formatVacationReason(request.reason) }}</strong>
+                  </p>
+                </div>
               </template>
               <div class="ma-5">
                 <ActionButtons :vacation="request" />
@@ -58,7 +76,7 @@
           </v-col>
         </v-row>
       </div>
-      <card v-if="!isLoading && !state?.results?.length">
+      <card v-if="!loading && !state?.results?.length">
         <p class="text-center">No requests were found</p>
       </card>
       <v-pagination
@@ -66,6 +84,7 @@
         v-model="page"
         :length="count"
         rounded="circle"
+        class="mt-5"
       ></v-pagination>
     </v-container>
   </v-container>
@@ -77,7 +96,7 @@ import type { Api } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
 import { useAsyncState } from '@vueuse/core'
 import { computed, defineComponent, ref, watch } from 'vue'
-import { formatDateTime, formatRequestStatus, formatVacationReason, getStatusColor } from '@/utils'
+import { formatDateString, formatRequestStatus, formatVacationReason, getStatusColor } from '@/utils'
 import profileImage from '@/components/profileImage.vue'
 import ActionButtons from '@/components/requests/ActionButtons.vue'
 
@@ -125,31 +144,19 @@ export default defineComponent({
     watch([tab, selectedStatus], () => (page.value = 1))
     watch([tab, page, selectedStatus], () => execute())
 
-    function allRequestsAction(action: 'approve' | 'reject') {
+    const changeStateTask = useAsyncState((action: "approve" | "reject") => {
       const requests = state.value?.results.map((req) => req.id) || []
-      if (requests) {
-        const request = useAsyncState(
-          () => {
-            return $api.vacations.approveOrRejectAllTeamPendingRequets({
-              action,
-              ids: requests
-            })
-          },
-          undefined,
-          {
-            immediate: true
-          }
-        )
-
-        // isLoading.value = request.isLoading.value
-        state.value = request.state.value
-        request.execute();
-        // isLoading.value = request.isLoading.value
+      return $api.vacations.approveOrRejectAllTeamPendingRequets({
+        action,
+        ids: requests
+      })
+      }, undefined,
+      {
+        immediate: false
       }
-      console.log({ action })
-      console.log({ isLoading: isLoading.value })
-      console.log({ requests })
-    }
+    )
+
+    const loading = computed( () => changeStateTask.isLoading.value || isLoading.value)
 
     return {
       tab,
@@ -158,17 +165,24 @@ export default defineComponent({
       isAdmin,
       page,
       state,
-      isLoading,
+      loading,
       count,
       selectedStatus,
       requestStatus,
 
-      formatDateTime,
+      formatDateString,
       formatVacationReason,
       formatRequestStatus,
       getStatusColor,
-      allRequestsAction
+      changeStateTask
     }
   }
 })
 </script>
+
+<style>
+.btn{
+  text-transform: capitalize !important;
+  border-radius: 6px;
+}
+</style>

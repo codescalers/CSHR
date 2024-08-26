@@ -1,7 +1,7 @@
 import moment from 'moment'
 
-import type { Api } from "@/types"
-import type { JWTokenObject } from "@/types"
+import type { Api } from '@/types'
+import type { JWTokenObject } from '@/types'
 import type { ApiClient } from '@/clients/api'
 import { capitalize, ref } from 'vue'
 
@@ -23,30 +23,38 @@ export function devLog(...args: any[]): void {
 }
 
 export const DASHBOARD_ITEMS = ref([
-  { id: 1, name: 'Set Vacations', active: true, },
-  { id: 2, name: 'Set User Vacations', active: false, },
+  { id: 1, name: 'Set Vacations', active: true },
+  { id: 2, name: 'Set User Vacations', active: false },
   // { id: 3, name: 'Update Office Vacations' },
-  { id: 4, name: 'Add Office', active: false, },
-  { id: 5, name: 'Add User', active: false, },
-  { id: 6, name: 'Update User Profile', active: false, }
+  { id: 4, name: 'Add Office', active: false },
+  { id: 5, name: 'Add User', active: false },
+  { id: 6, name: 'Update User Profile', active: false }
 ])
 
 export const formatDate = (date: any) => moment(date).format('YYYY-MM-DD')
+export const formatDateString = (date: any) =>
+  new Date(date).toLocaleString('en-US', { year: '2-digit', month: 'long', day: 'numeric' })
 
 export function formatDateTime(dateString: string) {
-  const date = new Date(dateString);
-  return date.toLocaleString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric',
-    hour: 'numeric', minute: 'numeric', second: 'numeric',
-    hour12: true
-  }).replace(' at', ' | ');
+  const date = new Date(dateString)
+  return date
+    .toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: true
+    })
+    .replace(' at', ' | ')
 }
 
 export const fieldRequired = [(v: string) => !!v || 'Field is required.']
 
 export function validURL(value: string) {
-  const pattern = /^(https?:\/\/)?([\w\d-]+\.)+[a-z]{2,6}(:\d{1,5})?(\/.*)?$/i;
-  return pattern.test(value) || 'Please enter a valid URL.';
+  const pattern = /^(https?:\/\/)?([\w\d-]+\.)+[a-z]{2,6}(:\d{1,5})?(\/.*)?$/i
+  return pattern.test(value) || 'Please enter a valid URL.'
 }
 
 export function handelDates(start: any, end: any): any {
@@ -79,7 +87,6 @@ export function handelDates(start: any, end: any): any {
   return dates
 }
 
-
 export function normalizeEvent(e: Api.Event): any {
   const dates = handelDates(e.from_date, e.end_date)
 
@@ -97,9 +104,9 @@ export function normalizeEvent(e: Api.Event): any {
 }
 
 function formatTitle(v: Api.Vacation) {
-  const fullName = v.applying_user_full_name ? v.applying_user_full_name : v.applying_user.full_name;
-  const reason = v.reason.replace("_", " ").replace(/s$/, "");
-  return `${fullName} ${reason}`;
+  const fullName = v.applying_user_full_name ? v.applying_user_full_name : v.applying_user.full_name
+  const reason = v.reason.replace('_', ' ').replace(/s$/, '')
+  return `${fullName} ${reason}`
 }
 
 export function normalizeVacation(v: Api.Vacation) {
@@ -145,7 +152,6 @@ export function normalizedBirthday(u: Api.User) {
   }
 }
 
-
 export function normalizeMeeting(m: Api.Meeting): any {
   const dates = handelDates(m.date, m.date)
 
@@ -190,64 +196,71 @@ export function formatVacationReason(reason: string) {
 }
 
 export function decodeAccessToken(token: string): JWTokenObject {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-  return JSON.parse(jsonPayload);
+  const base64Url = token.split('.')[1]
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      })
+      .join('')
+  )
+  return JSON.parse(jsonPayload)
 }
 
 export function isValidToken(token: string): boolean {
-  const decodedToken = decodeAccessToken(token);
-  return Date.now() < decodedToken.exp * 1000;
+  const decodedToken = decodeAccessToken(token)
+  return Date.now() < decodedToken.exp * 1000
 }
 
-export async function listUsers($api: ApiClient, page: number, count: number): Promise<{ page: number, count: number,  users: any[]}> {
-  
-    const res = await $api.users.admin.office_users.list({ page });
-    const users: any[] = [];
-    if (res.count) {
-      count = Math.ceil(res.count / 10)
-    } else {
-      count = 0
-    }
-    res.results.forEach((user: any) => {
-      users.push(user)
-    })
-    return { page, count, users };
-
+export async function listUsers(
+  $api: ApiClient,
+  page: number,
+  count: number
+): Promise<{ page: number; count: number; users: any[] }> {
+  const res = await $api.users.admin.office_users.list({ page })
+  const users: any[] = []
+  if (res.count) {
+    count = Math.ceil(res.count / 10)
+  } else {
+    count = 0
+  }
+  res.results.forEach((user: any) => {
+    users.push(user)
+  })
+  return { page, count, users }
 }
 
 export function convertToTimeOnly(datetime: string) {
   // Use a regular expression to capture the time part
-  const match = datetime.match(/(?:T| )(\d{2}:\d{2})/);
-  return match ? match[1] : '';
+  const match = datetime.match(/(?:T| )(\d{2}:\d{2})/)
+  return match ? match[1] : ''
 }
 
 function timeStringToHours(time: string): number {
-  const [hours, minutes] = time.split(':').map(Number);
-  return hours + minutes / 60;
+  const [hours, minutes] = time.split(':').map(Number)
+  return hours + minutes / 60
 }
 
 export function calculateTimes(excuseStart: string, excuseEnd: string) {
-  const startTimeInHours = timeStringToHours(excuseStart);
-  const endTimeInHours = timeStringToHours(excuseEnd);
-  
-  const CORE_HOURS = 8;
+  const startTimeInHours = timeStringToHours(excuseStart)
+  const endTimeInHours = timeStringToHours(excuseEnd)
+
+  const CORE_HOURS = 8
   const days = (endTimeInHours - startTimeInHours) / CORE_HOURS
-  
-  if (days <= .25) {
-    return .25
+
+  if (days <= 0.25) {
+    return 0.25
   }
 
-  if (days <= .5) {
-    return .5
+  if (days <= 0.5) {
+    return 0.5
   }
 
-  if (days <= .75) {
-    return .75
+  if (days <= 0.75) {
+    return 0.75
   }
-  
+
   return 1
 }
