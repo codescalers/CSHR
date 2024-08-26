@@ -23,7 +23,7 @@
           variant="outlined"
           color="primary"
           class="mr-3 btn"
-          :disabled="!pendingRequests.length"
+          :disabled="!couldApproveAll"
           @click="approveAll"
         >
           Approve all
@@ -32,13 +32,13 @@
           variant="outlined"
           color="error"
           class="btn"
-          :disabled="!pendingRequests.length"
+          :disabled="!couldApproveAll"
           @click="rejectAll"
         >
           Reject all
         </v-btn>
       </div>
-
+      
       <template v-if="loading">
         <div class="d-flex justify-center align-center" style="height: 150px;">
           <VProgressCircular indeterminate color="primary" />
@@ -48,13 +48,13 @@
       <div v-if="!loading" class="mb-5 mt-5">
         <v-row>
           <v-col xl="4" lg="6" md="12" sm="12" cols="12" v-for="request in pendingRequests" :key="request.id">
-            <v-card variant="tonal" class="elevation-4 border bg-graytitle">
+            <v-card class="border bg-graytitle">
               <template #prepend>
                 <profileImage width="55px" :with-link="false" :user="request.applying_user" />
               </template>
               <template #title>
-                {{ request.applying_user.full_name }}
-                <v-chip :color="getStatusColor(request.status)">{{
+                <span style="font-size: 16px;">{{ request.applying_user.full_name }}</span>
+                <v-chip class="ml-2" :color="getStatusColor(request.status)">{{
                   formatRequestStatus(request.status)
                 }}</v-chip>
               </template>
@@ -70,7 +70,7 @@
                 </div>
               </template>
               <div class="ma-5">
-                <ActionButtons :vacation="request" />
+                <ActionButtons :vacation="request" @update:vacation="($event) => request.status = $event.status"/>
               </div>
             </v-card>
           </v-col>
@@ -113,17 +113,16 @@ export default defineComponent({
     const isTeamlead = computed(() => user.value?.fullUser.user_type.toLowerCase() === 'supervisor')
     const isAdmin = computed(() => user.value?.fullUser.user_type.toLowerCase() === 'admin')
     const page = ref(1)
-    const count = computed(() => (state.value ? Math.ceil(state.value!.count / 10) : 0))
     const requestStatus = ref<RequestStatusSelection[]>([
       { title: 'All', value: 'all' },
       { title: formatRequestStatus('pending'), value: 'pending' },
       { title: formatRequestStatus('requested_to_cancel'), value: 'requested_to_cancel' }
     ])
-    const pendingRequests = ref<Api.Vacation[]>([]);
 
+    const pendingRequests = ref<Api.Vacation[]>([]);
     const selectedStatus = ref(requestStatus.value[0].value)
 
-    const { execute, state, isLoading } = useAsyncState(
+    const pendingRequestsTask = useAsyncState(
       () => {
         if (tab.value === 1) {
           return $api.vacations.myPendingRequests({
@@ -138,29 +137,31 @@ export default defineComponent({
       },
       undefined,
       {
-        immediate: true
+        immediate: false
       }
     )
 
     watch([tab, selectedStatus], () => (page.value = 1))
     watch([tab, page, selectedStatus], async () => {
-      await execute()
-      pendingRequests.value = state.value?.results as Api.Vacation[]
-    })
-
+      await pendingRequestsTask.execute()
+      pendingRequests.value = pendingRequestsTask.state.value?.results as Api.Vacation[]
+    }, {immediate: true})
+    
     const changeStateTask = useAsyncState((action: "approve" | "reject") => {
-      const requests = state.value?.results.map((req) => req.id) || []
+      const requests = pendingRequests.value?.filter((req) => req.status === "pending" || req.status === "requested_to_cancel") || []
       return $api.vacations.approveOrRejectAllTeamPendingRequets({
         action,
-        ids: requests
+        ids: requests.map(req => req.id)
       })
-      }, undefined,
+    }, undefined,
       {
         immediate: false
       }
     )
-
-    const loading = computed( () => changeStateTask.isLoading.value || isLoading.value)
+    
+    const couldApproveAll = computed(() => pendingRequests.value!.filter((req) => req.status === "pending" || req.status === "requested_to_cancel").length)
+    const loading = computed( () => changeStateTask.isLoading.value || pendingRequestsTask.isLoading.value)
+    const count = computed(() => (pendingRequestsTask.state.value ? Math.ceil(pendingRequestsTask.state.value!.count / 10) : 0))
 
     const approveAll = async () => {
       await changeStateTask.execute(undefined, 'approve')
@@ -183,6 +184,7 @@ export default defineComponent({
       count,
       selectedStatus,
       requestStatus,
+      couldApproveAll,
 
       formatDateString,
       formatVacationReason,
