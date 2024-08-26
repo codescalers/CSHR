@@ -188,9 +188,9 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
             pending_requests = Vacation.objects.filter(
                 from_date__lte=end_date,
                 end_date__gte=start_date,
-                status=STATUS_CHOICES.PENDING,
                 applying_user=applying_user,
             )
+
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
                     message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
@@ -659,17 +659,15 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
             from_date = serializer.validated_data.get("from_date")
             end_date = serializer.validated_data.get("end_date")
 
-            # Check if there are pending vacations in the same day
             pending_requests = Vacation.objects.filter(
+                from_date__lte=end_date,
+                end_date__gte=from_date,
                 applying_user=applying_user,
-                from_date__day=from_date.day,
-                end_date__day=end_date.day,
-                status=STATUS_CHOICES.PENDING,
             )
 
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
-                    message="The selected user has another request with the same dates and pending status. Please review their previous request before submitting a new one."
+                    message="The user has another pending request with the same dates. Please review the previous request before submitting a new one."
                 )
 
             # Check balance.
