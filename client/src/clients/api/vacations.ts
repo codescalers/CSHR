@@ -39,6 +39,15 @@ export class VacationsApi extends ApiClientBase {
     return requests
   }
 
+  async approveOrRejectAllTeamPendingRequets(data: Api.ApproveOrRejectAllTeamPendingRequets) {
+    ApiClientBase.assertUser()
+    const requests = await this.unwrap(
+      () => this.$http.put<Api.Returns.List<Api.Vacation>>(this.getUrl('/action-team-peneding-requests'), data),
+      { transform: (d) => d }
+    )
+    return requests
+  }
+
   async myTeamPendingRequests(query?: any) {
     ApiClientBase.assertUser()
     const requests = await this.unwrap(

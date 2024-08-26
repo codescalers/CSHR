@@ -1,5 +1,6 @@
 from cshr.serializers.users import TeamSerializer
 from cshr.serializers.vacations import (
+    ActionTeamPendingRequestsSerializer,
     AdminApplyVacationForUserSerializer,
     PostOfficeVacationBalanceSerializer,
     GetOfficeVacationBalanceSerializer,
@@ -61,7 +62,6 @@ from cshr.utils.redis_functions import (
 from cshr.utils.wrappers import wrap_vacation_request
 from cshr.services.notifications import NotificationsService
 from cshr.services.requests import get_request_by_id
-from cshr.api.pagination import PendingRequestsPagination
 
 
 class GetAdminVacationBalanceApiView(GenericAPIView):
@@ -1231,7 +1231,6 @@ class GetMyPendingRequestsAPIView(ListAPIView, GenericAPIView):
     permission_classes = [
         UserIsAuthenticated,
     ]
-    pagination_class = PendingRequestsPagination
 
     def get_pending_requests(self, request: Request) -> CustomResponse:
         status = request.query_params.get('status')
@@ -1266,7 +1265,6 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
     permission_classes = [
         UserIsAuthenticated,
     ]
-    pagination_class = PendingRequestsPagination
 
     def get_team_pending_requests(self, request: Request) -> CustomResponse:
         status = request.query_params.get('status')
@@ -1283,6 +1281,7 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
             applying_user__id__in=users,
         )
 
+        Vacation.objects.all().update(status=STATUS_CHOICES.PENDING)
         if status == "all":
             status = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
         else:
@@ -1295,3 +1294,42 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
         """method to get all vacations"""
         query_set: List[Vacation] = self.get_team_pending_requests(self.request)
         return query_set
+
+class ActionTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
+    serializer_class = ActionTeamPendingRequestsSerializer
+    permission_classes = [
+        UserIsAuthenticated,
+    ]
+
+    def put(self, request: Request) -> Response:
+        serializer = self.serializer_class(data=request.data)
+        if request.user is None:
+            return CustomResponse.not_found(message="User not found.")
+
+        if serializer.is_valid():
+            action = serializer.validated_data.get('action')
+            ids = serializer.validated_data.get('ids')
+
+            status = STATUS_CHOICES.PENDING
+            if action == 'approve':
+                status = STATUS_CHOICES.APPROVED
+            elif action == 'reject':
+                status = STATUS_CHOICES.REJECTED
+
+            Vacation.objects.filter(id__in=ids).update(
+                status=status,
+                approval_user=request.user
+            )
+            
+            # Retrieve updated objects for pagination
+            users = build_user_reporting_to_hierarchy_down(self.request.user)
+            queryset = Vacation.objects.filter(
+                applying_user__id__in=users,
+                status=STATUS_CHOICES.PENDING
+            )
+            paginated_queryset = self.paginate_queryset(queryset)
+            serialized_data = LandingPageVacationsSerializer(paginated_queryset, many=True).data
+
+            return self.get_paginated_response(serialized_data)
+        
+        return CustomResponse.bad_request(serializer.errors)
