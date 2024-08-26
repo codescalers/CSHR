@@ -1324,11 +1324,10 @@ class ActionTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
         # Handle notifications in bulk if possible
         self._send_notifications(vacations, status)
 
-        # Retrieve updated objects for pagination
         paginated_queryset = self.paginate_queryset(self._get_pending_requests_queryset())
         serialized_data = LandingPageVacationsSerializer(paginated_queryset, many=True).data
-
-        return self.get_paginated_response(serialized_data)
+        message = f"The pending requests have been successfully {status}."
+        return CustomResponse.success(message=message, data=serialized_data)
 
     def _get_status_from_action(self, action: str) -> str:
         """Return the status based on the action."""
