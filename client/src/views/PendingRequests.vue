@@ -18,13 +18,13 @@
       </v-tabs>
     </v-card>
     <v-container fluid>
-      <div class="d-flex justify-end">
+      <div class="d-flex justify-end" v-if="tab === 2">
         <v-btn 
           variant="outlined"
           color="primary"
           class="mr-3 btn"
-          :disabled="!state?.results?.length"
-          @click="changeStateTask.execute(undefined, 'approve')"
+          :disabled="!pendingRequests.length"
+          @click="approveAll"
         >
           Approve all
         </v-btn>
@@ -32,8 +32,8 @@
           variant="outlined"
           color="error"
           class="btn"
-          :disabled="!state?.results?.length"
-          @click="changeStateTask.execute(undefined, 'reject')"
+          :disabled="!pendingRequests.length"
+          @click="rejectAll"
         >
           Reject all
         </v-btn>
@@ -47,7 +47,7 @@
 
       <div v-if="!loading" class="mb-5 mt-5">
         <v-row>
-          <v-col xl="4" lg="6" md="12" sm="12" cols="12" v-for="request in state?.results" :key="request.id">
+          <v-col xl="4" lg="6" md="12" sm="12" cols="12" v-for="request in pendingRequests" :key="request.id">
             <v-card variant="tonal" class="elevation-4 border bg-graytitle">
               <template #prepend>
                 <profileImage width="55px" :with-link="false" :user="request.applying_user" />
@@ -76,11 +76,11 @@
           </v-col>
         </v-row>
       </div>
-      <card v-if="!loading && !state?.results?.length">
+      <card v-if="!loading && !pendingRequests.length">
         <p class="text-center">No requests were found</p>
       </card>
       <v-pagination
-        v-if="state?.results?.length"
+        v-if="pendingRequests.length"
         v-model="page"
         :length="count"
         rounded="circle"
@@ -119,6 +119,7 @@ export default defineComponent({
       { title: formatRequestStatus('pending'), value: 'pending' },
       { title: formatRequestStatus('requested_to_cancel'), value: 'requested_to_cancel' }
     ])
+    const pendingRequests = ref<Api.Vacation[]>([]);
 
     const selectedStatus = ref(requestStatus.value[0].value)
 
@@ -142,7 +143,10 @@ export default defineComponent({
     )
 
     watch([tab, selectedStatus], () => (page.value = 1))
-    watch([tab, page, selectedStatus], () => execute())
+    watch([tab, page, selectedStatus], async () => {
+      await execute()
+      pendingRequests.value = state.value?.results as Api.Vacation[]
+    })
 
     const changeStateTask = useAsyncState((action: "approve" | "reject") => {
       const requests = state.value?.results.map((req) => req.id) || []
@@ -158,13 +162,23 @@ export default defineComponent({
 
     const loading = computed( () => changeStateTask.isLoading.value || isLoading.value)
 
+    const approveAll = async () => {
+      await changeStateTask.execute(undefined, 'approve')
+      pendingRequests.value = changeStateTask.state.value?.results as Api.Vacation[]
+    }
+
+    const rejectAll = async () => {
+      await changeStateTask.execute(undefined, 'reject')
+      pendingRequests.value = changeStateTask.state.value?.results as Api.Vacation[]
+    }
+
     return {
       tab,
       user,
       isTeamlead,
       isAdmin,
       page,
-      state,
+      pendingRequests,
       loading,
       count,
       selectedStatus,
@@ -174,7 +188,8 @@ export default defineComponent({
       formatVacationReason,
       formatRequestStatus,
       getStatusColor,
-      changeStateTask
+      approveAll,
+      rejectAll,
     }
   }
 })

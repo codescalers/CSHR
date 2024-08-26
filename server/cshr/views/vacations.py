@@ -1297,38 +1297,80 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
 class ActionTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
     serializer_class = ActionTeamPendingRequestsSerializer
     permission_classes = [
-        UserIsAuthenticated,
+        IsAdmin | IsSupervisor,
     ]
 
     def put(self, request: Request) -> Response:
         serializer = self.serializer_class(data=request.data)
-        if request.user is None:
+        if not request.user:
             return CustomResponse.not_found(message="User not found.")
 
-        if serializer.is_valid():
-            action = serializer.validated_data.get('action')
-            ids = serializer.validated_data.get('ids')
+        if not serializer.is_valid():
+            return CustomResponse.bad_request(serializer.errors)
 
-            status = STATUS_CHOICES.PENDING
-            if action == 'approve':
-                status = STATUS_CHOICES.APPROVED
-            elif action == 'reject':
-                status = STATUS_CHOICES.REJECTED
+        action = serializer.validated_data.get('action')
+        ids = serializer.validated_data.get('ids')
 
-            Vacation.objects.filter(id__in=ids).update(
-                status=status,
-                approval_user=request.user
+        # Determine status based on the action
+        status = self._get_status_from_action(action)
+
+        # Bulk update vacations
+        vacations = Vacation.objects.filter(id__in=ids)
+        updated_count = vacations.update(status=status, approval_user=request.user)
+
+        if updated_count == 0:
+            return CustomResponse.not_found(message="No vacations found.")
+
+        # Handle notifications in bulk if possible
+        self._send_notifications(vacations, status)
+
+        # Retrieve updated objects for pagination
+        paginated_queryset = self.paginate_queryset(self._get_pending_requests_queryset())
+        serialized_data = LandingPageVacationsSerializer(paginated_queryset, many=True).data
+
+        return self.get_paginated_response(serialized_data)
+
+    def _get_status_from_action(self, action: str) -> str:
+        """Return the status based on the action."""
+        if action == 'approve':
+            return STATUS_CHOICES.APPROVED
+        elif action == 'reject':
+            return STATUS_CHOICES.REJECTED
+        return STATUS_CHOICES.PENDING
+
+    def _send_notifications(self, vacations: List[Vacation], status: STATUS_CHOICES) -> None:
+        """Send notifications based on the vacation status."""
+        notification_data = []
+        for vacation in vacations:
+            notification_service = NotificationsService(
+                sender=vacation.approval_user,
+                receiver=vacation.applying_user,
+                status=status
             )
-            
-            # Retrieve updated objects for pagination
-            users = build_user_reporting_to_hierarchy_down(self.request.user)
-            queryset = Vacation.objects.filter(
-                applying_user__id__in=users,
-                status=STATUS_CHOICES.PENDING
-            )
-            paginated_queryset = self.paginate_queryset(queryset)
-            serialized_data = LandingPageVacationsSerializer(paginated_queryset, many=True).data
 
-            return self.get_paginated_response(serialized_data)
-        
-        return CustomResponse.bad_request(serializer.errors)
+            notification = None
+            if status == STATUS_CHOICES.APPROVED:
+                notification = notification_service.vacations.approve_vacation(
+                    vacation.reason, vacation
+                )
+            elif status == STATUS_CHOICES.REJECTED:
+                notification = notification_service.vacations.reject_vacation(
+                    vacation.reason, vacation
+                )
+
+            notification.sender = vacation.approval_user
+            notification.receiver = vacation.applying_user
+
+            if notification:
+                notification_data.append(notification)
+
+        if notification_data:
+            notification_service.bulk_push(notification_data)
+
+    def _get_pending_requests_queryset(self):
+        """Get the queryset for pending requests."""
+        users = build_user_reporting_to_hierarchy_down(self.request.user)
+        return Vacation.objects.filter(
+            applying_user__id__in=users,
+            status=STATUS_CHOICES.PENDING
+        ).select_related('approval_user', 'applying_user')
