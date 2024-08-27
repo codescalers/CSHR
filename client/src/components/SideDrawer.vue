@@ -9,13 +9,13 @@
         <v-list color="transparent">
           <template v-for="item in filteredItems" :key="item.title">
             <v-list-item
+              :to="item.path" 
               :prepend-icon="item.icon"
+              color="white"
               :class="{ 'router-link-active': $route.path === item.path }"
             >
-              <router-link :to="item.path" class="router-link">
                 {{ item.title }}
-              </router-link>
-            </v-list-item>
+              </v-list-item>
           </template>
         </v-list>
       </v-navigation-drawer>
@@ -123,15 +123,7 @@ export default {
   }
 }
 </script>
-
 <style scoped>
-.router-link {
-  text-decoration: none;
-  font-weight: 400;
-  font-size: 0.875rem;
-  color: var(--link-color);
-  cursor: pointer;
-}
 .router-link-active{
   background-color: #47a2ff;
 }
