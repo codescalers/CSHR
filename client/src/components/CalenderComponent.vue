@@ -1,35 +1,46 @@
 <template>
-  <v-row class="justify-center py-4">
-    <v-col cols="2">
-      <v-checkbox v-model="filters.vacation" color="#fcd091" label="Vacations" />
-    </v-col>
-    <v-col cols="2">
-      <v-checkbox v-model="filters.meeting" color="#efeaea" label="Meetings" />
-    </v-col>
-    <v-col cols="2">
-      <v-checkbox v-model="filters.event" color="#47a2ff" label="Events" />
-    </v-col>
-    <v-col cols="2">
-      <v-checkbox v-model="filters.holiday" color="#5effb4" label="Holidays" />
-    </v-col>
-    <v-col cols="2">
-      <v-checkbox v-model="filters.birthday" color="#e0adf0" label="Birthdays" />
-    </v-col>
-  </v-row>
-  <v-divider class="d-flex mx-auto" style="width: 90%"></v-divider>
+  <div v-if="!isLoading">
+    <v-row class="justify-center py-4">
+      <v-col cols="2">
+        <v-checkbox v-model="filters.vacation" color="#fcd091" label="Vacations" />
+      </v-col>
+      <v-col cols="2">
+        <v-checkbox v-model="filters.meeting" color="#efeaea" label="Meetings" />
+      </v-col>
+      <v-col cols="2">
+        <v-checkbox v-model="filters.event" color="#47a2ff" label="Events" />
+      </v-col>
+      <v-col cols="2">
+        <v-checkbox v-model="filters.holiday" color="#5effb4" label="Holidays" />
+      </v-col>
+      <v-col cols="2">
+        <v-checkbox v-model="filters.birthday" color="#e0adf0" label="Birthdays" />
+      </v-col>
+    </v-row>
+    <v-divider class="d-flex mx-auto" style="width: 90%"></v-divider>
+  </div>
   <div class="ma-7 px-7">
     <div class="loading-container d-flex align-center justify-center my-5" v-if="isLoading">
       <v-alert density="compact" class="pa-5" type="info" text="Events are loading..."></v-alert>
     </div>
-
-    <FullCalendar
-      class="fc"
-      :options="{
-        ...options,
-        events: filteredEvents as any
-      }"
-    >
-    </FullCalendar>
+    <div class="relative">
+      <div
+        v-if="isLoading"
+        class="calendar-loading"
+      >
+      <div v-for="index in 300" :key="index" class="grid-item" />
+      </div>
+      <div v-else>
+        <FullCalendar
+          class="fc"
+          :options="{
+            ...options,
+            events: filteredEvents as any
+          }"
+        >
+        </FullCalendar>
+      </div>
+    </div>
   </div>
 
   <!-- Dialogs -->
@@ -491,6 +502,39 @@ button {
 
   .fc-popover-header {
     background-color: rgb(100, 99, 99) !important;
+  }
+}
+
+.calendar-loading {
+  width: 95%;
+  height: 800px;
+  margin: 0 auto;
+  background-color: rgba(90, 89, 89, 0.055);
+  display: grid;
+  grid-template-columns: repeat(30, 1fr);
+  grid-template-rows: repeat(30, 1fr);
+  gap: 15px;
+  color: white;
+  overflow: hidden;
+  place-items: center;
+}
+
+.grid-item {
+  background-color: rgba(255, 255, 255, 0.068);
+  animation: pulse 1.5s infinite ease-in-out;
+  height: 120px;
+  width: 120px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
   }
 }
 </style>

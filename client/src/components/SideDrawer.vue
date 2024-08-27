@@ -102,12 +102,13 @@ export default {
     const filteredItems = computed(() =>
       navItems.filter((item: any) => {
         return (
-          user.value?.fullUser.user_type.toLowerCase() === 'admin' || item.path !== '/dashboard'
+          user.value?.fullUser && user.value?.fullUser.user_type.toLowerCase() === 'admin' || item.path !== '/dashboard'
         )
       })
     )
 
     function logout() {
+      console.log("Logged out..")
       $api.auth.logout()
       $router.push('/login')
     }
