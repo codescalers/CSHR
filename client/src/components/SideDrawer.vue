@@ -123,15 +123,7 @@ export default {
   }
 }
 </script>
-
 <style scoped>
-.router-link {
-  text-decoration: none;
-  font-weight: 400;
-  font-size: 0.875rem;
-  color: var(--link-color);
-  cursor: pointer;
-}
 .router-link-active{
   background-color: #47a2ff;
 }
