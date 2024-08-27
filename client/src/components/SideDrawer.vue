@@ -8,14 +8,14 @@
         <v-divider></v-divider>
         <v-list color="transparent">
           <template v-for="item in filteredItems" :key="item.title">
+            <router-link :to="item.path" class="router-link">
             <v-list-item
               :prepend-icon="item.icon"
               :class="{ 'router-link-active': $route.path === item.path }"
             >
-              <router-link :to="item.path" class="router-link">
                 {{ item.title }}
-              </router-link>
-            </v-list-item>
+              </v-list-item>
+            </router-link>
           </template>
         </v-list>
       </v-navigation-drawer>
