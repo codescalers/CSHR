@@ -25,7 +25,7 @@ def filter_meetings_by_month_and_year(user: User, month: str, year: str) -> Meet
     meetings: List[Meetings] = Meetings.objects.filter(
         date__month=month, date__year=year
     ).prefetch_related(
-        Prefetch('participants', queryset=User.objects.only('id', 'full_name'))
+        Prefetch('event_participants', queryset=User.objects.only('id', 'full_name'))
     )
     return meetings
 
