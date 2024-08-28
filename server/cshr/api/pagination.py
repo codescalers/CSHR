@@ -5,6 +5,10 @@ class BaseGeneralUserPagination(PageNumberPagination):
     page_size = 12
     max_page_size = 50
 
+class OfficePageHolidaysPagination(PageNumberPagination):
+    page_size = 20
+    max_page_size = 50
+
 
 class PendingRequestsPagination(PageNumberPagination):
     page_size = 3

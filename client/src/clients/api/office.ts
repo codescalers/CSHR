@@ -6,7 +6,16 @@ export class OfficeApi extends ApiClientBase {
 
   async list() {
     ApiClientBase.assertUser()
-    return this.unwrap(() => this.$http.get(this.getUrl()), {
+    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.LocationType>>(this.getUrl()), {
+      transform: (d) => d.results
+    })
+  }
+
+  async officeHolidays(query: {year: number, office_id: number} ) {
+    ApiClientBase.assertUser()
+    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.OfficeHolidayDates>>(
+      this.getUrl(`/holidays`, query)
+    ), {
       transform: (d) => d.results
     })
   }

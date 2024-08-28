@@ -38,6 +38,9 @@ dependencies:
   calendar_options:
     specifier: link:@fullcalendar/core/calendar_options
     version: link:@fullcalendar/core/calendar_options
+  country-code-lookup:
+    specifier: ^0.1.3
+    version: 0.1.3
   moment:
     specifier: ^2.30.1
     version: 2.30.1
@@ -1307,6 +1310,10 @@ packages:
       ini: 1.3.8
       proto-list: 1.2.4
     dev: true
+
+  /country-code-lookup@0.1.3:
+    resolution: {integrity: sha512-gLu+AQKHUnkSQNTxShKgi/4tYd0vEEait3JMrLNZgYlmIZ9DJLkHUjzXE9qcs7dy3xY/kUx2/nOxZ0Z3D9JE+A==}
+    dev: false
 
   /cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}

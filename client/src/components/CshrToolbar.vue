@@ -112,7 +112,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, type Ref } from 'vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { useApi } from '@/hooks'
 import { formatDate, getStatusColor } from '@/utils'
@@ -135,11 +135,12 @@ export default {
 
     const notifications = computed(() => notificationStore.notifications)
 
-    setTimeout(() => {
+    onMounted(async () => {
+      await user.execute();
       if (!user.state.value) {
         window.location.href = '/login'
       }
-    }, 1000)
+    })
 
     const loadNotifications = async () => {
       const notificationData = await $api.notifications.list()

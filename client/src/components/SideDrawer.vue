@@ -63,6 +63,11 @@ export default {
         path: '/'
       },
       {
+        icon: 'mdi-account-clock',
+        title: 'Pending Requests',
+        path: '/pending-requests'
+      },
+      {
         icon: 'mdi-bell',
         title: 'Notifications',
         path: '/notifications'
@@ -78,25 +83,25 @@ export default {
         path: '/users'
       },
       {
+        icon: 'mdi-chair-rolling',
+        title: 'Threefold Offices',
+        path: '/locations'
+      },
+      {
         icon: 'mdi-view-dashboard',
         title: 'Dashboard',
         path: '/dashboard'
+      },
+      {
+        icon: 'mdi-account',
+        title: 'Profile',
+        path: '/profile'
       },
       {
         icon: 'mdi-cog',
         title: 'Settings',
         path: '/settings'
       },
-      {
-        icon: 'mdi-account-clock',
-        title: 'Pending Requests',
-        path: '/pending-requests'
-      },
-      {
-        icon: 'mdi-account',
-        title: 'Profile',
-        path: '/profile'
-      }
     ]
 
     const filteredItems = computed(() =>
