@@ -17,15 +17,28 @@ from cshr.models.vacations import PublicHoliday
 from cshr.serializers.public_holidays import OfficePublicHolidaySerializer
 from django.db.models.query import QuerySet
 
-from cshr.api.pagination import OfficePageHolidaysPagination
+from cshr.api.pagination import OfficePagination
+from django.db.models import Case, When, Value, IntegerField
 
 
-class BaseOfficeApiView(ListAPIView, GenericAPIView):
-    permission_classes = [UserIsAuthenticated | IsUser | IsAdmin | IsSupervisor]
+class BaseOfficeApiView(ListAPIView):
+    permission_classes = [UserIsAuthenticated]
     serializer_class = OfficeSerializer
+    pagination_class = OfficePagination
 
-    def get_queryset(self) -> Response:
-        query_set = Office.objects.all()
+    def get_queryset(self):
+        # Get the user who made the request
+        user = self.request.user
+        
+        # Annotate offices with a value to indicate whether it's the user's office
+        query_set = Office.objects.annotate(
+            is_user_office=Case(
+                When(id=user.location_id, then=Value(0)),
+                default=Value(1),
+                output_field=IntegerField(),
+            )
+        ).order_by('is_user_office', 'name')  # Order by user's office first, then by name
+
         return query_set
 
     def post(self, request: Request) -> Response:
@@ -89,10 +102,9 @@ class OfficeApiView(ListAPIView, GenericAPIView):
             )
         return CustomResponse.not_found(message="Office not found to update")
 
-class GetOfficePublicHolidaysBasedOnYearAPIView(ListAPIView, GenericAPIView):
+class GetOfficePublicHolidaysBasedOnYearAPIView(ListAPIView):
     permission_classes = [UserIsAuthenticated]
     serializer_class = OfficePublicHolidaySerializer
-    pagination_class = OfficePageHolidaysPagination
 
     def get_holidays(self, office_id: int, year: int) -> QuerySet:
         """
@@ -124,17 +136,5 @@ class GetOfficePublicHolidaysBasedOnYearAPIView(ListAPIView, GenericAPIView):
                 "message": "The office_id and year parameters should be integers."
             })
 
-        return self.get_holidays(office_id, year)
-
-    def list(self, request, *args, **kwargs) -> Response:
-        """
-        Override the list method to provide a custom response structure.
-        """
-        queryset = self.get_queryset()
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return CustomResponse.success(data=serializer.data)
+        queryset = self.get_holidays(office_id, year)
+        return queryset
