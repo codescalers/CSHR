@@ -25,9 +25,9 @@ from cshr.views.vacations import (
 urlpatterns = [
     path("", BaseVacationsApiView.as_view()),
     path("user/", VacationUserApiView.as_view()),
-    path("my-peneding-requests/", GetMyPendingRequestsAPIView.as_view()),
-    path("action-team-peneding-requests/", ActionTeamPendingRequestsAPIView.as_view()),
-    path("my-team-peneding-requests/", GetMyTeamPendingRequestsAPIView.as_view()),
+    path("my-pending-requests/", GetMyPendingRequestsAPIView.as_view()),
+    path("action-team-pending-requests/", ActionTeamPendingRequestsAPIView.as_view()),
+    path("my-team-pending-requests/", GetMyTeamPendingRequestsAPIView.as_view()),
     path("calculate/", CalculateVacationDaysApiView.as_view()),
     path("post-admin-balance/", PostAdminVacationBalanceApiView.as_view()),
     path("get-admin-balance/", GetAdminVacationBalanceApiView.as_view()),

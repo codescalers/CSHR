@@ -33,7 +33,7 @@ export class VacationsApi extends ApiClientBase {
   async myPendingRequests(query?: any) {
     ApiClientBase.assertUser()
     const requests = await this.unwrap(
-      () => this.$http.get<Api.Returns.List<Api.Vacation>>(this.getUrl('/my-peneding-requests', query)),
+      () => this.$http.get<Api.Returns.List<Api.Vacation>>(this.getUrl('/my-pending-requests', query)),
       { transform: (d) => d }
     )
     return requests
@@ -42,7 +42,7 @@ export class VacationsApi extends ApiClientBase {
   async approveOrRejectAllTeamPendingRequets(data: Api.ApproveOrRejectAllTeamPendingRequets) {
     ApiClientBase.assertUser()
     const requests = await this.unwrap(
-      () => this.$http.put<Api.Returns.List<Api.Vacation>>(this.getUrl('/action-team-peneding-requests'), data),
+      () => this.$http.put<Api.Returns.List<Api.Vacation>>(this.getUrl('/action-team-pending-requests'), data),
       { transform: (d) => d }
     )
     return requests
@@ -51,7 +51,7 @@ export class VacationsApi extends ApiClientBase {
   async myTeamPendingRequests(query?: any) {
     ApiClientBase.assertUser()
     const requests = await this.unwrap(
-      () => this.$http.get<Api.Returns.List<Api.Vacation>>(this.getUrl('/my-team-peneding-requests', query)),
+      () => this.$http.get<Api.Returns.List<Api.Vacation>>(this.getUrl('/my-team-pending-requests', query)),
       { transform: (d) => d }
     )
     return requests
