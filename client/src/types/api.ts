@@ -15,7 +15,7 @@ export module Api {
   }
 
   export interface ApproveOrRejectAllTeamPendingRequets{
-    ids: number[];
+    // ids: number[];
     action: "approve" | "reject"
   }
 

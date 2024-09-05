@@ -289,4 +289,5 @@ class AdminApplyVacationForUserSerializer(serializers.Serializer):
 
 class ActionTeamPendingRequestsSerializer(serializers.Serializer):
     action = serializers.CharField()
-    ids = serializers.ListField()
+    # ids = serializers.ListField()
+

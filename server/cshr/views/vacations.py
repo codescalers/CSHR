@@ -1279,14 +1279,14 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
 
         vacations = Vacation.objects.filter(
             applying_user__id__in=users,
-        )
+        ).select_related('applying_user')
 
         if status == "all":
             status = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
         else:
             status = [status]
 
-        vacations = vacations.filter(status__in=status)
+        vacations = vacations.filter(status__in=status).select_related('applying_user')
         return vacations
 
     def get_queryset(self) -> Response:
@@ -1309,22 +1309,19 @@ class ActionTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
             return CustomResponse.bad_request(serializer.errors)
 
         action = serializer.validated_data.get('action')
-        ids = serializer.validated_data.get('ids')
-
+        # ids = serializer.validated_data.get('ids')
         # Determine status based on the action
         status = self._get_status_from_action(action)
 
         # Bulk update vacations
-        vacations = Vacation.objects.filter(id__in=ids)
+        vacations = self._get_pending_requests_queryset()
         updated_count = vacations.update(status=status, approval_user=request.user)
-
         if updated_count == 0:
             return CustomResponse.not_found(message="No vacations found.")
 
         # Handle notifications in bulk if possible
         self._send_notifications(vacations, status)
-
-        paginated_queryset = self.paginate_queryset(self._get_pending_requests_queryset())
+        paginated_queryset = self.paginate_queryset(vacations)
         serialized_data = LandingPageVacationsSerializer(paginated_queryset, many=True).data
         message = f"The pending requests have been successfully {status}."
         return CustomResponse.success(message=message, data=serialized_data)
@@ -1370,6 +1367,7 @@ class ActionTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
         """Get the queryset for pending requests."""
         users = build_user_reporting_to_hierarchy_down(self.request.user)
         return Vacation.objects.filter(
-            applying_user__id__in=users,
-            status=STATUS_CHOICES.PENDING
-        ).select_related('approval_user', 'applying_user')
+            applying_user__id__in = users,
+            status__in = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
+        ).select_related('applying_user')
+
