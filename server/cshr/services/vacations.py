@@ -9,22 +9,10 @@ from typing import List
 
 
 def filter_vacations_by_month_and_year(month: str, year: str) -> Vacation:
-    """
-    This function will filter all of vacations based on its yesr, month.
-    """
     vacations: QuerySet[Vacation] = Vacation.objects.filter(
-        Q(
-            from_date__month=month,
-            from_date__year=year,
-        )
-        | Q(
-            end_date__month=month,
-            end_date__year=year,
-        )
-    )
-    vacations = vacations.exclude(status=STATUS_CHOICES.REJECTED).exclude(
-        status=STATUS_CHOICES.CANCELED
-    )
+        Q(from_date__month=month, from_date__year=year) |
+        Q(end_date__month=month, end_date__year=year)
+    ).exclude(status__in=[STATUS_CHOICES.REJECTED, STATUS_CHOICES.CANCELED]).select_related('applying_user')
     return vacations
 
 

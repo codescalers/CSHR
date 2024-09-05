@@ -1,35 +1,38 @@
 <template>
-  <v-row class="justify-center py-4">
-    <v-col cols="2">
-      <v-checkbox v-model="filters.vacation" color="#fcd091" label="Vacations" />
-    </v-col>
-    <v-col cols="2">
-      <v-checkbox v-model="filters.meeting" color="#efeaea" label="Meetings" />
-    </v-col>
-    <v-col cols="2">
-      <v-checkbox v-model="filters.event" color="#47a2ff" label="Events" />
-    </v-col>
-    <v-col cols="2">
-      <v-checkbox v-model="filters.holiday" color="#5effb4" label="Holidays" />
-    </v-col>
-    <v-col cols="2">
-      <v-checkbox v-model="filters.birthday" color="#e0adf0" label="Birthdays" />
-    </v-col>
-  </v-row>
-  <v-divider class="d-flex mx-auto" style="width: 90%"></v-divider>
+  <div v-if="!isLoading">
+    <v-row class="justify-center py-4">
+      <v-col cols="2">
+        <v-checkbox v-model="filters.vacation" color="#fcd091" label="Vacations" />
+      </v-col>
+      <v-col cols="2">
+        <v-checkbox v-model="filters.meeting" color="#efeaea" label="Meetings" />
+      </v-col>
+      <v-col cols="2">
+        <v-checkbox v-model="filters.event" color="#47a2ff" label="Events" />
+      </v-col>
+      <v-col cols="2">
+        <v-checkbox v-model="filters.holiday" color="#5effb4" label="Holidays" />
+      </v-col>
+      <v-col cols="2">
+        <v-checkbox v-model="filters.birthday" color="#e0adf0" label="Birthdays" />
+      </v-col>
+    </v-row>
+    <v-divider class="d-flex mx-auto" style="width: 90%"></v-divider>
+  </div>
   <div class="ma-7 px-7">
     <div class="loading-container d-flex align-center justify-center my-5" v-if="isLoading">
       <v-alert density="compact" class="pa-5" type="info" text="Events are loading..."></v-alert>
     </div>
 
-    <FullCalendar
-      class="fc"
-      :options="{
-        ...options,
-        events: filteredEvents as any
-      }"
-    >
-    </FullCalendar>
+  <FullCalendar
+    class="fc"
+    :options="{
+      ...options,
+      events: filteredEvents as any
+    }"
+  >
+  </FullCalendar>
+
   </div>
 
   <!-- Dialogs -->

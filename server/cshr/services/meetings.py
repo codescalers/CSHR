@@ -4,6 +4,8 @@ from cshr.models.meetings import Meetings
 from typing import List
 
 from cshr.models.users import User
+from django.db.models import Prefetch
+
 
 
 def get_meeting_by_id(id: str) -> Meetings:
@@ -20,14 +22,12 @@ def get_all_meetings() -> Meetings:
 
 
 def filter_meetings_by_month_and_year(user: User, month: str, year: str) -> Meetings:
-    """
-    This function will filter all of meetings based on its yesr, month.
-    """
     meetings: List[Meetings] = Meetings.objects.filter(
         date__month=month, date__year=year
+    ).prefetch_related(
+        Prefetch('event_participants', queryset=User.objects.only('id', 'full_name'))
     )
     return meetings
-
 
 def filter_meetings_by_day(year: int, month: int, day: int) -> List[Meetings]:
     """Filter all users by birthdates"""

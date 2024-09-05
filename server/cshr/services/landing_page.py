@@ -18,42 +18,42 @@ from cshr.utils.wrappers import (
     wrap_vacation_request,
 )
 
+from concurrent.futures import ThreadPoolExecutor
+
 
 def landing_page_calendar_functionality(user: User, month: str, year: str) -> List[Any]:
     response: List[Any] = []
 
-    # Fetch vacations
-    vacations = filter_vacations_by_month_and_year(month, year).order_by("-created_at")
-    for vacation in vacations:
-        vacation_data = wrap_vacation_request(vacation)
-        response.append(vacation_data)
+    with ThreadPoolExecutor() as executor:
+        future_vacations = executor.submit(filter_vacations_by_month_and_year, month, year)
+        future_meetings = executor.submit(filter_meetings_by_month_and_year, user, month, year)
+        future_events = executor.submit(filter_events_by_month_and_year, user, month, year)
+        future_birthdays = executor.submit(filter_users_by_birth_month, month)
+        future_holidays = executor.submit(filter_public_holidays_by_month_and_year, year, month)
 
-    # Fetch meetings
-    meetings = filter_meetings_by_month_and_year(user, month, year).order_by(
-        "-created_at"
-    )
-    for meeting in meetings:
-        meeting_data = wrap_meeting_request(meeting)
-        response.append(meeting_data)
+        # Add vacations to response
+        for vacation in future_vacations.result():
+            vacation_data = wrap_vacation_request(vacation)
+            response.append(vacation_data)
 
-    # Fetch events
-    events = filter_events_by_month_and_year(user, month, year).order_by("-created_at")
-    for event in events:
-        event_data = wrap_event_request(event)
-        response.append(event_data)
+        # Add meetings to response
+        for meeting in future_meetings.result():
+            meeting_data = wrap_meeting_request(meeting)
+            response.append(meeting_data)
 
-    # Fetch users' birthdays
-    users_birthdates = filter_users_by_birth_month(month).order_by("-created_at")
-    for birthday_user in users_birthdates:
-        birthday_data = wrap_birthday_event(birthday_user)
-        response.append(birthday_data)
+        # Add events to response
+        for event in future_events.result():
+            event_data = wrap_event_request(event)
+            response.append(event_data)
 
-    # Fetch public holidays
-    public_holidays = filter_public_holidays_by_month_and_year(year, month).order_by(
-        "-created_at"
-    )
-    for holiday in public_holidays:
-        holiday_data = wrap_holiday_request(holiday)
-        response.append(holiday_data)
+        # Add birthdays to response
+        for birthday_user in future_birthdays.result():
+            birthday_data = wrap_birthday_event(birthday_user)
+            response.append(birthday_data)
+
+        # Add public holidays to response
+        for holiday in future_holidays.result():
+            holiday_data = wrap_holiday_request(holiday)
+            response.append(holiday_data)
 
     return response
