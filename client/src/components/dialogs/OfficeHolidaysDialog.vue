@@ -7,9 +7,9 @@
   >
     <v-card>
       <v-card-text>
-        <v-alert class="mb-4">{{
-          selectedOffice ? capitalize(selectedOffice!.name) + ' public holidays' : 'Public holidays'
-        }}</v-alert>
+        <v-alert class="mb-4">
+          {{ selectedOffice ? capitalize(selectedOffice!.name) + ' Public holidays' : 'Public holidays' }}
+        </v-alert>
         <div class="d-flex flex-row">
           <v-tabs v-model="tab" color="primary" direction="vertical">
             <!-- <v-text-field
