@@ -245,11 +245,12 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 reason=reason,
             ).values_list("actual_days", flat=True)
 
-            chcked_balance = curr_balance - sum(pending_vacations)
-
+            sum_balance = int(sum(pending_vacations))
+            chcked_balance = curr_balance - sum_balance
+            days_or_day = "days" if sum_balance > 1 else "day"
             if chcked_balance < vacation_days:
                 return CustomResponse.bad_request(
-                    message=f"You have an additional pending request that deducts {sum(pending_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                    message=f"You have an additional pending request that deducts {sum_balance} {days_or_day} from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} {days_or_day}."
                 )
 
             vacation = serializer.save(
@@ -701,10 +702,11 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
             ).values_list("actual_days", flat=True)
 
             chcked_balance = curr_balance - sum(pending_vacations)
+            days_or_day = "days" if chcked_balance > 1 else "day"
 
             if curr_balance < vacation_days:
                 return CustomResponse.bad_request(
-                    message=f"The user have only {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
+                    message=f"The user have only {curr_balance} {days_or_day} left of reason '{reason.capitalize().replace('_', ' ')}'"
                 )
 
             if chcked_balance < vacation_days:
@@ -1314,10 +1316,17 @@ class ActionTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
         status = self._get_status_from_action(action)
 
         # Bulk update vacations
+        vacation_ids = []
         vacations = self._get_pending_requests_queryset()
+
+        for vacation in vacations:
+            vacation_ids.append(vacation.id)
+
         updated_count = vacations.update(status=status, approval_user=request.user)
         if updated_count == 0:
             return CustomResponse.not_found(message="No vacations found.")
+
+        vacations = Vacation.objects.filter(id__in=vacation_ids)
 
         # Handle notifications in bulk if possible
         self._send_notifications(vacations, status)
@@ -1370,4 +1379,3 @@ class ActionTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
             applying_user__id__in = users,
             status__in = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
         ).select_related('applying_user')
-

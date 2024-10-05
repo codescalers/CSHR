@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, type PropType } from 'vue'
+import { computed, ref, watch, type PropType } from 'vue'
 import type { Api, notificationType } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
 import { useAsyncState } from '@vueuse/core'
@@ -38,6 +38,7 @@ export default {
     const user = ApiClientBase.user
     const vacationStatus = ref(props.vacation!.status)
 
+    watch(() => props.vacation, ()=> vacationStatus.value = props.vacation!.status, {deep: true})
 
     async function handleApprove() {
       return useAsyncState($api.vacations.approve.update(props.vacation!.id), [] as unknown as Api.Vacation, {

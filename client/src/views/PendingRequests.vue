@@ -47,7 +47,7 @@
 
       <div v-if="!loading" class="mb-5 mt-5">
         <v-row>
-          <v-col xl="4" lg="6" md="12" sm="12" cols="12" v-for="request in pendingRequests" :key="request.id">
+          <v-col xl="4" :lg="pendingRequests.length > 1 ? 6 : 12" md="12" sm="12" cols="12" v-for="request in pendingRequests" :key="request.id">
             <v-card class="border bg-graytitle">
               <template #prepend>
                 <profileImage width="55px" :with-link="false" :user="request.applying_user" />
@@ -148,10 +148,8 @@ export default defineComponent({
     }, {immediate: true})
     
     const changeStateTask = useAsyncState((action: "approve" | "reject") => {
-      const requests = pendingRequests.value?.filter((req) => req.status === "pending" || req.status === "requested_to_cancel") || []
       return $api.vacations.approveOrRejectAllTeamPendingRequets({
         action,
-        ids: requests.map(req => req.id)
       })
     }, undefined,
       {
@@ -162,15 +160,42 @@ export default defineComponent({
     const couldApproveAll = computed(() => pendingRequests.value!.filter((req) => req.status === "pending" || req.status === "requested_to_cancel").length)
     const loading = computed( () => changeStateTask.isLoading.value || pendingRequestsTask.isLoading.value)
     const count = computed(() => (pendingRequestsTask.state.value ? Math.ceil(pendingRequestsTask.state.value!.count / 10) : 0))
-
     const approveAll = async () => {
-      await changeStateTask.execute(undefined, 'approve')
+      const STATUS = 'approve'
+      await changeStateTask.execute(undefined, STATUS)
+
+      const result = pendingRequests.value.map(r => ({
+        [r.applying_user.id.toFixed()]: r.id.toFixed()
+      }))
+
       pendingRequests.value = changeStateTask.state.value?.results as Api.Vacation[]
+      
+      window.connections.ws.value!.send(
+        JSON.stringify({
+          event: 'approve_or_reject_all_pending_requests',
+          data: result,
+          status: STATUS,
+        })
+      )
     }
 
+
     const rejectAll = async () => {
-      await changeStateTask.execute(undefined, 'reject')
+      const STATUS = 'reject'
+      await changeStateTask.execute(undefined, STATUS)
+      const result = pendingRequests.value.map(r => ({
+        [r.applying_user.id.toFixed()]: r.id.toFixed()
+      }))
+
       pendingRequests.value = changeStateTask.state.value?.results as Api.Vacation[]
+
+      window.connections.ws.value!.send(
+        JSON.stringify({
+          event: 'approve_or_reject_all_pending_requests',
+          data: result,
+          status: STATUS,
+        })
+      )
     }
 
     return {
