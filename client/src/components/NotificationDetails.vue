@@ -5,6 +5,11 @@
         <v-col class="d-flex justify-start mb-0">
           <v-card-title class="font-weight-bold mb-0"> {{ $props.modelValue.title }} </v-card-title>
         </v-col>
+        <v-col class="d-flex justify-end mb-0 align-center">
+          <v-chip :color="getStatusColor(requestStatus!)">
+            {{ formatRequestStatus(requestStatus!) }}
+          </v-chip>
+        </v-col>
       </v-row>
       <v-card-text class="mt-0 pt-0">
         <p>
@@ -51,22 +56,23 @@
           :vacation="vacation"
           :display-close-btn="true"
           @update:close-dialog="closeDialog"
-          @update:vacation="$emit('update:approvalUser', $event.approval_user)"
+          @update:vacation="$emit('update:vacation', $event)"
         />
       </v-row>
   </v-card>
 </template>
 
 <script lang="ts">
-import { computed, ref, type PropType } from 'vue'
-import type { notificationType } from '@/types'
+import { computed, type PropType } from 'vue'
+import type { Api, notificationType } from '@/types'
 import { ApiClientBase } from '@/clients/api/base'
 import ActionButtons from "@/components/requests/ActionButtons.vue"
+import { formatRequestStatus, getStatusColor } from '@/utils';
 
 export default {
   components: { ActionButtons },
   name: 'NotificationDetails',
-  emits: ["update:approvalUser"],
+  emits: ["update:vacation"],
   props: {
     modelValue: {
       type: Object as PropType<notificationType>,
@@ -75,6 +81,10 @@ export default {
     sections: {
       type: Array as PropType<any[]>,
       required: true
+    },
+    requestStatus: {
+      type: Object as PropType<Api.RequestStatus>,
+      required: false
     },
     vacation: {
       type: Object as PropType<notificationType["request"]>,
@@ -87,7 +97,6 @@ export default {
   },
   setup(props) {
     const user = ApiClientBase.user
-    const vacationStatus = ref(props.modelValue.request.status)
 
     const closeDialog = () => {
       props.onClose()
@@ -102,8 +111,9 @@ export default {
 
     return {
       couldApprove,
-      vacationStatus,
       closeDialog,
+      formatRequestStatus,
+      getStatusColor,
     }
   }
 }

@@ -207,7 +207,7 @@ def filter_admins_same_office_of_the_user(user: User) -> QuerySet[User]:
     return User.objects.filter(location__id=user.location.id, user_type=USER_TYPE.ADMIN)
 
 
-def build_user_reporting_to_hierarchy_down(user: User) -> List[int]:
+def build_user_reporting_to_hierarchy_down(user: User, visited=None) -> List[int]:
     """
     Function to get all users reporting to a specific user, including indirect reports.
 
@@ -219,6 +219,15 @@ def build_user_reporting_to_hierarchy_down(user: User) -> List[int]:
 
     The function iterates through the direct reports of the user and recursively adds the IDs of all users who report to them.
     """
+    if visited is None:
+        visited = set()
+
+    # Avoid infinite loops by checking if the user has already been visited
+    if user.id in visited:
+        return []
+
+    visited.add(user.id)
+
     reports = []
 
     # Get all direct reports
@@ -227,7 +236,7 @@ def build_user_reporting_to_hierarchy_down(user: User) -> List[int]:
     for report in direct_reports:
         reports.append(report.id)  # Add the direct report's ID
         reports.extend(
-            build_user_reporting_to_hierarchy_down(report)
+            build_user_reporting_to_hierarchy_down(report, visited)
         )  # Recursively add all indirect reports
 
     return reports

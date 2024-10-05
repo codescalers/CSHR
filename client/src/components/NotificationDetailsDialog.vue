@@ -17,11 +17,12 @@
       v-if="couldAccessNotification"
       :modelValue.="$props.modelValue"
       :sections="getSections(notification.state.value)"
+      :request-status="requestStatus"
       :vacation="
           notification.state.value.request.type === 'vacation' ? notification.state.value.request : undefined
         "
         @close="closeDialog"
-        @update:approval-user="handleApprovalUser"
+        @update:vacation="updateVacation($event)"
       />
       <div v-else class="not-allowed">
         <v-container>
@@ -69,6 +70,7 @@ export default {
     const $api = useApi()
     const applyingUser = ref<Api.User | null>()
     const approvalUser = ref<Api.User | null>()
+    const requestStatus = ref<Api.RequestStatus>()
     const selected = useRouteQuery<undefined | string>('selected-' + props.routeQuery, undefined)
     const notificationsStore = useNotificationStore()
     const notifications = computed(() => notificationsStore.notifications)
@@ -83,6 +85,7 @@ export default {
           const response = await $api.notifications.getNotification(+id)
           applyingUser.value = response.request.applying_user
           approvalUser.value = response.request.approval_user
+          requestStatus.value = response.request.status
           ctx.emit("set:notification", response)
           return response
         }
@@ -125,7 +128,7 @@ export default {
                 label: 'From Date',
                 value: `${new Date(data.request.from_date).toDateString()}`
               },
-              { label: 'End Date', value: `${new Date(data.request.end_date).toDateString()}` }
+              { label: 'End Date', value: `${new Date(data.request.end_date).toDateString()}` },
             ]
           },
           {
@@ -176,8 +179,10 @@ export default {
       ctx.emit('update:model-value')
     }
 
-    function handleApprovalUser(user: Api.User) {
-      approvalUser.value = user
+    function updateVacation(vacation: Api.Vacation) {
+      requestStatus.value = vacation.status;
+      applyingUser.value = vacation.applying_user;
+      approvalUser.value = vacation.approval_user;
     }
 
     return {
@@ -186,7 +191,8 @@ export default {
       closeDialog,
       getSections,
       capitalize,
-      handleApprovalUser,
+      requestStatus,
+      updateVacation,
       couldAccessNotification,
     }
   }

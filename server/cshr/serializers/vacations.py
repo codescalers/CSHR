@@ -286,3 +286,8 @@ class AdminApplyVacationForUserSerializer(serializers.Serializer):
     reason = serializers.CharField()
     from_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField()
+
+class ActionTeamPendingRequestsSerializer(serializers.Serializer):
+    action = serializers.CharField()
+    # ids = serializers.ListField()
+
