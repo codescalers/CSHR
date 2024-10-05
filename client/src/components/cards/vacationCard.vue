@@ -16,7 +16,7 @@
         <v-row class="d-flex justify-center my-2">
           <v-btn color="primary" v-if="couldUpdate && vacation.applying_user.id === user?.id" class="mx-1 my-2" type="submit"
             :disabled="!form?.isValid">Update</v-btn>
-          <v-btn v-if="vacation.status === 'approved' && couldDelete" color="error" class="mx-1 my-2" @click="requestToCancel">Request to Cancel</v-btn>
+          <v-btn v-if="couldRequestToCancel" color="error" class="mx-1 my-2" @click="requestToCancel">Request to Cancel</v-btn>
           <v-btn v-if="vacation.status === 'pending' && couldDelete" color="error" class="mx-1 my-2" @click="handleDelete">Cancel</v-btn>
         </v-row>
         <div v-if="couldApprove && vacation.status == 'requested_to_cancel'">
@@ -139,6 +139,10 @@ export default {
         );
       }
       return false;
+    });
+
+    const couldRequestToCancel = computed(() => {
+      return props.vacation.status === 'approved' && props.vacation.applying_user.id === user.value!.id
     });
 
     const balance = useAsyncState(
@@ -338,6 +342,7 @@ export default {
       formatRequestStatus,
       getStatusColor,
       formatDateTime,
+      couldRequestToCancel
     }
   }
 }
