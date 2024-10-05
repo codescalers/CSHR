@@ -6,9 +6,6 @@
     @click:outside="closeDialog"
   >
     <v-card>
-      <v-card-title>{{
-        selectedOffice ? capitalize(selectedOffice.name) + ' Office' : 'Office Details'
-      }}</v-card-title>
       <v-card-text>
         <v-alert class="mb-4">{{
           selectedOffice ? capitalize(selectedOffice!.name) + ' public holidays' : 'Public holidays'
@@ -39,16 +36,6 @@
             </v-tab>
           </v-tabs>
           <v-card class="pa-4 pt-1 ml-4 w-100">
-            <v-toolbar
-              class="w-100 d-felx justify-center"
-              color="primary"
-              height="30"
-              style="border-radius: 3px"
-            >
-              <strong class="text-center ml-4"
-                >Filtering the total public holidays based on the year {{ tab }}.</strong
-              >
-            </v-toolbar>
             <v-card class="pa-4">
               <div class="" v-if="holidays.length">
                 <v-chip
