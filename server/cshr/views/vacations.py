@@ -193,7 +193,7 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
 
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
-                    message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
+                    message="You have a request on the selected dates."
                 )
 
             # Check balance.
@@ -349,7 +349,7 @@ class VacationsUpdateApiView(ListAPIView, GenericAPIView):
 
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
-                    message="You have a request with a pending status on the same day. Kindly address the pending requests first by either deleting them or reaching out to the administrators for approval/rejection."
+                    message="You have a request on the selected dates."
                 )
 
             # Check balance.
@@ -667,7 +667,7 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
 
             if len(pending_requests) > 0:
                 return CustomResponse.bad_request(
-                    message="The user has another pending request with the same dates. Please review the previous request before submitting a new one."
+                    message="The user has another request with the same dates. Please review the previous request before submitting a new one."
                 )
 
             # Check balance.
