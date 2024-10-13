@@ -63,7 +63,7 @@ class VacationBalance(models.Model):
 
 
 class PublicHoliday(TimeStamp):
-    location = models.ForeignKey(Office, on_delete=models.CASCADE)
+    location = models.ForeignKey(Office, on_delete=models.CASCADE, related_name='office_holidays')
     holiday_date = models.DateField()
     expired = models.BooleanField(default=False)
 

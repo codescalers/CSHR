@@ -89,6 +89,10 @@ export module Api {
     country: string;
     weekend: string;
   };
+
+  export type OfficeHolidayDates = {
+    holiday_date: string
+  }
   
   export type ReportingToType = {
     id: number;

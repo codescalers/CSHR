@@ -129,7 +129,18 @@
             return-object
             density="comfortable"
             :rules="requiredRules"
-          ></v-select>
+            :loading="loadingOffices"
+            :disabled="loadingOffices"
+            >
+            <template #append-item v-if="reloadMoreOffices">
+              <VContainer>
+                <VBtn @click="() => { return officesPage++, officesCount--, listOffices() }" block color="secondary" variant="tonal"
+                  prepend-icon="mdi-reload">
+                  Load More Offices
+                </VBtn>
+              </VContainer>
+            </template>
+          </v-select>
 
           <v-select
             v-model="selectedSupervisor"
@@ -140,6 +151,8 @@
             return-object
             density="comfortable"
             clearable
+            :loading="loadingSupervisors"
+            :disabled="loadingSupervisors"
           >
             <template #append-item v-if="reloadMoreSupervisor">
               <VContainer>
@@ -342,8 +355,8 @@ export default {
     const joining_at = ref(new Date().toISOString().split('T')[0])
     const mobile_number = ref('')
     const password = ref('')
-    const offices = ref([])
-    const location = ref()
+    const offices = ref<Api.LocationType[]>([])
+    const location = ref<Api.LocationType>(offices.value[0])
     const user_type = ref('User')
     const reporting_to = ref([])
     const job_title = ref('')
@@ -354,13 +367,17 @@ export default {
     const imageInput = ref()
     const imageUrl = ref()
     const supervisorPage = ref(1)
+    const officesPage = ref(1)
     const supervisorCount = ref(0)
+    const officesCount = ref(0)
     const annualBalance = ref(0)
     const emergencyBalance = ref(0)
     const excusesBalance = ref(0)
     const setBalance = ref<number[] | number | undefined>()
     const isSetBalance = ref<boolean>(false)
     const notTheCurrentMonth = ref<boolean>(false)
+    const loadingOffices = ref<boolean>(true)
+    const loadingSupervisors = ref<boolean>(true)
     const thisMonth = new Date().getMonth() + 1;
 
     const userBalance = computed(() => ({
@@ -400,7 +417,7 @@ export default {
       } else {
         supervisorCount.value = 0
       }
-
+      loadingSupervisors.value = false;
       return supervisors.value
     }
 
@@ -414,14 +431,33 @@ export default {
       return false
     })
 
+    const reloadMoreOffices = computed(() => {
+      if (officesPage.value === officesCount.value) {
+        return false
+      }
+      if (officesCount.value > 1) {
+        return true
+      }
+      return false
+    })
+
+    async function listOffices() {
+      const res = await $api.office.list({ page: officesPage.value })
+      if (res.count) {
+        officesCount.value = Math.ceil(res.count / 12)
+        res.results.forEach((office: any) => {
+          offices.value.push(office)
+        })
+      } else {
+        officesCount.value = 0
+      }
+      loadingOffices.value = false
+      return offices.value
+    }
+
     onMounted(async () => {
       try {
-        offices.value = (await $api.office.list()).map((office: any) => ({
-          id: office.id,
-          name: office.name
-        }))
-
-        location.value = offices.value[0]
+        await listOffices()
         await listSupervisors()
       } catch (error) {
         console.error(error)
@@ -534,6 +570,12 @@ export default {
       setBalance,
       isSetBalance,
       notTheCurrentMonth,
+      reloadMoreOffices,
+      listOffices,
+      officesPage,
+      officesCount,
+      loadingOffices,
+      loadingSupervisors,
     }
   }
 }

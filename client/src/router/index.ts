@@ -8,11 +8,12 @@ const router = createRouter({
     { path: '/', component: () => import('@/views/CalendarView.vue') },
     { path: '/pending-requests', component: () => import('@/views/PendingRequests.vue') },
     { path: '/notifications', component: () => import('@/views/NotificationsView.vue') },
+    { path: '/locations', component: () => import('@/views/OfficesView.vue') },
+    { path: '/dashboard', component: () => import('@/views/DashboardView.vue') },
     { path: '/team', component: () => import('@/views/TeamView.vue') },
     { path: '/users', name: 'users', component: () => import('@/views/UsersView.vue') },
-    { path: '/dashboard', component: () => import('@/views/DashboardView.vue') },
-    { path: '/settings', component: () => import('@/views/SettingsView.vue') },
     { path: '/profile', name: 'profile', component: () => import('@/views/ProfileView.vue') },
+    { path: '/settings', component: () => import('@/views/SettingsView.vue') },
   ]
 })
 
