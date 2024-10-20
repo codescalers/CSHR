@@ -71,7 +71,7 @@
 
         </v-card>
       </v-form>
-      <v-divider class="my-2"></v-divider>
+      <v-divider class="my-2 mb-2 pb-4"></v-divider>
       <ActionButtons 
           :vacation="vacation"
           :display-close-btn="true"

@@ -16,3 +16,14 @@ class PublicHolidaySerializer(ModelSerializer):
 
     def get_location(self, obj: PublicHoliday):
         return OfficeSerializer(obj.location).data
+
+class OfficePublicHolidaySerializer(ModelSerializer):
+    """
+    This class will be used to get all info about office public holidays.
+    """
+
+
+    class Meta:
+        model = PublicHoliday
+        fields = ["holiday_date", ]
+

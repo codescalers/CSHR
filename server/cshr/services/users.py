@@ -159,7 +159,7 @@ def get_or_create_user_balance(user: User, user_balance: Dict) -> QuerySet[User]
     """Get or create user balance record."""
     user = get_user_by_id(user.pk)
     if user:
-        office_balance = OfficeVacationBalance.objects.get(location=user.location)
+        office_balance = OfficeVacationBalance.objects.get_or_create(location=user.location)
         user_balance = VacationBalance.objects.get_or_create(
             user=user,
             sick_leaves=365,
@@ -168,7 +168,7 @@ def get_or_create_user_balance(user: User, user_balance: Dict) -> QuerySet[User]
             annual_leaves=user_balance.get("annual_leaves"),
             emergency_leaves=user_balance.get("emergency_leaves"),
             leave_excuses=user_balance.get("leave_excuses"),
-            office_vacation_balance=office_balance,
+            office_vacation_balance=office_balance[0],
         )
         return user_balance[0]
     return None

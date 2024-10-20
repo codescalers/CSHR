@@ -4,9 +4,18 @@ import { ApiClientBase } from './base'
 export class OfficeApi extends ApiClientBase {
   protected readonly path = '/office'
 
-  async list() {
+  async list(query?: any) {
     ApiClientBase.assertUser()
-    return this.unwrap(() => this.$http.get(this.getUrl()), {
+    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.LocationType>>(this.getUrl('', query)), {
+      transform: (d) => d
+    })
+  }
+
+  async officeHolidays(query: {year: number, office_id: number} ) {
+    ApiClientBase.assertUser()
+    return this.unwrap(() => this.$http.get<Api.Returns.List<Api.OfficeHolidayDates>>(
+      this.getUrl(`/holidays`, query)
+    ), {
       transform: (d) => d.results
     })
   }
