@@ -7,7 +7,7 @@
     </v-row>
     <v-row class="mx-4">
       <v-col cols="6" sm="6" md="6" class="pa-1">
-        <v-autocomplete clearable v-model="office" :items="offices.state.value" label="Office"
+        <v-autocomplete clearable v-model="office" :items="offices.state.value.results" label="Office"
           @update:model-value="handleFiltersChange" return-object item-title="country">
         </v-autocomplete>
       </v-col>
