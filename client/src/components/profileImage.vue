@@ -1,8 +1,8 @@
 <template>
   <router-link v-if="withLink" :to="`/profile?id=${user.id}`" style="text-decoration: none">
     <div v-if="user.image?.includes('profile_image')" class="d-flex justify-center">
-      <img
-        :src="imageSrc + user.image"
+      <v-img
+        :src="sanitizeUrl()"
         class="user-profile-image rounded-circle"
         :style="{ width: width || '70px', height: width || '70px', objectFit: 'cover' }"
       />
@@ -17,8 +17,8 @@
 
   <div v-else>
     <div v-if="user.image?.includes('profile_image')" class="d-flex justify-center">
-      <img
-        :src="imageSrc + user.image"
+      <v-img
+        :src="sanitizeUrl()"
         class="user-profile-image rounded-circle"
         :style="{ width: width || '70px', height: width || '70px', objectFit: 'cover' }"
       />
@@ -53,9 +53,23 @@ export default {
       return props.user.email?.charAt(0) + props.user.email?.charAt(1)
     })
 
+    // Function to sanitize URLs
+    const sanitizeUrl = () => {
+      let url = imageSrc + props.user.image;
+      const parts = url.split(/(?<=\:\/\/)/);
+
+      if (parts.length > 1) {
+        parts[1] = parts[1].replace(/\/{2,}/g, '/');
+      }
+
+      url = parts.join('');
+      return url;
+    };
+
     return {
       avatar,
-      imageSrc
+      imageSrc,
+      sanitizeUrl
     }
   }
 }

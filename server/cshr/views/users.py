@@ -38,7 +38,7 @@ from cshr.api.pagination import BaseGeneralUserPagination
 
 
 class BaseGeneralUserAPIView(ListAPIView, GenericAPIView):
-    permission_classes = [UserIsAuthenticated]
+    # permission_classes = [UserIsAuthenticated]
     serializer_class = GeneralUserSerializer
     pagination_class = BaseGeneralUserPagination
 

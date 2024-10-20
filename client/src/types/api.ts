@@ -362,6 +362,10 @@ export module Api {
       job_title: string
       address: string
       user_type: Users
+      image: string
+      filename: string
+      location: number
+      reporting_to: number[]
     }
 
     export type UsersActive = { user_id: number }
