@@ -76,8 +76,9 @@ export default defineComponent({
       null,
       {
         immediate: false,
-        onSuccess: () => {
-          WSConnection.reconnect();
+        onSuccess: async () => {
+          window.connections.ws = await WSConnection.reconnect();
+          WSConnection.WSHandleConnection();
           return router.push('/');
         }
       }
