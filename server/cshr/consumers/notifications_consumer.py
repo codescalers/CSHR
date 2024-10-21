@@ -23,6 +23,7 @@ class RequestEvents(enum.Enum):
     REQUEST_TO_CANCEL_REQUEST = "request_to_cancel_request"
     APPROVE_CANCEL_REQUEST = "approve_cancel_request"
     REJECT_CANCEL_REQUEST = "reject_cancel_request"
+    APPROVE_ALL_OR_REJECT_PENDING_REQUESTS = "approve_or_reject_all_pending_requests"
 
 
 class WSErrorWrapper:
@@ -110,6 +111,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             RequestEvents.REJECT_CANCEL_REQUEST.value: self.reject_cancel_request,
             RequestEvents.APPROVE_REQUEST.value: self.approve_request,
             RequestEvents.REJECT_REQUEST.value: self.reject_request,
+            RequestEvents.APPROVE_ALL_OR_REJECT_PENDING_REQUESTS.value: self.approve_or_reject_all_pending_requests,
         }.get(request_event)
 
         if event_handler:
@@ -150,6 +152,54 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         await self.handle_single_receiver_request(
             data, RequestEvents.REJECT_REQUEST, STATUS_CHOICES.REJECTED
         )
+
+    async def approve_or_reject_all_pending_requests(self, data: Dict):
+        await self.handle_approve_or_reject_all_pending_requests(
+            data,
+            RequestEvents.APPROVE_ALL_OR_REJECT_PENDING_REQUESTS,
+        )
+
+    async def handle_approve_or_reject_all_pending_requests(
+        self, data: Dict, event: RequestEvents
+    ):
+        result: List = data.get(
+            "data"
+        )  # Should be a list of Dict, Where the key of each map is the user id and the value is the request id
+        status: str = data.get("status")
+        status = (
+            STATUS_CHOICES.APPROVED if status == "approve" else STATUS_CHOICES.REJECTED
+        )
+
+        if not data:
+            await self.handle_error(
+                400,
+                f"The request event type is '{event.value}', but no data has been submitted.",
+            )
+            return
+
+        users_ids = []
+        request_ids = []
+
+        for i in result:
+            users_ids.append(int(list(i.keys())[0]))
+            request_ids.append(int(list(i.values())[0]))
+
+        for idx, receiver_id in enumerate(users_ids):
+            group_name = f"room_{receiver_id}"
+            notification = await _get_request_notification_for_receiver_based_on_status(
+                request_ids[idx], receiver_id, status
+            )
+            if notification:
+                notification_serializer = await get_notification_serializer(
+                    notification
+                )
+                notification_serializer["request"]["from_date"] = (
+                    notification_serializer["request"]["from_date"].isoformat()
+                )
+                notification_serializer["request"]["end_date"] = (
+                    notification_serializer["request"]["end_date"].isoformat()
+                )
+                await self.send_to_group_name(notification_serializer, group_name)
 
     async def approve_cancel_request(self, data: Dict):
         await self.handle_single_receiver_request(

@@ -140,7 +140,7 @@ export default {
       if (!user.state.value) {
         window.location.href = '/login'
       }
-    })
+    });
 
     const loadNotifications = async () => {
       const notificationData = await $api.notifications.list()

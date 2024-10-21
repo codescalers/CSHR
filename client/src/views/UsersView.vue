@@ -4,7 +4,7 @@
       <h2 class="font-weight-medium my-3">ThreeFold Team</h2>
       <v-divider></v-divider>
     </div>
-    <officeFilters :offices="offices" :teams="teams" />
+    <officeFilters v-if="offices.state && offices.state.value" :offices="offices" :teams="teams" />
     <v-card class="pa-4" v-if="users.state.value.length">
       <v-row>
         <v-col class="d-flex flex-wrap justify-start">
@@ -42,6 +42,7 @@ import UserCard from '@/components/userCard.vue'
 import officeFilters from '@/components/filters.vue'
 import { useRoute } from 'vue-router'
 import { useAsyncState } from '@vueuse/core'
+
 export default {
   name: 'UsersView',
   components: {
@@ -49,7 +50,7 @@ export default {
     officeFilters
   },
   setup() {
-    const offices = useAsyncState($api.office.list(), [], { immediate: true })
+    const offices = useAsyncState($api.office.list(), [] as unknown as Api.Returns.List<Api.LocationType>, { immediate: true })
     const teams = [
       {name: 'Business Development'},
       {name: 'Development'},

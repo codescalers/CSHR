@@ -1,6 +1,6 @@
 """This file will containes everything related to User model."""
 
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Optional
 
 from django.contrib.auth.hashers import check_password
 from django.db.models import Q, F
@@ -84,10 +84,11 @@ def get_users_filter(
     return users
 
 
-def get_all_of_users(options=None) -> User:
-    """Return all users"""
+def get_all_of_users(options: Optional[Dict] = None):
+    """Return all users based on filtering options."""
     queryset = User.objects.all()
 
+    # Handle optional filtering
     if options:
         location_id = options.get("location", {}).get("id")
         team_name = options.get("team", {}).get("name")
@@ -101,9 +102,18 @@ def get_all_of_users(options=None) -> User:
         elif location_id:
             queryset = queryset.filter(location__id=location_id)
 
-    return queryset.exclude(user_type=USER_TYPE.ADMIN).order_by(
-        "first_name", F("is_active").desc(nulls_last=True)
+    # Exclude users with first name or last name containing "admin", case-insensitive
+    queryset = queryset.exclude(
+        Q(first_name__icontains="admin") | Q(last_name__icontains="admin")
     )
+
+    # Order by first_name (case insensitive) and is_active (nulls_last=True)
+    queryset = queryset.order_by(
+        "first_name".lower(),  # Order by lowercased first_name
+        F("is_active").desc(nulls_last=True)  # Order by is_active with nulls last
+    )
+
+    return queryset
 
 
 def get_admin_office_users(admin: User) -> User:
@@ -207,7 +217,7 @@ def filter_admins_same_office_of_the_user(user: User) -> QuerySet[User]:
     return User.objects.filter(location__id=user.location.id, user_type=USER_TYPE.ADMIN)
 
 
-def build_user_reporting_to_hierarchy_down(user: User) -> List[int]:
+def build_user_reporting_to_hierarchy_down(user: User, visited=None) -> List[int]:
     """
     Function to get all users reporting to a specific user, including indirect reports.
 
@@ -219,6 +229,15 @@ def build_user_reporting_to_hierarchy_down(user: User) -> List[int]:
 
     The function iterates through the direct reports of the user and recursively adds the IDs of all users who report to them.
     """
+    if visited is None:
+        visited = set()
+
+    # Avoid infinite loops by checking if the user has already been visited
+    if user.id in visited:
+        return []
+
+    visited.add(user.id)
+
     reports = []
 
     # Get all direct reports
@@ -227,7 +246,7 @@ def build_user_reporting_to_hierarchy_down(user: User) -> List[int]:
     for report in direct_reports:
         reports.append(report.id)  # Add the direct report's ID
         reports.extend(
-            build_user_reporting_to_hierarchy_down(report)
+            build_user_reporting_to_hierarchy_down(report, visited)
         )  # Recursively add all indirect reports
 
     return reports

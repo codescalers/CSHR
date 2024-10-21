@@ -121,6 +121,7 @@ import {
   listUsers
 } from '@/utils'
 import { useAsyncState } from '@vueuse/core'
+import type { Api } from '@/types';
 
 export default {
   name: 'UpdateUser',
@@ -139,14 +140,14 @@ export default {
     const genders = ['Male', 'Female']
     const birthdayDate = ref(new Date())
     const joiningDate = ref(new Date())
-    const offices = ref([])
-    const supervisors = ref<any[]>([])
+    const offices = ref<Api.LocationType[]>([])
+    const supervisors = ref<Api.User[]>([])
     const image = ref()
     const imageUrl = ref()
     const imageSrc = window.env.SERVER_DOMAIN_NAME_API.replace('api', '')
-    const selectedUser = ref()
+    const selectedUser = ref<Api.User>()
     const reporting_to = ref()
-    const userIsActive = ref<boolean>(selectedUser.value?.is_active)
+    const userIsActive = ref<boolean>(selectedUser.value?.is_active as boolean)
     const officeUsers = ref<any[]>([]);
     const page = ref(1)
     const count = ref(0)
@@ -161,6 +162,7 @@ export default {
       }
       return false;
     });
+
     const reloadMoreSupervisor = computed(() => {
       if (supervisorPage.value === supervisorCount.value) {
         return false
@@ -172,11 +174,14 @@ export default {
     });
 
     async function listSupervisors() {
+      supervisors.value = []
       const res = await $api.users.supervisors.list({ page: supervisorPage.value })
       if (res.count) {
         supervisorCount.value = Math.ceil(res.count / 10)
-        res.results.forEach((user: any) => {
-          supervisors.value.push(user)
+        res.results.forEach((user) => {
+          if (user.id !== selectedUser.value!.id){
+            supervisors.value.push(user)
+          }
         })
       } else {
         supervisorCount.value = 0
@@ -195,13 +200,10 @@ export default {
 
     onMounted(async () => {
       try {
-        offices.value = (await $api.office.list()).map((office: any) => ({
-          id: office.id,
-          name: office.name
-        }));
+        offices.value = (await $api.office.list()).results
         await concatUsers()
         selectedUser.value = officeUsers.value[0]
-        await listSupervisors()
+        // await listSupervisors()
         reporting_to.value = selectedUser.value?.reporting_to[0]
 
       } catch (error) {
@@ -210,15 +212,16 @@ export default {
     })
 
     watch(selectedUser, () => {
+      listSupervisors();
       reporting_to.value = selectedUser.value?.reporting_to[0]
     }, { deep: true })
 
     watch([ joiningDate], ([ newJoiningDate]) => {
-      if (newJoiningDate) selectedUser.value.joining_at = formatDate(newJoiningDate)
+      if (newJoiningDate) selectedUser.value!.joining_at = formatDate(newJoiningDate)
     })
 
     watch([birthdayDate], ([newBirthdayDate,]) => {
-      if (newBirthdayDate) selectedUser.value.birthday = formatDate(newBirthdayDate)
+      if (newBirthdayDate) selectedUser.value!.birthday = formatDate(newBirthdayDate)
     })
 
 
@@ -243,12 +246,12 @@ export default {
     const activateUser = useAsyncState(
       async () => {
         isLoading.value = true
-        if (selectedUser.value.is_active) {
-          selectedUser.value.is_active = userIsActive.value = false
-          await $api.users.set_inactive.update({ user_id: selectedUser.value.id })
+        if (selectedUser.value!.is_active) {
+          selectedUser.value!.is_active = userIsActive.value = false
+          await $api.users.set_inactive.update({ user_id: selectedUser.value!.id })
         } else {
-          selectedUser.value.is_active = userIsActive.value = true
-          await $api.users.set_active.update({ user_id: selectedUser.value.id })
+          selectedUser.value!.is_active = userIsActive.value = true
+          await $api.users.set_active.update({ user_id: selectedUser.value!.id })
         }
         isLoading.value = false
       },
@@ -258,16 +261,16 @@ export default {
 
     const { execute, isLoading } = useAsyncState(
       async () => { 
-        selectedUser.value.user_type = selectedUser.value.user_type === "Team Lead" ? "Supervisor" : selectedUser.value.user_type
+        selectedUser.value!.user_type = selectedUser.value!.user_type === "Team Lead" ? "Supervisor" : selectedUser.value!.user_type
         const data = {
           ...selectedUser.value,
           image: imageUrl.value ? imageUrl.value : null,
-          location: selectedUser.value.location.id,
+          location: selectedUser.value!.location.id,
           filename: image.value ? image.value[0].name : null,
           reporting_to: reporting_to.value ? [reporting_to.value.id] : []
         }
 
-        await $api.myprofile.update(selectedUser.value.id, data)
+        await $api.myprofile.update(selectedUser.value!.id, data as Api.Inputs.UsersAdminUpdate)
       },
       null,
       { immediate: false }

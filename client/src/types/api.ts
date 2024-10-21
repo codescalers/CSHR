@@ -14,6 +14,11 @@ export module Api {
     $http: AxiosInstance
   }
 
+  export interface ApproveOrRejectAllTeamPendingRequets{
+    // ids: number[];
+    action: "approve" | "reject"
+  }
+
   export type Path = `/${string}`
   export type LoginUser = Api.Returns.Login['results'] & { fullUser: Api.User }
 
@@ -357,6 +362,10 @@ export module Api {
       job_title: string
       address: string
       user_type: Users
+      image: string
+      filename: string
+      location: number
+      reporting_to: number[]
     }
 
     export type UsersActive = { user_id: number }

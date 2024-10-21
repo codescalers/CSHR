@@ -1,5 +1,6 @@
 from cshr.serializers.users import TeamSerializer
 from cshr.serializers.vacations import (
+    ActionTeamPendingRequestsSerializer,
     AdminApplyVacationForUserSerializer,
     PostOfficeVacationBalanceSerializer,
     GetOfficeVacationBalanceSerializer,
@@ -61,7 +62,6 @@ from cshr.utils.redis_functions import (
 from cshr.utils.wrappers import wrap_vacation_request
 from cshr.services.notifications import NotificationsService
 from cshr.services.requests import get_request_by_id
-from cshr.api.pagination import PendingRequestsPagination
 
 
 class GetAdminVacationBalanceApiView(GenericAPIView):
@@ -245,11 +245,12 @@ class BaseVacationsApiView(ListAPIView, GenericAPIView):
                 reason=reason,
             ).values_list("actual_days", flat=True)
 
-            chcked_balance = curr_balance - sum(pending_vacations)
-
+            sum_balance = int(sum(pending_vacations))
+            chcked_balance = curr_balance - sum_balance
+            days_or_day = "days" if sum_balance > 1 else "day"
             if chcked_balance < vacation_days:
                 return CustomResponse.bad_request(
-                    message=f"You have an additional pending request that deducts {sum(pending_vacations)} days from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} days."
+                    message=f"You have an additional pending request that deducts {sum_balance} {days_or_day} from your balance even though the current balance for the '{reason.capitalize().replace('_', ' ')}' category is only {curr_balance} {days_or_day}."
                 )
 
             vacation = serializer.save(
@@ -699,10 +700,11 @@ class AdminApplyVacationForUserApiView(GenericAPIView):
             ).values_list("actual_days", flat=True)
 
             chcked_balance = curr_balance - sum(pending_vacations)
+            days_or_day = "days" if chcked_balance > 1 else "day"
 
             if curr_balance < vacation_days:
                 return CustomResponse.bad_request(
-                    message=f"The user have only {curr_balance} days left of reason '{reason.capitalize().replace('_', ' ')}'"
+                    message=f"The user have only {curr_balance} {days_or_day} left of reason '{reason.capitalize().replace('_', ' ')}'"
                 )
 
             if chcked_balance < vacation_days:
@@ -1229,7 +1231,6 @@ class GetMyPendingRequestsAPIView(ListAPIView, GenericAPIView):
     permission_classes = [
         UserIsAuthenticated,
     ]
-    pagination_class = PendingRequestsPagination
 
     def get_pending_requests(self, request: Request) -> CustomResponse:
         status = request.query_params.get('status')
@@ -1264,7 +1265,6 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
     permission_classes = [
         UserIsAuthenticated,
     ]
-    pagination_class = PendingRequestsPagination
 
     def get_team_pending_requests(self, request: Request) -> CustomResponse:
         status = request.query_params.get('status')
@@ -1279,17 +1279,101 @@ class GetMyTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
 
         vacations = Vacation.objects.filter(
             applying_user__id__in=users,
-        )
+        ).select_related('applying_user')
 
         if status == "all":
             status = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
         else:
             status = [status]
 
-        vacations = vacations.filter(status__in=status)
+        vacations = vacations.filter(status__in=status).select_related('applying_user')
         return vacations
 
     def get_queryset(self) -> Response:
         """method to get all vacations"""
         query_set: List[Vacation] = self.get_team_pending_requests(self.request)
         return query_set
+
+class ActionTeamPendingRequestsAPIView(ListAPIView, GenericAPIView):
+    serializer_class = ActionTeamPendingRequestsSerializer
+    permission_classes = [
+        IsAdmin | IsSupervisor,
+    ]
+
+    def put(self, request: Request) -> Response:
+        serializer = self.serializer_class(data=request.data)
+        if not request.user:
+            return CustomResponse.not_found(message="User not found.")
+
+        if not serializer.is_valid():
+            return CustomResponse.bad_request(serializer.errors)
+
+        action = serializer.validated_data.get('action')
+        # ids = serializer.validated_data.get('ids')
+        # Determine status based on the action
+        status = self._get_status_from_action(action)
+
+        # Bulk update vacations
+        vacation_ids = []
+        vacations = self._get_pending_requests_queryset()
+
+        for vacation in vacations:
+            vacation_ids.append(vacation.id)
+
+        updated_count = vacations.update(status=status, approval_user=request.user)
+        if updated_count == 0:
+            return CustomResponse.not_found(message="No vacations found.")
+
+        vacations = Vacation.objects.filter(id__in=vacation_ids)
+
+        # Handle notifications in bulk if possible
+        self._send_notifications(vacations, status)
+        paginated_queryset = self.paginate_queryset(vacations)
+        serialized_data = LandingPageVacationsSerializer(paginated_queryset, many=True).data
+        message = f"The pending requests have been successfully {status}."
+        return CustomResponse.success(message=message, data=serialized_data)
+
+    def _get_status_from_action(self, action: str) -> str:
+        """Return the status based on the action."""
+        if action == 'approve':
+            return STATUS_CHOICES.APPROVED
+        elif action == 'reject':
+            return STATUS_CHOICES.REJECTED
+        return STATUS_CHOICES.PENDING
+
+    def _send_notifications(self, vacations: List[Vacation], status: STATUS_CHOICES) -> None:
+        """Send notifications based on the vacation status."""
+        notification_data = []
+        for vacation in vacations:
+            notification_service = NotificationsService(
+                sender=vacation.approval_user,
+                receiver=vacation.applying_user,
+                status=status
+            )
+
+            notification = None
+            if status == STATUS_CHOICES.APPROVED:
+                notification = notification_service.vacations.approve_vacation(
+                    vacation.reason, vacation
+                )
+            elif status == STATUS_CHOICES.REJECTED:
+                notification = notification_service.vacations.reject_vacation(
+                    vacation.reason, vacation
+                )
+
+            notification.sender = vacation.approval_user
+            notification.receiver = vacation.applying_user
+
+            if notification:
+                notification_data.append(notification)
+
+        if notification_data:
+            notification_service.bulk_push(notification_data)
+
+    def _get_pending_requests_queryset(self):
+        """Get the queryset for pending requests."""
+        users = build_user_reporting_to_hierarchy_down(self.request.user)
+        return Vacation.objects.filter(
+            applying_user__id__in = users,
+            status__in = [STATUS_CHOICES.PENDING, STATUS_CHOICES.REQUESTED_TO_CANCEL]
+        ).select_related('applying_user')

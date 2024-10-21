@@ -217,6 +217,18 @@ class NotificationsService:
         """
         return self.create(notification=notification)
 
+    def bulk_push(self, notifications: List[Notification]) -> List[Notification]:
+        """
+        Pushes multiple notifications at once.
+
+        Args:
+            notifications (List[Notification]): A list of notification objects to be sent.
+
+        Returns:
+            List[Notification]: The list of saved notification objects.
+        """
+        return self.bulk_create(notifications)
+
     def create(self, notification: Notification) -> Notification:
         """
         Creates a new notification without pushing it.
@@ -232,6 +244,15 @@ class NotificationsService:
             request=notification.request,
             request_status=notification.request_status,
         )
+
+    def bulk_create(self, notifications: List[Notification]) -> List[Notification]:
+        """
+        Creates a list of notifications.
+
+        Returns:
+            List[Notification]: The created notifications list.
+        """
+        return Notification.objects.bulk_create(notifications)
 
     def get_all(self) -> List[Notification]:
         """
